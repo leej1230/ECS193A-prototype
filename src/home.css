@@ -1,0 +1,14 @@
+.home {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+h2 {
+    font-size: 4rem;
+}
+
+.search {
+    width: 50%;
+    display: flex;
+}
