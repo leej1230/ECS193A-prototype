@@ -1,6 +1,7 @@
 .home {
     display: flex;
     align-items: center;
+    text-align: center;
     flex-direction: column;
 }
 
@@ -11,4 +12,12 @@ h2 {
 .search {
     width: 50%;
     display: flex;
+}
+
+ul.search-result {
+    font-size: 1.5rem;
+    color: blue;
+    list-style-type: none;
+    display: flex;
+    text-align: left;
 }

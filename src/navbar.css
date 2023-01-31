@@ -1,4 +1,4 @@
-ul {
+ul.bar {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -6,11 +6,11 @@ ul {
     background-color: rgb(0, 102, 22);
 }
 
-li {
+li.bar {
     float: left;
 }
   
-li a {
+li a.bar {
     display: block;
     font-size: 1.3rem;
     color: white;
