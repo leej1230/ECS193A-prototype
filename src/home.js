@@ -26,6 +26,8 @@ function home() {
             <div className='search-result'>
                 <ul className='search-result'>
                     <li><a href='/data'>First Result</a></li>
+                    <li><a href='/data'>Second Result</a></li>
+                    <li><a href='/data'>Third Result</a></li>
                 </ul>
             </div>
         </div>

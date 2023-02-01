@@ -14,10 +14,12 @@ h2 {
     display: flex;
 }
 
-ul.search-result {
+.search-result>li {
     font-size: 1.5rem;
+    margin: 2rem;
     color: blue;
     list-style-type: none;
     display: flex;
-    text-align: left;
+    justify-content: space-between;
+    flex-flow: column;
 }

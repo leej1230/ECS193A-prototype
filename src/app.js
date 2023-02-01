@@ -9,7 +9,7 @@ function app() {
     <Router>
         <Routes>
             <Route exact path="/" element={<><Navbar/><Home/></>}/>
-            <Route exact path="/data" element={<Data />}/>
+            <Route exact path="/data" element={<><Navbar/><Data/></>}/>
         </Routes>
     </Router>
   );
