@@ -68,3 +68,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+# Backend
+
+### Running virtual environment
+Windows: .\genomics_browser_venv\Scripts\activate
+Mac: source genomics_browser_venv/Scripts/activate
+
+### Kill virtual environment
+Windows & Mac: deactivate
