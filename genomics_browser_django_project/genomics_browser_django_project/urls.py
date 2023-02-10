@@ -14,8 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf.urls import url
+from genomics_browser_django_app_base import views
 from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^api/test$', views.test),
+    url(r'^api/test/preview', views.test_preview)
 ]
