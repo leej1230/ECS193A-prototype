@@ -6,8 +6,8 @@ import csv
 
 # need some button mechanism to send file to django backend --> some way to connect react frontend to django backend
 
-input_file = "../../sample_data/WB_Time_Course_filtered_normalized_counts.txt"
-csv_file = "../../sample_data/sample_csv.csv"
+input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
+csv_file = "sample_data/sample_csv.csv"
 
 in_txt =  csv.reader( open(input_file, "rt") , delimiter = '\t' )
 out_csv = csv.writer(open(csv_file, 'wt'))
