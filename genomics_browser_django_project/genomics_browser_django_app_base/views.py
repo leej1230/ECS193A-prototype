@@ -23,7 +23,7 @@ def test(request):
 @api_view(['GET'])
 def test_preview(request):
     # GET the all of the patient data when there is patient_id
-    all_data = Patient_DB.objects.filter(patient_id=True)
+    all_data = Patient_DB.objects.filter()
 
     if request.method == 'GET':
         serial = PatientSerializer(all_data, many=True)
