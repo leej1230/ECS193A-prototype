@@ -28,4 +28,13 @@ def test_preview(request):
     if request.method == 'GET':
         serial = PatientSerializer(all_data, many=True)
         return JsonResponse(serial.data, safe=False)
-    return JsonResponse(serial.errors, status=status.HTTP_418_IM_A_TEAPOT)
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+@api_view(['GET'])
+def patientQuery(request,patientID):
+    patient_data = Patient_DB.objects.filter(patient_id=patientID)
+
+    if request.method == 'GET':
+        serial = PatientSerializer(patient_data)
+        return JsonResponse(serial.data)
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
