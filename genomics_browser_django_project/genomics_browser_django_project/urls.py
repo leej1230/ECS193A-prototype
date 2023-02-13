@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/test$', views.test),
     url(r'^api/test/preview', views.test_preview),
-    url(r'^api/preview/<str:patientID>', views.patientQuery),
+    path('api/preview/<slug:patientID>', views.patientQuery),
 ]

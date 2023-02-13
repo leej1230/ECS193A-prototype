@@ -32,7 +32,7 @@ def test_preview(request):
 
 @api_view(['GET'])
 def patientQuery(request,patientID):
-    patient_data = Patient_DB.objects.filter(patient_id=patientID)
+    patient_data = Patient_DB.objects.get(patient_id=patientID)
 
     if request.method == 'GET':
         serial = PatientSerializer(patient_data)
