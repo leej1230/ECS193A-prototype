@@ -7,8 +7,8 @@ class ParsedDataset :
         self.input_txt = in_txt_path
         self.output_csv = out_csv_path
         self.df = pd.read_csv(self.input_txt, sep='\t')
-        self.df.remove_duplicate_samples()
-        self.df.remove_duplicate_columns()
+        self.remove_duplicate_samples()
+        self.remove_duplicate_columns()
 
     def print_head(self) : 
         print(self.df.head())

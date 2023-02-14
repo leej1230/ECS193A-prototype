@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 # from django.conf.urls import url
 from genomics_browser_django_app_base import views
-from django.urls import path,re_path
+from django.urls import path, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
