@@ -4,6 +4,7 @@ import  Home from "./home";
 import  Navbar from "./navbar";
 import Data from "./data";
 import SampleList from './components/SampleList';
+import Sample from './components/Sample';
 
 function app() {
   return (
@@ -16,6 +17,14 @@ function app() {
                 <Navbar/>
                 <div>
                   <SampleList/>
+                </div>
+              </>
+            }/>
+            <Route exact path="/frontend_test/:id" element={
+              <>
+                <Navbar/>
+                <div>
+                  <Sample/>
                 </div>
               </>
             }/>
