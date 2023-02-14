@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import { IconButton } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
+import SampleList from './components/SampleList';
 
 
 function home() {
@@ -25,9 +26,7 @@ function home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
-                    <li><a href='/data'>First Result</a></li>
-                    <li><a href='/data'>Second Result</a></li>
-                    <li><a href='/data'>Third Result</a></li>
+                    <SampleList/>
                 </ul>
             </div>
         </div>

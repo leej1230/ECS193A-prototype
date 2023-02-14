@@ -23,8 +23,8 @@ export default class SampleList extends React.Component {
         {
           this.state.samples
             .map(sample =>
-              <li key={sample.id}><b>Patient ID: {sample.patient_id}</b>
-                <ul>
+              <li key={sample.id}><a href={'/data/' + sample.patient_id}>Patient {sample.id} ID: {sample.patient_id}</a>
+                {/* <ul>
                   Gene IDs: {sample.gene_ids}
                 </ul>
                 <ul>
@@ -32,7 +32,7 @@ export default class SampleList extends React.Component {
                 </ul>
                 <ul>
                   Dataset ID: {sample.dataset_id}
-                </ul>
+                </ul> */}
               </li>
             )
         }
