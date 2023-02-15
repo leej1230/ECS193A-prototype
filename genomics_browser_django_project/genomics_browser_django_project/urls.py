@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^api/test$', views.test),
     re_path(r'^api/patientpost', views.POST_Patient_Data),
+    re_path(r'^api/patient/all', views.GET_patientall),
     re_path(r'^api/test/preview', views.test_preview),
     path('api/preview/<slug:patientID>', views.patientQuery),
     path('api/patient/<slug:patientID>', views.GET_patientQuery),

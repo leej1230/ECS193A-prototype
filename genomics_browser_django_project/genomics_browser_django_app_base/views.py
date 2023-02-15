@@ -73,6 +73,15 @@ def test_preview(request):
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
 @api_view(['GET'])
+def GET_patientall(request):
+    if request.method == 'GET':
+        item = patient_collection.find({})
+        json_data = json.loads(dumps(item))
+        return JsonResponse(json_data, safe=False)
+        # return JsonResponse(item, safe=False)
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+@api_view(['GET'])
 def patientQuery(request,patientID):
     patient_data = Patient_DB.objects.get(patient_id=patientID)
 
@@ -87,6 +96,6 @@ def GET_patientQuery(request,patientID):
     if request.method == 'GET':
         item = patient_collection.find_one({'patient_id':patientID})
         json_data = json.loads(dumps(item))
-        return JsonResponse(json_data)
+        return JsonResponse(json_data, safe=False)
         # return JsonResponse(item, safe=False)
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
