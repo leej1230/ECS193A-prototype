@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
-const URL = `http://127.0.0.1:8000/api/preview/${SAMPLE_ID}`
+const URL = `http://127.0.0.1:8000/api/patient/${SAMPLE_ID}`
 
 export default class SampleList extends React.Component {
   state = {
