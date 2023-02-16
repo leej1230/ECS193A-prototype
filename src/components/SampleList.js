@@ -31,7 +31,6 @@ function SampleList() {
   //     })
   // }
   
-  console.log(patient_data.patients)
   return (
     <div>
       {
