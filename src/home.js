@@ -4,6 +4,7 @@ import { IconButton } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import SampleList from './components/SampleList';
+import DatasetList from './DatasetList'
 
 
 function home() {
@@ -26,6 +27,7 @@ function home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
+                    <DatasetList />
                     <SampleList/>
                 </ul>
             </div>

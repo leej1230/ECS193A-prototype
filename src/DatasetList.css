@@ -1,0 +1,6 @@
+.outer_grid { 
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    row-gap: 2px;
+    column-gap: 2px;
+ }
