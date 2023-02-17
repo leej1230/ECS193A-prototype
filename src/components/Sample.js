@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import "../data.css";
+import SampleGraph from './apexchartdemo';
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 const URL = `http://127.0.0.1:8000/api/patient/${SAMPLE_ID}`
@@ -46,7 +47,7 @@ export default class Sample extends React.Component {
             </table>
             </li>
         }
-      <div id="unique"></div>
+      <SampleGraph categories={this.state.samples.gene_ids} data={this.state.samples.gene_values}/>
       </ul>
     )
   }
