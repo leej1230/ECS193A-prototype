@@ -1,6 +1,8 @@
 # clean dataset in order to store information in the database
 
 import pandas as pd
+import requests
+import json
 
 class ParsedDataset : 
     def __init__(self, in_txt_path, out_csv_path) : 
@@ -22,12 +24,34 @@ class ParsedDataset :
     def remove_duplicate_columns(self) : 
         self.df = self.df.T.drop_duplicates().T
 
-        
+    def get_patient_data(self, patient_id) :
+        return self.df.loc[ds.df["Sample name"] == patient_id]
+    
+    def get_patient_gene_data(self, patient_id) : 
+        return self.get_patient_data(patient_id).filter(regex="ENSG*|Sample name")
+    
 input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
 csv_file = "sample_data/sample_csv.csv"
 ds = ParsedDataset(input_file, csv_file)
-ds.print_head()
-ds.write_to_csv()
+
+import requests
+url = "http://127.0.0.1:8000/api/patientpost"
+df = ParsedDataset(input_file, csv_file).get_patient_data("UCDSS-1000")
+patient_id = list(df["Sample name"])
+gene_ids = list(df.filter(regex="ENSG*").columns)
+gene_values = df.filter(regex="ENSG*").to_numpy().tolist()[0]
+dataset_id = 1
+
+patient_data = {
+    'patient_id': patient_id,
+    'gene_ids': gene_ids,
+    'gene_values': gene_values,
+    'dataset_id': dataset_id
+}
+requests.post(url, json=patient_data)
+
+# ds.print_head()
+# ds.write_to_csv()
 
 # # need some button mechanism to send file to django backend --> some way to connect react frontend to django backend
 
