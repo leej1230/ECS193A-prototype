@@ -18,13 +18,13 @@ function DatabaseList() {
   // }
   
   return (
-    <div>
+
       <Box width = '1000px'>
         <Card variant='outlined'>
           <CardContent>
             <div className = "outer_grid">
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
           
                       <CardContent>
@@ -38,7 +38,7 @@ function DatabaseList() {
                   </Box>
                 </div>
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
                     <Card>
                       <CardContent>
@@ -54,7 +54,7 @@ function DatabaseList() {
                   </Box>
                 </div>
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
                       <CardContent>
                         <Typography gutterBottom variant='h5' component='div'> Dataset3 </Typography>
@@ -67,7 +67,7 @@ function DatabaseList() {
                   </Box>
                 </div>
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
                       <CardContent>
                         <Typography gutterBottom variant='h5' component='div'> Dataset4 </Typography>
@@ -80,7 +80,7 @@ function DatabaseList() {
                   </Box>
                 </div>
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
                       <CardContent>
                         <Typography gutterBottom variant='h5' component='div'> Dataset5 </Typography>
@@ -93,7 +93,7 @@ function DatabaseList() {
                   </Box>
                 </div>
                 <div className="dataset_element">
-                  <Box width='300px'>
+                  <Box width='300px' maxheight="200px">
                     <Card variant="outlined">
                 
                       <CardContent>
@@ -106,39 +106,13 @@ function DatabaseList() {
                     </Card>
                   </Box>
                 </div>
-                <div >
-                  <Box width='300px'>
-                    <Card>
-                      <CardContent>
-                        <Typography> <Button > Left </Button></Typography>
-                      </CardContent>
-                    </Card>
-                  </Box> 
-                </div>
-                <div>
-                  <Box width='300px'>
-                    <Card>
-                      
-                    </Card>
-                  </Box>
-                </div>
-                <div >
-                  <Box width='300px'>
-                    <Card>
-                      <CardContent>
-                        <Typography> <Button  > Right </Button> </Typography>
-                      </CardContent>
-                    </Card>
-                    
-                  </Box>
-                </div>
             </div>
           </CardContent>
         </Card>
 
       </Box>
  
-    </div>
+
   )
 }
 
