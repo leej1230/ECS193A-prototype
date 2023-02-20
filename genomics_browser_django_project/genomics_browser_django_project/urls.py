@@ -26,4 +26,8 @@ urlpatterns = [
     re_path(r'^api/test/preview', views.test_preview),
     path('api/preview/<slug:patientID>', views.patientQuery),
     path('api/patient/<slug:patientID>', views.GET_patientQuery),
+    re_path(r'^api/datasetpost/', views.POST_Dataset_Data),
+    re_path(r'^api/dataset/all', views.GET_datasets_all),
+    re_path(r'^api/genepost/', views.POST_Gene_Data),
+    re_path(r'^api/gene/all', views.GET_gene_all),
 ]
