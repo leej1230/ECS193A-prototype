@@ -75,7 +75,7 @@ def test_preview(request):
 @api_view(['GET'])
 def GET_patientall(request):
     if request.method == 'GET':
-        item = patient_collection.find({})
+        item = patient_collection.find({},{'patient_id':1})
         json_data = json.loads(dumps(item))
         return JsonResponse(json_data, safe=False)
         # return JsonResponse(item, safe=False)
