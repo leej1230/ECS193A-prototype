@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useEffect , useState  } from "react";
 import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
 import {Button} from "@mui/material";
 import "./Slider.css"
 import DatasetList from "./DatasetList"
+import axios from 'axios';
 
 /*
 ,
@@ -13,7 +14,9 @@ import DatasetList from "./DatasetList"
 
 */
 
+
 class SliderItemsContainer extends React.Component {
+
     state = { index: 0 };
   
     dotClicked = e => {
@@ -26,11 +29,11 @@ class SliderItemsContainer extends React.Component {
           <div
             className="slider-innerContainer"
             style={{ left: -100 * this.state.index + "%" }}>
-            {this.props.children.map((child, index) =>
-              <div key={index}>{child}</div>)}
+              {this.props.dataset_groups_list.map((child, index) =>
+              <div key={index}> <DatasetList datasets_arr={this.props.dataset_groups_list[index]} /> </div>)}
           </div>
           <div className="slider-dots">
-            {this.props.children.map((child, index) =>
+            {this.props.dataset_groups_list.map((child, index) =>
               <div key={index} data-index={index} onClick={this.dotClicked}>
                 {index === this.state.index ? "◉" : "◌"}
               </div>
@@ -40,23 +43,33 @@ class SliderItemsContainer extends React.Component {
       );
     }
 
+}
+
+  
+export default class Slider extends React.Component {
+
+  state = {
+    datasets_list : [],
+    groupings: []
   }
-  
-function Slider() {
 
-  var datasets_list = [{id: 0, description: 'jhgjhg', name: 'eagle', date_published: '03-27-2022', gene_ids: [1,5,8], patient_ids: [44,8,20] },
-  {id: 1, name: 'fly', description: 'uytu', date_published: '03-27-2022', gene_ids: [2,6,9], patient_ids: [44,8,20] } ,
-  {id: 2, name: 'cat', description: 'aaaa', date_published: '04-29-2022', gene_ids: [34,8,90], patient_ids: [45,3,23] },
-  {id: 3, name: 'bird', description: '4grdj:{', date_published: '01-13-2022', gene_ids: [7,11,14], patient_ids: [46,3,55] },
-  {id: 4, name: 'insect', description: 'FHJGJ', date_published: '07-30-2022', gene_ids: [9,9,9], patient_ids: [49,2,53] },
-  {id: 5, name: 'lion', description: 'qmgfdf', date_published: '08-31-2022', gene_ids: [6,10,13], patient_ids: [53,6,57] },
-  {id: 6, name: 'deer', description: '1234 gf 9', date_published: '09-3-2022', gene_ids: [12,15,18], patient_ids: [12,0,45] }]
-  
+  componentDidMount() {
+    axios.get(`http://127.0.0.1:8000/api/dataset/all`)
+      .then(result => {
+        this.setState({
+          datasets_list:result.data
+        })
+     }).then( () => {
+      this.setState({
+        groupings:this.createDatasetListGroups()
+      })
+     }  )
+  }
 
-  var groupings = createDatasetListGroups();
 
-  function createDatasetListGroups() {
-    var num_datasets = datasets_list.length;
+  createDatasetListGroups() {
+
+    var num_datasets = this.state.datasets_list.length;
     var num_groups = Math.floor( num_datasets/6);
     var last_group_num_datasets = num_datasets % 6;
 
@@ -69,7 +82,7 @@ function Slider() {
       }
       var cur_group = []
       for (let j = start_dataset_index; j < end_dataset_index; j++) {
-        cur_group.push( datasets_list[j] );
+        cur_group.push( this.state.datasets_list[j] );
       }
       groups_list.push( cur_group );
     }
@@ -77,16 +90,28 @@ function Slider() {
     return groups_list;
   };
 
-    return (
+  render(){  return (
       <div>
-        <SliderItemsContainer>
-          { groupings.map((data_group, index) =>
-              <DatasetList datasets_arr = {groupings[index]} />)}
+        <SliderItemsContainer  dataset_groups_list = {this.state.groupings} >
         </SliderItemsContainer>
       </div>
     );
+  }
 
 }
   
-export default Slider
   
+/*
+
+useEffect( () => {
+    let mounted = true;  // mounted means kepp active
+    fetch('http://localhost:8000/api/dataset/all/')
+    .then(data => data.json()).then(items => {
+      if(mounted) {
+        setDatasets_list(items)
+      }
+    })
+    return () => mounted = false;
+  }, []);
+
+*/

@@ -5,11 +5,6 @@ import {Button} from "@mui/material";
 
 
 export default class Dataset extends React.Component {
-
-  constructor(props){
-    super(props)
-    this.input_dataset = props.dataset;
-  };
     
   render() {
     
@@ -18,8 +13,8 @@ export default class Dataset extends React.Component {
         <Box width='300px' maxheight="200px">
           <Card variant="outlined">
             <CardContent>
-              <Typography gutterBottom variant='h5' component='div'> Dataset {this.input_dataset.id} <br /> Name: {this.input_dataset.name} </Typography>
-                <Typography variant="body2" color="text.secondary">Description: {this.input_dataset.description} <br /> Date Uploaded: {this.input_dataset.published_date} </Typography>
+              <Typography gutterBottom variant='h5' component='div'> Dataset <br /> Name: {this.props.dataset.name} </Typography>
+                <Typography variant="body2" color="text.secondary">Description: {this.props.dataset.description} </Typography>
               </CardContent>
             <CardActions>
               <Button size="small">Learn more</Button>

@@ -89,12 +89,6 @@ const URL = `http://127.0.0.1:8000/api/patient/all`
 */
 
 class DatabaseList extends React.Component {
-
-  constructor(props){
-    super(props)
-    console.log( props )
-    this.datasets_arr_input = props.datasets_arr;
-  };
   
   render() { return (
 
@@ -102,9 +96,8 @@ class DatabaseList extends React.Component {
         <Card variant='outlined'>
           <CardContent>
             <div className = "outer_grid">
-
-            { this.datasets_arr_input.map((data_set_single, index) =>
-              <Dataset dataset = {this.datasets_arr_input[index]} /> )}
+            { this.props.datasets_arr.map((data_set_single, index) =>
+              <Dataset dataset = {this.props.datasets_arr[index]} /> )}
 
             </div>
           </CardContent>
