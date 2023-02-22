@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from "@mui/material/TextField";
 import { IconButton } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
@@ -6,8 +6,11 @@ import "./home.css";
 import SampleList from './components/SampleList';
 
 
-function home() {
-  return (
+function Home() {
+    const [search, setSearch] = useState('');
+    console.log(search)
+
+    return (
         <div className='home'>
             <h2>
                 Human Genomics Search
@@ -15,9 +18,10 @@ function home() {
             <div className='search'>
                 <TextField
                     id='input_keyword'
+                    onChange={(e) => setSearch(e.target.value)}
                     variant='outlined'
                     fullWidth
-                    label="Search by ...?"
+                    label="Search by gene names or dataset name"
                 />
                 <IconButton type="submit" aria-label="search">
                     <SearchIcon style={{ fill: "blue" }} />
@@ -26,11 +30,11 @@ function home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
-                    <SampleList/>
+                    <SampleList kword={search}/>
                 </ul>
             </div>
         </div>
   );
 }
 
-export default home
+export default Home

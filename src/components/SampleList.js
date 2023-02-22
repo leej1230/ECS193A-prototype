@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const URL = `http://127.0.0.1:8000/api/patient/all`
 
-function SampleList() {
+function SampleList(props) {
   const [patient_data, setPatient_data] = useState([]);
 
   useEffect( () => {
@@ -34,7 +34,9 @@ function SampleList() {
   return (
     <div>
       {
-        patient_data && patient_data.map((patient) =>
+        patient_data && patient_data.filter((word) => {
+          return props.kword.toLowerCase() === '' ? word : word.patient_id.toLowerCase().includes(props.kword)
+        }).map((patient) =>
             <li key={patient.patient_id}><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a>
               {/* <ul>
                 Gene IDs: {sample.gene_ids}
