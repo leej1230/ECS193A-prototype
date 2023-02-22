@@ -19,3 +19,19 @@ class Patient_DB(models.Model):
     # gene_ids = models.CharField(validators=int_list_validator)
     # gene_values = models.CharField(validators=int_list_validator)
     # dataset_id = models.CharField(validators=int_list_validator)
+
+class Gene_DB(models.Model):
+    # want all fields in all documents in datasets, can be "" but not omitted
+    id = models.AutoField(auto_created = True,
+                  primary_key = True, serialize=True)
+    name = models.CharField(max_length=50, blank=False, default="")
+
+class Dataset_DB(models.Model):
+    # want all fields in all documents in datasets, can be "" but not omitted
+    id = models.AutoField(auto_created = True, primary_key = True, serialize=True)
+    name = models.CharField(max_length=50, blank=False, default="")
+    description = models.TextField( blank=False, default='' )
+    gene_ids = models.JSONField(blank=False)
+    patient_ids = models.JSONField(blank=False)
+    date_created = models.DateField(auto_now=False, auto_now_add=True)
+    url_link = models.URLField(blank = False, default="https://google.com")
