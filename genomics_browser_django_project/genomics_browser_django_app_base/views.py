@@ -240,6 +240,8 @@ def upload_dataset(request):
     if request.method == 'POST' and request.FILES:
         try:
             dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
+            sample = dataset.get_random_patient()
+            patient_collection.insert_one(sample)
             return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
         except:
             return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
