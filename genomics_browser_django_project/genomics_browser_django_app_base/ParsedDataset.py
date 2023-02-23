@@ -1,15 +1,15 @@
 # clean dataset in order to store information in the database
 
 import pandas as pd
-import requests
-import json
+# import requests
+# import json
 
 class ParsedDataset : 
-    def __init__(self, in_txt_path, out_csv_path) : 
+    def __init__(self, in_txt_path) : 
         self.input_txt = in_txt_path
-        self.output_csv = out_csv_path
+        # self.output_csv = out_csv_path
         self.df = pd.read_csv(self.input_txt, sep='\t')
-        self.remove_duplicate_samples()
+        # self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
     def print_head(self) : 
@@ -25,30 +25,30 @@ class ParsedDataset :
         self.df = self.df.T.drop_duplicates().T
 
     def get_patient_data(self, patient_id) :
-        return self.df.loc[ds.df["Sample name"] == patient_id]
+        return self.df.loc[self.df["Sample name"] == patient_id]
     
     def get_patient_gene_data(self, patient_id) : 
         return self.get_patient_data(patient_id).filter(regex="ENSG*|Sample name")
     
-input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
-csv_file = "sample_data/sample_csv.csv"
-ds = ParsedDataset(input_file, csv_file)
+# input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
+# csv_file = "sample_data/sample_csv.csv"
+# ds = ParsedDataset(input_file, csv_file)
 
-import requests
-url = "http://127.0.0.1:8000/api/patientpost"
-df = ParsedDataset(input_file, csv_file).get_patient_data("UCDSS-1000")
-patient_id = list(df["Sample name"])
-gene_ids = list(df.filter(regex="ENSG*").columns)
-gene_values = df.filter(regex="ENSG*").to_numpy().tolist()[0]
-dataset_id = 1
+# import requests
+# url = "http://127.0.0.1:8000/api/patientpost"
+# df = ParsedDataset(input_file, csv_file).get_patient_data("UCDSS-1000")
+# patient_id = list(df["Sample name"])
+# gene_ids = list(df.filter(regex="ENSG*").columns)
+# gene_values = df.filter(regex="ENSG*").to_numpy().tolist()[0]
+# dataset_id = 1
 
-patient_data = {
-    'patient_id': patient_id,
-    'gene_ids': gene_ids,
-    'gene_values': gene_values,
-    'dataset_id': dataset_id
-}
-requests.post(url, json=patient_data)
+# patient_data = {
+#     'patient_id': patient_id,
+#     'gene_ids': gene_ids,
+#     'gene_values': gene_values,
+#     'dataset_id': dataset_id
+# }
+# requests.post(url, json=patient_data)
 
 # ds.print_head()
 # ds.write_to_csv()

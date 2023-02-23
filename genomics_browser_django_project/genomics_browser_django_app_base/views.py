@@ -20,6 +20,8 @@ from genomics_browser_django_app_base.serializers import DatasetSerializer
 from genomics_browser_django_app_base.models import Gene_DB
 from genomics_browser_django_app_base.serializers import GeneSerializer
 
+from . import ParsedDataset
+
 client = pymongo_get_database.get_connection()
 patient_collection = client['patients']
 gene_collection = client['genes']
@@ -231,3 +233,13 @@ def GET_gene_all(request):
             return JsonResponse(genes_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+
+@api_view(['POST'])
+def upload_dataset(request):
+    if request.method == 'POST' and request.FILES:
+        try:
+            dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
+            return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
+        except:
+            return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
