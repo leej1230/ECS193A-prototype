@@ -5,6 +5,7 @@ import  Navbar from "./navbar";
 import Data from "./data";
 import SampleList from './components/SampleList';
 import Sample from './components/Sample';
+import UploadDataset from './components/UploadDataset';
 
 function app() {
   return (
@@ -12,7 +13,7 @@ function app() {
         <Routes>
             <Route exact path="/" element={<><Navbar/><Home/></>}/>
             <Route exact path="/data" element={<><Navbar/><Data/></>}/>
-            <Route exact path="/upload" element={<><Navbar/><Data/></>}/>
+            <Route exact path="/upload" element={<><Navbar/><UploadDataset/></>}/>
             <Route exact path="/frontend_test" element={
               <>
                 <Navbar/>
