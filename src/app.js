@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import  Home from "./home";
 import  Navbar from "./navbar";
 import Data from "./data";
+import Upload from "./upload";
 import SampleList from './components/SampleList';
 import Sample from './components/Sample';
 
@@ -12,7 +13,7 @@ function app() {
         <Routes>
             <Route exact path="/" element={<><Navbar/><Home/></>}/>
             <Route exact path="/data" element={<><Navbar/><Data/></>}/>
-            <Route exact path="/upload" element={<><Navbar/><Data/></>}/>
+            <Route exact path="/upload" element={<><Navbar/><Upload/></>}/>
             <Route exact path="/frontend_test" element={
               <>
                 <Navbar/>
