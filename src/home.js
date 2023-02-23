@@ -32,7 +32,7 @@ function Home() {
             <div className='search-result'>
                 <ul className='search-result'>
                     <Slider />
-                    <SampleList kword={search}/>/>
+                    <SampleList kword={search}/>
                 </ul>
             </div>
         </div>
