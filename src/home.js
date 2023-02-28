@@ -31,7 +31,17 @@ function home() {
                     <SampleList/>
                 </ul>
             </div>
+
+            <div className='search-result'>
+                <ul className='search-result'>
+                    <li><a href='/upload'>Upload</a></li>
+                </ul>
+            </div>
+
         </div>
+
+
+
   );
 }
 
