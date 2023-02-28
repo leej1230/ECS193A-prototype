@@ -4,6 +4,7 @@ import { IconButton } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import SampleList from './components/SampleList';
+import Slider from './components/Slider';
 
 
 function Home() {
@@ -30,10 +31,21 @@ function Home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
+                    <Slider />
                     <SampleList kword={search}/>
                 </ul>
             </div>
+
+            <div className='search-result'>
+                <ul className='search-result'>
+                    <li><a href='/upload'>Upload</a></li>
+                </ul>
+            </div>
+
         </div>
+
+
+
   );
 }
 
