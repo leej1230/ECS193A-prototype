@@ -35,7 +35,7 @@ function SampleList(props) {
     <div>
       {
         patient_data && patient_data.filter((word) => {
-          return props.kword.toLowerCase() === '' ? word : word.patient_id.toLowerCase().includes(props.kword)
+          return props.kword.toLowerCase() === '' ? word : word.patient_id.toLowerCase().includes(props.kword.toLowerCase())
         }).map((patient) =>
             <li key={patient.patient_id}><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a>
               {/* <ul>
