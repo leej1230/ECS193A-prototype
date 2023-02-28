@@ -6,6 +6,7 @@ import Data from "./data";
 import SampleList from './components/SampleList';
 import Sample from './components/Sample';
 import UploadDataset from './components/UploadDataset';
+import DatasetPage from './components/DatasetPage';
 
 function app() {
   return (
@@ -30,6 +31,12 @@ function app() {
                 </div>
               </>
             }/>
+            <Route exact path="/dataset/:id"  element={
+              <>
+                <Navbar/>
+                <DatasetPage/>
+              </>
+            }  />
         </Routes>
     </Router>
   );

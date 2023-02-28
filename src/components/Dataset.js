@@ -5,6 +5,7 @@ import {Button} from "@mui/material";
 
 
 export default class Dataset extends React.Component {
+
     
   render() {
     
@@ -17,7 +18,7 @@ export default class Dataset extends React.Component {
                 <Typography variant="body2" color="text.secondary">Description: {this.props.dataset.description} </Typography>
               </CardContent>
             <CardActions>
-              <Button size="small">Learn more</Button>
+              <a href={"/dataset/" + this.props.dataset.id}> Learn more </a>
             </CardActions>
           </Card>
         </Box>
