@@ -327,10 +327,9 @@ def GET_counter_all(request):
 def upload_dataset(request):
     if request.method == 'POST' and request.FILES:
         try:
-            dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
-            sample = dataset.get_random_patient()
+            dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0], request.data.get('dateCreated'))
+            sample = dataset.get_dataset_info()
             # patient_collection.insert_one(sample)
-            print(request.data.get('description'))
             return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
         except:
             return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)

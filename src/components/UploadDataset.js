@@ -39,6 +39,7 @@ class UploadDataset extends React.Component {
     const formData = new FormData();
     formData.append('file', file)
     formData.append('description', description)
+    formData.append('dateCreated', this.state.dateCreated)
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
