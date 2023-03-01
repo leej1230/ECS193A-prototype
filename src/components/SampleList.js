@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import "./SampleList.css"
 
 const URL = `http://127.0.0.1:8000/api/patient/all`
 
@@ -35,7 +36,7 @@ function SampleList() {
     <div>
       {
         patient_data && patient_data.map((patient) =>
-            <li key={patient.patient_id}><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a>
+            <li class="patient-display" key={patient.patient_id}><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a>
               {/* <ul>
                 Gene IDs: {sample.gene_ids}
               </ul>
