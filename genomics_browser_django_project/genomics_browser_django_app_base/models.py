@@ -22,16 +22,21 @@ class Patient_DB(models.Model):
 
 class Gene_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
-    id = models.AutoField(auto_created = True,
-                  primary_key = True, serialize=True)
+    id = models.PositiveBigIntegerField(blank = False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
+    dataset_id = models.CharField(max_length=50, blank=False, default='')
 
 class Dataset_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
-    id = models.AutoField(auto_created = True, primary_key = True, serialize=True)
+    id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     description = models.TextField( blank=False, default='' )
     gene_ids = models.JSONField(blank=False)
     patient_ids = models.JSONField(blank=False)
-    date_created = models.DateField(auto_now=False, auto_now_add=True)
+    date_created = models.DateField(blank = False)
     url_link = models.URLField(blank = False, default="https://google.com")
+
+class Counter_DB(models.Model):
+    # want all fields in all documents in datasets, can be "" but not omitted
+    seq_val = models.PositiveBigIntegerField( blank = False )
+    name_use = models.CharField(blank = False , max_length=50 )
