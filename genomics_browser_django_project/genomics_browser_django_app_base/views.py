@@ -325,11 +325,12 @@ def GET_counter_all(request):
 
 @api_view(['POST'])
 def upload_dataset(request):
-    if request.method == 'POST' and request.FILES:
+    if request.method == 'POST' and request.FILES and request.GET.get('description'):
         try:
             dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
             sample = dataset.get_random_patient()
-            patient_collection.insert_one(sample)
+            # patient_collection.insert_one(sample)
+            print(request.GET.get('description'))
             return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
         except:
             return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)

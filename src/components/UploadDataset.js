@@ -8,41 +8,49 @@ class UploadDataset extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-      file:null
+      file:null,
+	  description: ""
     }
     this.onFormSubmit = this.onFormSubmit.bind(this)
-    this.onChange = this.onChange.bind(this)
+    this.onFileChange = this.onFileChange.bind(this)
+	this.onDescriptionChange = this.onDescriptionChange.bind(this)
     this.fileUpload = this.fileUpload.bind(this)
   }
 
   onFormSubmit(e){
     e.preventDefault() // Stop form submit
-    this.fileUpload(this.state.file).then((response)=>{
+    this.fileUpload(this.state.file, this.state.description).then((response)=>{
       console.log(response.data);
     })
   }
 
-  onChange(e) {
+  onFileChange(e) {
     this.setState({file:e.target.files[0]})
   }
 
-  fileUpload(file){
+  onDescriptionChange(e) {
+    this.setState({description:e.target.value})
+  }
+
+  fileUpload(file, description){
     const url = 'http://127.0.0.1:8000/api/upload_dataset';
     const formData = new FormData();
-    formData.append('file',file)
+    formData.append('file', file)
+    formData.append('description', description)
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
         }
     }
-    return axios.post(url, formData,config)
+    return axios.post(url, formData, config)
   }
 
   render() {
     return (
       <form onSubmit={this.onFormSubmit}>
         <h1>File Upload</h1>
-        <input type="file" onChange={this.onChange} />
+        <input type="file" onChange={this.onFileChange} />
+        <input type="text" name="description" onChange={this.onDescriptionChange} />
         <button type="submit">Upload</button>
       </form>
    )
