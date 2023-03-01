@@ -9,11 +9,12 @@ class UploadDataset extends React.Component {
     super(props);
     this.state ={
       file:null,
-	  description: ""
+      description: "",
+      dateCreated: null
     }
     this.onFormSubmit = this.onFormSubmit.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
-	this.onDescriptionChange = this.onDescriptionChange.bind(this)
+    this.onDescriptionChange = this.onDescriptionChange.bind(this)
     this.fileUpload = this.fileUpload.bind(this)
   }
 
@@ -26,6 +27,7 @@ class UploadDataset extends React.Component {
 
   onFileChange(e) {
     this.setState({file:e.target.files[0]})
+    this.setState({dateCreated: e.target.files[0].lastModifiedDate})
   }
 
   onDescriptionChange(e) {
@@ -43,6 +45,7 @@ class UploadDataset extends React.Component {
         }
     }
     if (this.state.file) {
+      console.log(this.state)
       return axios.post(url, formData, config)
     }
   }
