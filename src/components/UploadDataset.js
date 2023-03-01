@@ -42,7 +42,9 @@ class UploadDataset extends React.Component {
             'content-type': 'multipart/form-data'
         }
     }
-    return axios.post(url, formData, config)
+    if (this.state.file) {
+      return axios.post(url, formData, config)
+    }
   }
 
   render() {
