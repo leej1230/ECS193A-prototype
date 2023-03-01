@@ -21,9 +21,7 @@ function Sample() {
     fetchPatientData()
   });
   
-  {/* if (this.state.samples.length === 0) {
-    return <div>Loading...</div>
-  } */}
+
   return (
     <div>
       {patient_data ? (

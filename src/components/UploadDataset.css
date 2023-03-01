@@ -1,1 +1,13 @@
- 
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.submit-button {
+    margin: 1rem;
+}
+
+.text-area {
+    margin: 1rem;
+}
