@@ -11,7 +11,7 @@ class ParsedDataset :
         self.description = description
         self.date_created = date_created
         # self.output_csv = out_csv_path
-        self.df = pd.read_csv(self.input_txt)
+        self.df = pd.read_csv(self.input_txt, sep="\t")
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
@@ -53,7 +53,6 @@ class ParsedDataset :
         gene_ids = list(sample.filter(regex="ENSG").columns)
         gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
         dataset_id = 1
-        print(patient_id)
         return {
             'patient_id': patient_id,
             'gene_ids': gene_ids,
