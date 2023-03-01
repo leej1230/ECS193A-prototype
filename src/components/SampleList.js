@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import "./SampleList.css"
 
 const URL = `http://127.0.0.1:8000/api/patient/all`
 
@@ -22,7 +23,7 @@ function SampleList(props) {
         patient_data && patient_data.filter((word) => {
           return word.patient_id.toLowerCase().includes(props.kword.toLowerCase())
         }).map((patient) =>
-            <li><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a></li>
+            <li class="patient-display"><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a></li>
           )
       }
     </div>
