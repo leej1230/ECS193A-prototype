@@ -20,12 +20,16 @@ from genomics_browser_django_app_base.serializers import DatasetSerializer
 from genomics_browser_django_app_base.models import Gene_DB
 from genomics_browser_django_app_base.serializers import GeneSerializer
 
+from genomics_browser_django_app_base.models import Counter_DB
+from genomics_browser_django_app_base.serializers import CounterSerializer
+
 from . import ParsedDataset
 
 client = pymongo_get_database.get_connection()
 patient_collection = client['patients']
 gene_collection = client['genes']
 dataset_collection = client['datasets']
+counter_collection = client['counters']
 
 @api_view(['POST'])
 def test(request):
@@ -119,8 +123,10 @@ def POST_Dataset_Data(request):
 
         dataset_serialized = None
 
+        updated_request = request.POST.copy()
+
         try:
-            request_Parsed = request.data
+            #request_Parsed = request.data
 
             '''dataset_serialized =  {
                 'name' : request_Parsed['name'],
@@ -129,6 +135,33 @@ def POST_Dataset_Data(request):
                 'patient_ids': request_Parsed['patient_ids'],
                 'url_link': request_Parsed['url_link']
             }'''
+
+            request_Parsed = updated_request
+
+            # find next id
+            new_counter_seq = 0
+            counter_item = counter_collection.find_one({ "name_use": "dataset_counter" })
+
+            if( counter_item ):
+                    counter_interpreted = CounterSerializer(data = counter_item, many=False)
+
+                    if counter_interpreted.is_valid():
+                        json_data = counter_interpreted.data
+                        new_counter_seq = int(json_data["seq_val"])
+                        temp_update_seq = new_counter_seq + 1
+                        counter_collection.update_one( {"name_use": "dataset_counter" }, {"$set": {"seq_val" : temp_update_seq , "name_use":"dataset_counter" } }, upsert=False )
+                    else:
+                        return JsonResponse(counter_interpreted.errors, safe=False)
+
+            else:
+                # need to create a counter for gene
+                new_counter_seq = 1
+                counter_collection.insert_one( { "seq_val" : 2 , "name_use" : "dataset_counter" } )
+
+            request_Parsed.update({'id': new_counter_seq})
+
+            request_Parsed.update({'date_created':  datetime.date.today() })
+
 
             dataset_serialized = DatasetSerializer( data = request_Parsed )
                
@@ -186,6 +219,23 @@ def GET_datasets_all(request):
     
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
+@api_view(['GET'])
+def GET_datasets_query(request, dataset_id):
+    if request.method == 'GET':
+        dataset_item = dataset_collection.find_one({ "id": int(dataset_id) })
+
+        datasets_interpreted = DatasetSerializer(data = dataset_item, many=False)
+
+        if datasets_interpreted.is_valid():
+            json_data = datasets_interpreted.data
+            return JsonResponse(json_data, safe=False)
+        else:
+            return JsonResponse(datasets_interpreted.errors, safe=False)
+        
+        # return JsonResponse(item, safe=False)
+    
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
 # Gene
 
 @api_view(['POST'])
@@ -195,10 +245,35 @@ def POST_Gene_Data(request):
         # Try to get dataset and make a dictionary
         # If the data is not properly format return error code 406
 
+        updated_request = request.POST.copy()
+
         gene_serialized = None
 
         try:
-            request_Parsed = request.data
+            #request_Parsed = request.data
+            request_Parsed = updated_request
+
+            # find next id
+            new_counter_seq = 0
+            counter_item = counter_collection.find_one({ "name_use": "gene_counter" })
+
+            if( counter_item ):
+                    counter_interpreted = CounterSerializer(data = counter_item, many=False)
+
+                    if counter_interpreted.is_valid():
+                        json_data = counter_interpreted.data
+                        new_counter_seq = int(json_data["seq_val"])
+                        temp_update_seq = new_counter_seq + 1
+                        counter_collection.update_one( {"name_use": "gene_counter" }, {"$set": {"seq_val" : temp_update_seq , "name_use":"gene_counter" } }, upsert=False )
+                    else:
+                        return JsonResponse(counter_interpreted.errors, safe=False)
+
+            else:
+                # need to create a counter for gene
+                new_counter_seq = 1
+                counter_collection.insert_one( { "seq_val" : 2 , "name_use" : "gene_counter" } )
+
+            request_Parsed.update({'id': new_counter_seq})
 
             gene_serialized = GeneSerializer(data = request_Parsed)
 
@@ -234,14 +309,18 @@ def GET_gene_all(request):
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
+# counter
 
-@api_view(['POST'])
-def upload_dataset(request):
-    if request.method == 'POST' and request.FILES:
-        try:
-            dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
-            sample = dataset.get_random_patient()
-            patient_collection.insert_one(sample)
-            return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
-        except:
-            return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
+@api_view(['GET'])
+def GET_counter_all(request):
+    if request.method == 'GET':
+        counter_items = counter_collection.find({})
+        counter_serialized = CounterSerializer( data = list(counter_items), many=True)
+        if counter_serialized.is_valid():
+            return JsonResponse(counter_serialized.data, safe=False) 
+        else:
+            return JsonResponse(counter_serialized.errors, safe=False)
+   
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+

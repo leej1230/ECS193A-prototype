@@ -1,10 +1,10 @@
-
 import React, { useEffect , useState  } from "react";
 import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
 import {Button} from "@mui/material";
 import "./Slider.css"
 import DatasetList from "./DatasetList"
 import axios from 'axios';
+import ScrollBars from "react-custom-scrollbars";
 
 /*
 ,
@@ -25,7 +25,22 @@ class SliderItemsContainer extends React.Component {
   
     render() {
       return (
-        <div className="slider-container">
+        <div >
+            
+                <ScrollBars style={{ width: 1000, height: 400 }}>
+                  {this.props.dataset_groups_list.map((child, index) =>
+                <div key={index}> <DatasetList datasets_arr={this.props.dataset_groups_list[index]} /> </div>)}
+                </ScrollBars>
+   
+        </div>
+      );
+    }
+
+}
+
+/*
+
+<div className="slider-container">
           <div
             className="slider-innerContainer"
             style={{ left: -100 * this.state.index + "%" }}>
@@ -40,10 +55,8 @@ class SliderItemsContainer extends React.Component {
             )}
           </div>
         </div>
-      );
-    }
 
-}
+*/
 
   
 export default class Slider extends React.Component {
@@ -54,7 +67,7 @@ export default class Slider extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://127.0.0.1:8000/api/dataset/all`)
+    axios.get(`http://127.0.0.1:8000/api/dataset/all/`)
       .then(result => {
         this.setState({
           datasets_list:result.data
@@ -115,3 +128,4 @@ useEffect( () => {
   }, []);
 
 */
+
