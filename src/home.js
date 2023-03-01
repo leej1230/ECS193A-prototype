@@ -9,8 +9,6 @@ import Slider from './components/Slider';
 
 function Home() {
     const [search, setSearch] = useState('');
-    console.log(search)
-
     return (
         <div className='home'>
             <h2>
