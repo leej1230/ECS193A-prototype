@@ -13,6 +13,14 @@ function app() {
     <Router>
         <Routes>
             <Route exact path="/" element={<><Navbar/><Home/></>}/>
+            <Route exact path="/data/:id" element={
+              <>
+                <Navbar/>
+                <div>
+                  <Sample/>
+                </div>
+              </>
+            }/>
             <Route exact path="/data" element={<><Navbar/><Data/></>}/>
             <Route exact path="/upload" element={<><Navbar/><UploadDataset/></>}/>
             <Route exact path="/frontend_test" element={
