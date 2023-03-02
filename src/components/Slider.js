@@ -67,7 +67,7 @@ export default class Slider extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://127.0.0.1:8000/api/dataset/all/`)
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/all/`)
       .then(result => {
         this.setState({
           datasets_list:result.data
