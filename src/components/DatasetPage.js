@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import "./Dataset.css";
-import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
-import {Button} from "@mui/material";
+import "./DatasetPage.css";
+import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody } from '@mui/material';
+
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Dataset from "./Dataset"
@@ -30,29 +30,43 @@ export default class DatasetPage extends React.Component {
         console.log(this.state.dataset)
       return (
         <div >
-            <h3>Name: {this.state.dataset["name"]}</h3>
-            <table>
-              <tr>
-                <td>ID</td>
-                <td>{this.state.dataset["id"]}</td>
-              </tr>
-              <tr>
-                <td>Description</td>
-                <td>{this.state.dataset["description"]}</td>
-              </tr>
-              <tr>
-                <td>Date Created</td>
-                <td>{this.state.dataset["date_created"]}</td>
-              </tr>
-              <tr>
-                <td>Gene IDs</td>
-                <td>{this.state.dataset["gene_ids"]}</td>
-              </tr>
-              <tr>
-                <td>Patient IDs</td>
-                <td>{this.state.dataset["patient_ids"]}</td>
-              </tr>
-            </table>
+          
+          <div className="cardLayout">
+                <h3 className='cardContent'>{this.state.dataset["name"]}</h3>
+          </div>
+          <div className="cardLayout">
+            <div className='cardContent'>
+              <h4>Description</h4>
+              <p>{this.state.dataset["description"]}</p>  
+            </div>
+          </div>
+          
+          <Box className="cardLayout">
+            <Card variant="outlined">
+              <CardContent>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>{this.state.dataset["id"]}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Date Created</TableCell>
+                      <TableCell>{this.state.dataset["date_created"]}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Gene IDs</TableCell>
+                      <TableCell>{this.state.dataset["gene_ids"]}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Patient IDs</TableCell>
+                      <TableCell>{this.state.dataset["patient_ids"]}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </Box>
         </div>
       )
     }
