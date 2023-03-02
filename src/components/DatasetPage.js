@@ -30,6 +30,15 @@ export default class DatasetPage extends React.Component {
         console.log(this.state.dataset)
       return (
         <div >
+
+          <div className="headerGroup">
+            <p className="textElement">Last Updated: 01-03-2023</p>
+            <div className="buttonGroup">
+              <button className="buttonElement"> Update </button>
+              <button className="buttonElement"> Download </button>
+              <button className="buttonElement"> Delete </button>
+            </div>
+          </div>
           
           <div className="cardLayout">
                 <h3 className='cardContent'>{this.state.dataset["name"]}</h3>
