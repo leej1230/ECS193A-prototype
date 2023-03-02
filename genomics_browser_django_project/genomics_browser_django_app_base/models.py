@@ -34,7 +34,7 @@ class Dataset_DB(models.Model):
     gene_ids = models.JSONField(blank=False)
     patient_ids = models.JSONField(blank=False)
     date_created = models.DateField(blank = False)
-    url_link = models.URLField(blank = False, default="https://google.com")
+    url_link = models.URLField(blank = False)
 
 class Counter_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
