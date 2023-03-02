@@ -5,11 +5,14 @@ import pandas as pd
 # import json
 
 class ParsedDataset : 
-    def __init__(self, in_txt_path) : 
+    def __init__(self, in_txt_path, name, description, date_created) : 
         self.input_txt = in_txt_path
+        self.name = name
+        self.description = description
+        self.date_created = date_created
         # self.output_csv = out_csv_path
-        self.df = pd.read_csv(self.input_txt)
-        # self.remove_duplicate_samples()
+        self.df = pd.read_csv(self.input_txt, sep="\t")
+        self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
     def print_head(self) : 
@@ -33,13 +36,23 @@ class ParsedDataset :
     def insert_patients_into_db(self) : 
         pass
 
+    def get_dataset_info(self) :
+        gene_ids = len([gene_id for gene_id in self.df.columns.to_list() if "ENSG" in gene_id])
+        patient_ids = self.df["Sample name"].size
+        return {
+            'name': self.name,
+            'description': self.description,
+            'gene_ids': gene_ids,
+            'patient_ids': patient_ids,
+            'date_created': self.date_created,
+        }
+
     def get_random_patient(self) :
         sample = self.df.sample()
         patient_id = list(sample["Sample name"])[0]
         gene_ids = list(sample.filter(regex="ENSG").columns)
         gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
         dataset_id = 1
-        print(patient_id)
         return {
             'patient_id': patient_id,
             'gene_ids': gene_ids,

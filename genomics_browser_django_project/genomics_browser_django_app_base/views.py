@@ -27,6 +27,8 @@ import datetime
 
 from . import ParsedDataset
 
+import datetime
+
 client = pymongo_get_database.get_connection()
 patient_collection = client['patients']
 gene_collection = client['genes']
@@ -123,22 +125,8 @@ def POST_Dataset_Data(request):
         # Try to get dataset and make a dictionary
         # If the data is not properly format return error code 406
 
-        dataset_serialized = None
-
-        updated_request = request.POST.copy()
-
+        sample = None
         try:
-            #request_Parsed = request.data
-
-            '''dataset_serialized =  {
-                'name' : request_Parsed['name'],
-                'description' : request_Parsed['description'],
-                'gene_ids': request_Parsed['gene_ids'],
-                'patient_ids': request_Parsed['patient_ids'],
-                'url_link': request_Parsed['url_link']
-            }'''
-
-            request_Parsed = updated_request
 
             # find next id
             new_counter_seq = 0
@@ -160,12 +148,16 @@ def POST_Dataset_Data(request):
                 new_counter_seq = 1
                 counter_collection.insert_one( { "seq_val" : 2 , "name_use" : "dataset_counter" } )
 
-            request_Parsed.update({'id': new_counter_seq})
+            sample = request.POST.copy() 
+            sample.clear()
+            sample.update({'id': new_counter_seq})
+            in_txt = list(request.FILES.values())[0]
+            name = list(request.FILES.values())[0].name
+            description = request.data.get('description')
+            date_created = datetime.datetime.strptime(request.data.get('dateCreated'), '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
+            sample.update(ParsedDataset.ParsedDataset(in_txt, name, description, date_created).get_dataset_info())
 
-            request_Parsed.update({'date_created':  datetime.date.today() })
-
-
-            dataset_serialized = DatasetSerializer( data = request_Parsed )
+            sample = DatasetSerializer(data=sample)
                
 
         except:
@@ -176,14 +168,14 @@ def POST_Dataset_Data(request):
 
         # need to add checks to prevent duplicate dataset creation
         try:
-            if dataset_serialized.is_valid():
-                dataset_collection.insert_one(dataset_serialized.data)
+            if sample.is_valid():
+                dataset_collection.insert_one(sample.data)
 
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
                 return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
             else:
-                return JsonResponse(dataset_serialized.errors, status=status.HTTP_201_CREATED, safe=False)
+                return JsonResponse(sample.errors, status=status.HTTP_201_CREATED, safe=False)
         
         except:
             return JsonResponse(status=status.HTTP_408_REQUEST_TIMEOUT)
@@ -324,14 +316,3 @@ def GET_counter_all(request):
             return JsonResponse(counter_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['POST'])
-def upload_dataset(request):
-    if request.method == 'POST' and request.FILES:
-        try:
-            dataset = ParsedDataset.ParsedDataset(list(request.FILES.values())[0])
-            sample = dataset.get_random_patient()
-            patient_collection.insert_one(sample)
-            return JsonResponse({'status': 'data sent'}, status=status.HTTP_201_CREATED)
-        except:
-            return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
