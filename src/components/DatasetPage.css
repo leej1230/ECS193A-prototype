@@ -19,31 +19,54 @@
 
 .buttonElement {
     transition-duration: 0.4s;
-    background-color:#f44336;
+    color: white;
+    background-color:black;
     margin-top: 1%;
-    margin-bottom: 1%;
     margin-left: 10%;
     margin-right: 2%;
-    padding: 8px;
+    padding: 10%;
     border-radius: 8px;
     box-shadow: 0px 0px 8px #ccc;
     border-width: 0px;
 }
 
 .buttonElement:hover {
-    background-color: white; /* Green */
-  }
+    background-color: rgb(60, 114, 24); /* Green */
+ }
+
+.titleLayout{
+    align-items: center;
+    margin-right: 10%;
+    margin-left: 10%;
+    font-size:xx-large;
+}
 
 .cardLayout {
     border-radius: 8px;
     box-shadow: 0px 0px 8px #ccc;
-    color: #253b56;
     margin: 1% 10%;
+}
+
+.cardTitle{
+    font-size: large;
 }
 
 .cardContent{
     padding-left: 1%;
     padding-top: 1%;
     padding-bottom: 1%;
+}
+
+.bottomInfo{
+    display: flex;
+    align-items: center;
+    margin-left: 10%;
+}
+
+.bottomCard {
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px #ccc;
+    margin: 1%;
+    width: 42%;
 }
 
