@@ -35,7 +35,7 @@ class UploadDataset extends React.Component {
   }
 
   fileUpload(file, description){
-    const url = 'http://127.0.0.1:8000/api/upload_dataset';
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
     const formData = new FormData();
     formData.append('file', file)
     formData.append('description', description)
