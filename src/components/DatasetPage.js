@@ -127,6 +127,9 @@ export default class DatasetPage extends React.Component {
                 <MaterialTable columns={this.columns} 
                 data={this.state.dataset_table_input_format}
                 icons={tableIcons}
+                options={{
+                  paging: false
+                }}
                 />
               </CardContent>
             </Card>
@@ -138,6 +141,9 @@ export default class DatasetPage extends React.Component {
               <Card variant="outlined">
                 <CardContent>
                   <h4 className='cardTitle'>Dataset Stats</h4>
+                  <p>Number of Genes: </p>
+                  <p>Number of Patients: </p>
+                  <p>Number of Missing Cells: </p>
                 </CardContent>
               </Card>
             </Box>
@@ -146,6 +152,9 @@ export default class DatasetPage extends React.Component {
               <Card variant="outlined">
                 <CardContent>
                   <h4 className='cardTitle'>Recently Viewed Members</h4>
+                  <p>Person 1</p>
+                  <p>Person 2</p>
+                  <p>Person 3</p>
                 </CardContent>
               </Card>
             </Box>
