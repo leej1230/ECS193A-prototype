@@ -128,7 +128,8 @@ export default class DatasetPage extends React.Component {
                 data={this.state.dataset_table_input_format}
                 icons={tableIcons}
                 options={{
-                  paging: false
+                  paging: false,
+                  showTitle: false
                 }}
                 />
               </CardContent>
