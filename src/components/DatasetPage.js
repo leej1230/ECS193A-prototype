@@ -52,6 +52,10 @@ export default class DatasetPage extends React.Component {
                 <td>Patient IDs</td>
                 <td>{this.state.dataset["patient_ids"]}</td>
               </tr>
+              <tr>
+                <td>Link to File</td>
+                <td>{this.state.dataset["url"]}</td>
+              </tr>
             </table>
         </div>
       )

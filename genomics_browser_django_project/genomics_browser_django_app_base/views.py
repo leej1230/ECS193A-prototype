@@ -154,8 +154,9 @@ def POST_Dataset_Data(request):
             in_txt = list(request.FILES.values())[0]
             name = list(request.FILES.values())[0].name
             description = request.data.get('description')
+            url = request.data.get('urltoFile')
             date_created = datetime.datetime.strptime(request.data.get('dateCreated'), '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
-            sample.update(ParsedDataset.ParsedDataset(in_txt, name, description, date_created).get_dataset_info())
+            sample.update(ParsedDataset.ParsedDataset(in_txt, name, description, date_created, url).get_dataset_info())
 
             sample = DatasetSerializer(data=sample)
                
