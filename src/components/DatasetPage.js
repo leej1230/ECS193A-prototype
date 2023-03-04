@@ -51,34 +51,53 @@ export default class DatasetPage extends React.Component {
 
      state = {
         dataset: {"name": "None", "gene_ids": "0", "patient_ids": "0" },
-        DATASET_ID : window.location.pathname.split("/").at(-1)
+        DATASET_ID : window.location.pathname.split("/").at(-1),
+        dataset_table_input_format: [{field_name : "" , value : ""}]
       }
     
     columns = [ 
-      {title: "Name" , field: "name"},
-      {title: "Email" , field: "email"},
-      {title: "Phone Number" , field: "phone"},
-      {title: "Age" , field: "age"},
-      {title: "Gender" , field: "gender"},
-      {title: "City" , field: "city"}
+      {title: "Field Name" , field: "field_name"},
+      {title: "Value" , field: "value"}
     ]
 
     tableData = [ {name: "Raj" , email: "Raj@gmail.com" , age: 25, phone: 789012334, gender: "Male" , city: "Davis" } ]
       
-      componentDidMount() {
-        const url = `http://127.0.0.1:8000/api/dataset/${this.state.DATASET_ID}`;
-        axios.get(url)
-        .then(result => {
-          this.setState({
-            dataset : result.data
-          })
-          
+    componentDidMount() {
+      const url = `http://127.0.0.1:8000/api/dataset/${this.state.DATASET_ID}`;
+      axios.get(url)
+      .then(result => {
+        this.setState({
+          dataset : result.data
         })
-      }
+        
+      }).then(  
+        () =>{
+          this.setState({
+            dataset_table_input_format : this.createDatasetFormatted()
+          })
+        }
+      )
+    }
+
+    createDatasetFormatted() {
+      // return dataset formatted for table
+      var init_arr = [];
+      var data_input = this.state.dataset;
+      Object.keys(data_input).forEach(function(key) {
+        //console.log('Key : ' + key + ', Value : ' + this.state.dataset_table_input_format[key])
+        //init_arr.push( {field_name: key , value: this.state.dataset[key] } )
+        var val_input = data_input[key]
+        init_arr.push( {field_name: key , value: val_input } )
+      });
+
+      console.log( init_arr )
+
+      return init_arr;
+    }
       
      
     render(){
-        console.log(this.state.dataset)
+        //console.log(this.state.dataset)
       return (
         <div >
 
@@ -100,19 +119,15 @@ export default class DatasetPage extends React.Component {
               <p>{this.state.dataset["description"]}</p>  
             </div>
           </div>
-
-          <MaterialTable columns={[
-            { title: 'A', field: 'name' },
-            { title: 'So', field: 'surname' },
-            { title: 'Do', field: 'birthYear', type: 'numeric' },
-            { title: 'DoYeri', field: 'birthCity', lookup: { 34: 'tanbul', 63: 'urfa' } }
-          ]} icons={tableIcons}/>
           
           <Box className="cardLayout">
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Basic Dataset Information</h4>
-                
+                <MaterialTable columns={this.columns} 
+                data={this.state.dataset_table_input_format}
+                icons={tableIcons}
+                />
               </CardContent>
             </Card>
           </Box>
