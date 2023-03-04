@@ -60,8 +60,7 @@ export default class DatasetPage extends React.Component {
       {title: "Value" , field: "value"}
     ]
 
-    tableData = [ {name: "Raj" , email: "Raj@gmail.com" , age: 25, phone: 789012334, gender: "Male" , city: "Davis" } ]
-      
+    
     componentDidMount() {
       const url = `http://127.0.0.1:8000/api/dataset/${this.state.DATASET_ID}`;
       axios.get(url)

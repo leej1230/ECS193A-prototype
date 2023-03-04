@@ -14,6 +14,7 @@ function Home() {
             <h2>
                 Human Genomics Search
             </h2>
+            <a href={"/homepage"}><h4> Home Page </h4></a>
             <div className='search'>
                 <TextField
                     id='input_keyword'

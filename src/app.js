@@ -7,6 +7,7 @@ import SampleList from './components/SampleList';
 import Sample from './components/Sample';
 import UploadDataset from './components/UploadDataset';
 import DatasetPage from './components/DatasetPage';
+import HomePage from './components/HomePage';
 
 function app() {
   return (
@@ -43,6 +44,11 @@ function app() {
               <>
                 <Navbar/>
                 <DatasetPage/>
+              </>
+            }  />
+            <Route exact path="/homepage"  element={
+              <>
+                <HomePage/>
               </>
             }  />
         </Routes>
