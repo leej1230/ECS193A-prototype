@@ -8,7 +8,8 @@ import Dataset from "./Dataset"
 
 import ScrollBars from "react-custom-scrollbars";
 
-import { useTable } from "react-table";
+//import { useTable } from "react-table";
+import MaterialTable from 'material-table';
 
 export default class DatasetPage extends React.Component {
 
@@ -16,6 +17,17 @@ export default class DatasetPage extends React.Component {
         dataset: {"name": "None", "gene_ids": "0", "patient_ids": "0" },
         DATASET_ID : window.location.pathname.split("/").at(-1)
       }
+    
+    columns = [ 
+      {title: "Name" , field: "name"},
+      {title: "Email" , field: "email"},
+      {title: "Phone Number" , field: "phone"},
+      {title: "Age" , field: "age"},
+      {title: "Gender" , field: "gender"},
+      {title: "City" , field: "city"}
+    ]
+
+    tableData = [ {name: "Raj" , email: "Raj@gmail.com" , age: 25, phone: 789012334, gender: "Male" , city: "Davis" } ]
       
       componentDidMount() {
         const url = `http://127.0.0.1:8000/api/dataset/${this.state.DATASET_ID}`;
@@ -52,6 +64,13 @@ export default class DatasetPage extends React.Component {
               <p>{this.state.dataset["description"]}</p>  
             </div>
           </div>
+
+          <MaterialTable columns={[
+            { title: 'A', field: 'name' },
+            { title: 'So', field: 'surname' },
+            { title: 'Do', field: 'birthYear', type: 'numeric' },
+            { title: 'DoYeri', field: 'birthCity', lookup: { 34: 'tanbul', 63: 'urfa' } }
+          ]} />
           
           <Box className="cardLayout">
             <Card variant="outlined">
@@ -81,6 +100,16 @@ export default class DatasetPage extends React.Component {
             </Box>
 
           </div>
+
+          <Box className="cardLayout">
+            <Card variant="outlined">
+              <CardContent>
+                <h4 className='cardTitle'>Dataset View</h4>
+                
+              </CardContent>
+            </Card>
+          </Box>
+
         </div>
       )
     }
