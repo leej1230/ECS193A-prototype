@@ -13,14 +13,20 @@ export default class HomePage extends React.Component {
     render(){
         return(
             <div>
-                <ul className='bar'>
-                    <li className='bar'><a href='#/' className='bar'>Home</a></li>
-                    <li className='bar'><a href='#/' className='bar'>About</a></li>
-                    <li className='bar'><a href='#/' className='bar'>Contact</a></li>
-                </ul>
+                <div id='logo_header'>
+                    <div id='logo_item'><img id='logo' src={process.env.PUBLIC_URL+ "/davis_logo.jpg"} /></div>
+                </div>
+                <div  className='outer_bar'>
+                    <div className='bar_group'>
+                        <div  className='bar_item'><Link className='bar_link'  to='/' >Home</Link></div>
+                        <div  className='bar_item'><Link className='bar_link'  to='/' >About</Link></div>
+                        <div  className='bar_item'><Link  className='bar_link' to='/' >Contact</Link></div>
+                    </div>
+                </div>
                 <div className="fullPage" style={{ 
                     //backgroundImage: `url("https://wp-cpr.s3.amazonaws.com/uploads/2019/07/618922201_1485610661.jpg")`,
-                    backgroundImage: `url("https://as2.ftcdn.net/v2/jpg/02/44/28/75/1000_F_244287519_RoEredXSEUy46jCwJLAMruvfmweIr5g9.jpg")`,
+                    //backgroundImage: `url("https://as2.ftcdn.net/v2/jpg/02/44/28/75/1000_F_244287519_RoEredXSEUy46jCwJLAMruvfmweIr5g9.jpg")`,
+                    backgroundImage: `url(${process.env.PUBLIC_URL+ "/homePageImg.jpg"})`,
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
