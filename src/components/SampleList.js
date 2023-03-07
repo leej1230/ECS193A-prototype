@@ -14,7 +14,12 @@ function SampleList(props) {
         setPatient_data(result.data);
       })
     }
-    fetchPatients()
+
+    const intervalRun = setInterval(() => {
+      fetchPatients()
+    }, 10000)
+
+    return () => clearInterval(intervalRun)
   });
   
   return (
@@ -23,7 +28,7 @@ function SampleList(props) {
         patient_data && patient_data.filter((word) => {
           return word.patient_id.toLowerCase().includes(props.kword.toLowerCase())
         }).map((patient) =>
-            <li class="patient-display"><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a></li>
+            <li class="patient-display"><a href={'/data/' + patient.patient_id}>Gene {patient.id} ID: {patient.patient_id}</a></li>
           )
       }
     </div>
