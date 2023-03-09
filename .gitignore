@@ -1,5 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+.env
 # dependencies
 /node_modules
 /.pnp
@@ -26,4 +26,4 @@ genomics_browser_django_project/genomics_browser_django_venv/*
 
 __pycache__/
 .vscode
-.env
+.env*
