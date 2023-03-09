@@ -13,7 +13,7 @@ export default class Dataset extends React.Component {
       <div className="dataset_element">
         <Box width='300px' maxheight="200px">
           <Card variant="outlined">
-            <CardContent>
+            <CardContent variant="outlined">
               <Typography gutterBottom variant='h5' component='div'> Dataset <br /> Name: {this.props.dataset.name} </Typography>
                 <Typography variant="body2" color="text.secondary">Description: {this.props.dataset.description} </Typography>
               </CardContent>

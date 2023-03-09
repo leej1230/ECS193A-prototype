@@ -22,6 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+genomics_browser_django_project/genomics_browser_django_venv/*
+
 __pycache__/
 .vscode
 .env*
