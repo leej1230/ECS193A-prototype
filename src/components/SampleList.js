@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "./SampleList.css"
 
-const URL = `http://127.0.0.1:8000/api/patient/all`
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`
 
 function SampleList(props) {
   const [patient_data, setPatient_data] = useState([]);

@@ -62,7 +62,7 @@ export default class DatasetPage extends React.Component {
 
     
     componentDidMount() {
-      const url = `http://127.0.0.1:8000/api/dataset/${this.state.DATASET_ID}`;
+      const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${this.state.DATASET_ID}`;
       axios.get(url)
       .then(result => {
         this.setState({

@@ -4,7 +4,7 @@ import "../data.css";
 import SampleGraph from './echartdemo';
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
-const URL = `http://127.0.0.1:8000/api/patient/${SAMPLE_ID}`
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/${SAMPLE_ID}`
 
 function Sample() {
   // state = {samples: []}
