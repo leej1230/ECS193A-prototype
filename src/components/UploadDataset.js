@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react'
 import axios from 'axios';
-import { CircularProgressbar } from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { Button, TextareaAutosize } from '@mui/material';
 import './UploadDataset.css';
 
@@ -79,7 +79,23 @@ function UploadDataset(){
           </div>
 
           <div className='progress-bar' style={{ width: 200, height: 200 }}>
-            <CircularProgressbar value={progress} text={`${progress}%`}/>
+            <CircularProgressbar 
+              value={progress} 
+              text={`${progress}%`}
+              styles={buildStyles({
+                // How long animation takes to go from one percentage to another, in seconds
+                pathTransitionDuration: 0.5,
+
+                textSize: '10px',
+                text:{dominantBaseline: 'middle', textAnchor: 'middle'},
+                root:{verticalAlign: "middle"},
+            
+                // Colors
+                pathColor: `rgba(62, 152, 199`,
+                trailColor: '#d6d6d6',
+                backgroundColor: '#3e98c7',
+              })}
+            />
           </div>
 
           <div className='submit-button'>
