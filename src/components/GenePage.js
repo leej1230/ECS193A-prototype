@@ -51,16 +51,16 @@ const columns = [
   {title: "Value" , field: "value"}
 ]
 
-function createGeneFormatted( input_gene_data) {
+function createGeneFormatted( input_patient_data) {
     // return formatted for table
     var init_arr = [];
-    var data_input = input_gene_data;
-    Object.keys(data_input).forEach(function(key) {
-      var val_input = data_input[key]
+    var data_input = input_patient_data;
+    data_input.forEach(function(key) {
+      var val_input = "empty"
       init_arr.push( {field_name: key , value: val_input } )
     });
 
-    console.log( init_arr )
+    //console.log( init_arr )
 
     return init_arr;
 }
@@ -72,6 +72,7 @@ function GenePage() {
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown"});
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
+  const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : "3"});
 
   // componentDidMount() {
   useEffect( () => {
@@ -80,6 +81,10 @@ function GenePage() {
       const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
       setGene_data(res.data);
       setGeneExternalData(gene_ext.data);
+      const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`)
+      set_dataset_info(dataset_data.data);
+      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids]));
+      
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
@@ -125,6 +130,13 @@ function GenePage() {
                       <h4 className='cardTitle'>Gene Information</h4>
                       <p>ID: {gene_data.id}</p>
                       <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
+                      <MaterialTable columns={columns} 
+                        data={gene_table_input_format}
+                        icons={tableIcons}
+                        options={{
+                          showTitle: false
+                        }}
+                      />
                     </CardContent>
                   </Card>
                 </Box>
