@@ -70,13 +70,16 @@ function createGeneFormatted( input_gene_data) {
 function GenePage() {
   // state = {samples: []}
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown"});
+  const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
 
   // componentDidMount() {
   useEffect( () => {
     async function fetchGeneData() {
-      const res = await axios.get(URL)
+      const res = await axios.get(URL);
+      const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
       setGene_data(res.data);
+      setGeneExternalData(gene_ext.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
@@ -106,7 +109,7 @@ function GenePage() {
           <div className="cardLayout">
             <div className='cardContent'>
               <h4 className='cardTitle'>Description</h4>
-              <p>{"info"}</p>  
+              <p>{gene_external_data["description"]}</p>  
             </div>
           </div>
 
@@ -115,7 +118,7 @@ function GenePage() {
               <CardContent>
                 <h4 className='cardTitle'>Gene Information</h4>
                 <p>ID: {gene_data.id}</p>
-                <p>Dataset: {gene_data.dataset_id}</p>
+                <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
               </CardContent>
             </Card>
           </Box>
