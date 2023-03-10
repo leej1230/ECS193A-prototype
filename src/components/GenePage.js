@@ -45,7 +45,7 @@ const tableIcons = {
 };
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
-//const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/${SAMPLE_ID}`
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_ID}`
 const columns = [ 
   {title: "Field Name" , field: "field_name"},
   {title: "Value" , field: "value"}
@@ -73,18 +73,18 @@ function GenePage() {
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
 
   // componentDidMount() {
-  /*useEffect( () => {
-    async function fetchPatientData() {
+  useEffect( () => {
+    async function fetchGeneData() {
       const res = await axios.get(URL)
-      setPatient_data(res.data);
+      setGene_data(res.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
       //console.log( patient_data['patient_id'] );
     }
-    fetchPatientData()
+    fetchGeneData()
   });
-  */
+
 
   return (
     <div>
@@ -100,7 +100,7 @@ function GenePage() {
       {gene_data ? (
         <div>
           <div className="titleLayout">
-            <h3>Gene</h3>
+            <h3>{gene_data.name}</h3>
           </div>
 
           <div className="cardLayout">
@@ -114,7 +114,8 @@ function GenePage() {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Gene Information</h4>
-                
+                <p>ID: {gene_data.id}</p>
+                <p>Dataset: {gene_data.dataset_id}</p>
               </CardContent>
             </Card>
           </Box>

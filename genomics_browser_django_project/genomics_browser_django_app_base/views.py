@@ -303,6 +303,23 @@ def GET_gene_all(request):
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
+@api_view(['GET'])
+def GET_gene_query(request , gene_id):
+    if request.method == 'GET':
+        gene_item = gene_collection.find_one({ "id": int(gene_id) })
+
+        genes_interpreted = GeneSerializer(data = gene_item, many=False)
+
+        if genes_interpreted.is_valid():
+            json_data = genes_interpreted.data
+            return JsonResponse(json_data, safe=False)
+        else:
+            return JsonResponse(genes_interpreted.errors, safe=False)
+        
+        # return JsonResponse(item, safe=False)
+    
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
 # counter
 
 @api_view(['GET'])
