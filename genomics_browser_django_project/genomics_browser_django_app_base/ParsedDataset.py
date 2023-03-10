@@ -5,11 +5,12 @@ import pandas as pd
 # import json
 
 class ParsedDataset : 
-    def __init__(self, in_txt_path, name, description, date_created) : 
+    def __init__(self, in_txt_path, name, description, date_created, dataset_id) : 
         self.input_txt = in_txt_path
         self.name = name
         self.description = description
         self.date_created = date_created
+        self.dataset_id = dataset_id
         # self.output_csv = out_csv_path
         self.df = pd.read_csv(self.input_txt, sep="\t")
         self.remove_duplicate_samples()
@@ -46,6 +47,11 @@ class ParsedDataset :
             'patient_ids': patient_ids,
             'date_created': self.date_created,
         }
+
+    def get_three_random_genes(self) :
+        import random
+        gene_names = random.sample(self.df.columns.to_list(), 3)
+        return [{"id": count, "name": name, "dataset_id": self.dataset_id} for count, name in enumerate(gene_names)]
 
     def get_random_patient(self) :
         sample = self.df.sample()

@@ -126,36 +126,48 @@ def POST_Dataset_Data(request):
         # If the data is not properly format return error code 406
 
         sample = None
+        dataset = None
         try:
+            new_dataset_counter = 0
+            new_gene_counter = 0
 
-            # find next id
-            new_counter_seq = 0
             counter_item = counter_collection.find_one({ "name_use": "dataset_counter" })
-
-            if( counter_item ):
+            if(counter_item):
                     counter_interpreted = CounterSerializer(data = counter_item, many=False)
-
                     if counter_interpreted.is_valid():
                         json_data = counter_interpreted.data
-                        new_counter_seq = int(json_data["seq_val"])
-                        temp_update_seq = new_counter_seq + 1
-                        counter_collection.update_one( {"name_use": "dataset_counter" }, {"$set": {"seq_val" : temp_update_seq , "name_use":"dataset_counter" } }, upsert=False )
+                        new_dataset_counter = int(json_data["seq_val"])
+                        temp_update_seq = new_dataset_counter + 1
+                        counter_collection.update_one({ "name_use": "dataset_counter" }, { "$set": { "seq_val": temp_update_seq , "name_use": "dataset_counter" }}, upsert=False)
                     else:
                         return JsonResponse(counter_interpreted.errors, safe=False)
-
             else:
-                # need to create a counter for gene
-                new_counter_seq = 1
-                counter_collection.insert_one( { "seq_val" : 2 , "name_use" : "dataset_counter" } )
+                new_dataset_counter = 1
+                counter_collection.insert_one({ "seq_val": 2, "name_use": "dataset_counter" })
+
+            counter_item = counter_collection.find_one({ "name_use": "gene_counter" })
+            if (counter_item):
+                counter_interpreted = CounterSerializer(data=counter_item, many=False)
+                if counter_interpreted.is_valid():
+                    json_data = counter_interpreted.data
+                    new_gene_counter = int(json_data["seq_val"])
+                    temp_update_seq = new_gene_counter + 1
+                    counter_collection.update_one({ "name_use": "gene_counter" }, { "$set": { "seq_val": temp_update_seq, "name_use": "gene_counter" }}, upsert=False)
+                else:
+                    return JsonResponse(counter_interpreted.errors, safe=False)
+            else:
+                new_gene_counter = 1
+                counter_collection.insert_one({ "seq_val": 2, "name_use": "gene_counter" })
 
             sample = request.POST.copy() 
             sample.clear()
-            sample.update({'id': new_counter_seq})
+            sample.update({'id': new_dataset_counter})
             in_txt = list(request.FILES.values())[0]
             name = list(request.FILES.values())[0].name
             description = request.data.get('description')
             date_created = datetime.datetime.strptime(request.data.get('dateCreated'), '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
-            sample.update(ParsedDataset.ParsedDataset(in_txt, name, description, date_created).get_dataset_info())
+            dataset = ParsedDataset.ParsedDataset(in_txt, name, description, date_created, new_dataset_counter)
+            sample.update(dataset.get_dataset_info())
 
             sample = DatasetSerializer(data=sample)
                
@@ -169,11 +181,15 @@ def POST_Dataset_Data(request):
         # need to add checks to prevent duplicate dataset creation
         try:
             if sample.is_valid():
+                genes = dataset.get_three_random_genes()
+                # genes = GeneSerializer(data=genes)
+                # if genes.is_valid():
+                gene_collection.insert_many(genes)
                 dataset_collection.insert_one(sample.data)
+                return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
 
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
-                return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
             else:
                 return JsonResponse(sample.errors, status=status.HTTP_201_CREATED, safe=False)
         
