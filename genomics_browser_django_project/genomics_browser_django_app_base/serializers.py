@@ -10,8 +10,15 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'patient_id',
+            'age',
+            'diabete',
+            'final-diagnosis',
+            'gender',
+            'hypercholesterolemia',
+            'hypertension',
+            'race',
             'gene_ids',
-            'gene_values',
+            # 'gene_values',
             'dataset_id'
         )
 

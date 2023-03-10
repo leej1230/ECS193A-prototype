@@ -12,13 +12,35 @@ test = {
 
 # Create your models here.
 class Patient_DB(models.Model):
+    id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     patient_id = models.CharField(max_length=50, blank=False, default='')
+    age = models.IntegerField(blank=False, default='')
+    diabete = models.BooleanField(blank=False)
+    final_diagnosis = models.CharField(max_length=512, blank=False, default='')
+    # Wonder if gender can be written in boolean to save some space
+    gender = models.CharField(max_length=50, blank=False, default='')
+    hypercholesterolemia = models.BooleanField(blank=False)
+    hypertension = models.BooleanField(blank=False)
+    race = models.CharField(max_length=50, blank=False, default='')
     gene_ids = models.CharField(max_length=50, blank=False, default='')
-    gene_values = models.CharField(max_length=50, blank=False, default='')
+    # gene_values = models.CharField(max_length=50, blank=False, default='')
     dataset_id = models.CharField(max_length=50, blank=False, default='')
     # gene_ids = models.CharField(validators=int_list_validator)
     # gene_values = models.CharField(validators=int_list_validator)
     # dataset_id = models.CharField(validators=int_list_validator)
+
+    # Patient should contain:
+    #   'id',
+    #   'patient_id',
+    #   'age',
+    #   'diabete',
+    #   'final-diagnosis',
+    #   'gender',
+    #   'hypercholesterolemia',
+    #   'hypertension'
+    #   'race'
+    #   'gene_ids',
+    #   'dataset_id'
 
 class Gene_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
