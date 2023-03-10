@@ -15,7 +15,7 @@ function SampleGraph(props) {
         series: [
           {
             data: props.data,
-            type: 'bar',
+            type: props.type,
             smooth: true,
           },
         ],
