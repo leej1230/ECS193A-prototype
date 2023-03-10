@@ -1,7 +1,7 @@
 import React, {useEffect,useState} from 'react';
 import axios from 'axios';
 import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
-import "./Sample.css";
+import "./GenePage.css";
 import "../data.css";
 import SampleGraph from './echartdemo';
 
@@ -102,65 +102,73 @@ function GenePage() {
 
       {gene_data ? (
         <div>
-          <div className="titleLayout">
-            <h3>{gene_data.name}</h3>
-          </div>
 
-          <div className="cardLayout">
-            <div className='cardContent'>
-              <h4 className='cardTitle'>Description</h4>
-              <p>{gene_external_data["description"]}</p>  
-            </div>
-          </div>
-
-          <Box className="cardLayout">
+          <nav className="nav_index">
+            <ul className="nav_index_ul">
+              <li className="nav_index_li">{gene_data.name}</li>
+            </ul>
+          </nav>
+          <Box className="cardLayout_outer">
             <Card variant="outlined">
               <CardContent>
-                <h4 className='cardTitle'>Gene Information</h4>
-                <p>ID: {gene_data.id}</p>
-                <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
+
+                <div className="cardLayout">
+                  <div className='cardContent'>
+                    <h4 className='cardTitle'>Description</h4>
+                    <p>{gene_external_data["description"]}</p>  
+                  </div>
+                </div>
+
+                <Box className="cardLayout">
+                  <Card variant="outlined">
+                    <CardContent>
+                      <h4 className='cardTitle'>Gene Information</h4>
+                      <p>ID: {gene_data.id}</p>
+                      <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
+                    </CardContent>
+                  </Card>
+                </Box>
+
+              <div className="bottomInfo">
+
+                  <Box className="bottomCard" >
+                    <Card variant="outlined">
+                      <CardContent>
+                        <h4 className='cardTitle'>Stats</h4>
+                        <p>Number of Patients: </p>
+                        <p>Avg Age of Patients: </p>
+                        <p>Number of Missing Cells: </p>
+                        <p>Patient Conditions: </p>
+                      </CardContent>
+                    </Card>
+                  </Box>
+
+                  <Box className="bottomCard">
+                    <Card variant="outlined">
+                      <CardContent>
+                        <h4 className='cardTitle'>Recently Viewed Members</h4>
+                        <p>Person 1</p>
+                        <p>Person 2</p>
+                        <p>Person 3</p>
+                      </CardContent>
+                    </Card>
+                  </Box>
+
+                </div>
+
+
+                <Box className="cardLayout">
+                  <Card variant="outlined">
+                    <CardContent>
+                      <h4 className='cardTitle'>Gene View</h4>
+                      
+                    </CardContent>
+                  </Card>
+                </Box>
+
               </CardContent>
             </Card>
           </Box>
-
-        <div className="bottomInfo">
-
-            <Box className="bottomCard" >
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Stats</h4>
-                  <p>Number of Patients: </p>
-                  <p>Avg Age of Patients: </p>
-                  <p>Number of Missing Cells: </p>
-                  <p>Patient Conditions: </p>
-                </CardContent>
-              </Card>
-            </Box>
-
-            <Box className="bottomCard">
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Recently Viewed Members</h4>
-                  <p>Person 1</p>
-                  <p>Person 2</p>
-                  <p>Person 3</p>
-                </CardContent>
-              </Card>
-            </Box>
-
-          </div>
-
-
-          <Box className="cardLayout">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Gene View</h4>
-                
-              </CardContent>
-            </Card>
-          </Box>
-
-
       </div>
       ) : (
         <div>Loading...</div>
