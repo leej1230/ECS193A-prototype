@@ -9,13 +9,8 @@ import SampleGraph from './echartdemo';
 import MaterialTable from 'material-table';
 
 import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
 import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
 import FilterList from '@material-ui/icons/FilterList';
 import FirstPage from '@material-ui/icons/FirstPage';
 import LastPage from '@material-ui/icons/LastPage';
@@ -23,6 +18,15 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const tableIcons = {
   Add: AddBox,
@@ -71,6 +75,7 @@ function Sample() {
   // state = {samples: []}
   const [patient_data, setPatient_data] =  useState();
   const [ patient_table_input_format , set_patient_table_input_format ] = useState([{field_name : "" , value : ""}]);
+  const [graphType, setGraphType] = useState('bar');
 
   // componentDidMount() {
   useEffect( () => {
@@ -147,8 +152,24 @@ function Sample() {
                 </tr>
               </table>
             </li>
-            <SampleGraph categories={patient_data.gene_ids} data={patient_data.gene_values}/>
+            <SampleGraph categories={patient_data.gene_ids} data={patient_data.gene_values} type={graphType} />
         </ul>
+        <div className='GraphType'>
+          <FormControl margin='dense' fullWidth>
+            <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+            <Select
+              labelId="GraphTypeLabel"
+              id="GraphTypeSelect"
+              value={graphType}
+              label="GraphType"
+              onChange={(e)=>{setGraphType(e.target.value)}}
+              >
+              <MenuItem value={'bar'}>Bar</MenuItem>
+              <MenuItem value={'line'}>Basic Line</MenuItem>
+              <MenuItem value={'pie'}>Pie</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
 
         <div className="bottomInfo">
 

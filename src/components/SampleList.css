@@ -5,3 +5,8 @@
 .gene-display {
     list-style-type: none;
 }
+
+.GraphType {
+    margin: auto;
+    width: 16rem;
+}
