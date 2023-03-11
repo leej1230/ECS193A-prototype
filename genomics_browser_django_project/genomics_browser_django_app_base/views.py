@@ -310,13 +310,20 @@ def POST_Gene_Data(request):
 
 @api_view(['GET'])
 def GET_gene_all(request):
+    # if request.method == 'GET':
+    #     item = patient_collection.find({},{'patient_id':1})
+    #     json_data = json.loads(dumps(item))
+    #     return JsonResponse(json_data, safe=False)
     if request.method == 'GET':
-        gene_items = gene_collection.find({})
-        genes_serialized = GeneSerializer( data = list(gene_items), many=True)
-        if genes_serialized.is_valid():
-            return JsonResponse(genes_serialized.data, safe=False) 
-        else:
-            return JsonResponse(genes_serialized.errors, safe=False)
+        gene_items = gene_collection.find({},{'name':1, 'id':1})
+        json_data = json.loads(dumps(gene_items))
+        # genes_serialized = GeneSerializer( data = list(gene_items), many=True)
+        return JsonResponse(json_data, safe=False) 
+
+        # if genes_serialized.is_valid():
+        #     return JsonResponse(genes_serialized.data, safe=False) 
+        # else:
+        #     return JsonResponse(genes_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
