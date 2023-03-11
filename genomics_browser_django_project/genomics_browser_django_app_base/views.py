@@ -218,6 +218,14 @@ def GET_datasets_all(request):
         #return JsonResponse( json_util.dumps( datasets_items ) , safe=False)
         #return JsonResponse( datasets_items , safe=False)
 
+        # if request.method == 'GET':
+    #     item = patient_collection.find({},{'patient_id':1})
+    #     json_data = json.loads(dumps(item))
+    #     return JsonResponse(json_data, safe=False)
+
+        json_data = json.loads(dumps(datasets_items))
+        return JsonResponse(json_data, safe=False)
+
         datasets_interpreted = DatasetSerializer(data = list(datasets_items), many=True)
 
         if datasets_interpreted.is_valid():
@@ -310,15 +318,12 @@ def POST_Gene_Data(request):
 
 @api_view(['GET'])
 def GET_gene_all(request):
-    # if request.method == 'GET':
-    #     item = patient_collection.find({},{'patient_id':1})
-    #     json_data = json.loads(dumps(item))
-    #     return JsonResponse(json_data, safe=False)
     if request.method == 'GET':
         gene_items = gene_collection.find({},{'name':1, 'id':1})
         json_data = json.loads(dumps(gene_items))
-        # genes_serialized = GeneSerializer( data = list(gene_items), many=True)
         return JsonResponse(json_data, safe=False) 
+
+        # genes_serialized = GeneSerializer( data = list(gene_items), many=True)
 
         # if genes_serialized.is_valid():
         #     return JsonResponse(genes_serialized.data, safe=False) 
@@ -330,6 +335,7 @@ def GET_gene_all(request):
 @api_view(['GET'])
 def GET_gene_query(request , gene_id):
     if request.method == 'GET':
+        # Maybe name and not id
         gene_item = gene_collection.find_one({ "id": int(gene_id) })
 
         genes_interpreted = GeneSerializer(data = gene_item, many=False)
