@@ -22,7 +22,7 @@ class Patient_DB(models.Model):
     hypercholesterolemia = models.BooleanField(blank=False)
     hypertension = models.BooleanField(blank=False)
     race = models.CharField(max_length=50, blank=False, default='')
-    gene_ids = models.CharField(max_length=50, blank=False, default='')
+    gene_ids = models.JSONField(blank=False)
     # gene_values = models.CharField(max_length=50, blank=False, default='')
     dataset_id = models.CharField(max_length=50, blank=False, default='')
     # gene_ids = models.CharField(validators=int_list_validator)
@@ -47,6 +47,7 @@ class Gene_DB(models.Model):
     id = models.PositiveBigIntegerField(blank = False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     dataset_id = models.CharField(max_length=50, blank=False, default='')
+    gene_values = models.JSONField(blank=False)
 
 class Dataset_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
@@ -56,6 +57,7 @@ class Dataset_DB(models.Model):
     gene_ids = models.CharField(max_length=50, blank=False, default='')
     patient_ids = models.CharField(max_length=50, blank=False, default='')
     date_created = models.DateField(blank = False)
+    # There will be url field
     # url_link = models.URLField(blank = False, default="https://google.com")
 
 class Counter_DB(models.Model):

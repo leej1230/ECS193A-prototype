@@ -29,7 +29,8 @@ class GeneSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'dataset_id'
+            'dataset_id',
+            'gene_values'
         )
 
 class DatasetSerializer(serializers.ModelSerializer):
