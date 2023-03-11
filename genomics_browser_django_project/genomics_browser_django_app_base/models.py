@@ -57,8 +57,7 @@ class Dataset_DB(models.Model):
     gene_ids = models.CharField(max_length=50, blank=False, default='')
     patient_ids = models.CharField(max_length=50, blank=False, default='')
     date_created = models.DateField(blank = False)
-    # There will be url field
-    # url_link = models.URLField(blank = False, default="https://google.com")
+    url = models.URLField(blank = False)
 
 class Counter_DB(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted

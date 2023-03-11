@@ -43,6 +43,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             'patient_ids',
             'gene_ids',
             'date_created',
+            'url',
         )
 
 class CounterSerializer(serializers.ModelSerializer):

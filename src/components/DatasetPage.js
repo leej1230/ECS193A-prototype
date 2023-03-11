@@ -99,7 +99,6 @@ export default class DatasetPage extends React.Component {
         //console.log(this.state.dataset)
       return (
         <div >
-
           <div className="headerGroup">
             <p className="textElement">Last Updated: 01-03-2023</p>
             <div className="buttonGroup">
@@ -169,7 +168,6 @@ export default class DatasetPage extends React.Component {
               </CardContent>
             </Card>
           </Box>
-
         </div>
       )
     }
