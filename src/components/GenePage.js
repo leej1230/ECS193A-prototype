@@ -45,7 +45,10 @@ const tableIcons = {
 };
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
-const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_ID}`
+const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
+console.log(SAMPLE_ID)
+console.log(SAMPLE_NAME)
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
 const columns = [ 
   {title: "Field Name" , field: "field_name"},
   {title: "Value" , field: "value"}

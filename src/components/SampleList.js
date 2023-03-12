@@ -35,7 +35,7 @@ function SampleList(props) {
         <h5>Popular Genes</h5>
         {
           gene_data && gene_data.map( (gene_val) =>
-            <li class="gene-display"><a href={'/gene/' + gene_val.id}>Gene Name: {gene_val.name} ID: {gene_val.id}</a></li>
+            <li class="gene-display"><a href={'/gene/' + gene_val.name + '/'+gene_val.id}>Gene Name: {gene_val.name} ID: {gene_val.id}</a></li>
           )
         }
       </div>

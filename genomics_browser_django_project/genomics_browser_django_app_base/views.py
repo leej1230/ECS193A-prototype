@@ -345,10 +345,10 @@ def GET_gene_all(request):
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
 @api_view(['GET'])
-def GET_gene_query(request , gene_id):
+def GET_gene_query(request, gene_name , gene_id):
     if request.method == 'GET':
         # Maybe name and not id
-        gene_item = gene_collection.find_one({ "id": int(gene_id) })
+        gene_item = gene_collection.find_one({"id": int(gene_id),"name":str(gene_name) })
 
         genes_interpreted = GeneSerializer(data = gene_item, many=False)
 
