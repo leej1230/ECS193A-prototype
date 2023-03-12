@@ -176,6 +176,16 @@ def POST_Dataset_Data(request):
         except:
             return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
         
+        # Send patient information to database
+        # Returns True when patient data post successully
+        def post_patient():
+            try:
+                patients = [dataset.get_random_patient() for _ in range(3)]
+                # patient_collection.insert_many(patients)
+                return True
+            except:
+                return False
+
         # Try to send data to collection
         # If some error happened and couldn't insert, return error code 408
 
@@ -187,6 +197,7 @@ def POST_Dataset_Data(request):
                 # if genes.is_valid():
                 gene_collection.insert_many(genes)
                 dataset_collection.insert_one(sample.data)
+                post_patient()
                 return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
 
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
@@ -196,6 +207,7 @@ def POST_Dataset_Data(request):
         
         except:
             return JsonResponse(status=status.HTTP_408_REQUEST_TIMEOUT)
+        
         
 '''class MongoJSONEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:

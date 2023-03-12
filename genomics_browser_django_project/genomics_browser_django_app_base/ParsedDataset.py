@@ -57,16 +57,24 @@ class ParsedDataset :
 
     def get_random_patient(self) :
         sample = self.df.sample()
-        patient_id = list(sample["Sample name"])[0]
+        # patient_id = list(sample["Sample name"])[0]
         gene_ids = list(sample.filter(regex="ENSG").columns)
-        gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
+        # gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
         dataset_id = 1
-        return {
-            'patient_id': patient_id,
+        
+        a = {
+            'patient_id': sample["Sample name"],
+            'age': sample["Age At Onset"],
+            'diabete': sample['Diabetes'],
+            'final-diagnosis': sample['Final Diagnosis'],
+            'gender': sample['Gender'],
+            'hypercholesterolemia': sample['Hypercholesterolemia'],
+            'hypertension': ['Hypertension'],
+            'race': sample['Race'],
             'gene_ids': gene_ids,
-            'gene_values': gene_values,
             'dataset_id': dataset_id
         }
+        print(a)
     
 # input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
 # # csv_file = "sample_data/sample_csv.csv"
