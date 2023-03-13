@@ -69,7 +69,7 @@ function createGeneFormatted( input_patient_data) {
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown"});
+  const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown" , dataset_id : 1});
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : "3"});
@@ -77,13 +77,14 @@ function GenePage() {
   // componentDidMount() {
   useEffect( () => {
     async function fetchGeneData() {
+      //await console.log(URL);
       const res = await axios.get(URL);
-      const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
-      setGene_data(res.data);
+      const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
       setGeneExternalData(gene_ext.data);
-      const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`)
-      set_dataset_info(dataset_data.data);
-      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids]));
+      setGene_data(res.data);
+
+      console.log("fetch gene function: ")
+      console.log(gene_data);
       
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
@@ -91,7 +92,18 @@ function GenePage() {
       //console.log( patient_data['patient_id'] );
     }
     fetchGeneData()
-  });
+  } , []);
+
+  useEffect( () => {
+    // this side effect runs if gene data changes, so that dataset info for the gene can be updated
+    async function fetchDatasetInfo() {
+      const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`);
+      set_dataset_info(dataset_data.data);
+      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids]));
+
+    }
+    fetchDatasetInfo()
+ } , [gene_data] );
 
 
   return (
