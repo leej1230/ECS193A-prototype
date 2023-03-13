@@ -13,7 +13,8 @@ class ParsedDataset :
         self.url = url
         self.dataset_id = dataset_id
         # self.output_csv = out_csv_path
-        self.df = pd.read_csv(self.input_txt, sep="\t")
+        # self.df = pd.read_csv(self.input_txt, sep="\t")
+        self.df = pd.read_csv(self.input_txt)
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 

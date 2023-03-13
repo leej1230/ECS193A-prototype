@@ -24,6 +24,7 @@ from genomics_browser_django_app_base.models import Counter_DB
 from genomics_browser_django_app_base.serializers import CounterSerializer
 
 import datetime
+import re
 
 from . import ParsedDataset
 
@@ -166,7 +167,13 @@ def POST_Dataset_Data(request):
             name = list(request.FILES.values())[0].name
             description = request.data.get('description')
             url = request.data.get('urltoFile')
-            date_created = datetime.datetime.strptime(request.data.get('dateCreated'), '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
+
+            # date_created = datetime.datetime.strptime(request.data.get('dateCreated'), '%a %b %d %Y %H:%M:%S GMT%z (%Z)').date()
+
+            date_created = request.data.get('dateCreated')
+            date_created = re.sub(r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created)
+            date_created = datetime.datetime.strptime(date_created, '%a %b %d %Y %H:%M:%S').date()
+
             dataset = ParsedDataset.ParsedDataset(in_txt, name, description, date_created, url, new_dataset_counter)
             sample.update(dataset.get_dataset_info())
 
@@ -203,6 +210,7 @@ def POST_Dataset_Data(request):
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
                 #return JsonResponse(dataset_serialized.data, status=status.HTTP_201_CREATED, safe=False)
             else:
+                print(sample.errors)
                 return JsonResponse(sample.errors, status=status.HTTP_201_CREATED, safe=False)
         
         except:
