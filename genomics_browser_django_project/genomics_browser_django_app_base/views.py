@@ -25,6 +25,7 @@ from genomics_browser_django_app_base.serializers import CounterSerializer
 
 import datetime
 import re
+import sys
 
 from . import ParsedDataset
 
@@ -188,7 +189,7 @@ def POST_Dataset_Data(request):
         def post_patient():
             try:
                 patients = [dataset.get_random_patient() for _ in range(3)]
-                # patient_collection.insert_many(patients)
+                patient_collection.insert_many(patients)
                 return True
             except:
                 return False

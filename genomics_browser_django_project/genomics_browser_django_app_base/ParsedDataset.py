@@ -62,20 +62,31 @@ class ParsedDataset :
         gene_ids = list(sample.filter(regex="ENSG").columns)
         # gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
         dataset_id = 1
-        
+
         a = {
-            'patient_id': sample["Sample name"],
-            'age': sample["Age At Onset"],
-            'diabete': sample['Diabetes'],
-            'final-diagnosis': sample['Final Diagnosis'],
-            'gender': sample['Gender'],
-            'hypercholesterolemia': sample['Hypercholesterolemia'],
-            'hypertension': ['Hypertension'],
-            'race': sample['Race'],
+            'patient_id': sample["Sample name"].values[0],
+            'age': sample["Age At Onset"].values[0],
+            'diabete': sample['Diabetes'].values[0],
+            'final-diagnosis': sample['Final Diagnosis'].values[0],
+            'gender': sample['Gender'].values[0],
+            'hypercholesterolemia': sample['Hypercholesterolemia'].values[0],
+            'hypertension': sample['Hypertension'].values[0],
+            'race': sample['Race'].values[0],
             'gene_ids': gene_ids,
             'dataset_id': dataset_id
         }
-        print(a)
+
+        return a
+        # print(a)
+        # import os
+        # import sys
+
+        # log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log.txt')
+        # print('--------')
+        # print(log_path)
+        # with open(log_path, 'w+') as f:
+        #     sys.stdout = f
+        #     print(a)
     
 # input_file = "sample_data/WB_Time_Course_filtered_normalized_counts.txt"
 # # csv_file = "sample_data/sample_csv.csv"
