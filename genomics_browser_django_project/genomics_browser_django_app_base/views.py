@@ -384,3 +384,12 @@ def GET_counter_all(request):
             return JsonResponse(counter_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+@api_view(['GET'])
+def GET_patients_info(request,gene_id,dataset_id):
+    if request.method == 'GET':
+        patient_items = patient_collection.find({"$and": [{"gene_ids": gene_id},{"dataset_id": int(dataset_id)}]}, {"gene_ids":0,"dataset_id":0})
+        json_data = json.loads(dumps(patient_items))
+        return JsonResponse(json_data, safe=False) 
+    
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
