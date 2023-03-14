@@ -368,6 +368,9 @@ def GET_gene_query(request, gene_name , gene_id):
 
         if genes_interpreted.is_valid():
             json_data = genes_interpreted.data
+            json_data['patient_ids'] = json.loads(json_data['patient_ids'])
+            json_data['gene_values'] = json.loads(json_data['gene_values'])
+            print(json_data)
             return JsonResponse(json_data, safe=False)
         else:
             return JsonResponse(genes_interpreted.errors, safe=False)

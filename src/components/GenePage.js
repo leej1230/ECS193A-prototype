@@ -23,6 +23,10 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const tableIcons = {
   Add: AddBox,
@@ -46,8 +50,6 @@ const tableIcons = {
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
-console.log(SAMPLE_ID)
-console.log(SAMPLE_NAME)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
 const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_ID}`
 
@@ -69,7 +71,7 @@ function createGeneFormatted( input_gene_data) {
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown"});
+  const [gene_data, setGene_data] =  useState();
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
   const [ patient_table_data, set_patient_table_data ] = useState([
@@ -81,7 +83,8 @@ function GenePage() {
     {hypercholesterolemia: ""},
     {hypertension: ""},
     {race: ""}
-  ])
+  ]);
+  const [graphType, setGraphType] = useState('bar');
 
   const columns = [ 
     {title: "Patient ID" , field: "patient_id"},
@@ -100,6 +103,7 @@ function GenePage() {
       const res = await axios.get(URL);
       const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
       setGene_data(res.data);
+      console.log(res.data.gene_values["arr"]);
       setGeneExternalData(gene_ext.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
@@ -188,7 +192,23 @@ function GenePage() {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Gene View</h4>
-                
+                <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
+                <div className='GraphType'>
+                  <FormControl margin='dense' fullWidth>
+                    <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                    <Select
+                      labelId="GraphTypeLabel"
+                      id="GraphTypeSelect"
+                      value={graphType}
+                      label="GraphType"
+                      onChange={(e)=>{setGraphType(e.target.value)}}
+                      >
+                      <MenuItem value={'bar'}>Bar</MenuItem>
+                      <MenuItem value={'line'}>Basic Line</MenuItem>
+                      <MenuItem value={'pie'}>Pie</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
               </CardContent>
             </Card>
           </Box>
