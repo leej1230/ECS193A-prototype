@@ -54,10 +54,10 @@ class Dataset_DB(models.Model):
     id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     description = models.TextField( blank=False, default='' )
-    gene_ids = models.CharField(max_length=50, blank=False, default='')
+    gene_ids = models.JSONField(blank=False)
     patient_ids = models.JSONField(blank=False)
-    number_gene_id_number = models.JSONField(blank=False)
-    patient_id_number = models.CharField(max_length=50, blank=False, default='')
+    gene_id_count = models.CharField(max_length=50, blank=False, default='')
+    patient_id_count = models.CharField(max_length=50, blank=False, default='')
     date_created = models.DateField(blank = False)
     url = models.URLField(blank = False)
 

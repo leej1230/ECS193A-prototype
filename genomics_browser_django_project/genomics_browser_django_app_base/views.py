@@ -176,6 +176,7 @@ def POST_Dataset_Data(request):
             date_created = datetime.datetime.strptime(date_created, '%a %b %d %Y %H:%M:%S').date()
 
             dataset = ParsedDataset.ParsedDataset(in_txt, name, description, date_created, url, new_dataset_counter)
+
             sample.update(dataset.get_dataset_info())
 
             sample = DatasetSerializer(data=sample)

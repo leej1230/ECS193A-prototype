@@ -2,7 +2,7 @@
 
 import pandas as pd
 # import requests
-# import json
+import json
 
 class ParsedDataset : 
     def __init__(self, in_txt_path, name, description, date_created, url, dataset_id) : 
@@ -40,13 +40,17 @@ class ParsedDataset :
         pass
 
     def get_dataset_info(self) :
-        gene_ids = len([gene_id for gene_id in self.df.columns.to_list() if "ENSG" in gene_id])
-        patient_ids = self.df["Sample name"].size
+        gene_ids = [gene_id for gene_id in self.df.columns.to_list() if "ENSG" in gene_id]
+        gene_ids_count = len(gene_ids)
+        patient_ids = [patient_id for patient_id in self.df["Sample name"].values]
+        patient_ids_count = len(patient_ids)
         return {
             'name': self.name,
             'description': self.description,
-            'gene_ids': gene_ids,
-            'patient_ids': patient_ids,
+            'gene_ids': json.dumps({'arr': gene_ids}),
+            'patient_ids': json.dumps({'arr': patient_ids}),
+            'gene_id_count': gene_ids_count,
+            'patient_id_count': patient_ids_count,
             'date_created': self.date_created,
             'url': self.url,
         }
