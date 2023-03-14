@@ -1,6 +1,6 @@
 import React, {useEffect,useState} from 'react';
 import axios from 'axios';
-import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
+import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
 import "./Sample.css";
 import "../data.css";
 import SampleGraph from './echartdemo';
@@ -67,7 +67,10 @@ function createGeneFormatted( input_gene_data) {
     return init_arr;
 }
 
-
+{/* <div>
+  <CircularProgress />
+  <h3>Fetching Data...</h3>
+</div> */}
 
 function GenePage() {
   // state = {samples: []}
@@ -135,106 +138,133 @@ function GenePage() {
           <button className="buttonElement"> Delete </button>
         </div>
       </div>
+        <div className="titleLayout">
+          {gene_data?(
+              <div>
+                <h3>{gene_data.name}</h3>
+              </div>
+            ):(
+              <div>
+                <CircularProgress />
+                <h3>Fetching Data...</h3>
+              </div>
+            )}
+        </div>
 
-      {gene_data ? (
-        <div>
-          <div className="titleLayout">
-            <h3>{gene_data.name}</h3>
+        <div className="cardLayout">
+          <div className='cardContent'>
+            {gene_external_data["description"]?(
+              <div>
+                <h4 className='cardTitle'>Description</h4>
+                <p>{gene_external_data["description"]}</p>  
+              </div>
+            ):(
+              <div>
+                <CircularProgress />
+                <h3>Fetching Data...</h3>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="cardLayout">
-            <div className='cardContent'>
-              <h4 className='cardTitle'>Description</h4>
-              <p>{gene_external_data["description"]}</p>  
-            </div>
-          </div>
-
-          <Box className="cardLayout">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Gene Information</h4>
-                <p>ID: {gene_data.id}</p>
-                <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
-              </CardContent>
-            </Card>
-          </Box>
-
-        <div className="bottomInfo">
-
-            <Box className="bottomCard" >
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Stats</h4>
-                  <p>Number of Patients: </p>
-                  <p>Avg Age of Patients: </p>
-                  <p>Number of Missing Cells: </p>
-                  <p>Patient Conditions: </p>
-                </CardContent>
-              </Card>
-            </Box>
-
-            <Box className="bottomCard">
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Recently Viewed Members</h4>
-                  <p>Person 1</p>
-                  <p>Person 2</p>
-                  <p>Person 3</p>
-                </CardContent>
-              </Card>
-            </Box>
-
-          </div>
-
-
-          <Box className="cardLayout">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Gene View</h4>
-                <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
-                <div className='GraphType'>
-                  <FormControl margin='dense' fullWidth>
-                    <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
-                    <Select
-                      labelId="GraphTypeLabel"
-                      id="GraphTypeSelect"
-                      value={graphType}
-                      label="GraphType"
-                      onChange={(e)=>{setGraphType(e.target.value)}}
-                      >
-                      <MenuItem value={'bar'}>Bar</MenuItem>
-                      <MenuItem value={'line'}>Basic Line</MenuItem>
-                      <MenuItem value={'pie'}>Pie</MenuItem>
-                    </Select>
-                  </FormControl>
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Gene Information</h4>
+              {gene_data?(
+                <div>
+                  <p>ID: {gene_data.id}</p>
+                  <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
                 </div>
-              </CardContent>
-            </Card>
-          </Box>
+              ):(
+                <div>
+                  <CircularProgress />
+                  <h3>Fetching Data...</h3>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
 
-          <Box className="cardLayout">
+      <div className="bottomInfo">
+
+          <Box className="bottomCard" >
             <Card variant="outlined">
               <CardContent>
-                <h4 className='cardTitle'>Patient List</h4>
-                <MaterialTable columns={columns} 
-                data={patient_table_data}
-                icons={tableIcons}
-                options={{
-                  paging: false,
-                  showTitle: false
-                }}
-                />
+                <h4 className='cardTitle'>Stats</h4>
+                <p>Number of Patients: </p>
+                <p>Avg Age of Patients: </p>
+                <p>Number of Missing Cells: </p>
+                <p>Patient Conditions: </p>
               </CardContent>
             </Card>
           </Box>
 
+          <Box className="bottomCard">
+            <Card variant="outlined">
+              <CardContent>
+                <h4 className='cardTitle'>Recently Viewed Members</h4>
+                <p>Person 1</p>
+                <p>Person 2</p>
+                <p>Person 3</p>
+              </CardContent>
+            </Card>
+          </Box>
 
+        </div>
+
+
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Gene View</h4>
+              {gene_data?(
+                <div>
+                  <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
+                  <div className='GraphType'>
+                    <FormControl margin='dense' fullWidth>
+                      <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                      <Select
+                        labelId="GraphTypeLabel"
+                        id="GraphTypeSelect"
+                        value={graphType}
+                        label="GraphType"
+                        onChange={(e)=>{setGraphType(e.target.value)}}
+                        >
+                        <MenuItem value={'bar'}>Bar</MenuItem>
+                        <MenuItem value={'line'}>Basic Line</MenuItem>
+                        <MenuItem value={'pie'}>Pie</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+              ):(
+                <div>
+                  <CircularProgress />
+                  <h3>Fetching Data...</h3>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Patient List</h4>
+              <MaterialTable columns={columns} 
+              data={patient_table_data}
+              icons={tableIcons}
+              options={{
+                paging: false,
+                showTitle: false
+              }}
+              />
+            </CardContent>
+          </Card>
+        </Box>
       </div>
-      ) : (
-        <div>Loading...</div>
-      )}
-    </div>
-  );
+      )
 }
 
 export default GenePage
