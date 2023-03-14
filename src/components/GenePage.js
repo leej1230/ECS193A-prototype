@@ -103,7 +103,6 @@ function GenePage() {
       const res = await axios.get(URL);
       const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
       setGene_data(res.data);
-      console.log(res.data.gene_values["arr"]);
       setGeneExternalData(gene_ext.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {

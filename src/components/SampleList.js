@@ -39,7 +39,7 @@ function SampleList(props) {
           )
         }
       </div>
-      <div>
+      {/* <div>
       <h5>Patients</h5>
         {
           patient_data && patient_data.filter((word) => {
@@ -48,7 +48,7 @@ function SampleList(props) {
               <li class="patient-display"><a href={'/data/' + patient.patient_id}>Patient {patient.id} ID: {patient.patient_id}</a></li>
             )
         }
-      </div>
+      </div> */}
     </div>
   )
 }
