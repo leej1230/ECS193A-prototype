@@ -47,6 +47,7 @@ class Gene_DB(models.Model):
     id = models.PositiveBigIntegerField(blank = False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     dataset_id = models.CharField(max_length=50, blank=False, default='')
+    patient_ids = models.JSONField(blank=False)
     gene_values = models.JSONField(blank=False)
 
 class Dataset_DB(models.Model):

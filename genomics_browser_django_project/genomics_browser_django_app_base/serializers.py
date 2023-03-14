@@ -30,6 +30,7 @@ class GeneSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'dataset_id',
+            'patient_ids',
             'gene_values'
         )
 

@@ -201,10 +201,14 @@ def POST_Dataset_Data(request):
         # need to add checks to prevent duplicate dataset creation
         try:
             if sample.is_valid():
-                genes = dataset.get_three_random_genes()
-                # genes = GeneSerializer(data=genes)
-                # if genes.is_valid():
-                gene_collection.insert_many(genes)
+                gene = dataset.get_random_genes()
+                gene = GeneSerializer(data=gene)
+                if gene.is_valid():
+                    gene_collection.insert_one(gene.data)
+                else:
+                    print("could not upload ")
+                    print(gene.errors)
+                    return JsonResponse(sample.errors, status=status.HTTP_201_CREATED, safe=False)
                 dataset_collection.insert_one(sample.data)
                 post_patient()
                 return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
