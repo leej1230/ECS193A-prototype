@@ -55,12 +55,18 @@ class ParsedDataset :
             'url': self.url,
         }
 
-    def get_random_genes(self) :
-        import random
-        gene_name = random.sample(self.df.columns.to_list(), 1)
-        values = [v[0] for v in self.df[gene_name].values]
-        patient_ids = [patient_id for patient_id in self.df["Sample name"].values]
-        return {"id": 1, "name": gene_name[0], "dataset_id": self.dataset_id, 'patient_ids': json.dumps({'arr': patient_ids}), 'gene_values': json.dumps({'arr': values})}
+    def get_genes(self) :
+        gene_names = [gene_names for gene_names in self.df.columns if "ENSG" in gene_names]
+        gene_values = self.df[gene_names].T
+        patient_ids = [pid for pid in self.df["Sample name"]]
+        return [{
+            "id": i,
+            "name": gene_names[i],
+            "dataset_id": self.dataset_id,
+            "patient_ids": patient_ids,
+            "gene_values": gene_values.iloc[i].tolist()
+            # "gene_values": gene_values[j]
+        } for i in range(len(gene_names))]
 
     def get_random_patient(self) :
         sample = self.df.sample()
