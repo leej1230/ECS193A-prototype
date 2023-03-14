@@ -60,11 +60,11 @@ class ParsedDataset :
         gene_values = self.df[gene_names].T
         patient_ids = [pid for pid in self.df["Sample name"]]
         return [{
-            "id": i,
+            "id": 1,
             "name": gene_names[i],
             "dataset_id": self.dataset_id,
-            "patient_ids": patient_ids,
-            "gene_values": gene_values.iloc[i].tolist()
+            "patient_ids": json.dumps({"arr": patient_ids}),
+            "gene_values": json.dumps({"arr": gene_values.iloc[i].tolist()})
             # "gene_values": gene_values[j]
         } for i in range(len(gene_names))]
 
