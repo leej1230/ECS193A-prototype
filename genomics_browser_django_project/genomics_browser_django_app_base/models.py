@@ -55,7 +55,9 @@ class Dataset_DB(models.Model):
     name = models.CharField(max_length=50, blank=False, default="")
     description = models.TextField( blank=False, default='' )
     gene_ids = models.CharField(max_length=50, blank=False, default='')
-    patient_ids = models.CharField(max_length=50, blank=False, default='')
+    patient_ids = models.JSONField(blank=False)
+    number_gene_id_number = models.JSONField(blank=False)
+    patient_id_number = models.CharField(max_length=50, blank=False, default='')
     date_created = models.DateField(blank = False)
     url = models.URLField(blank = False)
 

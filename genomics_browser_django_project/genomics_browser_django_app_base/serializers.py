@@ -40,8 +40,10 @@ class DatasetSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'patient_ids',
             'gene_ids',
+            'patient_ids',
+            'gene_id_count',
+            'patient_id_count',
             'date_created',
             'url',
         )
