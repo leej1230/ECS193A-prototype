@@ -72,7 +72,9 @@ export default class DatasetPage extends React.Component {
       }).then(  
         () =>{
           this.setState({
-            dataset_table_input_format : this.createDatasetFormatted()
+            dataset_table_input_format : this.createDatasetFormatted(),
+            gene_ids : this.saveGeneIdArray(),
+            patient_ids : this.savePatientIdArray(),
           })
         }
       )
@@ -85,15 +87,28 @@ export default class DatasetPage extends React.Component {
       Object.keys(data_input).forEach(function(key) {
         //console.log('Key : ' + key + ', Value : ' + this.state.dataset_table_input_format[key])
         //init_arr.push( {field_name: key , value: this.state.dataset[key] } )
-        var val_input = data_input[key]
-        init_arr.push( {field_name: key , value: val_input } )
+
+        // Avoid showing list of ids
+        if (key !== "gene_ids" && key !== "patient_ids"){
+          var val_input = data_input[key]
+          init_arr.push( {field_name: key , value: val_input } )
+        }
       });
 
       console.log( init_arr )
 
       return init_arr;
     }
-      
+
+    saveGeneIdArray() {
+      var data_input = this.state.dataset;
+      return data_input["gene_ids"]["arr"]
+    }
+
+    savePatientIdArray() {
+      var data_input = this.state.dataset;
+      return data_input["patient_ids"]["arr"]
+    }  
      
     render(){
         //console.log(this.state.dataset)
@@ -164,7 +179,7 @@ export default class DatasetPage extends React.Component {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Dataset View</h4>
-                
+                <p>{this.state.gene_ids}</p>
               </CardContent>
             </Card>
           </Box>
