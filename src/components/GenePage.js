@@ -49,10 +49,6 @@ const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 console.log(SAMPLE_ID)
 console.log(SAMPLE_NAME)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
-const columns = [ 
-  {title: "Field Name" , field: "field_name"},
-  {title: "Value" , field: "value"}
-]
 
 function createGeneFormatted( input_gene_data) {
     // return formatted for table
@@ -75,6 +71,27 @@ function GenePage() {
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown"});
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
+  const [ patient_table_data, set_patient_table_data ] = useState([
+    {patient_id: ""},
+    {age: ""},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""}
+  ])
+
+  const columns = [ 
+    {title: "Patient ID" , field: "patient_id"},
+    {title: "Age" , field: "age"},
+    {title: "Diabete" , field: "diabete"},
+    {title: "Final Diagnosis" , field: "final_diagnosis"},
+    {title: "Gender" , field: "gender"},
+    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
+    {title: "Hypertension" , field: "hypertension"},
+    {title: "Race" , field: "race"},
+  ]
 
   // componentDidMount() {
   useEffect( () => {
@@ -159,6 +176,22 @@ function GenePage() {
               <CardContent>
                 <h4 className='cardTitle'>Gene View</h4>
                 
+              </CardContent>
+            </Card>
+          </Box>
+
+          <Box className="cardLayout">
+            <Card variant="outlined">
+              <CardContent>
+                <h4 className='cardTitle'>Patient List</h4>
+                <MaterialTable columns={columns} 
+                // data={this.state.dataset_table_input_format}
+                icons={tableIcons}
+                options={{
+                  paging: false,
+                  showTitle: false
+                }}
+                />
               </CardContent>
             </Card>
           </Box>
