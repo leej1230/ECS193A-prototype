@@ -12,7 +12,7 @@ class PatientSerializer(serializers.ModelSerializer):
             'patient_id',
             'age',
             'diabete',
-            'final-diagnosis',
+            'final_diagnosis',
             'gender',
             'hypercholesterolemia',
             'hypertension',

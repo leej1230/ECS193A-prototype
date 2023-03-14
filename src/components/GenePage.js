@@ -49,6 +49,7 @@ const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 console.log(SAMPLE_ID)
 console.log(SAMPLE_NAME)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
+const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_ID}`
 
 function createGeneFormatted( input_gene_data) {
     // return formatted for table
@@ -107,10 +108,9 @@ function GenePage() {
     }
 
     async function fetchPatientsData() {
-      const res = await axios.get(URL);
-      const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`)
-      setGene_data(res.data);
-      setGeneExternalData(gene_ext.data);
+      console.log(patientsDataAPIURL)
+      const res = await axios.get(patientsDataAPIURL);
+      set_patient_table_data(res.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
@@ -119,7 +119,7 @@ function GenePage() {
 
     fetchGeneData()
     fetchPatientsData()
-  });
+  }, []);
 
 
   return (
@@ -198,7 +198,7 @@ function GenePage() {
               <CardContent>
                 <h4 className='cardTitle'>Patient List</h4>
                 <MaterialTable columns={columns} 
-                // data={this.state.dataset_table_input_format}
+                data={patient_table_data}
                 icons={tableIcons}
                 options={{
                   paging: false,

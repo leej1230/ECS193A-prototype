@@ -67,7 +67,7 @@ class ParsedDataset :
             'patient_id': sample["Sample name"].values[0],
             'age': sample["Age At Onset"].values[0],
             'diabete': sample['Diabetes'].values[0],
-            'final-diagnosis': sample['Final Diagnosis'].values[0],
+            'final_diagnosis': sample['Final Diagnosis'].values[0],
             'gender': sample['Gender'].values[0],
             'hypercholesterolemia': sample['Hypercholesterolemia'].values[0],
             'hypertension': sample['Hypertension'].values[0],
