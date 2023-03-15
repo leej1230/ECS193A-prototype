@@ -24,6 +24,10 @@ yarn-error.log*
 
 genomics_browser_django_project/genomics_browser_django_venv/*
 
+options.txt
+
+py_test_scripts.py
+
 __pycache__/
 .vscode
 .env*

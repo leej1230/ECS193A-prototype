@@ -3,7 +3,8 @@ import axios from 'axios';
 import "./SampleList.css"
 
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`
-const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`
+//const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`
+const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
 
 function SampleList(props) {
   const [patient_data, setPatient_data] = useState([]);
@@ -16,7 +17,7 @@ function SampleList(props) {
         setPatient_data(result.data);
       }).then( () => {
         axios.get(GENE_URL).then( result => {
-          setGENE_data( result.data )
+          setGENE_data( [ result.data] )
         } )
       } )
     }

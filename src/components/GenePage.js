@@ -44,12 +44,15 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
+
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_ID}`
+
 const columns = [ 
   {title: "Field Name" , field: "field_name"},
   {title: "Value" , field: "value"}
 ]
+
 
 function createGeneFormatted( input_patient_data) {
     // return formatted for table
@@ -104,6 +107,23 @@ function GenePage() {
     }
     fetchDatasetInfo()
  } , [gene_data] );
+
+ useEffect( () => {
+  async function fetchSeqName(){
+    
+    /*await py`
+    gene_ensembl_id = "ENSG00000157764"
+    with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
+        s = json.loads(url.read())
+    `
+    let refseq_ids_data = py`s`
+    */
+    //console.log(refseq_ids_data)
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names`);
+    console.log(resp);
+  }
+  fetchSeqName()
+ } , [] );
 
 
   return (

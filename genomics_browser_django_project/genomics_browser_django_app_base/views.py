@@ -9,6 +9,7 @@ from . import pymongo_get_database
 
 from bson.json_util import dumps,loads
 import json
+import urllib.request
  
 from genomics_browser_django_app_base.models import Patient_DB
 from genomics_browser_django_app_base.serializers import PatientSerializer
@@ -331,5 +332,17 @@ def GET_counter_all(request):
             return JsonResponse(counter_serialized.data, safe=False) 
         else:
             return JsonResponse(counter_serialized.errors, safe=False)
+   
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+# external api
+@api_view(['GET'])
+def GET_SEQ_NAMES(request):
+    if request.method == 'GET':
+        gene_ensembl_id = "ENSG00000157764"
+        with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=ENSG00000157764&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
+            s = json.loads(url.read())
+            return JsonResponse(s[0], safe=False) 
+        # JsonResponse(counter_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)

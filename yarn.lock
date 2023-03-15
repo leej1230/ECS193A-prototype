@@ -3306,7 +3306,7 @@ binary-extensions@^2.0.0:
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-bluebird@^3.5.5:
+bluebird@^3.5.0, bluebird@^3.5.5:
   version "3.7.2"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -3546,6 +3546,11 @@ check-types@^11.1.1:
   version "11.2.2"
   resolved "https://registry.npmjs.org/check-types/-/check-types-11.2.2.tgz"
   integrity sha512-HBiYvXvn9Z70Z88XKjz3AEKd4HJhBXsa3j7xFnITAzoS8+q6eIGi8qDB8FKPBAjtuxjI/zFpwuiCb8oDtKOYrA==
+
+child_process@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/child_process/-/child_process-1.0.2.tgz"
+  integrity sha512-Wmza/JzL0SiWz7kl6MhIKT5ceIlnFPJX+lwUGj7Clhy5MMldsSoJR0+uvRzOS5Kv45Mq7t1PoE8TsOA9bzvb6g==
 
 chokidar@^3.4.2, chokidar@^3.5.3:
   version "3.5.3"
@@ -7569,6 +7574,14 @@ path-type@^4.0.0:
   resolved "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+path@^0.12.7:
+  version "0.12.7"
+  resolved "https://registry.npmjs.org/path/-/path-0.12.7.tgz"
+  integrity sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==
+  dependencies:
+    process "^0.11.1"
+    util "^0.10.3"
+
 performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz"
@@ -8231,6 +8244,11 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
+process@^0.11.1:
+  version "0.11.10"
+  resolved "https://registry.npmjs.org/process/-/process-0.11.10.tgz"
+  integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==
+
 promise@^8.1.0:
   version "8.3.0"
   resolved "https://registry.npmjs.org/promise/-/promise-8.3.0.tgz"
@@ -8285,6 +8303,13 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.3.0"
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.0.tgz"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
+
+python-bridge@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/python-bridge/-/python-bridge-1.1.0.tgz"
+  integrity sha512-qjQ0QB8p9cn/XDeILQH0aP307hV58lrmv0Opjyub68Um7FHdF+ZXlTqyxNkKaXOFk2QSkScoPWwn7U9GGnrkeQ==
+  dependencies:
+    bluebird "^3.5.0"
 
 q@^1.1.2:
   version "1.5.1"
@@ -9876,6 +9901,13 @@ util.promisify@~1.0.0:
     es-abstract "^1.17.2"
     has-symbols "^1.0.1"
     object.getownpropertydescriptors "^2.1.0"
+
+util@^0.10.3:
+  version "0.10.4"
+  resolved "https://registry.npmjs.org/util/-/util-0.10.4.tgz"
+  integrity sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==
+  dependencies:
+    inherits "2.0.3"
 
 utila@~0.4:
   version "0.4.0"
