@@ -68,26 +68,22 @@ class ParsedDataset :
             # "gene_values": gene_values[j]
         } for i in range(len(gene_names))]
 
-    def get_random_patient(self) :
-        sample = self.df.sample()
-        # patient_id = list(sample["Sample name"])[0]
-        gene_ids = list(sample.filter(regex="ENSG").columns)
-        # gene_values = sample.filter(regex="ENSG").to_numpy().tolist()[0]
+    def get_patients(self) :
+        gene_ids = list(self.df.filter(regex="ENSG").columns)
         dataset_id = 1
 
-        a = {
-            'patient_id': sample["Sample name"].values[0],
-            'age': sample["Age At Onset"].values[0],
-            'diabete': sample['Diabetes'].values[0],
-            'final_diagnosis': sample['Final Diagnosis'].values[0],
-            'gender': sample['Gender'].values[0],
-            'hypercholesterolemia': sample['Hypercholesterolemia'].values[0],
-            'hypertension': sample['Hypertension'].values[0],
-            'race': sample['Race'].values[0],
+        a =  [{
+            'patient_id': self.df["Sample name"].iloc[i],
+            'age': self.df["Age At Onset"].iloc[i],
+            'diabete': self.df['Diabetes'].iloc[i],
+            'final_diagnosis': self.df['Final Diagnosis'].iloc[i],
+            'gender': self.df['Gender'].iloc[i],
+            'hypercholesterolemia': self.df['Hypercholesterolemia'].iloc[i],
+            'hypertension': self.df['Hypertension'].iloc[i],
+            'race': self.df['Race'].iloc[i],
             'gene_ids': gene_ids,
             'dataset_id': dataset_id
-        }
-
+        } for i in range(self.df.shape[0])]
         return a
         # print(a)
         # import os
