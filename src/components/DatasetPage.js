@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./DatasetPage.css";
-import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
+import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -179,7 +179,24 @@ export default class DatasetPage extends React.Component {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Dataset View</h4>
-                <p>{this.state.gene_ids}</p>
+                {/* <p>{this.state.gene_ids}</p> */}
+                
+
+                {this.state.gene_ids ? (
+                  <div>
+                    {
+                      this.state.gene_ids.map( (id) =>
+                      <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
+                      )
+                    }
+                  </div>
+                  ):(
+                    <div>
+                      <CircularProgress />
+                      <h3>Fetching Data...</h3>
+                    </div>
+                  )
+                }
               </CardContent>
             </Card>
           </Box>
