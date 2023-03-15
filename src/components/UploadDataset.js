@@ -41,9 +41,11 @@ function UploadDataset(){
         axios.post(api_url, formData, config)
         .then((result) => {
           console.log('Success', result)
+          alert("Data has been posted")
         })
         .catch((error) => {
           console.error('Post failed', error);
+          alert("Due to some error, data has not been posted")
         })
     }
     
@@ -58,6 +60,17 @@ function UploadDataset(){
               Upload
               <input hidden type="file" onChange={changeHandler} />
             </Button>
+            {isFilePicked?(
+                <div>
+                  <h5>File Name: {selectedFile.name}</h5>
+                </div>
+              ):(
+                <div>
+                  <h5>File Not Selected</h5>
+                </div>
+              )
+
+            }
           </div>
 
           <div className='text-area'>
