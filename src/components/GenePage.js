@@ -76,6 +76,7 @@ function GenePage() {
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : "3"});
+  const [ gene_code_info , set_gene_code_info ] = useState({code : ""});
 
   // componentDidMount() {
   useEffect( () => {
@@ -111,16 +112,9 @@ function GenePage() {
  useEffect( () => {
   async function fetchSeqName(){
     
-    /*await py`
-    gene_ensembl_id = "ENSG00000157764"
-    with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
-        s = json.loads(url.read())
-    `
-    let refseq_ids_data = py`s`
-    */
-    //console.log(refseq_ids_data)
     const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names`);
     console.log(resp);
+    set_gene_code_info( resp.data );
   }
   fetchSeqName()
  } , [] );
@@ -205,7 +199,7 @@ function GenePage() {
                   <Card variant="outlined">
                     <CardContent>
                       <h4 className='cardTitle'>Gene View</h4>
-                      
+                      {gene_code_info.code}
                     </CardContent>
                   </Card>
                 </Box>
