@@ -52,7 +52,7 @@ export default class DatasetPage extends React.Component {
      state = {
         dataset: {"name": "None", "gene_ids": "0", "patient_ids": "0" },
         DATASET_ID : window.location.pathname.split("/").at(-1),
-        dataset_table_input_format: [{field_name : "" , value : ""}]
+        dataset_table_input_format: []
       }
     
     columns = [ 
@@ -91,7 +91,11 @@ export default class DatasetPage extends React.Component {
         // Avoid showing list of ids
         if (key !== "gene_ids" && key !== "patient_ids"){
           var val_input = data_input[key]
-          init_arr.push( {field_name: key , value: val_input } )
+          if (key === "url"){
+            init_arr.push( {field_name: key , value: <a href={val_input}> {val_input} </a> } )
+          }else{
+            init_arr.push( {field_name: key , value: val_input } )
+          }
         }
       });
 
@@ -137,14 +141,26 @@ export default class DatasetPage extends React.Component {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Basic Dataset Information</h4>
-                <MaterialTable columns={this.columns} 
-                data={this.state.dataset_table_input_format}
-                icons={tableIcons}
-                options={{
-                  paging: false,
-                  showTitle: false
-                }}
-                />
+                {this.state.dataset_table_input_format.length>3 ? (
+                  <div>
+                    {
+                      <MaterialTable columns={this.columns} 
+                      data={this.state.dataset_table_input_format}
+                      icons={tableIcons}
+                      options={{
+                        paging: false,
+                        showTitle: false
+                      }}
+                      />
+                    }
+                  </div>
+                  ):(
+                    <div>
+                      <CircularProgress />
+                      <h3>Fetching Data...</h3>
+                    </div>
+                  )
+                }
               </CardContent>
             </Card>
           </Box>
