@@ -340,9 +340,21 @@ def GET_counter_all(request):
 def GET_SEQ_NAMES(request):
     if request.method == 'GET':
         gene_ensembl_id = "ENSG00000157764"
-        with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=ENSG00000157764&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
+        with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
             s = json.loads(url.read())
-            return JsonResponse(s[0], safe=False) 
+            variant_names = s[0]['RefSeq mRNA Accession']
+        variant_names_list = variant_names.split('//')
+
+        # for sample just take one variant
+        rfseq_accession = variant_names_list[0]
+
+        url_seq = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" + str(rfseq_accession) + "&rettype=fasta&retmode=text"
+
+        with urllib.request.urlopen(url_seq) as url_seq_open:
+            seq_resp = url_seq_open.read().decode('utf-8')
+            lines_seq = seq_resp.split(',')
+            mrna = lines_seq[-1].split('\n')
+            return JsonResponse({'code' : mrna}, safe=False) 
         # JsonResponse(counter_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
