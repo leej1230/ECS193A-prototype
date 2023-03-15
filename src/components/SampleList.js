@@ -22,13 +22,8 @@ function SampleList(props) {
         } )
       } )
     }
-
-    const intervalRun = setInterval(() => {
-      fetchPatients()
-    }, 10000)
-
-    return () => clearInterval(intervalRun)
-  });
+    fetchPatients()
+  }, []);
   
   return (
     <div>
