@@ -205,7 +205,14 @@ function GenePage() {
                       <h4 className='cardTitle'>Gene View</h4>
                       {
                          gene_code_info.code.map(function(item, i){
-                          return <p>{item}</p>
+                          return <div className="codeCardOuter"><Box className="cardLayout">
+                                        <Card variant="outlined">
+                                          <CardContent>
+                                            <p>{item}</p>
+                                          </CardContent>
+                                        </Card>
+                                      </Box>
+                                    </div>
                         })
                       }
                     </CardContent>
