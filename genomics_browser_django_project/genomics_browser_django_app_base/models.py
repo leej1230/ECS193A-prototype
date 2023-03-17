@@ -31,8 +31,8 @@ class Dataset_DB(models.Model):
     id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     description = models.TextField( blank=False, default='' )
-    gene_ids = models.CharField(max_length=50, blank=False, default='')
-    patient_ids = models.CharField(max_length=50, blank=False, default='')
+    gene_ids = models.JSONField(blank=False)
+    patient_ids = models.JSONField(max_length=50)
     date_created = models.DateField(blank = False)
     # url_link = models.URLField(blank = False, default="https://google.com")
 

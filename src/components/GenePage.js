@@ -54,10 +54,10 @@ const columns = [
 ]
 
 
-function createGeneFormatted( input_patient_data) {
+function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
     var init_arr = [];
-    var data_input = input_patient_data;
+    var data_input = input_patient_data_arr;
     data_input.forEach(function(key) {
       var val_input = "empty"
       init_arr.push( {field_name: key , value: val_input } )
@@ -75,7 +75,7 @@ function GenePage() {
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown" , dataset_id : 1});
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
-  const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : "3"});
+  const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {arr:[]}});
   const [ gene_code_info , set_gene_code_info ] = useState({code : ""});
 
   // componentDidMount() {
@@ -103,7 +103,7 @@ function GenePage() {
     async function fetchDatasetInfo() {
       const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`);
       set_dataset_info(dataset_data.data);
-      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids]));
+      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids['arr']]));
 
     }
     fetchDatasetInfo()
@@ -162,7 +162,7 @@ function GenePage() {
                         options={{
                           showTitle: false
                         }}
-                      />
+                      />  
                     </CardContent>
                   </Card>
                 </Box>
