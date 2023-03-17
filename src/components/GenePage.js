@@ -75,8 +75,8 @@ function GenePage() {
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown" , dataset_id : 1});
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
-  const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {arr:[]}});
-  const [ gene_code_info , set_gene_code_info ] = useState({code : ""});
+  const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {'arr':null}});
+  const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
 
   // componentDidMount() {
   useEffect( () => {
@@ -103,7 +103,11 @@ function GenePage() {
     async function fetchDatasetInfo() {
       const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`);
       set_dataset_info(dataset_data.data);
-      set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids['arr']]));
+      if (dataset_data.data.patient_ids['arr'] != null) {
+        set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids['arr']]));
+      }
+
+      console.log("dataset function")
 
     }
     fetchDatasetInfo()
@@ -199,7 +203,11 @@ function GenePage() {
                   <Card variant="outlined">
                     <CardContent>
                       <h4 className='cardTitle'>Gene View</h4>
-                      {gene_code_info.code}
+                      {
+                         gene_code_info.code.map(function(item, i){
+                          return <p>{item}</p>
+                        })
+                      }
                     </CardContent>
                   </Card>
                 </Box>
