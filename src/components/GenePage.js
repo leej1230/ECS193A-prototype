@@ -107,14 +107,6 @@ function getColor(index_group){
 
 }
 
-const rows = [
-  {name :"Frozen yoghurt", calories: 159, fat: 6.0, carbs: 24, protein: 4.0},
-  {name: "Ice cream sandwich", calories: 237, fat: 9.0, carbs: 37, protein: 4.3},
-  {name: "Eclair", calries: 262, fat: 16.0, carbs: 24, protein: 6.0},
-  {name: "Cupcake", calories: 305, fat: 3.7, carbs: 67, protein: 4.3},
-  {name: "Gingerbread", calories: 356, fat: 16.0, carbs: 49, protein: 3.9}
-];
-
 function GenePage() {
   // state = {samples: []}
   const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown" , dataset_id : 1});
@@ -163,7 +155,17 @@ function GenePage() {
     
     const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names`);
     console.log(resp);
-    set_gene_code_info( resp.data );
+    var data_code = resp.data;
+    if( data_code.code.length > 1 ){
+      // remove 'mrna' initial
+      data_code.code = data_code.code.slice(1, data_code.code.length);
+      // remove blanks at end
+      while( data_code.code.length > 1 && data_code.code[data_code.code.length - 1] == ""){
+        data_code.code.pop();
+      }
+    }
+    set_gene_code_info( data_code );
+    console.log(data_code);
   }
   fetchSeqName()
  } , [] );
