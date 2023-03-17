@@ -90,6 +90,23 @@ function breakUpCode(code_str){
   return list_str_code;
 }
 
+function getColor(index_group){
+  if(index_group % 4 == 0){
+    // purple shade
+    return '#f2a2f5'
+  } else if (index_group % 4 == 1){
+    // red shade
+    return '#f56464';
+  } else if( index_group % 4 == 2){
+    // green shade
+    return '#9ff595';
+  } else {
+    // blue shade
+    return '#84a8f0';
+  }
+
+}
+
 const rows = [
   {name :"Frozen yoghurt", calories: 159, fat: 6.0, carbs: 24, protein: 4.0},
   {name: "Ice cream sandwich", calories: 237, fat: 9.0, carbs: 37, protein: 4.3},
@@ -241,11 +258,11 @@ function GenePage() {
                             </TableHead>
                             <TableBody>
                               {
-                                gene_code_info.code.map(function(item, i){
-                                  return <TableRow  key={i}>
+                                gene_code_info.code.map(function(item, row_i){
+                                  return <TableRow  key={row_i}>
                                           <TableCell>
-                                              <div className="codeRow">{breakUpCode(item).map(function(code_str, i){
-                                              return <div className = "codeCard">
+                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
                                                         {code_str}
                                                       </div>     
                                             })}</div>
