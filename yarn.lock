@@ -8461,6 +8461,11 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.11.tgz"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
+react-horizontal-scrolling@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.npmjs.org/react-horizontal-scrolling/-/react-horizontal-scrolling-0.1.13.tgz"
+  integrity sha512-LOInfIj77DA+Jijft5PZT/XGmF+B3iEx17wmXkBJ06J5VtjbXsO7zagP5ERJvUDM68M7Yd5dZEGpEW+8qlK0Sg==
+
 react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"

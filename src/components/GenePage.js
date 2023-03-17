@@ -1,12 +1,19 @@
 import React, {useEffect,useState} from 'react';
 import axios from 'axios';
-import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
+import { Box, Card , CardContent, CardActions, Typography, Button, Paper } from '@mui/material';
 import "./GenePage.css";
 import "../data.css";
 import SampleGraph from './echartdemo';
 
 //import { useTable } from "react-table";
 import MaterialTable from 'material-table';
+
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -23,6 +30,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { color } from 'echarts';
 
 const tableIcons = {
   Add: AddBox,
@@ -53,7 +61,6 @@ const columns = [
   {title: "Value" , field: "value"}
 ]
 
-
 function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
     var init_arr = [];
@@ -68,7 +75,13 @@ function createGeneFormatted( input_patient_data_arr) {
     return init_arr;
 }
 
-
+const rows = [
+  {name :"Frozen yoghurt", calories: 159, fat: 6.0, carbs: 24, protein: 4.0},
+  {name: "Ice cream sandwich", calories: 237, fat: 9.0, carbs: 37, protein: 4.3},
+  {name: "Eclair", calries: 262, fat: 16.0, carbs: 24, protein: 6.0},
+  {name: "Cupcake", calories: 305, fat: 3.7, carbs: 67, protein: 4.3},
+  {name: "Gingerbread", calories: 356, fat: 16.0, carbs: 49, protein: 3.9}
+];
 
 function GenePage() {
   // state = {samples: []}
@@ -202,19 +215,33 @@ function GenePage() {
                 <Box className="cardLayout">
                   <Card variant="outlined">
                     <CardContent>
-                      <h4 className='cardTitle'>Gene View</h4>
-                      {
-                         gene_code_info.code.map(function(item, i){
-                          return <div className="codeCardOuter"><Box className="cardLayout">
-                                        <Card variant="outlined">
-                                          <CardContent>
-                                            <p>{item}</p>
-                                          </CardContent>
-                                        </Card>
-                                      </Box>
-                                    </div>
-                        })
-                      }
+                      <div className="codeCardOuter">
+                        <h4 className='cardTitle'>Gene View</h4>
+                        <TableContainer style={{ width: '100%' }}>
+                          <Table style={ { minWidth: 650}} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Code</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {
+                                gene_code_info.code.map(function(item, i){
+                                  return <TableRow key={i}>
+                                    <TableCell component="th" scope="row">
+                                      <p>{item}</p>
+                                    </TableCell>
+                                  </TableRow>
+                              
+                                })
+                              }
+                              
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+             
+                      </div>
+                      
                     </CardContent>
                   </Card>
                 </Box>
