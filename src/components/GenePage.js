@@ -8,6 +8,8 @@ import SampleGraph from './echartdemo';
 //import { useTable } from "react-table";
 import MaterialTable from 'material-table';
 
+import ScrollBars from "react-custom-scrollbars";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -244,46 +246,47 @@ function GenePage() {
                   </Box>
 
                 </div>
-
-
-                <Box className="cardLayout">
-                  <Card variant="outlined">
-                    <CardContent>
-                      <div className="codeCardOuter">
-                        <h4 className='cardTitle'>Gene View</h4>
-                        <TableContainer style={{ width: '100%' }}>
-                          <Table style={ { minWidth: 650}} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Code</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {
-                                gene_code_info.code.map(function(item, row_i){
-                                  return <TableRow  key={row_i}>
-                                          <TableCell>
-                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                        {code_str}
-                                                      </div>     
-                                            })}</div>
-                                          </TableCell>
-                                  </TableRow>
+                  <Box className="cardLayout">
+                    <Card variant="outlined">
+                      <CardContent>
+                        <div className="codeCardOuter">
+                          
+                          <h4 className='cardTitle'>Gene View</h4>
+                          <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                          
+                            <Table style={ { minWidth: 650}} aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>Code</TableCell>
+                                </TableRow>
+                              </TableHead>
                               
-                                })
-                              }
-                              
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-             
-                      </div>
-                      
-                    </CardContent>
-                  </Card>
-                </Box>
-
+                              <TableBody>
+                                {
+                                  gene_code_info.code.map(function(item, row_i){
+                                    return <TableRow  key={row_i}>
+                                            <TableCell>
+                                                <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                                return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                          {code_str}
+                                                        </div>     
+                                              })}</div>
+                                            </TableCell>
+                                    </TableRow>
+                                
+                                  })
+                                }
+                              </TableBody>
+                            </Table>
+                            
+                          </TableContainer>
+                          
+              
+                        </div>
+                        
+                      </CardContent>
+                    </Card>
+                  </Box>
               </CardContent>
             </Card>
           </Box>
