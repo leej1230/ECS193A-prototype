@@ -228,9 +228,15 @@ function GenePage() {
                               {
                                 gene_code_info.code.map(function(item, i){
                                   return <TableRow key={i}>
-                                    <TableCell component="th" scope="row">
-                                      <p>{item}</p>
-                                    </TableCell>
+                                    <Box className="cardLayouts">
+                                      <Card variant="outlined">
+                                        <CardContent>
+                                          
+                                            <p>{item}</p>
+                                         
+                                        </CardContent>
+                                      </Card>
+                                    </Box>
                                   </TableRow>
                               
                                 })
