@@ -75,6 +75,21 @@ function createGeneFormatted( input_patient_data_arr) {
     return init_arr;
 }
 
+function breakUpCode(code_str){
+  var list_str_code = []
+  for(var i = 0; i < code_str.length; i += 5){
+    var temp_str = "";
+    if(i + 5 < code_str.length){
+      temp_str = code_str.substring(i, i+5);
+    } else {
+      temp_str = code_str.substring(i, code_str.length);
+    }
+    list_str_code.push(temp_str);
+  }
+
+  return list_str_code;
+}
+
 const rows = [
   {name :"Frozen yoghurt", calories: 159, fat: 6.0, carbs: 24, protein: 4.0},
   {name: "Ice cream sandwich", calories: 237, fat: 9.0, carbs: 37, protein: 4.3},
@@ -227,16 +242,14 @@ function GenePage() {
                             <TableBody>
                               {
                                 gene_code_info.code.map(function(item, i){
-                                  return <TableRow key={i}>
-                                    <Box className="cardLayouts">
-                                      <Card variant="outlined">
-                                        <CardContent>
-                                          
-                                            <p>{item}</p>
-                                         
-                                        </CardContent>
-                                      </Card>
-                                    </Box>
+                                  return <TableRow  key={i}>
+                                          <TableCell>
+                                              <div className="codeRow">{breakUpCode(item).map(function(code_str, i){
+                                              return <div className = "codeCard">
+                                                        {code_str}
+                                                      </div>     
+                                            })}</div>
+                                          </TableCell>
                                   </TableRow>
                               
                                 })
