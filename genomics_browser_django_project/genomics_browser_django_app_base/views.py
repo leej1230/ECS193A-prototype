@@ -9,6 +9,7 @@ from . import pymongo_get_database
 
 from bson.json_util import dumps,loads
 import json
+import urllib.request
  
 from genomics_browser_django_app_base.models import Patient_DB
 from genomics_browser_django_app_base.serializers import PatientSerializer
@@ -390,6 +391,30 @@ def GET_counter_all(request):
             return JsonResponse(counter_serialized.data, safe=False) 
         else:
             return JsonResponse(counter_serialized.errors, safe=False)
+   
+    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
+
+# external api
+@api_view(['GET'])
+def GET_SEQ_NAMES(request):
+    if request.method == 'GET':
+        gene_ensembl_id = "ENSG00000157764"
+        with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
+            s = json.loads(url.read())
+            variant_names = s[0]['RefSeq mRNA Accession']
+        variant_names_list = variant_names.split('//')
+
+        # for sample just take one variant
+        rfseq_accession = variant_names_list[0]
+
+        url_seq = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" + str(rfseq_accession) + "&rettype=fasta&retmode=text"
+
+        with urllib.request.urlopen(url_seq) as url_seq_open:
+            seq_resp = url_seq_open.read().decode('utf-8')
+            lines_seq = seq_resp.split(',')
+            mrna = lines_seq[-1].split('\n')
+            return JsonResponse({'code' : mrna}, safe=False) 
+        # JsonResponse(counter_serialized.errors, safe=False)
    
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 

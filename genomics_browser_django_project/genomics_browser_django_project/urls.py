@@ -36,5 +36,6 @@ urlpatterns = [
     path('api/gene/<str:gene_name>/<slug:gene_id>', views.GET_gene_query),
     re_path(r'^api/gene/all', views.GET_gene_all),
     re_path(r'^api/counter/all', views.GET_counter_all),
+    re_path(r'^api/seq/names' , views.GET_SEQ_NAMES),
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.GET_patients_info),
 ]
