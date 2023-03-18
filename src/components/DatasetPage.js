@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./DatasetPage.css";
-import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
+import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -52,7 +52,7 @@ export default class DatasetPage extends React.Component {
      state = {
         dataset: {"name": "None", "gene_ids": "0", "patient_ids": "0" },
         DATASET_ID : window.location.pathname.split("/").at(-1),
-        dataset_table_input_format: [{field_name : "" , value : ""}]
+        dataset_table_input_format: []
       }
     
     columns = [ 
@@ -72,7 +72,9 @@ export default class DatasetPage extends React.Component {
       }).then(  
         () =>{
           this.setState({
-            dataset_table_input_format : this.createDatasetFormatted()
+            dataset_table_input_format : this.createDatasetFormatted(),
+            gene_ids : this.saveGeneIdArray(),
+            patient_ids : this.savePatientIdArray(),
           })
         }
       )
@@ -85,21 +87,37 @@ export default class DatasetPage extends React.Component {
       Object.keys(data_input).forEach(function(key) {
         //console.log('Key : ' + key + ', Value : ' + this.state.dataset_table_input_format[key])
         //init_arr.push( {field_name: key , value: this.state.dataset[key] } )
-        var val_input = data_input[key]
-        init_arr.push( {field_name: key , value: val_input } )
+
+        // Avoid showing list of ids
+        if (key !== "gene_ids" && key !== "patient_ids"){
+          var val_input = data_input[key]
+          if (key === "url"){
+            init_arr.push( {field_name: key , value: <a href={val_input}> {val_input} </a> } )
+          }else{
+            init_arr.push( {field_name: key , value: val_input } )
+          }
+        }
       });
 
       console.log( init_arr )
 
       return init_arr;
     }
-      
+
+    saveGeneIdArray() {
+      var data_input = this.state.dataset;
+      return data_input["gene_ids"]["arr"]
+    }
+
+    savePatientIdArray() {
+      var data_input = this.state.dataset;
+      return data_input["patient_ids"]["arr"]
+    }  
      
     render(){
         //console.log(this.state.dataset)
       return (
         <div >
-
           <div className="headerGroup">
             <p className="textElement">Last Updated: 01-03-2023</p>
             <div className="buttonGroup">
@@ -123,14 +141,26 @@ export default class DatasetPage extends React.Component {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Basic Dataset Information</h4>
-                <MaterialTable columns={this.columns} 
-                data={this.state.dataset_table_input_format}
-                icons={tableIcons}
-                options={{
-                  paging: false,
-                  showTitle: false
-                }}
-                />
+                {this.state.dataset_table_input_format.length>3 ? (
+                  <div>
+                    {
+                      <MaterialTable columns={this.columns} 
+                      data={this.state.dataset_table_input_format}
+                      icons={tableIcons}
+                      options={{
+                        paging: false,
+                        showTitle: false
+                      }}
+                      />
+                    }
+                  </div>
+                  ):(
+                    <div>
+                      <CircularProgress />
+                      <h3>Fetching Data...</h3>
+                    </div>
+                  )
+                }
               </CardContent>
             </Card>
           </Box>
@@ -165,11 +195,27 @@ export default class DatasetPage extends React.Component {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Dataset View</h4>
+                {/* <p>{this.state.gene_ids}</p> */}
                 
+
+                {this.state.gene_ids ? (
+                  <div>
+                    {
+                      this.state.gene_ids.map( (id) =>
+                      <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
+                      )
+                    }
+                  </div>
+                  ):(
+                    <div>
+                      <CircularProgress />
+                      <h3>Fetching Data...</h3>
+                    </div>
+                  )
+                }
               </CardContent>
             </Card>
           </Box>
-
         </div>
       )
     }

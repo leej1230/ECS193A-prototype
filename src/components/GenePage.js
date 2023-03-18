@@ -1,6 +1,6 @@
 import React, {useEffect,useState} from 'react';
 import axios from 'axios';
-import { Box, Card , CardContent, CardActions, Typography, Button, Paper } from '@mui/material';
+import { Box, Card , CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
 import "./GenePage.css";
 import "../data.css";
 import SampleGraph from './echartdemo';
@@ -32,7 +32,12 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+
 import { color } from 'echarts';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const tableIcons = {
   Add: AddBox,
@@ -56,12 +61,14 @@ const tableIcons = {
 
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
-const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_ID}`
 
 const columns = [ 
   {title: "Field Name" , field: "field_name"},
   {title: "Value" , field: "value"}
 ]
+const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
+const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_ID}`
 
 function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
@@ -106,16 +113,42 @@ function getColor(index_group){
     // blue shade
     return '#84a8f0';
   }
-
 }
+
+{/* <div>
+  <CircularProgress />
+  <h3>Fetching Data...</h3>
+</div> */}
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] =  useState({id : 3 , name : "unknown" , dataset_id : 1});
+  const [gene_data, setGene_data] =  useState();
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
+  const [ patient_table_data, set_patient_table_data ] = useState([
+    {patient_id: ""},
+    {age: ""},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""}
+  ]);
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {'arr':null}});
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
+  const [graphType, setGraphType] = useState('bar');
+
+  const columns = [ 
+    {title: "Patient ID" , field: "patient_id"},
+    {title: "Age" , field: "age"},
+    {title: "Diabete" , field: "diabete"},
+    {title: "Final Diagnosis" , field: "final_diagnosis"},
+    {title: "Gender" , field: "gender"},
+    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
+    {title: "Hypertension" , field: "hypertension"},
+    {title: "Race" , field: "race"},
+  ]
 
   // componentDidMount() {
   useEffect( () => {
@@ -134,6 +167,17 @@ function GenePage() {
       // })
       //console.log( patient_data['patient_id'] );
     }
+
+    async function fetchPatientsData() {
+      console.log(patientsDataAPIURL)
+      const res = await axios.get(patientsDataAPIURL);
+      set_patient_table_data(res.data);
+      //set_patient_table_input_format( createPatientFormatted(patient_data) );
+      // .then(res => {
+      // })
+      //console.log( patient_data['patient_id'] );
+    }
+    fetchPatientsData()
     fetchGeneData()
   } , []);
 
@@ -172,7 +216,6 @@ function GenePage() {
   fetchSeqName()
  } , [] );
 
-
   return (
     <div>
 
@@ -183,119 +226,175 @@ function GenePage() {
           <button className="buttonElement"> Delete </button>
         </div>
       </div>
+        <div className="titleLayout">
+          {gene_data?(
+              <div>
+                <h3>{gene_data.name}</h3>
+              </div>
+            ):(
+              <div>
+                <CircularProgress />
+                <h3>Fetching Data...</h3>
+              </div>
+            )}
+        </div>
 
-      {gene_data ? (
-        <div>
+        <div className="cardLayout">
+          <div className='cardContent'>
+            {gene_external_data["description"]?(
+              <div>
+                <h4 className='cardTitle'>Description</h4>
+                <p>{gene_external_data["description"]}</p>  
+              </div>
+            ):(
+              <div>
+                <CircularProgress />
+                <h3>Fetching Data...</h3>
+              </div>
+            )}
+          </div>
+        </div>
 
-          <nav className="nav_index">
-            <ul className="nav_index_ul">
-              <li className="nav_index_li">{gene_data.name}</li>
-            </ul>
-          </nav>
-          <Box className="cardLayout_outer">
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Gene Information</h4>
+              {gene_data?(
+                <div>
+                  <p>ID: {gene_data.id}</p>
+                  <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
+                </div>
+              ):(
+                <div>
+                  <CircularProgress />
+                  <h3>Fetching Data...</h3>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+
+      <div className="bottomInfo">
+
+          <Box className="bottomCard" >
             <Card variant="outlined">
               <CardContent>
-
-                <div className="cardLayout">
-                  <div className='cardContent'>
-                    <h4 className='cardTitle'>Description</h4>
-                    <p>{gene_external_data["description"]}</p>  
-                  </div>
-                </div>
-
-                <Box className="cardLayout">
-                  <Card variant="outlined">
-                    <CardContent>
-                      <h4 className='cardTitle'>Gene Information</h4>
-                      <p>ID: {gene_data.id}</p>
-                      <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
-                      <MaterialTable columns={columns} 
-                        data={gene_table_input_format}
-                        icons={tableIcons}
-                        options={{
-                          showTitle: false
-                        }}
-                      />  
-                    </CardContent>
-                  </Card>
-                </Box>
-
-              <div className="bottomInfo">
-
-                  <Box className="bottomCard" >
-                    <Card variant="outlined">
-                      <CardContent>
-                        <h4 className='cardTitle'>Stats</h4>
-                        <p>Number of Patients: </p>
-                        <p>Avg Age of Patients: </p>
-                        <p>Number of Missing Cells: </p>
-                        <p>Patient Conditions: </p>
-                      </CardContent>
-                    </Card>
-                  </Box>
-
-                  <Box className="bottomCard">
-                    <Card variant="outlined">
-                      <CardContent>
-                        <h4 className='cardTitle'>Recently Viewed Members</h4>
-                        <p>Person 1</p>
-                        <p>Person 2</p>
-                        <p>Person 3</p>
-                      </CardContent>
-                    </Card>
-                  </Box>
-
-                </div>
-                  <Box className="cardLayout">
-                    <Card variant="outlined">
-                      <CardContent>
-                        <div className="codeCardOuter">
-                          
-                          <h4 className='cardTitle'>Gene View</h4>
-                          <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
-                          
-                            <Table style={ { minWidth: 650}} aria-label="simple table">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>Code</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              
-                              <TableBody>
-                                {
-                                  gene_code_info.code.map(function(item, row_i){
-                                    return <TableRow  key={row_i}>
-                                            <TableCell>
-                                                <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                                return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                          {code_str}
-                                                        </div>     
-                                              })}</div>
-                                            </TableCell>
-                                    </TableRow>
-                                
-                                  })
-                                }
-                              </TableBody>
-                            </Table>
-                            
-                          </TableContainer>
-                          
-              
-                        </div>
-                        
-                      </CardContent>
-                    </Card>
-                  </Box>
+                <h4 className='cardTitle'>Stats</h4>
+                <p>Number of Patients: </p>
+                <p>Avg Age of Patients: </p>
+                <p>Number of Missing Cells: </p>
+                <p>Patient Conditions: </p>
               </CardContent>
             </Card>
           </Box>
-      </div>
-      ) : (
-        <div>Loading...</div>
-      )}
+
+          <Box className="bottomCard">
+            <Card variant="outlined">
+              <CardContent>
+                <h4 className='cardTitle'>Recently Viewed Members</h4>
+                <p>Person 1</p>
+                <p>Person 2</p>
+                <p>Person 3</p>
+              </CardContent>
+            </Card>
+          </Box>
+
+        </div>
+
+
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Data Graph</h4>
+              {gene_data?(
+                <div>
+                  <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
+                  <div className='GraphType'>
+                    <FormControl margin='dense' fullWidth>
+                      <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                      <Select
+                        labelId="GraphTypeLabel"
+                        id="GraphTypeSelect"
+                        value={graphType}
+                        label="GraphType"
+                        onChange={(e)=>{setGraphType(e.target.value)}}
+                        >
+                        <MenuItem value={'bar'}>Bar</MenuItem>
+                        <MenuItem value={'line'}>Basic Line</MenuItem>
+                        <MenuItem value={'pie'}>Pie</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+              ):(
+                <div>
+                  <CircularProgress />
+                  <h3>Fetching Data...</h3>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <h4 className='cardTitle'>Patient List</h4>
+              <MaterialTable columns={columns} 
+              data={patient_table_data}
+              icons={tableIcons}
+              options={{
+                paging: false,
+                showTitle: false
+              }}
+              />
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Box className="cardLayout">
+          <Card variant="outlined">
+            <CardContent>
+              <div className="codeCardOuter">
+                
+                <h4 className='cardTitle'>Gene View</h4>
+                <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                
+                  <Table style={ { minWidth: 650}} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Code</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    
+                    <TableBody>
+                      {
+                        gene_code_info.code.map(function(item, row_i){
+                          return <TableRow  key={row_i}>
+                                  <TableCell>
+                                      <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                      return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                {code_str}
+                                              </div>     
+                                    })}</div>
+                                  </TableCell>
+                          </TableRow>
+                      
+                        })
+                      }
+                    </TableBody>
+                  </Table>
+                  
+                </TableContainer>
+                
+    
+              </div>
+              
+            </CardContent>
+          </Card>
+        </Box>
     </div>
-  );
+      )
 }
 
 export default GenePage

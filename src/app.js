@@ -23,7 +23,7 @@ function app() {
                 </div>
               </>
             }/>
-            <Route exact path="/gene/:id" element={
+            <Route exact path="/gene/:name/:id" element={
               <>
                 <Navbar/>
                 <div>
