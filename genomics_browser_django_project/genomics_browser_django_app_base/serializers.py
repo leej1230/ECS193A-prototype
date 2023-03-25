@@ -10,8 +10,15 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'patient_id',
+            'age',
+            'diabete',
+            'final_diagnosis',
+            'gender',
+            'hypercholesterolemia',
+            'hypertension',
+            'race',
             'gene_ids',
-            'gene_values',
+            # 'gene_values',
             'dataset_id'
         )
 
@@ -22,7 +29,9 @@ class GeneSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'dataset_id'
+            'dataset_id',
+            'patient_ids',
+            'gene_values'
         )
 
 class DatasetSerializer(serializers.ModelSerializer):
@@ -32,9 +41,12 @@ class DatasetSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'patient_ids',
             'gene_ids',
+            'patient_ids',
+            'gene_id_count',
+            'patient_id_count',
             'date_created',
+            'url',
         )
 
 class CounterSerializer(serializers.ModelSerializer):

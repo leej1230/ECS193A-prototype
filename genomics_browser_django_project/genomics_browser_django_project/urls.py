@@ -26,11 +26,16 @@ urlpatterns = [
     re_path(r'^api/test/preview', views.test_preview),
     path('api/preview/<slug:patientID>', views.patientQuery),
     path('api/patient/<slug:patientID>', views.GET_patientQuery),
+
     path('api/upload_dataset', views.POST_Dataset_Data),
     re_path(r'^api/datasetpost', views.POST_Dataset_Data),
+    
     re_path(r'^api/dataset/all', views.GET_datasets_all),
     path('api/dataset/<slug:dataset_id>', views.GET_datasets_query ),
     re_path(r'^api/genepost', views.POST_Gene_Data),
+    path('api/gene/<str:gene_name>/<slug:gene_id>', views.GET_gene_query),
     re_path(r'^api/gene/all', views.GET_gene_all),
-    re_path(r'^api/counter/all', views.GET_counter_all)
+    re_path(r'^api/counter/all', views.GET_counter_all),
+    re_path(r'^api/seq/names' , views.GET_SEQ_NAMES),
+    path('api/patients/<str:gene_id>/<slug:dataset_id>', views.GET_patients_info),
 ]

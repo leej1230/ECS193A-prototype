@@ -7,6 +7,7 @@ import SampleList from './components/SampleList';
 import Sample from './components/Sample';
 import UploadDataset from './components/UploadDataset';
 import DatasetPage from './components/DatasetPage';
+import GenePage from './components/GenePage';
 import HomePage from './components/HomePage';
 
 function app() {
@@ -19,6 +20,14 @@ function app() {
                 <Navbar/>
                 <div>
                   <Sample/>
+                </div>
+              </>
+            }/>
+            <Route exact path="/gene/:name/:id" element={
+              <>
+                <Navbar/>
+                <div>
+                  <GenePage/>
                 </div>
               </>
             }/>

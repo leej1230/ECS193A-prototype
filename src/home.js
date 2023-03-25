@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TextField from "@mui/material/TextField";
-import { IconButton } from '@mui/material';
+import { IconButton, Button } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import SampleList from './components/SampleList';
@@ -37,7 +37,7 @@ function Home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
-                    <li><a href='/upload'>Upload</a></li>
+                    <Button href="/upload" variant="contained" size='large' sx={ { borderRadius: 28 } }>Upload</Button>
                 </ul>
             </div>
 
