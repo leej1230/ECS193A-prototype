@@ -19,6 +19,8 @@ function navbar() {
                 <div  className='bar_item'><Link className='bar_link'  to='/' >Home</Link></div>
                 <div  className='bar_item'><Link className='bar_link'  to='/' >About</Link></div>
                 <div  className='bar_item'><Link  className='bar_link' to='/' >Contact</Link></div>
+                <div  className='bar_item_right'><Link  className='bar_link' to='/' >Logout</Link></div>
+                <div  className='bar_item_right'><Link  className='bar_link' to='/' >My Account</Link></div>
             </div>
         </div>
     </div>
