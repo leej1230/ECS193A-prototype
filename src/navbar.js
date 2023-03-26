@@ -1,9 +1,15 @@
-import React from 'react';
-import "./navbar.css";
+import React , {useEffect,useState} from 'react';
+import "./Navbar.css";
 
 import { Link } from 'react-router-dom';
 
-function navbar() {
+import { navitems } from './Navitems';
+
+
+function Navbar() {
+
+  const [dropdown, setDropdown] = useState(false);
+  
   return (
     <div>
         {/*<ul className='bar'>
@@ -16,15 +22,25 @@ function navbar() {
         </div>
         <div  className='outer_bar'>
             <div className='bar_group'>
+              
                 <div  className='bar_item'><Link className='bar_link'  to='/' >Home</Link></div>
                 <div  className='bar_item'><Link className='bar_link'  to='/' >About</Link></div>
                 <div  className='bar_item'><Link  className='bar_link' to='/' >Contact</Link></div>
-                <div  className='bar_item_right'><Link  className='bar_link' to='/' >Logout</Link></div>
-                <div  className='bar_item_right'><Link  className='bar_link' to='/' >My Account</Link></div>
+                <li  className='bar_item_right' onMouseEnter={() => {setDropdown(true); console.log("enter")}} onMouseLeave={() => setDropdown(false)} >
+                  <Link  className='bar_link' to='/'>My Account</Link>
+                  {dropdown && <ul className={"services-submenu"} >
+                                  {navitems.map(item => {
+                                    return(
+                                      <li onClick={() => setDropdown(false)} key={item.id} className={item.cName}><Link to={item.path}>{item.title}</Link></li>
+                                    )
+                                  })}
+                                </ul>}
+                </li>
+                
             </div>
         </div>
     </div>
   )
 }
 
-export default navbar
+export default Navbar

@@ -87,3 +87,31 @@
 .button_element:hover {
     background-color: rgb(122, 194, 223); /* Green */
  }
+
+ .services-submenu {
+    position: absolute;
+    top: 67px;
+    list-style: none;
+    text-align: start;
+    right: 0;
+  }
+  
+  .services-submenu li {
+    background: rgb(0, 212, 212);
+    cursor: pointer;
+  }
+  
+  .services-submenu li a:hover {
+    background: rgb(0, 175, 175);
+  }
+  
+  .services-submenu.clicked {
+    display: none;
+  }
+  
+  .submenu-item {
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 16px;
+  }
