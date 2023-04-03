@@ -31,7 +31,7 @@ function Navbar() {
                   {dropdown && <ul className={"services-submenu"} >
                                   {navitems.map(item => {
                                     return(
-                                      <li onClick={() => setDropdown(false)} key={item.id} className={item.cName}><Link to={item.path}>{item.title}</Link></li>
+                                      <li onClick={() => setDropdown(false)} key={item.id} className={item.cName}><Link className='submenu-link' to={item.path}>{item.title}</Link></li>
                                     )
                                   })}
                                 </ul>}

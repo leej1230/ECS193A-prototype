@@ -97,12 +97,12 @@
   }
   
   .services-submenu li {
-    background: rgb(0, 212, 212);
+    background:  rgb(80, 123, 139);
     cursor: pointer;
   }
   
   .services-submenu li a:hover {
-    background: rgb(0, 175, 175);
+    background: rgb(113, 155, 170);
   }
   
   .services-submenu.clicked {
@@ -114,4 +114,10 @@
     text-decoration: none;
     color: white;
     padding: 16px;
+    cursor: pointer;
+  }
+
+  .submenu-link {
+    color: white;
+    text-decoration: none;
   }
