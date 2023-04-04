@@ -242,7 +242,7 @@ function GenePage() {
 
       <hr style={{
             color: 'black',
-            width: '90%',
+            width: '98%',
             marginTop: '1%',
             marginBottom: '1%'
         }} />
@@ -251,8 +251,8 @@ function GenePage() {
           <div className='cardContent'>
             {gene_external_data["description"]?(
               <div>
-                <h4 className='cardTitle'>Description</h4>
-                <p>{gene_external_data["description"]}</p>  
+                <p className='cardTitle'>Description</p>
+                <p className='cardBody'>{gene_external_data["description"]}</p>  
               </div>
             ):(
               <div>
@@ -263,12 +263,19 @@ function GenePage() {
           </div>
         </div>
 
-        <Box className="cardLayout">
+        {/*<Box >
           <Card variant="outlined">
-            <CardContent>
-              <h4 className='cardTitle'>Gene Information</h4>
+            <CardContent >
+            </CardContent>
+          </Card>
+        </Box>*/}
+
+        <div className="cardLayout">
+            <div className='cardContent'>
+
+              <p className='cardTitle'>Gene Information</p>
               {gene_data?(
-                <div>
+                <div className='cardBody'>
                   <p>ID: {gene_data.id}</p>
                   <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
                 </div>
@@ -278,9 +285,8 @@ function GenePage() {
                   <h3>Fetching Data...</h3>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </Box>
+            </div>
+        </div>
 
       <div className="bottomInfo">
 
