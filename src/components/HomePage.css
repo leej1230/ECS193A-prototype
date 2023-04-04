@@ -28,10 +28,14 @@ p {
     padding: 0px;
 }
 
+.container {
+    position: relative;
+    display: inline-block;
+}
+
 .outer_bar {
     margin: 0;
     background-color: rgb(80, 123, 139);
-    overflow: hidden;
     height: 2%;
 }
 
@@ -58,7 +62,6 @@ p {
 #logo_header{
     list-style-type: none;
     margin: 0;
-    overflow: hidden;
     background-color: rgb(31, 68, 99);
     height: 40px;
 }
