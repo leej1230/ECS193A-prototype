@@ -219,17 +219,10 @@ function GenePage() {
   return (
     <div>
 
-      <div className="headerGroup">
-        <p className="textElement">Last Updated: 01-03-2023</p>
-        <div className="buttonGroup">
-          <button className="buttonElement"> Download </button>
-          <button className="buttonElement"> Delete </button>
-        </div>
-      </div>
         <div className="titleLayout">
           {gene_data?(
               <div>
-                <h3>{gene_data.name}</h3>
+                <p className='gene_name'>{gene_data.name}</p>
               </div>
             ):(
               <div>
@@ -238,6 +231,21 @@ function GenePage() {
               </div>
             )}
         </div>
+
+      <div className="headerGroup">
+        <div className="textElement"> <p className="text_label">Last Updated: &nbsp; </p> <p className="text_content">01-03-2023</p> </div>
+        <div className="buttonGroup">
+          <button className="buttonElement"> Download </button>
+          <button className="buttonElement"> Delete </button>
+        </div>
+      </div>
+
+      <hr style={{
+            color: 'black',
+            width: '90%',
+            marginTop: '1%',
+            marginBottom: '1%'
+        }} />
 
         <div className="cardLayout">
           <div className='cardContent'>

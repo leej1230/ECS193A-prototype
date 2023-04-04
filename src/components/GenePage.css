@@ -102,10 +102,19 @@
     margin-left: 10%;
 }
 
+.gene_name {
+    font-size: larger;
+}
 
 .textElement{
     float: left;
+    display: flex; 
 }
+
+.text_label {
+    font-weight: bold;
+}
+
 
 .buttonGroup{
     float: right;
@@ -136,6 +145,8 @@
     margin-right: 10%;
     margin-left: 10%;
     font-size:xx-large;
+    margin-top: 3%;
+
 }
 
 .cardLayout {
@@ -178,4 +189,5 @@
     padding: 5px;
     display: inline;
 }
+
 
