@@ -20,7 +20,7 @@ from django.urls import path, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^api/patientpost', views.BackendServer.POST_Patient_Data),
+#     re_path(r'^api/patientpost', views.BackendServer.POST_Patient_Data),
 
     path('api/patient/<slug:patient_id>',           views.BackendServer.as_view(), {"callback": "get_patient_one"}),
     path('api/gene/<str:gene_name>/<slug:gene_id>', views.BackendServer.as_view(), {"callback": "get_gene_one"}),
@@ -32,11 +32,11 @@ urlpatterns = [
     re_path(r'^api/counter/all',                    views.BackendServer.as_view(), {"callback": "get_counter_all"}),
 
 
-    path('api/upload_dataset', views.BackendServer.POST_Dataset_Data),
-    re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
-    re_path(r'^api/genepost', views.BackendServer.POST_Gene_Data),
+    path('api/upload_dataset', views.BackendServer.as_view(), {"callback": "post_dataset_one"}),
+#     re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
+#     re_path(r'^api/genepost', views.BackendServer.POST_Gene_Data),
 
-    re_path(r'^api/seq/names' , views.BackendServer.GET_SEQ_NAMES),
+#     re_path(r'^api/seq/names' , views.BackendServer.GET_SEQ_NAMES),
 
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"callback": "get_patients_with_gene_from_dataset"}),
 ]
