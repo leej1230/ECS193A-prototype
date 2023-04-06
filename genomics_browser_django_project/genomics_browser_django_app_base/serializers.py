@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from genomics_browser_django_app_base.models import Patient_DB
-from genomics_browser_django_app_base.models import Gene_DB
-from genomics_browser_django_app_base.models import Dataset_DB
-from genomics_browser_django_app_base.models import Counter_DB
+from genomics_browser_django_app_base.models import PatientModel
+from genomics_browser_django_app_base.models import GeneModel
+from genomics_browser_django_app_base.models import DatasetModel
+from genomics_browser_django_app_base.models import CounterModel
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Patient_DB
+        model = PatientModel
         fields = (
             'id',
             'patient_id',
@@ -25,7 +25,7 @@ class PatientSerializer(serializers.ModelSerializer):
 
 class GeneSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Gene_DB
+        model = GeneModel
         fields = (
             'id',
             'name',
@@ -36,7 +36,7 @@ class GeneSerializer(serializers.ModelSerializer):
 
 class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Dataset_DB
+        model = DatasetModel
         fields = (
             'id',
             'name',
@@ -51,7 +51,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
 class CounterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Counter_DB
+        model = CounterModel
         fields = (
             'seq_val',
             'name_use'

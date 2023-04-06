@@ -72,7 +72,7 @@ class ParsedDataset :
         gene_ids = list(self.df.filter(regex="ENSG").columns)
         dataset_id = 1
 
-        a =  [{
+        return [{
             'patient_id': self.df["Sample name"].iloc[i],
             'age': self.df["Age At Onset"].iloc[i],
             'diabete': self.df['Diabetes'].iloc[i],
@@ -84,7 +84,7 @@ class ParsedDataset :
             'gene_ids': gene_ids,
             'dataset_id': dataset_id
         } for i in range(self.df.shape[0])]
-        return a
+        
         # print(a)
         # import os
         # import sys

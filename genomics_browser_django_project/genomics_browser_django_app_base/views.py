@@ -1,56 +1,39 @@
-from django.shortcuts import render
-
-from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
 
-# from pymongo import MongoClient
-from . import pymongo_get_database
-
-from bson.json_util import dumps,loads
 import json
 import urllib.request
  
-from genomics_browser_django_app_base.models import Patient_DB
-from genomics_browser_django_app_base.serializers import PatientSerializer
 from rest_framework.decorators import api_view
-
-from genomics_browser_django_app_base.models import Dataset_DB
-from genomics_browser_django_app_base.serializers import DatasetSerializer
-
-from genomics_browser_django_app_base.models import Gene_DB
-from genomics_browser_django_app_base.serializers import GeneSerializer
-
-from genomics_browser_django_app_base.models import Counter_DB
-from genomics_browser_django_app_base.serializers import CounterSerializer
 
 import datetime
 import re
-import sys
 
-from . import ParsedDataset
+from . import parsed_dataset
+from . import database
 
 import datetime
 
-client = pymongo_get_database.get_connection()
-patient_collection = client['patients']
-gene_collection = client['genes']
-dataset_collection = client['datasets']
-counter_collection = client['counters']
+from django.views import View
+from django.http import JsonResponse
 
-@api_view(['POST'])
-def test(request):
-    # POST the given data to db
-    if request.method == 'POST':
-        patient_data = JSONParser().parse(request)
-        serial = PatientSerializer(data=patient_data)
-        if serial.is_valid():
-            serial.save()
-            return JsonResponse(serial.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(serial.errors, status=status.HTTP_400_BAD_REQUEST)
+class BackendServer(View):
+    def get(self, response, **kwargs):
+        callback = getattr(database.Database, kwargs['callback'])
+        return self.render_to_response(response, callback)
+
+    def post(self, response):
+        return self.render_to_response(response)
+
+    def render_to_response(self, context, callback, **response_kwargs):
+        return self.render_to_json_response(context, callback, **response_kwargs)
+    
+    def render_to_json_response(self, context, callback, **response_kwargs):
+        data = callback(self.kwargs)
+        return JsonResponse(data, **response_kwargs, safe=False)
     
 @api_view(['POST'])
-def POST_Patient_Data(request):
+def POST_Patient_Data(self, request):
     # POST the given data to db
     if request.method == 'POST':
         # Try to get all the patient_data and make a dictionary
@@ -75,51 +58,11 @@ def POST_Patient_Data(request):
         # Try to send data to collection
         # If some error happened and couldn't insert, return error code 408
         try:
-            patient_collection.insert_one(patient_data)
+            self.patient_collection.insert_one(patient_data)
         except:
             return JsonResponse(status=status.HTTP_408_REQUEST_TIMEOUT)
 
         return JsonResponse({'status':'data sent'},status=status.HTTP_201_CREATED)
-
-@api_view(['GET'])
-def test_preview(request):
-    # GET the all of the patient data when there is patient_id
-    all_data = Patient_DB.objects.filter()
-
-    if request.method == 'GET':
-        serial = PatientSerializer(all_data, many=True)
-        return JsonResponse(serial.data, safe=False)
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['GET'])
-def GET_patientall(request):
-    if request.method == 'GET':
-        item = patient_collection.find({},{'patient_id':1})
-        json_data = json.loads(dumps(item))
-        return JsonResponse(json_data, safe=False)
-        # return JsonResponse(item, safe=False)
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['GET'])
-def patientQuery(request,patientID):
-    patient_data = Patient_DB.objects.get(patient_id=patientID)
-
-    if request.method == 'GET':
-        serial = PatientSerializer(patient_data)
-        return JsonResponse(serial.data)
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['GET'])
-def GET_patientQuery(request,patientID):
-
-    if request.method == 'GET':
-        item = patient_collection.find_one({'patient_id':patientID})
-        json_data = json.loads(dumps(item))
-        return JsonResponse(json_data, safe=False)
-        # return JsonResponse(item, safe=False)
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-# Dataset
 
 @api_view(['POST'])
 def POST_Dataset_Data(request):
@@ -176,12 +119,12 @@ def POST_Dataset_Data(request):
             date_created = re.sub(r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created)
             date_created = datetime.datetime.strptime(date_created, '%a %b %d %Y %H:%M:%S').date()
 
-            dataset = ParsedDataset.ParsedDataset(in_txt, name, description, date_created, url, new_dataset_counter)
+            dataset = parsed_dataset.ParsedDataset(in_txt, name, description, date_created, url, new_dataset_counter)
 
             sample.update(dataset.get_dataset_info())
 
             sample = DatasetSerializer(data=sample)
-               
+            
 
         except:
             return JsonResponse(status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -223,67 +166,6 @@ def POST_Dataset_Data(request):
         except:
             return JsonResponse(status=status.HTTP_408_REQUEST_TIMEOUT)
         
-        
-'''class MongoJSONEncoder(json.JSONEncoder):
-    def default(self, o: Any) -> Any:
-        if isinstance(o, ObjectId):
-            return str(o)
-        if isinstance(o, datetime):
-            return str(o)
-        return json.JSONEncoder.default(self, o)'''
-
-@api_view(['GET'])
-def GET_datasets_all(request):
-    if request.method == 'GET':
-        datasets_items = dataset_collection.find({})
-
-        #datasets_items = MongoJSONEncoder().encode(list(datasets_items)[0])
-        #datasets_items = MongoJSONEncoder().encode(list(datasets_items))
-
-        #datasets_items = json.loads( datasets_items )
-        
-        #return JsonResponse( json_util.dumps( datasets_items ) , safe=False)
-        #return JsonResponse( datasets_items , safe=False)
-
-        # if request.method == 'GET':
-    #     item = patient_collection.find({},{'patient_id':1})
-    #     json_data = json.loads(dumps(item))
-    #     return JsonResponse(json_data, safe=False)
-
-        json_data = json.loads(dumps(datasets_items))
-        return JsonResponse(json_data, safe=False)
-
-        datasets_interpreted = DatasetSerializer(data = list(datasets_items), many=True)
-
-        if datasets_interpreted.is_valid():
-            json_data = datasets_interpreted.data
-            return JsonResponse(json_data, safe=False)
-        else:
-            return JsonResponse(datasets_interpreted.errors, safe=False)
-        
-        # return JsonResponse(item, safe=False)
-    
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['GET'])
-def GET_datasets_query(request, dataset_id):
-    if request.method == 'GET':
-        dataset_item = dataset_collection.find_one({ "id": int(dataset_id) })
-
-        datasets_interpreted = DatasetSerializer(data = dataset_item, many=False)
-
-        if datasets_interpreted.is_valid():
-            json_data = datasets_interpreted.data
-            return JsonResponse(json_data, safe=False)
-        else:
-            return JsonResponse(datasets_interpreted.errors, safe=False)
-        
-        # return JsonResponse(item, safe=False)
-    
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-# Gene
-
 @api_view(['POST'])
 def POST_Gene_Data(request):
     # POST the given data to db
@@ -342,58 +224,6 @@ def POST_Gene_Data(request):
         except:
             return JsonResponse(status=status.HTTP_408_REQUEST_TIMEOUT)
 
-
-@api_view(['GET'])
-def GET_gene_all(request):
-    if request.method == 'GET':
-        gene_items = gene_collection.find({},{'name':1, 'id':1})
-        json_data = json.loads(dumps(gene_items))
-        return JsonResponse(json_data, safe=False) 
-
-        # genes_serialized = GeneSerializer( data = list(gene_items), many=True)
-
-        # if genes_serialized.is_valid():
-        #     return JsonResponse(genes_serialized.data, safe=False) 
-        # else:
-        #     return JsonResponse(genes_serialized.errors, safe=False)
-   
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-@api_view(['GET'])
-def GET_gene_query(request, gene_name , gene_id):
-    if request.method == 'GET':
-        # Maybe name and not id
-        gene_item = gene_collection.find_one({"id": int(gene_id),"name":str(gene_name) })
-
-        genes_interpreted = GeneSerializer(data = gene_item, many=False)
-
-        if genes_interpreted.is_valid():
-            json_data = genes_interpreted.data
-            json_data['patient_ids'] = json.loads(json_data['patient_ids'])
-            json_data['gene_values'] = json.loads(json_data['gene_values'])
-            # print(json_data)
-            return JsonResponse(json_data, safe=False)
-        else:
-            return JsonResponse(genes_interpreted.errors, safe=False)
-        
-        # return JsonResponse(item, safe=False)
-    
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
-# counter
-
-@api_view(['GET'])
-def GET_counter_all(request):
-    if request.method == 'GET':
-        counter_items = counter_collection.find({})
-        counter_serialized = CounterSerializer( data = list(counter_items), many=True)
-        if counter_serialized.is_valid():
-            return JsonResponse(counter_serialized.data, safe=False) 
-        else:
-            return JsonResponse(counter_serialized.errors, safe=False)
-   
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
-
 # external api
 @api_view(['GET'])
 def GET_SEQ_NAMES(request):
@@ -415,14 +245,6 @@ def GET_SEQ_NAMES(request):
             mrna = lines_seq[-1].split('\n')
             return JsonResponse({'code' : mrna}, safe=False) 
         # JsonResponse(counter_serialized.errors, safe=False)
-   
+
     return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
 
-@api_view(['GET'])
-def GET_patients_info(request,gene_id,dataset_id):
-    if request.method == 'GET':
-        patient_items = patient_collection.find({"$and": [{"gene_ids": gene_id},{"dataset_id": int(dataset_id)}]}, {"gene_ids":0,"dataset_id":0})
-        json_data = json.loads(dumps(patient_items))
-        return JsonResponse(json_data, safe=False) 
-    
-    return JsonResponse(status=status.HTTP_418_IM_A_TEAPOT)
