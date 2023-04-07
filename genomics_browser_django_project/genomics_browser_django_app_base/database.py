@@ -198,6 +198,14 @@ class Database():
 
     class Genes:
         def get_gene_one(request):
+            """Retrieves the data for a single gene from the gene collection in the database.
+
+            Args:
+                request (dict): A dictionary containing the 'gene_id' and 'gene_name' fields.
+
+            Returns:
+                dict: A dictionary containing the gene data.
+            """
             gene = Database.gene_collection.find_one({'id': int(request['gene_id']), 'name': str(request['gene_name'])})
             serial = GeneSerializer(gene, many=False)
             json_data = serial.data
@@ -206,17 +214,41 @@ class Database():
             return json_data
 
         def get_gene_all(request):
+            """Retrieves the name and ID of all genes in the gene collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: A dictionary containing the gene names and IDs.
+            """
             genes = Database.gene_collection.find({}, {'_id': 0, 'name': 1, 'id': 1})
             json_data = loads(dumps(genes))
             return json_data
 
         def post_gene_one(request):
+            """Adds a single gene to the gene collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: A dictionary containing a status code indicating success or failure.
+            """
             pass
             return loads(dumps(status.HTTP_201_CREATED))
 
         def post_gene_many(request):
+            """Adds multiple genes to the gene collection in the database.
+
+            Args:
+                request: A list of dictionaries, where each dictionary represents a gene.
+
+            Returns:
+                dict: A dictionary containing a status code indicating success or failure.
+            """
             Database.gene_collection.insert_many(request) 
-            return loads(dumps(status.HTTP_201_CREATED))
+            return loads(dumps(status.HTTP_201_CREATED)) 
 
     class Datasets:
         @staticmethod
