@@ -7,6 +7,7 @@ import SampleList from './components/SampleList';
 import Slider from './components/Slider';
 
 
+
 function Home() {
     const [search, setSearch] = useState('');
     return (
@@ -30,6 +31,7 @@ function Home() {
 
             <div className='search-result'>
                 <ul className='search-result'>
+                    <a href="/gene_bootstrap">Bootstrap Page</a>
                     <Slider />
                     <SampleList kword={search}/>
                 </ul>
