@@ -2,7 +2,7 @@ import React, {useEffect,useState} from 'react';
 import axios from 'axios';
 import { Box, Card , CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
 import "./GenePage.css";
-import "../data.css";
+
 import SampleGraph from './echartdemo';
 
 //import { useTable } from "react-table";
@@ -281,7 +281,7 @@ function GenePage() {
                                       <br />
                                       <p>Description: {gene_external_data.description}</p>
                                       <br />
-                                      <p>Dataset: {gene_data.dataset_id}</p>
+                                      <p>Dataset ID: {gene_data.dataset_id}</p>
                                       <br />
                                       <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a>
                                     </div>
@@ -352,40 +352,95 @@ function GenePage() {
 
                   <div class="row">
 
-                  <div class="col-xl-6 col-lg-7">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
+                    <div class="col-xl mb-4">
+
+                      
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Number of Patients: </p>
+                                <p>Avg Age of Patients: </p>
+                                <p>Number of Missing Cells: </p>
+                                <p>Patient Conditions: </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p>Number of Patients: </p>
-                            <p>Avg Age of Patients: </p>
-                            <p>Number of Missing Cells: </p>
-                            <p>Patient Conditions: </p>
+                  
+
+             
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Related Genes</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Gene 1</p>
+                                <p>Gene 2</p>
+                                <p>Gene 3</p>
+                            </div>
                         </div>
                     </div>
-                  </div>
-
-                  <div class="col-xl-6 col-lg-7">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Related Genes</h6>
-                        </div>
-                        <div class="card-body">
-                            <p>Person 1</p>
-                            <p>Person 2</p>
-                            <p>Person 3</p>
-                        </div>
+                    
+                    <div class="col-xl">
+                      <div class="card shadow mb-4">
+                          <div class="card-header py-3">
+                              <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                          </div>
+                      
+                          <MaterialTable columns={columns}
+                           
+                            data={patient_table_data}
+                            icons={tableIcons}
+                            options={{
+                              pageSize: 5,
+                              pageSizeOptions: [5, 10, 15, 25, 50, 100],
+                              showTitle: false
+                            }}
+                            />
+                      
+                      </div>
                     </div>
-                  </div>
 
                   </div>
+
+                <div>
+
+                  <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                  
+                  <Table style={ { minWidth: 650}} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Code</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    
+                    <TableBody>
+                      {
+                        gene_code_info.code.map(function(item, row_i){
+                          return <TableRow  key={row_i}>
+                                  <TableCell>
+                                      <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                      return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                {code_str}
+                                              </div>     
+                                    })}</div>
+                                  </TableCell>
+                          </TableRow>
+                      
+                        })
+                      }
+                      </TableBody>
+                    </Table>
+                  
+                  </TableContainer>
+
+                </div>
 
               </div> 
 
           </div>
 
-      </div>
+        </div>
 
       </div>
 
