@@ -2,7 +2,7 @@
 // Add URL of the file
 // Use material ui for components
 
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import axios from 'axios';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { Button, TextareaAutosize } from '@mui/material';
@@ -26,6 +26,18 @@ function UploadDataset(){
 
     const handleSubmission = () => {
         const formData = new FormData();
+
+        console.log(selectedFile);
+        console.log(urltoFile);
+        console.log(dateCreated);
+        console.log(isFilePicked);
+
+        if(isFilePicked == false){
+          return;
+        }
+
+        
+
         formData.append('file',selectedFile);
         formData.append('description', description)
         formData.append('urltoFile', urltoFile)
@@ -38,6 +50,7 @@ function UploadDataset(){
               setProgress(Math.round( (e.loaded * 100) / e.total))
             }
         }
+
         axios.post(api_url, formData, config)
         .then((result) => {
           console.log('Success', result)
@@ -52,10 +65,65 @@ function UploadDataset(){
     return(
       <div className='form-container'>
           <div>
-            <h1>File Upload</h1>
+            <h1></h1>
           </div>
 
-          <div className='submit-button'>
+          <div class="card shadow mb-4">
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between ">
+                  <h5 class="m-0 font-weight-bold text-primary">File Upload</h5>
+              </div>
+              <div class="card-body">
+                <form>
+                  <div class="form-group">
+                  <div class="mb-3">
+                    <label for="formFile" class="form-label">Dataset CSV File Upload</label>
+                    <input class="form-control" type="file" id="formFile" onChange={(e)=>changeHandler(e)} />
+                  </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Description</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange = {(e)=>setDescription(e.target.value)} />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">URL</label>
+                    <input type="url" class="form-control" id="exampleInputPassword1" onChange={(e)=>setUrltoFile(e.target.value)} />
+                  </div>
+                  <button type="button" class="btn btn-primary" onClick={handleSubmission}>Submit</button>
+                </form> 
+
+                <div class="row justify-content-center">
+                  
+                      <div className='progress-bar' style={{ width: 200, height: 200 }}>
+                        <CircularProgressbar 
+                          value={progress} 
+                          text={`${progress}%`}
+                          styles={buildStyles({
+                            // How long animation takes to go from one percentage to another, in seconds
+                            pathTransitionDuration: 0.5,
+
+                            textSize: '10px',
+                            text:{dominantBaseline: 'middle', textAnchor: 'middle'},
+                            root:{verticalAlign: "middle"},
+                        
+                            // Colors
+                            pathColor: `rgba(62, 152, 199`,
+                            trailColor: '#d6d6d6',
+                            backgroundColor: '#03fc80',
+                          })}
+                        />
+                      </div>
+                </div>
+
+              </div>
+          </div>
+
+      </div>
+    )
+}
+
+
+/*
+<div className='submit-button'>
             <Button variant="contained" component="label">
               Upload
               <input hidden type="file" onChange={changeHandler} />
@@ -122,10 +190,8 @@ function UploadDataset(){
             </Button>
           )}
           </div>
+*/
 
-      </div>
-    )
-}
 
 // class UploadDataset extends React.Component {
 
