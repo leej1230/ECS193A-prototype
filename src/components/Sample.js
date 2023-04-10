@@ -28,6 +28,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -93,6 +96,7 @@ function Sample() {
 
   return (
     <div>
+      
 
       <div className="headerGroup">
         <p className="textElement">Last Updated: 01-03-2023</p>
@@ -203,10 +207,21 @@ function Sample() {
             <Card variant="outlined">
               <CardContent>
                 <h4 className='cardTitle'>Gene View</h4>
-                
               </CardContent>
             </Card>
           </Box>
+
+          <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+          <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+          <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+          <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+          <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+          <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+          <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
 
 
       </div>

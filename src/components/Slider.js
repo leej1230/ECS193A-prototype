@@ -6,6 +6,9 @@ import DatasetList from "./DatasetList"
 import axios from 'axios';
 import ScrollBars from "react-custom-scrollbars";
 
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+
 /*
 ,
   {id: 7, name: 'cheetah', description: 'cool stuff', date_published: '05-27-2022', gene_ids: [17,20,23], patient_ids: [74,18,28] },
@@ -13,6 +16,7 @@ import ScrollBars from "react-custom-scrollbars";
   {id: 9, name: 'ant', description: 'komvscsaw%%^', date_published: '12-1-2022', gene_ids: [21,23,26], patient_ids: [34,72,30] }
 
 */
+
 
 
 class SliderItemsContainer extends React.Component {
@@ -26,11 +30,27 @@ class SliderItemsContainer extends React.Component {
     render() {
       return (
         <div >
+
+<meta http-equiv='cache-control' content='no-cache' />
+<meta http-equiv='expires' content='0' />
+<meta http-equiv='pragma' content='no-cache' />
             
                 <ScrollBars style={{ width: 1000, height: 400 }}>
                   {this.props.dataset_groups_list.map((child, index) =>
                 <div key={index}> <DatasetList datasets_arr={this.props.dataset_groups_list[index]} /> </div>)}
                 </ScrollBars>
+
+                <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+                <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+                <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+                <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+                <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+                <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+                <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
    
         </div>
       );
@@ -105,8 +125,21 @@ export default class Slider extends React.Component {
 
   render(){  return (
       <div>
+        
         <SliderItemsContainer  dataset_groups_list = {this.state.groupings} >
         </SliderItemsContainer>
+
+        <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+        <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+        <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+        <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+        <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
       </div>
     );
   }

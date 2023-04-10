@@ -3,6 +3,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import "./SampleList.css"
 
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`
 const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`
 // const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
@@ -28,6 +31,7 @@ function SampleList(props) {
   
   return (
     <div>
+      
       <h5>Popular Genes</h5>
 
     {gene_data ? (
@@ -41,7 +45,6 @@ function SampleList(props) {
       ):(
         <div>
           <CircularProgress />
-          <h3>Fetching Data...</h3>
         </div>
         )
       }
@@ -55,6 +58,18 @@ function SampleList(props) {
         )
       }
     </div> */}
+
+      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
     </div>
   )
 }

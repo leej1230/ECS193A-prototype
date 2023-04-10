@@ -6,12 +6,15 @@ import "./home.css";
 import SampleList from './components/SampleList';
 import Slider from './components/Slider';
 
-
+import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./components/bootstrap_gene_page/css/sb-admin-2.min.css"
 
 function Home() {
     const [search, setSearch] = useState('');
     return (
         <body id="page-top">
+
+            
 
       <div id="wrapper">
 
@@ -159,6 +162,19 @@ function Home() {
              
             </div>
         </div>
+
+        <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+        <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+        <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+        <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+        <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+
     </body>
 
 

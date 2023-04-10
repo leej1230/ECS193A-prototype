@@ -7,6 +7,7 @@ import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 
+
 export default class Dataset extends React.Component {
 
     
@@ -14,7 +15,6 @@ export default class Dataset extends React.Component {
     
     return (
       <div> 
-
 
           <div class="card shadow mb-4">
             <div class="card-body">

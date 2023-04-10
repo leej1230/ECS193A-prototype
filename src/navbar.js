@@ -121,6 +121,17 @@ function Navbar() {
 
           </nav>
 
+          <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+          <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+          <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+          <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+          <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+          <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+          <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
           
     </div>
   )
