@@ -133,7 +133,7 @@ export default class DatasetPage extends React.Component {
 
               <div class="container-fluid">
 
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                  <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5">
                       <h1 class="h1 mb-0 text-gray-800">
                         {this.state.dataset["name"]}
                       </h1>

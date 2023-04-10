@@ -90,22 +90,32 @@ class DatabaseList extends React.Component {
   
   render() { return (
 
-      <Box width = '1000px'>
-        <Card variant='outlined'>
-          <CardContent>
-            <div className = "outer_grid">
-            { this.props.datasets_arr.map((data_set_single, index) =>
-              <Dataset dataset = {this.props.datasets_arr[index]} /> )}
 
-            </div>
-          </CardContent>
-        </Card>
-
-      </Box>
- 
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <div className = "outer_grid">
+        { this.props.datasets_arr.map((data_set_single, index) =>
+          <Dataset dataset = {this.props.datasets_arr[index]} /> )}
+        </div>
+      </div>
+    </div>
 
     )
   };
 }
 
 export default DatabaseList
+
+/*
+<Box width = '1000px'>
+        <Card variant='outlined'>
+          <CardContent>
+            <div className = "outer_grid">
+            { this.props.datasets_arr.map((data_set_single, index) =>
+              <Dataset dataset = {this.props.datasets_arr[index]} /> )}
+            </div>
+          </CardContent>
+        </Card>
+
+      </Box>
+*/

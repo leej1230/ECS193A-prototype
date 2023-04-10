@@ -15,7 +15,7 @@ function Navbar() {
   
   return (
     <div>
-        <nav class="navbar navbar-expand navbar-light bg-primary topbar mb-4 static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
 
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
               <i class="fa fa-bars"></i>
