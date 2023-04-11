@@ -18,7 +18,7 @@ export default class HomePage extends React.Component {
 
     render(){
         return(
-            <body id="page-top">
+            <body id="page-top" class="home_page_body">
             <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
 
                 <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -46,7 +46,7 @@ export default class HomePage extends React.Component {
                 </div>
         
    
-        <header class="masthead">
+    
             <div class="container">
                 <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
                 <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
@@ -55,7 +55,7 @@ export default class HomePage extends React.Component {
                     <button class="btn btn-primary" type="submit">Signup</button> 
                 </div>
             </div>
-        </header>
+    
 
         <footer class="footer py-4 fixed-bottom bg-secondary">
             <div class="container">

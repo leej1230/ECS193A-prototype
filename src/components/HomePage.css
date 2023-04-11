@@ -116,12 +116,16 @@ p {
  }
 */
 
-body {
+.home_page_body {
     background-image: url("https://as2.ftcdn.net/v2/jpg/02/44/28/75/1000_F_244287519_RoEredXSEUy46jCwJLAMruvfmweIr5g9.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 100%;
+    position:absolute;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
 }
 
 #title_website{
