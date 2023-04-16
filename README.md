@@ -78,3 +78,7 @@ Mac: source genomics_browser_venv/Scripts/activate
 
 ### Kill virtual environment
 Windows & Mac: deactivate
+
+### Run Test
+1. Change directory to genomics_browser_django_project/
+2. run: python manage.py test
