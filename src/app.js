@@ -9,6 +9,7 @@ import UploadDataset from './components/UploadDataset';
 import DatasetPage from './components/DatasetPage';
 import GenePage from './components/GenePage';
 import HomePage from './components/HomePage';
+import GenePageBootstrap from './components/bootstrap_gene_page/GenePageBootstrap';
 
 function app() {
   return (
@@ -58,6 +59,11 @@ function app() {
             <Route exact path="/homepage"  element={
               <>
                 <HomePage/>
+              </>
+            }  />
+            <Route exact path="/gene_bootstrap"  element={
+              <>
+                <GenePageBootstrap />
               </>
             }  />
         </Routes>
