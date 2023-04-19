@@ -50,177 +50,145 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
-export default class DatasetPage extends React.Component {
+function DatasetPage() {
+  const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
+  const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
+  const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
+  const [geneIds, setGeneIds] = useState([]);
+  const [patientIds, setPatientIds] = useState([]);
+  const columns = [
+    { title: "Field Name", field: "field_name" },
+    { title: "Value", field: "value" }
+  ];
 
-     state = {
-        dataset: {"name": "None", "gene_ids": "0", "patient_ids": "0" },
-        DATASET_ID : window.location.pathname.split("/").at(-1),
-        dataset_table_input_format: []
+  useEffect(() => {
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
+    axios.get(url).then((result) => {
+      setDataset(result.data);
+    });
+  }, [DATASET_ID]);
+
+  useEffect(() => {
+    setDatasetTableInputFormat(createDatasetFormatted());
+    setGeneIds(saveGeneIdArray());
+    setPatientIds(savePatientIdArray());
+  }, [dataset]);
+
+  const createDatasetFormatted = () => {
+    // return dataset formatted for table
+    const initArr = [];
+    const dataInput = dataset;
+    Object.keys(dataInput).forEach((key) => {
+      if (key !== "gene_ids" && key !== "patient_ids") {
+        const valInput = dataInput[key];
+        if (key === "url") {
+          initArr.push({
+            field_name: key,
+            value: (
+              <a href={valInput} target="_blank" rel="noopener noreferrer">
+                {" "}
+                {valInput}{" "}
+              </a>
+            ),
+          });
+        } else {
+          initArr.push({ field_name: key, value: valInput });
+        }
       }
-    
-    columns = [ 
-      {title: "Field Name" , field: "field_name"},
-      {title: "Value" , field: "value"}
-    ]
+    });
 
-    
-    componentDidMount() {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${this.state.DATASET_ID}`;
-      axios.get(url)
-      .then(result => {
-        this.setState({
-          dataset : result.data
-        })
-        
-      }).then(  
-        () =>{
-          this.setState({
-            dataset_table_input_format : this.createDatasetFormatted(),
-            gene_ids : this.saveGeneIdArray(),
-            patient_ids : this.savePatientIdArray(),
-          })
-        }
-      )
-    }
+    return initArr;
+  };
 
-    createDatasetFormatted() {
-      // return dataset formatted for table
-      var init_arr = [];
-      var data_input = this.state.dataset;
-      Object.keys(data_input).forEach(function(key) {
-        //console.log('Key : ' + key + ', Value : ' + this.state.dataset_table_input_format[key])
-        //init_arr.push( {field_name: key , value: this.state.dataset[key] } )
+  const saveGeneIdArray = () => {
+    const dataInput = dataset;
+    return dataInput["gene_ids"]["arr"];
+  };
 
-        // Avoid showing list of ids
-        if (key !== "gene_ids" && key !== "patient_ids"){
-          var val_input = data_input[key]
-          if (key === "url"){
-            init_arr.push( {field_name: key , value: <a href={val_input}> {val_input} </a> } )
-          }else{
-            init_arr.push( {field_name: key , value: val_input } )
-          }
-        }
-      });
+  const savePatientIdArray = () => {
+    const dataInput = dataset;
+    return dataInput["patient_ids"]["arr"];
+  };
 
-      console.log( init_arr )
-
-      return init_arr;
-    }
-
-    saveGeneIdArray() {
-      var data_input = this.state.dataset;
-      return data_input["gene_ids"]["arr"]
-    }
-
-    savePatientIdArray() {
-      var data_input = this.state.dataset;
-      return data_input["patient_ids"]["arr"]
-    }  
-     
-    render(){
-        //console.log(this.state.dataset)
-      return (
+  return (
 
 
-        <body id="page-top">
+    <body id="page-top">
 
-      <div id="wrapper">
+  <div id="wrapper">
 
-      <div id="content-wrapper" class="d-flex flex-column">
+  <div id="content-wrapper" class="d-flex flex-column">
 
 
-          <div id="content">
+      <div id="content">
 
-              <div class="container-fluid">
+          <div class="container-fluid">
 
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5">
-                      <h1 class="h1 mb-0 text-gray-800">
-                        {this.state.dataset["name"]}
-                      </h1>
-                      <div>
-                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
-                                class="fas fa-sm text-white-50"></i>Update</a>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
-                                class="fas fa-download fa-sm text-white-50"></i>Generate</a>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"><i
-                                class="fas fa-sm text-white-50"></i>Delete</a>
-                      </div>
+              <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5">
+                  <h1 class="h1 mb-0 text-gray-800">
+                    {dataset["name"]}
+                  </h1>
+                  <div>
+                  <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
+                            class="fas fa-sm text-white-50"></i>Update</a>
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
+                            class="fas fa-download fa-sm text-white-50"></i>Generate</a>
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"><i
+                            class="fas fa-sm text-white-50"></i>Delete</a>
                   </div>
+              </div>
 
-                  <div class="row">
+              <div class="row">
 
-                    <div class="col-xl-3 col-md-6 mb-4">
-                      <div class="card shadow mb-4 border-left-primary">
-                          <div class="card-body">
-                              <div class="row no-gutters align-items-center">
-                                  <div class="col mr-2">
-                                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Last Updated</div>
-                                      <div class="text-xs mb-0 text-gray-800">01-03-2023</div>
-                                  </div>
-                                  <div class="col-auto">
-                                      <i class="fas fa-calendar text-gray-300"></i>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-
-
-                    <div class="col-xl-8 col-lg-7">
-                          <div class="card shadow mb-4">
-                              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                  <h5 class="m-0 font-weight-bold text-primary">Description</h5>
-                              </div>
-                              <div class="card-body">
-                                <p>{this.state.dataset["description"]}</p> 
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div class="row">
-
-                      <div class="col-xl-6 col-lg-5">
-
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
-                            </div>
-                            <div class="card-body">
-                            {this.state.dataset_table_input_format.length>3 ? (
-                              <div>
-                                {
-                                  <MaterialTable columns={this.columns} 
-                                  data={this.state.dataset_table_input_format}
-                                  icons={tableIcons}
-                                  options={{
-                                    paging: false,
-                                    showTitle: false
-                                  }}
-                                  />
-                                }
-                              </div>
-                              ):(
-                                <div>
-                                  <CircularProgress />
-                                </div>
-                              )
-                            }
-                            </div>
-                        </div>
-                      </div>
-
-                      <div class="card shadow mb-4">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
-                      </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card shadow mb-4 border-left-primary">
                       <div class="card-body">
-                          {this.state.gene_ids ? (
+                          <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Last Updated</div>
+                                  <div class="text-xs mb-0 text-gray-800">01-03-2023</div>
+                              </div>
+                              <div class="col-auto">
+                                  <i class="fas fa-calendar text-gray-300"></i>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+
+                <div class="col-xl-8 col-lg-7">
+                      <div class="card shadow mb-4">
+                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                              <h5 class="m-0 font-weight-bold text-primary">Description</h5>
+                          </div>
+                          <div class="card-body">
+                            <p>{dataset["description"]}</p> 
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+
+                  <div class="col-xl-6 col-lg-5">
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+                        </div>
+                        <div class="card-body">
+                        {datasetTableInputFormat.length>3 ? (
                           <div>
                             {
-                              this.state.gene_ids.map( (id) =>
-                              <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
-                              )
+                              <MaterialTable columns={columns} 
+                              data={datasetTableInputFormat}
+                              icons={tableIcons}
+                              options={{
+                                paging: false,
+                                showTitle: false
+                              }}
+                              />
                             }
                           </div>
                           ):(
@@ -229,203 +197,91 @@ export default class DatasetPage extends React.Component {
                             </div>
                           )
                         }
-                      </div>
+                        </div>
                     </div>
-               
-                      <div class="col-lg-3 mb-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
-                            </div>
-                            <div class="card-body">
-                              <p>Number of Genes: </p>
-                              <p>Number of Patients: </p>
-                              <p>Number of Missing Cells: </p>
-                            </div>
-                        </div>
-                     
-
-                 
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Dataset 1</p>
-                                <p>Dataset 2</p>
-                                <p>Dataset 3</p>
-                            </div>
-                        </div>
-                      </div>
-                  
-
                   </div>
 
-              </div> 
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <footer class="sticky-footer bg-white">
-      <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-              <span>Copyright &copy; Your Website 2021</span>
-          </div>
-      </div>
-      </footer>
-
-      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-
-      </body>
-      )
-    }
-}
-
-/*
-<TableContainer component={Paper}>
-                  <Table>
-                    <TableBody>
-                      <TableRow className="tableRow">
-                        <TableCell>ID</TableCell>
-                        <TableCell>{this.state.dataset["id"]}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Date Created</TableCell>
-                        <TableCell>{this.state.dataset["date_created"]}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Gene IDs</TableCell>
-                        
-                          <TableCell>{this.state.dataset["gene_ids"]}</TableCell>
-        
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Patient IDs</TableCell>
-                
-                          <TableCell>{this.state.dataset["patient_ids"]}</TableCell>
-                
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-*/
-
-/*
-
-<div >
-          <div className="headerGroup">
-            <p className="textElement">Last Updated: 01-03-2023</p>
-            <div className="buttonGroup">
-              <button className="buttonElement"> Update </button>
-              <button className="buttonElement"> Download </button>
-              <button className="buttonElement"> Delete </button>
-            </div>
-          </div>
-          
-          <div className="titleLayout">
-                <h3>{this.state.dataset["name"]}</h3>
-          </div>
-          <div className="cardLayout">
-            <div className='cardContent'>
-              <h4 className='cardTitle'>Description</h4>
-              <p>{this.state.dataset["description"]}</p>  
-            </div>
-          </div>
-          
-          <Box className="cardLayout">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Basic Dataset Information</h4>
-                {this.state.dataset_table_input_format.length>3 ? (
-                  <div>
-                    {
-                      <MaterialTable columns={this.columns} 
-                      data={this.state.dataset_table_input_format}
-                      icons={tableIcons}
-                      options={{
-                        paging: false,
-                        showTitle: false
-                      }}
-                      />
-                    }
+                  <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
                   </div>
-                  ):(
-                    <div>
-                      <CircularProgress />
-                      <h3>Fetching Data...</h3>
-                    </div>
-                  )
-                }
-              </CardContent>
-            </Card>
-          </Box>
-
-          <div className="bottomInfo">
-
-            <Box className="bottomCard" >
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Dataset Stats</h4>
-                  <p>Number of Genes: </p>
-                  <p>Number of Patients: </p>
-                  <p>Number of Missing Cells: </p>
-                </CardContent>
-              </Card>
-            </Box>
-
-            <Box className="bottomCard">
-              <Card variant="outlined">
-                <CardContent>
-                  <h4 className='cardTitle'>Recently Viewed Members</h4>
-                  <p>Person 1</p>
-                  <p>Person 2</p>
-                  <p>Person 3</p>
-                </CardContent>
-              </Card>
-            </Box>
-
-          </div>
-
-          <Box className="cardLayout">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Dataset View</h4>
-                
-                
-
-                {this.state.gene_ids ? (
-                  <div>
-                    {
-                      this.state.gene_ids.map( (id) =>
-                      <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
+                  <div class="card-body">
+                      {geneIds? (
+                      <div>
+                        {
+                          geneIds.map( (id) =>
+                          <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
+                          )
+                        }
+                      </div>
+                      ):(
+                        <div>
+                          <CircularProgress />
+                        </div>
                       )
                     }
                   </div>
-                  ):(
-                    <div>
-                      <CircularProgress />
-                      <h3>Fetching Data...</h3>
+                </div>
+           
+                  <div class="col-lg-3 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
+                        </div>
+                        <div class="card-body">
+                          <p>Number of Genes: </p>
+                          <p>Number of Patients: </p>
+                          <p>Number of Missing Cells: </p>
+                        </div>
                     </div>
-                  )
-                }
-              </CardContent>
-            </Card>
-          </Box>
-        </div>
+                 
 
-*/
+             
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Dataset 1</p>
+                            <p>Dataset 2</p>
+                            <p>Dataset 3</p>
+                        </div>
+                    </div>
+                  </div>
+              
 
-/* <p>{this.state.gene_ids}</p> */
+              </div>
+
+          </div> 
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="sticky-footer bg-white">
+  <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+          <span>Copyright &copy; Your Website 2021</span>
+      </div>
+  </div>
+  </footer>
+
+  <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+  <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+  <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+  <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+  <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+
+  </body>
+  )
+}
+
+export default DatasetPage;
