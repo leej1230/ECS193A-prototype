@@ -11,7 +11,7 @@ test = {
 '''
 
 # Create your models here.
-class Patient_DB(models.Model):
+class PatientModel(models.Model):
     id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     patient_id = models.CharField(max_length=50, blank=False, default='')
     age = models.IntegerField(blank=False, default='')
@@ -42,7 +42,7 @@ class Patient_DB(models.Model):
     #   'gene_ids',
     #   'dataset_id'
 
-class Gene_DB(models.Model):
+class GeneModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
     id = models.PositiveBigIntegerField(blank = False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
@@ -50,7 +50,7 @@ class Gene_DB(models.Model):
     patient_ids = models.JSONField(blank=False)
     gene_values = models.JSONField(blank=False)
 
-class Dataset_DB(models.Model):
+class DatasetModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
     id = models.PositiveBigIntegerField(blank = False , primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
@@ -62,7 +62,7 @@ class Dataset_DB(models.Model):
     date_created = models.DateField(blank = False)
     url = models.URLField(blank = False)
 
-class Counter_DB(models.Model):
+class CounterModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
     seq_val = models.PositiveBigIntegerField( blank = False )
     name_use = models.CharField(blank = False , max_length=50 )

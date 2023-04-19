@@ -5,16 +5,11 @@ import pandas as pd
 import json
 
 class ParsedDataset : 
-    def __init__(self, in_txt_path, name, description, date_created, url, dataset_id) : 
-        self.input_txt = in_txt_path
-        self.name = name
-        self.description = description
-        self.date_created = date_created
-        self.url = url
-        self.dataset_id = dataset_id
+    def __init__(self, *args, **kwargs) : 
+        self.__dict__.update(kwargs)
         # self.output_csv = out_csv_path
         # self.df = pd.read_csv(self.input_txt, sep="\t")
-        self.df = pd.read_csv(self.input_txt)
+        self.df = pd.read_csv(self.in_txt)
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
@@ -45,6 +40,7 @@ class ParsedDataset :
         patient_ids = [patient_id for patient_id in self.df["Sample name"].values]
         patient_ids_count = len(patient_ids)
         return {
+            'id': self.dataset_id,
             'name': self.name,
             'description': self.description,
             'gene_ids': json.dumps({'arr': gene_ids}),
@@ -72,7 +68,7 @@ class ParsedDataset :
         gene_ids = list(self.df.filter(regex="ENSG").columns)
         dataset_id = 1
 
-        a =  [{
+        return [{
             'patient_id': self.df["Sample name"].iloc[i],
             'age': self.df["Age At Onset"].iloc[i],
             'diabete': self.df['Diabetes'].iloc[i],
@@ -84,7 +80,7 @@ class ParsedDataset :
             'gene_ids': gene_ids,
             'dataset_id': dataset_id
         } for i in range(self.df.shape[0])]
-        return a
+        
         # print(a)
         # import os
         # import sys
