@@ -67,7 +67,7 @@ function DatasetPage() {
     { title: "Value", field: "value" }
   ];
 
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -118,6 +118,8 @@ function DatasetPage() {
     return dataInput["patient_ids"]["arr"];
   };
 
+  const navigate = useNavigate();
+
   return (
 
 
@@ -142,15 +144,8 @@ function DatasetPage() {
                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                             class="fas fa-download fa-sm text-white-50"></i>Generate</a>
                     <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
-                            const url = `${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`;
-
-                            console.log(url);
-
-                            //</div>axios.get(url)
-                              //.then(result => {
-                                
-                                //navigate('/');
-                            //})
+                            //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`)
+                            navigate('/');
 
                           }} >
                           <i class="fas fa-sm text-white-50"></i>
