@@ -8,10 +8,15 @@ from genomics_browser_django_app_base.serializers import CounterSerializer
 
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
 
+from django.http.response import JsonResponse
+
 from rest_framework import status
 
 import re
 import datetime
+
+import urllib.request
+import json
 
 class Database(): 
     client = get_connection()
@@ -249,6 +254,23 @@ class Database():
             """
             Database.gene_collection.insert_many(request) 
             return loads(dumps(status.HTTP_201_CREATED)) 
+        
+        def get_seq_names(request):
+            gene_ensembl_id = "ENSG00000157764"
+            with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:
+                s = json.loads(url.read())
+                variant_names = s[0]['RefSeq mRNA Accession']
+            variant_names_list = variant_names.split('//')
+
+            # for sample just take one variant
+            rfseq_accession = variant_names_list[0]
+
+            url_seq = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" + str(rfseq_accession) + "&rettype=fasta&retmode=text"
+            with urllib.request.urlopen(url_seq) as url_seq_open:
+                seq_resp = url_seq_open.read().decode('utf-8')
+                lines_seq = seq_resp.split(',')
+                mrna = lines_seq[-1].split('\n')
+                return loads(dumps({'code' : mrna}))
 
     class Datasets:
         @staticmethod

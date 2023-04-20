@@ -38,5 +38,7 @@ urlpatterns = [
 
 #     re_path(r'^api/seq/names' , views.BackendServer.GET_SEQ_NAMES),
 
+    re_path(r'^api/seq/names' ,                     views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_seq_names"}),
+
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
 ]
