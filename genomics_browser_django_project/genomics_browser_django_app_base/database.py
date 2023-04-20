@@ -24,12 +24,14 @@ class Database():
     gene_collection     = client['genes']
     dataset_collection  = client['datasets']
     counter_collection  = client['counters']
+    
 
     class Counters:
         COUNTER_NAME_KEY = 'name_use'
         COUNTER_VALUE_KEY = 'seq_val'
         GENE_COUNTER_NAME = 'gene_counter'
         DATASET_COUNTER_NAME = 'dataset_counter'
+        PATIENT_COUNTER_NAME = 'patient_counter'
         INCREMENT_OPERATION = '$set'
 
         def get_last_gene_counter():
@@ -41,6 +43,22 @@ class Database():
             """
             counter = Database.counter_collection.find_one(
                 {Database.Counters.COUNTER_NAME_KEY: Database.Counters.GENE_COUNTER_NAME})
+            if counter:
+                serial = CounterSerializer(counter, many=False)
+                counter = serial.data.get(Database.Counters.COUNTER_VALUE_KEY)
+            else:
+                counter = 0
+            return counter
+        
+        def get_last_patient_counter():
+            """
+            Retrieves the last patient counter value from the database.
+            
+            Returns:
+                int: The last patient counter value.
+            """
+            counter = Database.counter_collection.find_one(
+                {Database.Counters.COUNTER_NAME_KEY: Database.Counters.PATIENT_COUNTER_NAME})
             if counter:
                 serial = CounterSerializer(counter, many=False)
                 counter = serial.data.get(Database.Counters.COUNTER_VALUE_KEY)
@@ -131,6 +149,116 @@ class Database():
                     }, 
                 upsert=False)
             return counter
+
+        @staticmethod
+        def update_dataset_counter(request):
+            """
+            Updates the dataset counter value in the database to some value in request.
+
+            Args: 
+                int: new counter value
+            
+            Returns:
+                int: The updated dataset counter value.
+            """
+
+
+            counter = Database.counter_collection.find_one(
+                {Database.Counters.COUNTER_NAME_KEY: Database.Counters.DATASET_COUNTER_NAME})
+            if counter:
+                serial = CounterSerializer(counter, many=False)
+                counter = serial.data.get(Database.Counters.COUNTER_VALUE_KEY)
+            else:
+                counter = 0
+
+            if counter == 0:
+                Database.counter_collection.insert_one({
+                    Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']),
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.DATASET_COUNTER_NAME
+                })
+            else:
+                Database.counter_collection.update_one({
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.DATASET_COUNTER_NAME}, 
+                    {
+                        Database.Counters.INCREMENT_OPERATION: {
+                            Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']), 
+                            Database.Counters.COUNTER_NAME_KEY: Database.Counters.DATASET_COUNTER_NAME
+                        }
+                    }, 
+                upsert=False)
+            return request['new_counter_value']
+        
+        def update_patient_counter(request):
+            """
+            Updates the patient counter value in the database to some value in request.
+
+            Args: 
+                int: new counter value
+            
+            Returns:
+                int: The updated patient counter value
+            """
+
+            counter = Database.counter_collection.find_one(
+                {Database.Counters.COUNTER_NAME_KEY: Database.Counters.PATIENT_COUNTER_NAME})
+            if counter:
+                serial = CounterSerializer(counter, many=False)
+                counter = serial.data.get(Database.Counters.COUNTER_VALUE_KEY)
+            else:
+                counter = 0
+
+            if counter == 0:
+                Database.counter_collection.insert_one({
+                    Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']),
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.PATIENT_COUNTER_NAME
+                })
+            else:
+                Database.counter_collection.update_one({
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.PATIENT_COUNTER_NAME}, 
+                    {
+                        Database.Counters.INCREMENT_OPERATION: {
+                            Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']), 
+                            Database.Counters.COUNTER_NAME_KEY: Database.Counters.PATIENT_COUNTER_NAME
+                        }
+                    }, 
+                upsert=False)
+            return request['new_counter_value']
+        
+        def update_gene_counter(request):
+            """
+            Updates the gene counter value in the database to some value in request.
+
+            Args: 
+                int: new counter value
+            
+            Returns:
+                int: The updated gene counter value.
+            """
+
+            counter = Database.counter_collection.find_one(
+                {Database.Counters.COUNTER_NAME_KEY: Database.Counters.GENE_COUNTER_NAME})
+            if counter:
+                serial = CounterSerializer(counter, many=False)
+                counter = serial.data.get(Database.Counters.COUNTER_VALUE_KEY)
+            else:
+                counter = 0
+
+            if counter == 0:
+                Database.counter_collection.insert_one({
+                    Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']),
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.GENE_COUNTER_NAME
+                })
+            else:
+                Database.counter_collection.update_one({
+                    Database.Counters.COUNTER_NAME_KEY: Database.Counters.GENE_COUNTER_NAME}, 
+                    {
+                        Database.Counters.INCREMENT_OPERATION: {
+                            Database.Counters.COUNTER_VALUE_KEY: int(request['new_counter_value']), 
+                            Database.Counters.COUNTER_NAME_KEY: Database.Counters.GENE_COUNTER_NAME
+                        }
+                    }, 
+                upsert=False)
+            return request['new_counter_value']
 
     class Patients:
         @staticmethod
@@ -336,4 +464,40 @@ class Database():
             Database.dataset_collection.insert_one(serial.data)
             Database.Counters.increment_dataset_counter()
             return loads(dumps(status.HTTP_201_CREATED))
+        
+        def delete_dataset_one(request):
+
+            try: 
+                """
+                Even if there is no one matching value(s), no error will be generated, nothing will be deleted and the function will reutrn
+                Update counters but be careful of 0 case edge
+
+                Returns:
+                    json object: status of operation
+                """
+
+                datasets_deleted = Database.dataset_collection.delete_one({'id': int(request['dataset_id'])})
+                genes_deleted = Database.gene_collection.delete_many({'dataset_id': int(request['dataset_id'])})
+                patients_deleted = Database.patient_collection.delete_many({'dataset_id': int(1)})
+
+                last_dataset_counter = Database.Counters.get_last_dataset_counter()
+                last_gene_counter = Database.Counters.get_last_gene_counter()
+                last_patient_counter = Database.Counters.get_last_patient_counter()
+
+                if last_dataset_counter > datasets_deleted.deleted_count:
+                    last_dataset_counter = last_dataset_counter - datasets_deleted.deleted_count
+                    ret_val = Database.Counters.update_dataset_counter({'new_counter_value':last_dataset_counter})
+                
+                if last_gene_counter > genes_deleted.deleted_count:
+                    last_dataset_counter = last_dataset_counter - genes_deleted.deleted_count
+                    Database.Counters.update_gene_counter({'new_counter_value':last_gene_counter})
+                    
+
+                if last_patient_counter > patients_deleted.deleted_count:
+                    last_patient_counter = last_patient_counter - patients_deleted.deleted_count
+                    Database.Counters.update_patient_counter({'new_counter_value':last_patient_counter})
+
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
         
