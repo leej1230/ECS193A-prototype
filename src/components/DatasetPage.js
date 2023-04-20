@@ -8,6 +8,8 @@ import Dataset from "./Dataset"
 
 import ScrollBars from "react-custom-scrollbars";
 
+import { json } from 'react-router-dom';
+
 //import { useTable } from "react-table";
 import MaterialTable from 'material-table';
 
@@ -110,12 +112,12 @@ function DatasetPage() {
 
   const saveGeneIdArray = () => {
     const dataInput = dataset;
-    return dataInput["gene_ids"]["arr"];
+    return JSON.parse(dataInput["gene_ids"])["arr"];
   };
 
   const savePatientIdArray = () => {
     const dataInput = dataset;
-    return dataInput["patient_ids"]["arr"];
+    return JSON.parse(dataInput["patient_ids"])["arr"];
   };
 
   const navigate = useNavigate();
@@ -144,8 +146,9 @@ function DatasetPage() {
                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                             class="fas fa-download fa-sm text-white-50"></i>Generate</a>
                     <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
+                            
                             //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`)
-                            navigate('/');
+                            //navigate('/');
 
                           }} >
                           <i class="fas fa-sm text-white-50"></i>
