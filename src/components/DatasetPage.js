@@ -50,6 +50,10 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
+function clickMe() {
+  alert("You clicked me!");
+}
+
 function DatasetPage() {
   const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
@@ -133,8 +137,19 @@ function DatasetPage() {
                             class="fas fa-sm text-white-50"></i>Update</a>
                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                             class="fas fa-download fa-sm text-white-50"></i>Generate</a>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"><i
-                            class="fas fa-sm text-white-50"></i>Delete</a>
+                    <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
+                            //const url = `${process.env.REACT_APP_BACKEND_URL}/api/delete/dataset/${this.state.DATASET_ID}`;
+                            //</div>axios.get(url)
+                            //.then(result => {
+
+
+                            //})
+                            clickMe();
+
+                          }} >
+                          <i class="fas fa-sm text-white-50"></i>
+                          Delete
+                      </button>
                   </div>
               </div>
 
