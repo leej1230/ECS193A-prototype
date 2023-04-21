@@ -461,16 +461,15 @@ class Database():
 
             # Serialize dataset, insert records into database, and increment counters
             serial = DatasetSerializer(dataset.get_dataset_info())
-            print("line 464")
-            print(dataset.get_patients())
+
             Database.Patients.post_patient_many(dataset.get_patients())
-            print("line 466")
+
             Database.Genes.post_gene_many(dataset.get_genes())
-            print("line 468")
+ 
             Database.Counters.increment_gene_counter()
-            print("line 470")
+
             Database.dataset_collection.insert_one(serial.data)
-            print("472")
+
             Database.Counters.increment_dataset_counter()
             return loads(dumps(status.HTTP_201_CREATED))
         
@@ -510,3 +509,7 @@ class Database():
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))
         
+        @staticmethod
+        def update_dataset_one(request):
+           print("cool!!!!")
+           return loads(dumps(status.HTTP_201_CREATED)) 

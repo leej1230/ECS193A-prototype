@@ -10,6 +10,7 @@ import DatasetPage from './components/DatasetPage';
 import GenePage from './components/GenePage';
 import HomePage from './components/HomePage';
 import GenePageBootstrap from './components/bootstrap_gene_page/GenePageBootstrap';
+import UpdateDataset from './components/UpdateDataset';
 
 function app() {
   return (
@@ -66,6 +67,14 @@ function app() {
                 <GenePageBootstrap />
               </>
             }  />
+
+            <Route exact path="/update/dataset"  element={
+              <>
+                <Navbar/>
+                <UpdateDataset />
+              </>
+            }  />
+
         </Routes>
     </Router>
   );

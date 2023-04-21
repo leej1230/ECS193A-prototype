@@ -141,7 +141,7 @@ function DatasetPage() {
                     {dataset["name"]}
                   </h1>
                   <div>
-                  <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
+                  <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
                             class="fas fa-sm text-white-50"></i>Update</a>
                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                             class="fas fa-download fa-sm text-white-50"></i>Generate</a>

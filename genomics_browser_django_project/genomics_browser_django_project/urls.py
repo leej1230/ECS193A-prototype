@@ -33,6 +33,8 @@ urlpatterns = [
 
 
     path('api/upload_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
+
+    path('api/update_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "update_dataset_one"}),
 #     re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
 #     re_path(r'^api/genepost', views.BackendServer.POST_Gene_Data),
 
