@@ -511,5 +511,66 @@ class Database():
         
         @staticmethod
         def update_dataset_one(request):
-           print("cool!!!!")
-           return loads(dumps(status.HTTP_201_CREATED)) 
+
+            # dataset id mandatory, date created will exist, so POST will always be there
+
+
+            request['ctx'] = {
+                'POST'  : request['ctx'].POST.copy()
+            }
+
+            date_created    =   request['ctx']['POST'].get('dateCreated')
+            description     =   request['ctx']['POST'].get('description')
+            url             =   request['ctx']['POST'].get('urltoFile')
+            dataset_id      =   int(request['ctx']['POST'].get('datasetID'))
+
+            dataset_to_modify = Database.Datasets.get_dataset_one({'dataset_id':dataset_id})
+            print("existing record:   ", dataset_to_modify)
+            atleast_one_modified = False
+
+            new_dataset = {}
+
+            if description != None and description != "" and description != dataset_to_modify['description']:
+                new_dataset["description"] = description
+                atleast_one_modified = True
+            
+            if url != None and url != "" and url != dataset_to_modify['url']:
+                new_dataset["url"] = url
+                atleast_one_modified = True
+            
+            if date_created != 'null' and date_created != None and atleast_one_modified:
+                date_created = re.sub(r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created)
+                date_created = datetime.datetime.strptime(date_created, '%a %b %d %Y %H:%M:%S').date()
+                date_modified   =   date_created
+
+                serial_temp = DatasetSerializer({
+                    'id': dataset_id,
+                    'name': "",
+                    'description': "",
+                    'gene_ids': json.dumps({'arr': []}),
+                    'patient_ids': json.dumps({'arr': []}),
+                    'gene_id_count': 0,
+                    'patient_id_count': 0,
+                    'date_created': date_created,
+                    'url': url
+                })
+
+                new_dataset["date_created"] = serial_temp.data['date_created']
+            
+            
+            Database.dataset_collection.update_one({'id':dataset_id}, {"$set": new_dataset}) 
+
+            # Extract data from request and create ParsedDataset object
+            '''if request['ctx'].FILES is not None:
+                request['ctx'] = {
+                    'FILES' : request['ctx'].FILES.copy()
+                }
+                in_txt          =   list(request['ctx']['FILES'].values())[0]
+                name            =   list(request['ctx']['FILES'].values())[0].name
+
+            dataset = ParsedDataset(
+                
+                
+            )'''
+
+            return loads(dumps(status.HTTP_201_CREATED)) 

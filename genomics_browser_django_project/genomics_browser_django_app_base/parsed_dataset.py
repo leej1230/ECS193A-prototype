@@ -44,14 +44,14 @@ class ParsedDataset :
             'name': str(self.name),
             'description': str(self.description),
             'gene_ids': json.dumps({'arr': gene_ids}),
-            'patient_ids': json.dumps({'arr': str(patient_ids)}),
+            'patient_ids': json.dumps({'arr': patient_ids}),
             'gene_id_count': int(gene_ids_count),
             'patient_id_count': int(patient_ids_count),
             'date_created': self.date_created,
             'url': self.url,
         }
 
-    def get_genes(self) :
+    def get_genes(self):
         gene_names = [gene_names for gene_names in self.df.columns if "ENSG" in gene_names]
         gene_values = self.df[gene_names].T
         patient_ids = [pid for pid in self.df["Sample name"]]
@@ -59,7 +59,7 @@ class ParsedDataset :
             "id": 1,
             "name": str(gene_names[i]),
             "dataset_id": int(self.dataset_id),
-            "patient_ids": json.dumps({"arr": str(patient_ids)}),
+            "patient_ids": json.dumps({"arr": patient_ids}),
             "gene_values": json.dumps({"arr": gene_values.iloc[i].tolist()})
             # "gene_values": gene_values[j]
         } for i in range(len(gene_names))]

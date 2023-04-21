@@ -11,6 +11,7 @@ function UpdateDataset(){
     const [selectedFile, setSelectedFile] = useState(null);
     const [urltoFile, setUrltoFile] = useState("");
     const [description, setDescription] = useState("");
+    const [datasetID, setDatasetID] = useState(0);
     const [dateCreated, setDateCreated] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isFilePicked, setIsFilePicked] = useState(false);
@@ -30,12 +31,14 @@ function UpdateDataset(){
         console.log(urltoFile);
         console.log(dateCreated);
         console.log(isFilePicked);
+        console.log(datasetID)
         
 
-        formData.append('file',selectedFile);
-        formData.append('description', description)
-        formData.append('urltoFile', urltoFile)
-        formData.append('dateCreated', dateCreated)
+        formData.append( 'file' , selectedFile );
+        formData.append('datasetID', datasetID );
+        formData.append('description', description);
+        formData.append('urltoFile', urltoFile);
+        formData.append('dateCreated', dateCreated);
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -54,7 +57,7 @@ function UpdateDataset(){
         })
         .catch((error) => {
           console.error('Update failed', error);
-          alert("Due to some error, data has not been updated")
+          alert("Due to some error, data has not been updated");
         })
     }
     
@@ -76,6 +79,10 @@ function UpdateDataset(){
                     <label for="formFile" class="form-label">Dataset CSV File Update</label>
                     <input class="form-control" type="file" id="formFile" onChange={(e)=>changeHandler(e)} />
                   </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Dataset ID (original, can't be updated)</label>
+                    <input type="number" class="form-control"  onChange = {(e)=>setDatasetID(e.target.value)} />
                   </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Description Update</label>
