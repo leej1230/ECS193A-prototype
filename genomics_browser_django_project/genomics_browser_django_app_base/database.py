@@ -576,8 +576,8 @@ class Database():
                 updated_gene_names = [updated_gene_names for updated_gene_names in df.columns if "ENSG" in updated_gene_names]
                 updated_patient_ids = [pid for pid in df["Sample name"]]
 
-                orig_gene_names = json.loads(dataset_to_modify['gene_ids'])["arr"]
-                orig_patient_ids = json.loads(dataset_to_modify['patient_ids'])["arr"]
+                orig_gene_names = dataset_to_modify['gene_ids']["arr"]
+                orig_patient_ids = dataset_to_modify['patient_ids']["arr"]
 
                 add_gene_names = list(set(updated_gene_names) - set(orig_gene_names))
                 add_patient_ids = list(set(updated_patient_ids) - set(orig_patient_ids))
@@ -590,14 +590,16 @@ class Database():
 
                 # delete to lighten future operations
                 genes_deleted = Database.gene_collection.delete_many({'name': {'$in': delete_gene_names} })
-                patients_deleted = Database.gene_collection.delete_many({'patient_id': {'$in': delete_patient_ids} }) 
+
+                patients_deleted = Database.patient_collection.delete_many({'patient_id': {'$in': delete_patient_ids} }) 
+                print(patients_deleted.deleted_count)
 
                 # modify when there are less in dataset
                 for i in range(0,len(modify_gene_names)):
                     cur_gene = modify_gene_names[i]
                     new_gene = {
-                        "patient_ids": json.dumps({"arr": updated_patient_ids}),
-                        "gene_values": json.dumps({"arr": df[modify_gene_names].T.iloc[i].tolist()})
+                        "patient_ids": json.loads(json.dumps({"arr": updated_patient_ids})),
+                        "gene_values": json.loads(json.dumps({"arr": df[modify_gene_names].T.iloc[i].tolist()}))
                     }
                     Database.gene_collection.update_one({'name':cur_gene}, {"$set": new_gene})
 
@@ -617,42 +619,46 @@ class Database():
 
                 # add to the dataset
                 # want cols about patient, so can't just use add_gene_names list
-                subset_df_add = df.loc[:,~df.columns.isin(modify_gene_names)].copy()
-
                 stuff_to_add_txt_file = "./temp.csv"
                 stuff_to_add_name = "temp"
-                subset_df_add.to_csv(stuff_to_add_txt_file)
+                
+                if len(add_gene_names) > 0:
+                    subset_df_add = df.loc[:,~df.columns.isin(modify_gene_names)].copy()
+                    subset_df_add.to_csv(stuff_to_add_txt_file)
 
-                dataset = ParsedDataset(
-                    in_txt          =   stuff_to_add_txt_file,
-                    name            =   stuff_to_add_name,
-                    description     =   "",
-                    url             =   "",
-                    date_created    =   date_created,
-                    dataset_id      =   dataset_id
-                )
+                    dataset = ParsedDataset(
+                        in_txt          =   stuff_to_add_txt_file,
+                        name            =   stuff_to_add_name,
+                        description     =   "",
+                        url             =   "",
+                        date_created    =   date_created,
+                        dataset_id      =   dataset_id
+                    )
 
-                #insert gene records only
-                Database.Genes.post_gene_many(dataset.get_genes())
+                    #insert gene records only
+                    Database.Genes.post_gene_many(dataset.get_genes())
 
-                subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
-                subset_df_add.to_csv(stuff_to_add_txt_file)
+                if len(add_patient_ids) > 0:
 
-                dataset = ParsedDataset(
-                    in_txt          =   stuff_to_add_txt_file,
-                    name            =   stuff_to_add_name,
-                    description     =   "",
-                    url             =   "",
-                    date_created    =   date_created,
-                    dataset_id      =   dataset_id
-                )
+                    subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
+                    subset_df_add.to_csv(stuff_to_add_txt_file)
 
-                Database.Patients.post_patient_many(dataset.get_patients())
+                    dataset = ParsedDataset(
+                        in_txt          =   stuff_to_add_txt_file,
+                        name            =   stuff_to_add_name,
+                        description     =   "",
+                        url             =   "",
+                        date_created    =   date_created,
+                        dataset_id      =   dataset_id
+                    )
 
-                os.remove(stuff_to_add_txt_file)
+                    Database.Patients.post_patient_many(dataset.get_patients())
 
-                new_dataset["gene_ids"] = json.dumps({"arr": updated_gene_names})
-                new_dataset["patient_ids"] = json.dumps({"arr": updated_patient_ids})
+                if len(add_patient_ids) > 0 or len(add_gene_names) > 0:
+                    os.remove(stuff_to_add_txt_file)
+
+                new_dataset["gene_ids"] = json.loads(json.dumps({"arr": updated_gene_names}))
+                new_dataset["patient_ids"] = json.loads(json.dumps({"arr": updated_patient_ids}))
                 new_dataset["gene_id_count"] = len(updated_gene_names)
                 new_dataset["patient_id_count"] = len(updated_patient_ids) 
 
