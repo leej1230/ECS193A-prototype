@@ -71,7 +71,6 @@ const columns = [
 ]
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
-const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_ID}`
 
 function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
@@ -166,18 +165,29 @@ function GenePage() {
       //console.log( patient_data['patient_id'] );
     }
 
+    
+
+    fetchGeneData();
+    
+    
+  } , []);
+
+  useEffect(() => {
     async function fetchPatientsData() {
+      const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
       console.log(patientsDataAPIURL)
       const res = await axios.get(patientsDataAPIURL);
+      console.log("line 172")
+      console.log(res.data)
       set_patient_table_data(res.data);
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
       //console.log( patient_data['patient_id'] );
     }
+
     fetchPatientsData()
-    fetchGeneData()
-  } , []);
+  }, [gene_data])
 
   useEffect( () => {
     // this side effect runs if gene data changes, so that dataset info for the gene can be updated

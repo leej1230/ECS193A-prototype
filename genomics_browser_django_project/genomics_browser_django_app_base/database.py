@@ -279,9 +279,21 @@ class Database():
             Returns:
                 list: A list of patient data objects matching the query.
             """
-            patients = Database.patient_collection.find({'$and': [{'gene_ids': str(request['gene_id'])}, {'dataset_id': int(request['dataset_id'])}]}, {'_id': 0, 'gene_ids': 0, 'dataset_id': 0})
-            json_data = loads(dumps(patients))
-            return json_data 
+            gene = Database.gene_collection.find_one( {'$and': [{'name': str(request['gene_id'])},{'dataset_id': int(request['dataset_id'])}] })
+
+            list_possible_patients = gene['patient_ids']['arr']
+            str_list_possible_patients = [str(cur_patient) for cur_patient in list_possible_patients]
+
+            patients_found = Database.patient_collection.find({'patient_id': {'$in': str_list_possible_patients} }, {'_id':0}) 
+
+            patients_found_list = [{}]
+            for doc in patients_found:  
+                patients_found_list.append(doc)
+            
+            patients_found_list = patients_found_list[1:]
+   
+            json_data = loads(dumps(patients_found_list))
+            return json_data
 
         @staticmethod
         def get_patient_one(request):
