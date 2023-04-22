@@ -12,11 +12,19 @@ from django.http.response import JsonResponse
 
 from rest_framework import status
 
+import os
+
 import re
 import datetime
 
 import urllib.request
 import json
+
+import numpy as np
+
+import pandas as pd
+
+from django.conf import settings
 
 class Database(): 
     client = get_connection()
@@ -516,6 +524,7 @@ class Database():
 
 
             request['ctx'] = {
+                'FILES' : request['ctx'].FILES.copy(),
                 'POST'  : request['ctx'].POST.copy()
             }
 
@@ -555,22 +564,102 @@ class Database():
                     'url': url
                 })
 
-                new_dataset["date_created"] = serial_temp.data['date_created']
-            
-            
-            Database.dataset_collection.update_one({'id':dataset_id}, {"$set": new_dataset}) 
+                new_dataset["date_created"] = serial_temp.data['date_created'] 
 
             # Extract data from request and create ParsedDataset object
-            '''if request['ctx'].FILES is not None:
-                request['ctx'] = {
-                    'FILES' : request['ctx'].FILES.copy()
-                }
-                in_txt          =   list(request['ctx']['FILES'].values())[0]
-                name            =   list(request['ctx']['FILES'].values())[0].name
+            if request['ctx']['FILES'] != None and len(list(request['ctx']['FILES'].values())) > 0:
+                in_txt_file          =   list(request['ctx']['FILES'].values())[0]
+                name_file            =   list(request['ctx']['FILES'].values())[0].name
 
-            dataset = ParsedDataset(
-                
-                
-            )'''
+                df = pd.read_csv(in_txt_file)
+                df = df.drop_duplicates(subset=["Sample name"]) 
+                df = df.loc[:,~df.columns.duplicated()]
+
+                updated_gene_names = [updated_gene_names for updated_gene_names in df.columns if "ENSG" in updated_gene_names]
+                updated_patient_ids = [pid for pid in df["Sample name"]]
+
+                orig_gene_names = json.loads(dataset_to_modify['gene_ids'])["arr"]
+                orig_patient_ids = json.loads(dataset_to_modify['patient_ids'])["arr"]
+
+                add_gene_names = list(set(updated_gene_names) - set(orig_gene_names))
+                add_patient_ids = list(set(updated_patient_ids) - set(orig_patient_ids))
+
+                modify_gene_names = list(set(updated_gene_names) - set(add_gene_names))
+                modify_patient_ids = list(set(updated_patient_ids) - set(add_patient_ids))
+
+                delete_gene_names = list(set(orig_gene_names) - set(updated_gene_names))
+                delete_patient_ids = list(set(orig_patient_ids) - set(updated_patient_ids))
+
+                # delete to lighten future operations
+                genes_deleted = Database.gene_collection.delete_many({'name': {'$in': delete_gene_names} })
+                patients_deleted = Database.gene_collection.delete_many({'patient_id': {'$in': delete_patient_ids} }) 
+
+                # modify when there are less in dataset
+                for i in range(0,len(modify_gene_names)):
+                    cur_gene = modify_gene_names[i]
+                    new_gene = {
+                        "patient_ids": json.dumps({"arr": updated_patient_ids}),
+                        "gene_values": json.dumps({"arr": df[modify_gene_names].T.iloc[i].tolist()})
+                    }
+                    Database.gene_collection.update_one({'name':cur_gene}, {"$set": new_gene})
+
+                for i in range(0,len(modify_patient_ids)):
+                    cur_patient = modify_patient_ids[i]
+                    new_patient = {
+                        'age': int(df["Age At Onset"].iloc[i]),
+                        'diabete': str(df['Diabetes'].iloc[i]),
+                        'final_diagnosis': str(df['Final Diagnosis'].iloc[i]),
+                        'gender': str(df['Gender'].iloc[i]),
+                        'hypercholesterolemia': str(df['Hypercholesterolemia'].iloc[i]),
+                        'hypertension': str(df['Hypertension'].iloc[i]),
+                        'race': str(df['Race'].iloc[i]),
+                        'gene_ids': json.dumps({"arr": updated_gene_names})
+                    }
+                    Database.patient_collection.update_one({'patient_id':cur_patient}, {"$set": new_patient})
+
+                # add to the dataset
+                # want cols about patient, so can't just use add_gene_names list
+                subset_df_add = df.loc[:,~df.columns.isin(modify_gene_names)].copy()
+
+                stuff_to_add_txt_file = "./temp.csv"
+                stuff_to_add_name = "temp"
+                subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                dataset = ParsedDataset(
+                    in_txt          =   stuff_to_add_txt_file,
+                    name            =   stuff_to_add_name,
+                    description     =   "",
+                    url             =   "",
+                    date_created    =   date_created,
+                    dataset_id      =   dataset_id
+                )
+
+                #insert gene records only
+                Database.Genes.post_gene_many(dataset.get_genes())
+
+                subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
+                subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                dataset = ParsedDataset(
+                    in_txt          =   stuff_to_add_txt_file,
+                    name            =   stuff_to_add_name,
+                    description     =   "",
+                    url             =   "",
+                    date_created    =   date_created,
+                    dataset_id      =   dataset_id
+                )
+
+                Database.Patients.post_patient_many(dataset.get_patients())
+
+                os.remove(stuff_to_add_txt_file)
+
+                new_dataset["gene_ids"] = json.dumps({"arr": updated_gene_names})
+                new_dataset["patient_ids"] = json.dumps({"arr": updated_patient_ids})
+                new_dataset["gene_id_count"] = len(updated_gene_names)
+                new_dataset["patient_id_count"] = len(updated_patient_ids) 
+
+                #updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
+            
+            Database.dataset_collection.update_one({'id':dataset_id}, {"$set": new_dataset})
 
             return loads(dumps(status.HTTP_201_CREATED)) 
