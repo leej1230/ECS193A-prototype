@@ -112,12 +112,12 @@ function DatasetPage() {
 
   const saveGeneIdArray = () => {
     const dataInput = dataset;
-    return JSON.parse(dataInput["gene_ids"])["arr"];
+    return dataInput["gene_ids"]["arr"];
   };
 
   const savePatientIdArray = () => {
     const dataInput = dataset;
-    return JSON.parse(dataInput["patient_ids"])["arr"];
+    return dataInput["patient_ids"]["arr"];
   };
 
   const navigate = useNavigate();

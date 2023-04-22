@@ -350,8 +350,6 @@ class Database():
             gene = Database.gene_collection.find_one({'id': int(request['gene_id']), 'name': str(request['gene_name'])})
             serial = GeneSerializer(gene, many=False)
             json_data = serial.data
-            json_data['patient_ids'] = loads(json_data['patient_ids'])
-            json_data['gene_values'] = loads(json_data['gene_values'])
             return json_data
 
         def get_gene_all(request):

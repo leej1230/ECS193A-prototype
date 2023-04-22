@@ -39,7 +39,7 @@ class ParsedDataset :
         gene_ids_count = len(gene_ids)
         patient_ids = [patient_id for patient_id in self.df["Sample name"].values]
         patient_ids_count = len(patient_ids)
-        return {
+        temp_dataset = {
             'id': int(self.dataset_id),
             'name': str(self.name),
             'description': str(self.description),
@@ -50,6 +50,12 @@ class ParsedDataset :
             'date_created': self.date_created,
             'url': self.url,
         }
+        if type(temp_dataset['patient_ids']) == str:
+            temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
+        if type(temp_dataset['gene_ids']) == str:
+            temp_dataset['gene_ids'] = json.loads(temp_dataset['gene_ids'])
+        
+        return temp_dataset
 
     def get_genes(self):
         gene_names = [gene_names for gene_names in self.df.columns if "ENSG" in gene_names]
@@ -59,8 +65,8 @@ class ParsedDataset :
             "id": 1,
             "name": str(gene_names[i]),
             "dataset_id": int(self.dataset_id),
-            "patient_ids": json.dumps({"arr": patient_ids}),
-            "gene_values": json.dumps({"arr": gene_values.iloc[i].tolist()})
+            "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
+            "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()}))
             # "gene_values": gene_values[j]
         } for i in range(len(gene_names))]
 
