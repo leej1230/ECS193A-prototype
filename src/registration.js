@@ -4,17 +4,17 @@ import TextField from "@mui/material/TextField";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
-const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/`;
+const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
 
   const handleSubmit = () => {
-    if (userName == "" || password == "") {
+    if (email == "" || password == "") {
       alert("Either Email or Password is missing.");
       return;
     }
@@ -24,16 +24,15 @@ function Registration() {
       return;
     }
 
-    const userInput = {
-      firstName: firstName,
-      lastName: lastName,
-      email: userName,
-      password: password,
-    };
-
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("password", password);
     axios
-      .post(api_url, userInput)
+      .post(api_url, formData)
       .then((result) => {
+        console.log(result)
         // Use result to identify whether the login was successful or not
         alert("You have submitted!");
       })
@@ -76,11 +75,11 @@ function Registration() {
         <div class="form-outline mb-4">
           <TextField
             id="Email_Adress"
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             type="text"
             variant="outlined"
             fullWidth
-            label="Email Adress"
+            label="Email Address"
           />
         </div>
 

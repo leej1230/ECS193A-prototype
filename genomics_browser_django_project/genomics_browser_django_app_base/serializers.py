@@ -3,20 +3,18 @@ from genomics_browser_django_app_base.models import PatientModel
 from genomics_browser_django_app_base.models import GeneModel
 from genomics_browser_django_app_base.models import DatasetModel
 from genomics_browser_django_app_base.models import CounterModel
-from genomics_browser_django_app_base.models import User
+from genomics_browser_django_app_base.models import UserModel
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
-        return user
+        model = UserModel
+        fields = (
+            'id',
+            'email',
+            'password',
+            'is_staff',
+            'is_admin'
+        )      
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:

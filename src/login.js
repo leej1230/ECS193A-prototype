@@ -4,33 +4,33 @@ import TextField from "@mui/material/TextField";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
-const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/`;
+const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
 function Login() {
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    if (userName == "" || password == "") {
+    if (email == "" || password == "") {
       alert("Either Email or Password is missing.");
       return;
     }
 
-    const userInput = {
-      email: userName,
-      password: password,
-    };
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
 
     axios
-      .post(api_url, userInput)
+      .post(api_url, formData)
       .then((result) => {
+        console.log(result);
         // Use result to identify whether the login was successful or not
         alert("You have submitted!");
       })
       .catch((error) => {
-        alert(
-          `Network or Backend error! Show message below to developer team: ${error}`
-        );
+        if (error.response.status == 404) {
+          alert("Could not find an account with that email or password. Please try again.");
+        }
       });
   };
 
@@ -45,12 +45,12 @@ function Login() {
       <form>
         <div class="form-outline mb-4">
           <TextField
-            id="Email_Adress"
-            onChange={(e) => setUserName(e.target.value)}
+            id="Email_Address"
+            onChange={(e) => setEmail(e.target.value)}
             type="text"
             variant="outlined"
             fullWidth
-            label="Email Adress"
+            label="Email Address"
           />
         </div>
 

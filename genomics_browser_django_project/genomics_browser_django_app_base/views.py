@@ -9,16 +9,7 @@ from rest_framework.views import status
 
 from genomics_browser_django_app_base.serializers import UserSerializer
 
-class UserRegistrationView(generics.CreateAPIView):
-    serializer_class = UserSerializer
-
-    def post(self, request):
-        user = request.data.get('user', {})
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+from django.contrib.auth.hashers import make_password
 
 class BackendServer(View):
     """
@@ -71,4 +62,7 @@ class BackendServer(View):
     """
     def render_to_json_response(self, callback, **request_kwargs):
         data = callback(self.kwargs)
-        return JsonResponse(data, **request_kwargs, safe=False)
+        status = 200 # OK
+        if type(data) == int: # If the data is an integer, it is a status code.
+            status = data 
+        return JsonResponse(data, **request_kwargs, safe=False, status=status)
