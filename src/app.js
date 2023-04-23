@@ -10,6 +10,8 @@ import DatasetPage from './components/DatasetPage';
 import GenePage from './components/GenePage';
 import HomePage from './components/HomePage';
 import GenePageBootstrap from './components/bootstrap_gene_page/GenePageBootstrap';
+import Registration from './registration';
+import Login from './login';
 
 function app() {
   return (
@@ -32,8 +34,18 @@ function app() {
                 </div>
               </>
             }/>
-            <Route exact path="/data" element={<><Navbar/><Data/></>}/>
-            <Route exact path="/upload" element={<><Navbar/><UploadDataset/></>}/>
+            <Route exact path="/data" element={
+            <>
+              <Navbar/>
+              <Data/>
+            </>
+          }/>
+            <Route exact path="/upload" element={
+            <>
+            <Navbar/>
+            <UploadDataset/>
+            </>
+          }/>
             <Route exact path="/frontend_test" element={
               <>
                 <Navbar/>
@@ -64,6 +76,18 @@ function app() {
             <Route exact path="/gene_bootstrap"  element={
               <>
                 <GenePageBootstrap />
+              </>
+            }  />
+            <Route exact path="/registration"  element={
+              <>
+                <Navbar/>
+                <Registration />
+              </>
+            }  />
+            <Route exact path="/login"  element={
+              <>
+                <Navbar/>
+                <Login />
               </>
             }  />
         </Routes>
