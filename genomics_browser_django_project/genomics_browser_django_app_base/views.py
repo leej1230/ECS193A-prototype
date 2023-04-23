@@ -3,6 +3,23 @@ from genomics_browser_django_app_base.database import Database
 from django.views import View
 from django.http import JsonResponse
 
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import status
+
+from genomics_browser_django_app_base.serializers import UserSerializer
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        user = request.data.get('user', {})
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 class BackendServer(View):
     """
     Overload the get() function to dispatch the request to the appropriate database method.
