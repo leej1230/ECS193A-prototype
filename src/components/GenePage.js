@@ -72,6 +72,8 @@ const columns = [
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
 
+const options =[{ 'title':"Animals", "cont_arr": ["fish", "horse", "turtle"]}, {'title':"Colors", "cont_arr":["Red", "Blue", "Green", "Yellow"]}, { 'title':"Places", "cont_arr": ["US", "Burma", "Latvia","US", "Burma", "Latvia"]}]
+
 function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
     var init_arr = [];
@@ -355,6 +357,74 @@ function GenePage() {
                       
                   </div>
 
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                            </div>
+
+                            <div class="row" id="table_options_outer">
+
+                              <div class="col" id="checkbox_filter">
+
+                                <div class="card shadow mb-4" >
+                                      <div class="card-header py-3">
+                                          <h6 class="m-0">Options</h6>
+                                      </div>
+                                      <div class="card-body">
+                                        {options.map((options_category_list,j) => {
+
+                                            return(
+                                              <div>
+                                                <h6 class="font-weight-bold">{options_category_list['title']}</h6>
+                                                {options_category_list['cont_arr'].map((option, i) => {
+                                                return (
+                                                
+                                                    <div className="flex items-center">
+                                                      <input
+                                                        type="checkbox"
+                                                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                                        id={option}
+                                                        name={option}
+                                                        value={option}
+                                                        onChange={(e) => {
+                                                          //setFilter(setFilteredParams(filterValue, e.target.value));
+                                                        }}
+                                                      ></input>
+                                                      <label
+                                                        htmlFor={option}
+                                                        className="ml-1.5 font-medium text-gray-700"
+                                                      >
+                                                        {option}
+                                                      </label>
+                                                    </div>
+                                                
+                                                );
+                                              })}
+                                              </div>
+                                            );
+                                        })}
+                                      </div>
+                                  </div>
+
+                              </div>
+
+                              <div class="col" id="table_content">
+                                  <MaterialTable columns={columns}
+                                  
+                                    data={patient_table_data}
+                                    icons={tableIcons}
+                                    options={{
+                                      pageSize: 5,
+                                      pageSizeOptions: [5, 10, 15, 25, 50, 100],
+                                      showTitle: false,
+                                      search: false
+                                    }}
+                                    />
+                              </div>
+                            </div>
+                      </div>
+
+
                   <div class="row">
 
                     <div class="col-xl mb-4">
@@ -386,60 +456,40 @@ function GenePage() {
                         </div>
                     </div>
                     
-                    <div class="col-xl">
-                      <div class="card shadow mb-4">
-                          <div class="card-header py-3">
-                              <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                          </div>
-                      
-                          <MaterialTable columns={columns}
-                           
-                            data={patient_table_data}
-                            icons={tableIcons}
-                            options={{
-                              pageSize: 5,
-                              pageSizeOptions: [5, 10, 15, 25, 50, 100],
-                              showTitle: false
-                            }}
-                            />
-                      
+                      <div class="col-xl">
+
+                        <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                    
+                          <Table style={ { minWidth: 650}} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Code</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            
+                            <TableBody>
+                              {
+                                gene_code_info.code.map(function(item, row_i){
+                                  return <TableRow  key={row_i}>
+                                          <TableCell>
+                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                        {code_str}
+                                                      </div>     
+                                            })}</div>
+                                          </TableCell>
+                                    </TableRow>
+                              
+                              })
+                            }
+                            </TableBody>
+                          </Table>
+                          
+                        </TableContainer>
+
                       </div>
-                    </div>
 
                   </div>
-
-                <div>
-
-                  <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
-                  
-                  <Table style={ { minWidth: 650}} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Code</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    
-                    <TableBody>
-                      {
-                        gene_code_info.code.map(function(item, row_i){
-                          return <TableRow  key={row_i}>
-                                  <TableCell>
-                                      <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                      return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                {code_str}
-                                              </div>     
-                                    })}</div>
-                                  </TableCell>
-                          </TableRow>
-                      
-                        })
-                      }
-                      </TableBody>
-                    </Table>
-                  
-                  </TableContainer>
-
-                </div>
 
               </div> 
 
