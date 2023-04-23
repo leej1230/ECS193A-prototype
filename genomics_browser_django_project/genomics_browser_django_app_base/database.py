@@ -53,6 +53,8 @@ class Database():
                 dict: The user information.
             """
             user = request['ctx'].POST.copy()
+            if Database.user_collection.find_one({'email': user['email']}):
+                return status.HTTP_409_CONFLICT
             user['password'] = make_password(user['password'])
             user.update({'id': Database.Counters.get_new_user_counter()})
             serial = UserSerializer(user, many=False)
