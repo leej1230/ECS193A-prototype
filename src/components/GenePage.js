@@ -10,6 +10,11 @@ import MaterialTable from 'material-table';
 
 import ScrollBars from "react-custom-scrollbars";
 
+import Multiselect from "multiselect-react-dropdown";
+import filterFactory, { FILTER_TYPES, customFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
+import { PropTypes } from 'prop-types'; 
+import BootstrapTable from 'react-bootstrap-table-next';
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -63,7 +68,90 @@ const tableIcons = {
 };
 
 
-const SAMPLE_ID = window.location.pathname.split("/").at(-1)
+
+class ProductFilter extends React.Component {
+  static propTypes = {
+    column: PropTypes.object.isRequired,
+    onFilter: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+    this.filter = this.filter.bind(this);
+  }
+  
+  filter(selectedList, selectedItem) {
+    this.props.onFilter(
+      selectedList.map(x => [x.value])
+    );
+  }
+
+render(){
+    return <Multiselect options={selectOptions} 
+            displayValue="label" 
+            showCheckbox 
+            closeOnSelect={false}
+            onSelect={this.filter} 
+            onRemove={this.filter}/>;
+  }
+
+}
+
+const selectOptions = [
+  {value: "good", label: 'Good'},
+  {value: "bad", label: 'Bad'},
+  {value: "unknown", label: 'Unknown'}
+];
+
+const products = [{
+  'id': 1,
+  'name':"Spinach",
+  'quality': "good"
+},{
+  'id': 2,
+  'name':"Juice",
+  'quality': "good"
+},{
+  'id': 3,
+  'name':"Biscuits",
+  'quality': "bad"
+}]
+
+const columns = [{
+  dataField: 'id',
+  text: 'Product ID'
+}, {
+  dataField: 'name',
+  text: 'Product Name'
+}, {
+  dataField: 'quality',
+  text: 'Product Quailty',
+   filter: customFilter({
+          delay: 1000,
+          type: FILTER_TYPES.MULTISELECT
+        }),
+  
+        filterRenderer: (onFilter, column) => {
+          return(
+            <ProductFilter onFilter={onFilter} column={column}/>
+            )
+        }
+}];
+
+
+
+
+
+function GenePage() {
+  
+  return (
+    <BootstrapTable keyField='id' data={ products } columns={ columns } filter={ filterFactory() } />
+
+  )
+}
+
+
+{/*const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 
 const columns = [ 
   {title: "Field Name" , field: "field_name"},
@@ -523,7 +611,7 @@ function GenePage() {
 
       </body>
       )
-}
+}*/}
 
 export default GenePage
 
