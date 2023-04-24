@@ -370,7 +370,7 @@ function GenePage() {
           }
         }
       }
-      else if(unique.length < 2){
+      else if(unique.length < 10){
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
