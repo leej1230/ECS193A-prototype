@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CryptoJS from "crypto-js";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
@@ -6,6 +7,7 @@ import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 import { Http } from "@material-ui/icons";
 
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
+const encryptionKey = process.env.ENCRYPTION_SECRET_KEY;
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
@@ -25,11 +27,14 @@ function Registration() {
       return;
     }
 
+    // Encrypt password to send to backend
+    const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey).toString();
+
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("email", email);
-    formData.append("password", password);
+    formData.append("password", encryptedPassword);
     axios
       .post(api_url, formData)
       .then((result) => {
