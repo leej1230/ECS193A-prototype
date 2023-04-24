@@ -70,12 +70,11 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
-
-
 class ProductFilter extends React.Component {
   static propTypes = {
     column: PropTypes.object.isRequired,
-    onFilter: PropTypes.func.isRequired
+    onFilter: PropTypes.func.isRequired,
+    optionsInput: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -90,7 +89,7 @@ class ProductFilter extends React.Component {
   }
 
 render(){
-    return <Multiselect options={selectOptions} 
+    return <Multiselect options={this.props.optionsInput} 
             displayValue="label" 
             showCheckbox 
             closeOnSelect={false}
@@ -101,64 +100,10 @@ render(){
 }
 
 const selectOptions = [
-  {value: "good", label: 'Good'},
-  {value: "bad", label: 'Bad'},
+  {value: "Yes", label: 'yes'},
+  {value: "No", label: 'no'},
   {value: "unknown", label: 'Unknown'}
 ];
-
-function generateProducts(){
-  var products = []
-  console.log("products")
-  for(let i = 0;i <= 100;i++){
-    products.push({
-      'id': i,
-      'name':"Spinach",
-      'quality': "good"
-    })
-  }
-
-  console.log(products)
-
-  return products;
-}
-
-const products = [{
-  'id': 1,
-  'name':"Spinach",
-  'quality': "good"
-},{
-  'id': 2,
-  'name':"Juice",
-  'quality': "good"
-},{
-  'id': 3,
-  'name':"Biscuits",
-  'quality': "bad"
-}
-]
-
-const patient_columns = [{
-  dataField: 'id',
-  text: 'Product ID'
-}, {
-  dataField: 'name',
-  text: 'Product Name'
-}, {
-  dataField: 'quality',
-  text: 'Product Quailty',
-   filter: customFilter({
-          delay: 1000,
-          type: FILTER_TYPES.MULTISELECT
-        }),
-  
-        filterRenderer: (onFilter, column) => {
-          return(
-            <ProductFilter onFilter={onFilter} column={column}/>
-            )
-        }
-}];
-
-
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 
@@ -231,9 +176,68 @@ function GenePage() {
     {hypertension: ""},
     {race: ""}
   ]);
+  const [ patient_information_expanded, set_patient_information_expanded ] = useState([
+    {patient_id: ""},
+    {age: 0},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""},
+    {id: 0}
+  ]);
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {'arr':null}});
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
   const [graphType, setGraphType] = useState('bar');
+  const [patient_columns, set_patient_columns] = useState([{
+    dataField: 'id',
+    text: ''
+  }, {
+    dataField: 'patient_id',
+    text: 'Patient ID'
+  },{
+    dataField: 'age',
+    text: 'Age'
+  },{
+    dataField: 'diabete',
+    text: 'Diabetes'
+  },{
+    dataField: 'final_diagnosis',
+    text: 'Final Diagnosis'
+  },{
+    dataField: 'gender',
+    text: 'Gender'
+  },{
+    dataField: 'hypercholesterolemia',
+    text: 'Hypercholesterolemia',
+    filter: customFilter({
+      delay: 1000,
+      type: FILTER_TYPES.MULTISELECT
+    }),
+  
+    filterRenderer: (onFilter, column) => {
+      return(
+        <ProductFilter onFilter={onFilter} column={column} optionsInput={selectOptions}/>
+        )
+    }
+  },{
+    dataField: 'hypertension',
+    text: 'Hypertension',
+    filter: customFilter({
+      delay: 1000,
+      type: FILTER_TYPES.MULTISELECT
+    }),
+  
+    filterRenderer: (onFilter, column) => {
+      return(
+        <ProductFilter onFilter={onFilter} column={column} optionsInput={selectOptions}/>
+        )
+    }
+  },{
+    dataField: 'race',
+    text: 'Race'
+  }]);
 
   const columns = [ 
     {title: "Patient ID" , field: "patient_id"},
@@ -245,6 +249,57 @@ function GenePage() {
     {title: "Hypertension" , field: "hypertension"},
     {title: "Race" , field: "race"},
   ]
+
+  const generatePatientTable = (patients_info) => {
+    if(patients_info == null){
+      return;
+    }
+
+    for(let i = 0; i < patients_info.length; i++){
+      var cur_patient = patients_info[i]
+      // patient has no id, so this is fine
+      cur_patient['id'] = i+1
+    }
+
+    // 'id' not need options
+    var patient_columns_list = []
+    console.log("col possibilities")
+    var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+    for(let i = 0; i < column_possibilities.length; i++){
+      var unique = [...new Set(patients_info.flatMap(item => item[ column_possibilities[i] ] ))];
+
+      let select_options_col = []
+
+      for(let j = 0; j < unique.length; j++){
+        select_options_col.push({value: unique[j], label: unique[j]})
+      }
+
+      var col_obj = {dataField: column_possibilities[i],
+        text: column_possibilities[i]}
+      if(unique.length < 10){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            type: FILTER_TYPES.MULTISELECT
+          }),
+        
+          filterRenderer: (onFilter, column) => {
+            return(
+              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+              )
+          }
+        }
+      }
+      patient_columns_list.push(col_obj)
+    }
+
+    console.log(patient_columns_list);
+    set_patient_columns(patient_columns_list);
+  
+    return patients_info;
+  }
 
   // componentDidMount() {
   useEffect( () => {
@@ -278,7 +333,7 @@ function GenePage() {
       const res = await axios.get(patientsDataAPIURL);
       console.log("line 172")
       console.log(res.data)
-      set_patient_table_data(res.data);
+      set_patient_table_data(generatePatientTable(res.data));
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
@@ -287,6 +342,10 @@ function GenePage() {
 
     fetchPatientsData()
   }, [gene_data])
+
+  useEffect(() => {
+    set_patient_information_expanded(generatePatientTable(patient_table_data));
+  }, [patient_table_data])
 
   useEffect( () => {
     // this side effect runs if gene data changes, so that dataset info for the gene can be updated
@@ -461,7 +520,7 @@ function GenePage() {
 
                             <div class="row" id="table_options_outer">
                               <div id="patient_table_area">
-                                <BootstrapTable keyField='id' data={ generateProducts() } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } />
+                                <BootstrapTable keyField='id' data={ patient_information_expanded } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } />
                               </div>
                             </div>
                       </div>
@@ -626,3 +685,20 @@ export default GenePage
   </div>
 
 </div>*/}
+
+{/*
+const products = [{
+  'id': 1,
+  'name':"Spinach",
+  'quality': "good"
+},{
+  'id': 2,
+  'name':"Juice",
+  'quality': "good"
+},{
+  'id': 3,
+  'name':"Biscuits",
+  'quality': "bad"
+}
+]
+*/}
