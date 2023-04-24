@@ -10,13 +10,17 @@ import MaterialTable from 'material-table';
 
 import ScrollBars from "react-custom-scrollbars";
 
+import { flushSync } from 'react-dom';
+
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter , Comparator} from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator} from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+
+import {default as ReactSelectDropDown} from 'react-select';
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -45,7 +49,7 @@ import { color } from 'echarts';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Select  from '@mui/material/Select';
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
@@ -94,30 +98,13 @@ function ProductFilter(props) {
 
 }
 
-function NumberFilter(props) {
-  const propTypes = {
-    column: PropTypes.object.isRequired,
-    onFilter: PropTypes.func.isRequired,
-    onLess: PropTypes.number,
-    onGreater: PropTypes.number
-  }
-  
-  const filter = (selectedList, selectedItem) => {
-    props.onFilter(
-      selectedList.map(x => [x.value])
-    );
-  }
-
-    return (
-          <Multiselect options={props.optionsInput} 
-            displayValue="label" 
-            showCheckbox 
-            closeOnSelect={false}
-            onSelect={filter} 
-            onRemove={filter}/>
-        )
-
-}
+const selectCompare = [
+  {value: 0, label: 'None'},
+  {value: 1, label: '<'},
+  {value: 2, label: '>'},
+  {value: 3, label: '='},
+  {value: 4, label: 'between'}
+];
 
 const selectOptions = [
   {value: "Yes", label: 'yes'},
@@ -259,6 +246,89 @@ function GenePage() {
     text: 'Race'
   }]);
 
+  const NumberFilter = (props) => {
+    const [compCode, setCompCode] =  useState(0);
+    const [input1, setInput1] =  useState(0);
+    const [input2, setInput2] =  useState(0);
+
+    const propTypes = {
+      column: PropTypes.object.isRequired,
+      onFilter: PropTypes.func.isRequired
+    }
+
+    useEffect(() => {
+      async function changedNumberComparison() {
+        
+        filter();
+      }
+  
+      changedNumberComparison()
+    }, [compCode])
+    
+    const filter = () => {
+      props.onFilter(
+        {compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: props.column.dataField}, patient_information_expanded
+      );
+    }
+  
+      return (
+            <div>
+              <ReactSelectDropDown options={selectCompare} 
+                displayValue="label" 
+                showCheckbox 
+                onChange={(e) => {setCompCode( e.value) } }
+                closeOnSelect={false}
+                />
+  
+              <input
+                key="input"
+                type="text"
+                placeholder="Value (or Min if between)"
+                onChange={(e) => { setInput1( e.target.value)}}
+              />
+              <input
+                key="input"
+                type="text"
+                placeholder="(Max if between selected or not used)"
+                onChange={(e) => { setInput2( e.target.value)}}
+              />
+            </div>
+          )
+  
+      }
+
+  const filterNumber = (filterVals, data) => {
+    let compareValCode = filterVals['compareValCode']
+    let inputVal1 = filterVals['inputVal1']
+    let inputVal2 = filterVals['inputVal2']
+    let colName = filterVals['colName']
+    
+    if(compareValCode == 0){
+      // no filter
+      return data;
+    }
+    else if(compareValCode == 1){
+      // <
+      
+      console.log(data.filter(patient_one => patient_one[colName] < inputVal1));
+      return data.filter(patient_one => patient_one[colName] < inputVal1);
+    } else if (compareValCode == 2){
+      // >
+      console.log(data.filter(patient_one => patient_one[colName] > inputVal1));
+      return data.filter(patient_one => patient_one[colName] > inputVal1);
+    } else if (compareValCode == 3){
+      // =
+      console.log(data.filter(patient_one => patient_one[colName] == inputVal1));
+      return data.filter(patient_one => patient_one[colName] == inputVal1);
+    } else if(compareValCode == 4){
+      // Between
+      console.log(data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2 ));
+      return data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2 );
+    }
+
+    
+  }
+
   const generatePatientTable = (patients_info) => {
     if(patients_info == null){
       return;
@@ -272,7 +342,7 @@ function GenePage() {
 
     // 'id' not need options
     var patient_columns_list = []
-    console.log("col possibilities")
+
     var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
     for(let i = 0; i < column_possibilities.length; i++){
       var unique = [...new Set(patients_info.flatMap(item => item[ column_possibilities[i] ] ))];
@@ -285,7 +355,22 @@ function GenePage() {
 
       var col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
-      if(unique.length < 2){
+      if(unique.length > 0 && Number.isInteger(unique[0])){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            onFilter:filterNumber
+          }),
+          filterRenderer: (onFilter, column) => {
+            return(
+              <NumberFilter onFilter={ onFilter } column={column} />
+              )
+          }
+        }
+      }
+      else if(unique.length < 2){
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
@@ -537,7 +622,7 @@ function GenePage() {
 
                             <div class="row" id="table_options_outer">
                               <div id="patient_table_area">
-                                <BootstrapTable keyField='id' data={ patient_information_expanded } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } />
+                                <BootstrapTable keyField='id' data={ patient_information_expanded } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
                               </div>
                             </div>
                       </div>
