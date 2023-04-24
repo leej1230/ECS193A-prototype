@@ -11,7 +11,7 @@ import MaterialTable from 'material-table';
 import ScrollBars from "react-custom-scrollbars";
 
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter } from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -70,32 +70,52 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
-class ProductFilter extends React.Component {
-  static propTypes = {
+function ProductFilter(props) {
+  const propTypes = {
     column: PropTypes.object.isRequired,
     onFilter: PropTypes.func.isRequired,
     optionsInput: PropTypes.object.isRequired
   }
-
-  constructor(props) {
-    super(props);
-    this.filter = this.filter.bind(this);
-  }
   
-  filter(selectedList, selectedItem) {
-    this.props.onFilter(
+  const filter = (selectedList, selectedItem) => {
+    props.onFilter(
       selectedList.map(x => [x.value])
     );
   }
 
-render(){
-    return <Multiselect options={this.props.optionsInput} 
+    return (
+          <Multiselect options={props.optionsInput} 
             displayValue="label" 
             showCheckbox 
             closeOnSelect={false}
-            onSelect={this.filter} 
-            onRemove={this.filter}/>;
+            onSelect={filter} 
+            onRemove={filter}/>
+        )
+
+}
+
+function NumberFilter(props) {
+  const propTypes = {
+    column: PropTypes.object.isRequired,
+    onFilter: PropTypes.func.isRequired,
+    onLess: PropTypes.number,
+    onGreater: PropTypes.number
   }
+  
+  const filter = (selectedList, selectedItem) => {
+    props.onFilter(
+      selectedList.map(x => [x.value])
+    );
+  }
+
+    return (
+          <Multiselect options={props.optionsInput} 
+            displayValue="label" 
+            showCheckbox 
+            closeOnSelect={false}
+            onSelect={filter} 
+            onRemove={filter}/>
+        )
 
 }
 
@@ -239,17 +259,6 @@ function GenePage() {
     text: 'Race'
   }]);
 
-  const columns = [ 
-    {title: "Patient ID" , field: "patient_id"},
-    {title: "Age" , field: "age"},
-    {title: "Diabete" , field: "diabete"},
-    {title: "Final Diagnosis" , field: "final_diagnosis"},
-    {title: "Gender" , field: "gender"},
-    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
-    {title: "Hypertension" , field: "hypertension"},
-    {title: "Race" , field: "race"},
-  ]
-
   const generatePatientTable = (patients_info) => {
     if(patients_info == null){
       return;
@@ -290,6 +299,12 @@ function GenePage() {
               <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
               )
           }
+        }
+      } else {
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: textFilter()
         }
       }
       patient_columns_list.push(col_obj)
@@ -627,6 +642,19 @@ function GenePage() {
 }
 
 export default GenePage
+
+{/*
+const columns = [ 
+    {title: "Patient ID" , field: "patient_id"},
+    {title: "Age" , field: "age"},
+    {title: "Diabete" , field: "diabete"},
+    {title: "Final Diagnosis" , field: "final_diagnosis"},
+    {title: "Gender" , field: "gender"},
+    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
+    {title: "Hypertension" , field: "hypertension"},
+    {title: "Race" , field: "race"},
+  ]
+*/}
 
 {/*<div class="col" id="table_content">
     <MaterialTable columns={columns}
