@@ -4,7 +4,6 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
-import { Http } from "@material-ui/icons";
 
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 const encryptionKey = process.env.ENCRYPTION_SECRET_KEY;
@@ -17,12 +16,12 @@ function Registration() {
   const [rePassword, setRePassword] = useState("");
 
   const handleSubmit = () => {
-    if (email == "" || password == "") {
+    if (email === "" || password === "") {
       alert("Either Email or Password is missing.");
       return;
     }
 
-    if(rePassword != password) {
+    if(rePassword !== password) {
       alert("Password is NOT matching!");
       return;
     }
@@ -43,7 +42,7 @@ function Registration() {
         alert("You have submitted!");
       })
       .catch((error) => {
-        if (error.response.status == 409) {
+        if (error.response.status === 409) {
           alert("An account with that email already exists. Please use a different email.");
         }
       });
