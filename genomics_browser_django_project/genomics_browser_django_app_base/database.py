@@ -14,8 +14,13 @@ from django.contrib.auth.hashers import check_password
 
 from rest_framework import status
 
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+
+import base64
 import re
 import datetime
+import os
 
 class Database(): 
     client = get_connection()
@@ -27,6 +32,18 @@ class Database():
     superuser_collection    = client['superusers']
 
     class Users:
+        def decrypt_password(encrypted_password:str) -> str:
+            encryptionKey = os.environ.get('ENCRYPTION_SECRET_KEY')
+            if not encryptionKey:
+                print("Environmental Variable has not been set up!")
+                return "Random String"
+            
+            cipher = AES.new(encryptionKey, AES.MODE_CBC)
+            ciphertext = base64.b64decode(encrypted_password)
+            decrypted_password = unpad(cipher.decrypt(ciphertext), AES.block_size)
+
+            return decrypted_password
+
         def get_user_one(request):
             """
             Retrieves a user from the database.
