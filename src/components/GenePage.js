@@ -11,7 +11,7 @@ import MaterialTable from 'material-table';
 import ScrollBars from "react-custom-scrollbars";
 
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter , Comparator} from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -285,7 +285,7 @@ function GenePage() {
 
       var col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
-      if(unique.length < 10){
+      if(unique.length < 2){
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
@@ -304,7 +304,9 @@ function GenePage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
-          filter: textFilter()
+          filter: textFilter({
+            comparator: Comparator.EQ
+          })
         }
       }
       patient_columns_list.push(col_obj)

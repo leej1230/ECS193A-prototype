@@ -41,8 +41,8 @@ class ParsedDataset :
         patient_ids_count = len(patient_ids)
         temp_dataset = {
             'id': int(self.dataset_id),
-            'name': str(self.name),
-            'description': str(self.description),
+            'name': str(self.name).lower(),
+            'description': str(self.description).lower(),
             'gene_ids': json.dumps({'arr': gene_ids}),
             'patient_ids': json.dumps({'arr': patient_ids}),
             'gene_id_count': int(gene_ids_count),
@@ -63,7 +63,7 @@ class ParsedDataset :
         patient_ids = [pid for pid in self.df["Sample name"]]
         return [{
             "id": 1,
-            "name": str(gene_names[i]),
+            "name": str(gene_names[i]).upper(),
             "dataset_id": int(self.dataset_id),
             "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
             "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()}))
@@ -77,14 +77,14 @@ class ParsedDataset :
         print("in parsed dataset")
 
         return [{
-            'patient_id': str(self.df["Sample name"].iloc[i]),
+            'patient_id': str(self.df["Sample name"].iloc[i]).upper(),
             'age': int(self.df["Age At Onset"].iloc[i]),
-            'diabete': str(self.df['Diabetes'].iloc[i]),
-            'final_diagnosis': str(self.df['Final Diagnosis'].iloc[i]),
-            'gender': str(self.df['Gender'].iloc[i]),
-            'hypercholesterolemia': str(self.df['Hypercholesterolemia'].iloc[i]),
-            'hypertension': str(self.df['Hypertension'].iloc[i]),
-            'race': str(self.df['Race'].iloc[i]),
+            'diabete': str(self.df['Diabetes'].iloc[i]).lower(),
+            'final_diagnosis': str(self.df['Final Diagnosis'].iloc[i]).lower(),
+            'gender': str(self.df['Gender'].iloc[i]).lower(),
+            'hypercholesterolemia': str(self.df['Hypercholesterolemia'].iloc[i]).lower(),
+            'hypertension': str(self.df['Hypertension'].iloc[i]).lower(),
+            'race': str(self.df['Race'].iloc[i]).lower(),
             'gene_ids': gene_ids,
             'dataset_id': int(dataset_id)
         } for i in range(self.df.shape[0])]

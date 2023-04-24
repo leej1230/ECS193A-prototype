@@ -619,12 +619,12 @@ class Database():
                     cur_patient = modify_patient_ids[i]
                     new_patient = {
                         'age': int(df["Age At Onset"].iloc[i]),
-                        'diabete': str(df['Diabetes'].iloc[i]),
-                        'final_diagnosis': str(df['Final Diagnosis'].iloc[i]),
-                        'gender': str(df['Gender'].iloc[i]),
-                        'hypercholesterolemia': str(df['Hypercholesterolemia'].iloc[i]),
-                        'hypertension': str(df['Hypertension'].iloc[i]),
-                        'race': str(df['Race'].iloc[i]),
+                        'diabete': str(df['Diabetes'].iloc[i]).lower(),
+                        'final_diagnosis': str(df['Final Diagnosis'].iloc[i]).lower(),
+                        'gender': str(df['Gender'].iloc[i]).lower(),
+                        'hypercholesterolemia': str(df['Hypercholesterolemia'].iloc[i]).lower(),
+                        'hypertension': str(df['Hypertension'].iloc[i]).lower(),
+                        'race': str(df['Race'].iloc[i]).lower(),
                         'gene_ids': json.dumps({"arr": updated_gene_names})
                     }
                     Database.patient_collection.update_one({'patient_id':cur_patient}, {"$set": new_patient})
