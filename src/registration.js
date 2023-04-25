@@ -15,6 +15,12 @@ function Registration() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
 
+  const [validFirstName, setValidFirstName] = useState();
+  const [validLastName, setValidLastName] = useState();
+  const [validEmail, setValidEmail] = useState();
+  const [validPassword, setValidPassword] = useState();
+  const [validRePassword, setValidRePassword] = useState();
+
   const handleSubmit = () => {
     if (email === "" || password === "") {
       alert("Either Email or Password is missing.");
@@ -48,6 +54,19 @@ function Registration() {
       });
   };
 
+  const handleValidate = (fieldName, value) => {
+    switch(fieldName){
+      case 'email':
+        const emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        setValidEmail(emailValid);
+        if (emailValid) {
+          setEmail(value);
+        }
+        break
+
+    }
+  }
+
   return (
     <div
       className="container"
@@ -80,9 +99,10 @@ function Registration() {
         <div class="form-outline mb-4">
           <TextField
             id="Email_Adress"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleValidate("email",e.target.value)}
             type="text"
             variant="outlined"
+            helperText={validEmail?"":"Fill in a valid email address"}
             fullWidth
             label="Email Address"
           />
