@@ -21,14 +21,11 @@ function Registration() {
   const [validPassword, setValidPassword] = useState();
   const [validRePassword, setValidRePassword] = useState();
 
-  const handleSubmit = () => {
-    if (email === "" || password === "") {
-      alert("Either Email or Password is missing.");
-      return;
-    }
+  const strongPassword = RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})')
 
-    if(rePassword !== password) {
-      alert("Password is NOT matching!");
+  const handleSubmit = () => {
+    if (!(validEmail && validFirstName && validLastName && validPassword && validRePassword)) {
+      alert("Some information is missing.");
       return;
     }
 
@@ -59,9 +56,34 @@ function Registration() {
       case 'email':
         const emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
         setValidEmail(emailValid);
-        if (emailValid) {
-          setEmail(value);
-        }
+        setEmail(value);
+
+        break
+
+      case "firstName":
+        const firstNameValid = (value!=="");
+        setValidFirstName(firstNameValid);
+        setFirstName(value);
+        break
+
+      case "lastName":
+        const lastNameValid = (value!=="");
+        setValidLastName(lastNameValid);
+        setLastName(value);
+        break
+
+      case "password":
+        const passwordValid = strongPassword.test(value);
+        setValidPassword(passwordValid);
+        setPassword(value);
+        break
+
+      case "rePassword":
+        const rePasswordVaild = (password===value);
+        setValidRePassword(rePasswordVaild);
+        setRePassword(value);
+        break
+      default:
         break
 
     }
@@ -79,9 +101,10 @@ function Registration() {
       <div class="form-outline mb-4">
           <TextField
             id="First_Name"
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) => handleValidate("firstName", e.target.value)}
             type="text"
             variant="outlined"
+            helperText={validFirstName?"":"Fill in your first name"}
             fullWidth
             label="First Name"
           />
@@ -89,9 +112,10 @@ function Registration() {
         <div class="form-outline mb-4">
           <TextField
             id="Last_Name"
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={(e) => handleValidate("lastName", e.target.value)}
             type="text"
             variant="outlined"
+            helperText={validLastName?"":"Fill in your last name"}
             fullWidth
             label="Last Name"
           />
@@ -111,9 +135,10 @@ function Registration() {
         <div class="form-outline mb-4">
           <TextField
             id="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handleValidate("password", e.target.value)}
             type="password"
             variant="outlined"
+            helperText={validPassword?"":"Password must be: more than 8 characters long, at least one uppercase letter, lowercase letter, one digit, special character."}
             fullWidth
             label="Password"
           />
@@ -122,9 +147,10 @@ function Registration() {
         <div class="form-outline mb-4">
           <TextField
             id="rePassword"
-            onChange={(e) => setRePassword(e.target.value)}
+            onChange={(e) => handleValidate("rePassword", e.target.value)}
             type="password"
             variant="outlined"
+            helperText={validRePassword?"":"Re-enter the password"}
             fullWidth
             label="Confirm Password"
           />
@@ -134,6 +160,7 @@ function Registration() {
           type="button"
           class="btn btn-primary btn-block mb-4"
           onClick={handleSubmit}
+          disabled={!(validEmail && validFirstName && validLastName && validPassword && validRePassword)}
         >
           Register
         </button>
