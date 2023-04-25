@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import CryptoJS from "crypto-js";
+import { IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { InputAdornment } from "@material-ui/core";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -11,16 +14,22 @@ const encryptionKey = process.env.ENCRYPTION_SECRET_KEY;
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [disableButton, setDisableButton] = useState(false)
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [disableButton, setDisableButton] = useState(false);
 
   const handleSubmit = () => {
-    if (email == "" || password == "") {
+    if (email === "" || password === "") {
       alert("Either Email or Password is missing.");
       return;
     }
 
     // Encrypt password to send to backend
-    const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey).toString();
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      password,
+      encryptionKey
+    ).toString();
 
     const formData = new FormData();
     formData.append("email", email);
@@ -34,8 +43,10 @@ function Login() {
         alert("You have submitted!");
       })
       .catch((error) => {
-        if (error.response.status == 404) {
-          alert("Could not find an account with that email or password. Please try again.");
+        if (error.response.status === 404) {
+          alert(
+            "Could not find an account with that email or password. Please try again."
+          );
         }
       });
   };
@@ -61,13 +72,35 @@ function Login() {
         </div>
 
         <div class="form-outline mb-4">
-          <TextField
+          {/* <TextField
             id="Password"
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             variant="outlined"
             fullWidth
             label="Password"
+          /> */}
+          <TextField
+            id="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"}
+            variant="outlined"
+            fullWidth
+            label="Password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                    }}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
 
