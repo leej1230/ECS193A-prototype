@@ -145,7 +145,7 @@ function Home() {
                     <div className="row justify-content-center">
                         <div className='search-result mb-5 mt-5'>
                             <ul className='search-result'>
-                                <Slider />
+                                <Slider />  
                             </ul>
                         </div>
                     </div>

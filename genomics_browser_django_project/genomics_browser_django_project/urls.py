@@ -31,12 +31,20 @@ urlpatterns = [
     re_path(r'^api/dataset/all',                    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "get_dataset_all"}),
     re_path(r'^api/counter/all',                    views.BackendServer.as_view(), {"inner": "Counters", "callback": "get_counter_all"}),
 
+    path('api/registration',                        views.BackendServer.as_view(), {"inner": "Users",    "callback": "post_user_one"}), 
+    path('api/login',                               views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_one"}), 
 
     path('api/upload_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
+
+    path('api/update_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "update_dataset_one"}),
 #     re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
 #     re_path(r'^api/genepost', views.BackendServer.POST_Gene_Data),
 
 #     re_path(r'^api/seq/names' , views.BackendServer.GET_SEQ_NAMES),
+
+    re_path(r'^api/seq/names' ,                     views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_seq_names"}),
+
+    path('api/delete_dataset/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
 
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
 ]

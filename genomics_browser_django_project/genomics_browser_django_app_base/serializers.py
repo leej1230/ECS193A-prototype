@@ -3,6 +3,18 @@ from genomics_browser_django_app_base.models import PatientModel
 from genomics_browser_django_app_base.models import GeneModel
 from genomics_browser_django_app_base.models import DatasetModel
 from genomics_browser_django_app_base.models import CounterModel
+from genomics_browser_django_app_base.models import UserModel
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = (
+            'id',
+            'email',
+            'password',
+            'is_staff',
+            'is_admin'
+        )      
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:

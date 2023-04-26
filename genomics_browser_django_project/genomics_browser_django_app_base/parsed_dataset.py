@@ -23,7 +23,7 @@ class ParsedDataset :
         self.df = self.df.drop_duplicates(subset=["Sample name"])
 
     def remove_duplicate_columns(self) : 
-        self.df = self.df.T.drop_duplicates().T
+        self.df = self.df.loc[:,~self.df.columns.duplicated()]
 
     def get_patient_data(self, patient_id) :
         return self.df.loc[self.df["Sample name"] == patient_id]
@@ -39,28 +39,34 @@ class ParsedDataset :
         gene_ids_count = len(gene_ids)
         patient_ids = [patient_id for patient_id in self.df["Sample name"].values]
         patient_ids_count = len(patient_ids)
-        return {
-            'id': self.dataset_id,
-            'name': self.name,
-            'description': self.description,
+        temp_dataset = {
+            'id': int(self.dataset_id),
+            'name': str(self.name).lower(),
+            'description': str(self.description).lower(),
             'gene_ids': json.dumps({'arr': gene_ids}),
             'patient_ids': json.dumps({'arr': patient_ids}),
-            'gene_id_count': gene_ids_count,
-            'patient_id_count': patient_ids_count,
+            'gene_id_count': int(gene_ids_count),
+            'patient_id_count': int(patient_ids_count),
             'date_created': self.date_created,
             'url': self.url,
         }
+        if type(temp_dataset['patient_ids']) == str:
+            temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
+        if type(temp_dataset['gene_ids']) == str:
+            temp_dataset['gene_ids'] = json.loads(temp_dataset['gene_ids'])
+        
+        return temp_dataset
 
-    def get_genes(self) :
+    def get_genes(self):
         gene_names = [gene_names for gene_names in self.df.columns if "ENSG" in gene_names]
         gene_values = self.df[gene_names].T
         patient_ids = [pid for pid in self.df["Sample name"]]
         return [{
             "id": 1,
-            "name": gene_names[i],
-            "dataset_id": self.dataset_id,
-            "patient_ids": json.dumps({"arr": patient_ids}),
-            "gene_values": json.dumps({"arr": gene_values.iloc[i].tolist()})
+            "name": str(gene_names[i]).upper(),
+            "dataset_id": int(self.dataset_id),
+            "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
+            "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()}))
             # "gene_values": gene_values[j]
         } for i in range(len(gene_names))]
 
@@ -68,17 +74,19 @@ class ParsedDataset :
         gene_ids = list(self.df.filter(regex="ENSG").columns)
         dataset_id = 1
 
+        print("in parsed dataset")
+
         return [{
-            'patient_id': self.df["Sample name"].iloc[i],
-            'age': self.df["Age At Onset"].iloc[i],
-            'diabete': self.df['Diabetes'].iloc[i],
-            'final_diagnosis': self.df['Final Diagnosis'].iloc[i],
-            'gender': self.df['Gender'].iloc[i],
-            'hypercholesterolemia': self.df['Hypercholesterolemia'].iloc[i],
-            'hypertension': self.df['Hypertension'].iloc[i],
-            'race': self.df['Race'].iloc[i],
+            'patient_id': str(self.df["Sample name"].iloc[i]).upper(),
+            'age': int(self.df["Age At Onset"].iloc[i]),
+            'diabete': str(self.df['Diabetes'].iloc[i]).lower(),
+            'final_diagnosis': str(self.df['Final Diagnosis'].iloc[i]).lower(),
+            'gender': str(self.df['Gender'].iloc[i]).lower(),
+            'hypercholesterolemia': str(self.df['Hypercholesterolemia'].iloc[i]).lower(),
+            'hypertension': str(self.df['Hypertension'].iloc[i]).lower(),
+            'race': str(self.df['Race'].iloc[i]).lower(),
             'gene_ids': gene_ids,
-            'dataset_id': dataset_id
+            'dataset_id': int(dataset_id)
         } for i in range(self.df.shape[0])]
         
         # print(a)

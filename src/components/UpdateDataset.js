@@ -1,25 +1,22 @@
-// Add description of the file
-// Add URL of the file
-// Use material ui for components
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Button, TextareaAutosize } from '@mui/material';
-import './UploadDataset.css';
+
+import "./UpdateDataset.css"
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
-function UploadDataset(){
-    const [selectedFile, setSelectedFile] = useState();
+function UpdateDataset(){
+    const [selectedFile, setSelectedFile] = useState(null);
     const [urltoFile, setUrltoFile] = useState("");
     const [description, setDescription] = useState("");
-    const [dateCreated, setDateCreated] = useState();
-    const [progress, setProgress] = useState(0)
+    const [datasetID, setDatasetID] = useState(0);
+    const [dateCreated, setDateCreated] = useState(null);
+    const [progress, setProgress] = useState(0);
     const [isFilePicked, setIsFilePicked] = useState(false);
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
-    const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
+    const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/update_dataset`;
 
     const changeHandler = (e) => {
         setSelectedFile(e.target.files[0]);
@@ -34,17 +31,14 @@ function UploadDataset(){
         console.log(urltoFile);
         console.log(dateCreated);
         console.log(isFilePicked);
-
-        if(isFilePicked == false){
-          return;
-        }
-
+        console.log(datasetID)
         
 
-        formData.append('file',selectedFile);
-        formData.append('description', description)
-        formData.append('urltoFile', urltoFile)
-        formData.append('dateCreated', dateCreated)
+        formData.append( 'file' , selectedFile );
+        formData.append('datasetID', datasetID );
+        formData.append('description', description);
+        formData.append('urltoFile', urltoFile);
+        formData.append('dateCreated', dateCreated);
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -54,21 +48,21 @@ function UploadDataset(){
             }
         }
 
-        console.log(api_url)
+        console.log(api_url);
 
         axios.post(api_url, formData, config)
         .then((result) => {
           console.log('Success', result)
-          alert("Data has been posted")
+          alert("Data has been updated")
         })
         .catch((error) => {
-          console.error('Post failed', error);
-          alert("Due to some error, data has not been posted")
+          console.error('Update failed', error);
+          alert("Due to some error, data has not been updated");
         })
     }
     
     return(
-      <div className='form-container'>
+      <div id="outer_cont" className='form-container'>
         
           <div>
             <h1></h1>
@@ -76,22 +70,26 @@ function UploadDataset(){
 
           <div class="card shadow mb-4">
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between ">
-                  <h5 class="m-0 font-weight-bold text-primary">File Upload</h5>
+                  <h5 class="m-0 font-weight-bold text-primary">Update Form</h5>
               </div>
               <div class="card-body">
                 <form>
                   <div class="form-group">
                   <div class="mb-3">
-                    <label for="formFile" class="form-label">Dataset CSV File Upload</label>
+                    <label for="formFile" class="form-label">Dataset CSV File Update</label>
                     <input class="form-control" type="file" id="formFile" onChange={(e)=>changeHandler(e)} />
                   </div>
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Description</label>
+                    <label for="exampleInputEmail1">Dataset ID (original, can't be updated)</label>
+                    <input type="number" class="form-control"  onChange = {(e)=>setDatasetID(e.target.value)} />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Description Update</label>
                     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange = {(e)=>setDescription(e.target.value)} />
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">URL</label>
+                    <label for="exampleInputPassword1">URL Update</label>
                     <input type="url" class="form-control" id="exampleInputPassword1" onChange={(e)=>setUrltoFile(e.target.value)} />
                   </div>
                   <button type="button" class="btn btn-primary" onClick={handleSubmission}>Submit</button>
@@ -139,4 +137,5 @@ function UploadDataset(){
     )
 }
 
-export default UploadDataset
+
+export default UpdateDataset

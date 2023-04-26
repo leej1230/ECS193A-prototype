@@ -10,6 +10,18 @@ import MaterialTable from 'material-table';
 
 import ScrollBars from "react-custom-scrollbars";
 
+import { flushSync } from 'react-dom';
+
+import Multiselect from "multiselect-react-dropdown";
+import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator} from 'react-bootstrap-table2-filter';
+import { PropTypes } from 'prop-types'; 
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+
+import {default as ReactSelectDropDown} from 'react-select';
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -37,7 +49,7 @@ import { color } from 'echarts';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Select  from '@mui/material/Select';
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
@@ -62,6 +74,43 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
+function ProductFilter(props) {
+  const propTypes = {
+    column: PropTypes.object.isRequired,
+    onFilter: PropTypes.func.isRequired,
+    optionsInput: PropTypes.object.isRequired
+  }
+  
+  const filter = (selectedList, selectedItem) => {
+    props.onFilter(
+      selectedList.map(x => [x.value])
+    );
+  }
+
+    return (
+          <Multiselect options={props.optionsInput} 
+            displayValue="label" 
+            showCheckbox 
+            closeOnSelect={false}
+            onSelect={filter} 
+            onRemove={filter}/>
+        )
+
+}
+
+const selectCompare = [
+  {value: 0, label: 'None'},
+  {value: 1, label: '<'},
+  {value: 2, label: '>'},
+  {value: 3, label: '='},
+  {value: 4, label: 'between'}
+];
+
+const selectOptions = [
+  {value: "Yes", label: 'yes'},
+  {value: "No", label: 'no'},
+  {value: "unknown", label: 'Unknown'}
+];
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 
@@ -71,7 +120,8 @@ const columns = [
 ]
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
-const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_ID}`
+
+const options =[{ 'title':"Animals", "cont_arr": ["fish", "horse", "turtle"]}, {'title':"Colors", "cont_arr":["Red", "Blue", "Green", "Yellow"]}, { 'title':"Places", "cont_arr": ["US", "Burma", "Latvia","US", "Burma", "Latvia"]}]
 
 function createGeneFormatted( input_patient_data_arr) {
     // return formatted for table
@@ -133,20 +183,225 @@ function GenePage() {
     {hypertension: ""},
     {race: ""}
   ]);
+  const [ patient_information_expanded, set_patient_information_expanded ] = useState([
+    {patient_id: ""},
+    {age: 0},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""},
+    {id: 0}
+  ]);
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {'arr':null}});
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
   const [graphType, setGraphType] = useState('bar');
+  const [patient_columns, set_patient_columns] = useState([{
+    dataField: 'id',
+    text: ''
+  }, {
+    dataField: 'patient_id',
+    text: 'Patient ID'
+  },{
+    dataField: 'age',
+    text: 'Age'
+  },{
+    dataField: 'diabete',
+    text: 'Diabetes'
+  },{
+    dataField: 'final_diagnosis',
+    text: 'Final Diagnosis'
+  },{
+    dataField: 'gender',
+    text: 'Gender'
+  },{
+    dataField: 'hypercholesterolemia',
+    text: 'Hypercholesterolemia',
+    filter: customFilter({
+      delay: 1000,
+      type: FILTER_TYPES.MULTISELECT
+    }),
+  
+    filterRenderer: (onFilter, column) => {
+      return(
+        <ProductFilter onFilter={onFilter} column={column} optionsInput={selectOptions}/>
+        )
+    }
+  },{
+    dataField: 'hypertension',
+    text: 'Hypertension',
+    filter: customFilter({
+      delay: 1000,
+      type: FILTER_TYPES.MULTISELECT
+    }),
+  
+    filterRenderer: (onFilter, column) => {
+      return(
+        <ProductFilter onFilter={onFilter} column={column} optionsInput={selectOptions}/>
+        )
+    }
+  },{
+    dataField: 'race',
+    text: 'Race'
+  }]);
 
-  const columns = [ 
-    {title: "Patient ID" , field: "patient_id"},
-    {title: "Age" , field: "age"},
-    {title: "Diabete" , field: "diabete"},
-    {title: "Final Diagnosis" , field: "final_diagnosis"},
-    {title: "Gender" , field: "gender"},
-    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
-    {title: "Hypertension" , field: "hypertension"},
-    {title: "Race" , field: "race"},
-  ]
+  const NumberFilter = (props) => {
+    const [compCode, setCompCode] =  useState(0);
+    const [input1, setInput1] =  useState(0);
+    const [input2, setInput2] =  useState(0);
+
+    const propTypes = {
+      column: PropTypes.object.isRequired,
+      onFilter: PropTypes.func.isRequired
+    }
+
+    useEffect(() => {
+      async function changedNumberComparison() {
+        
+        filter();
+      }
+  
+      changedNumberComparison()
+    }, [compCode])
+    
+    const filter = () => {
+      props.onFilter(
+        {compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: props.column.dataField}, patient_information_expanded
+      );
+    }
+  
+      return (
+            <div>
+              <ReactSelectDropDown options={selectCompare} 
+                displayValue="label" 
+                showCheckbox 
+                onChange={(e) => {setCompCode( e.value) } }
+                closeOnSelect={false}
+                />
+  
+              <input
+                key="input"
+                type="text"
+                placeholder="Value (or Min if between)"
+                onChange={(e) => { setInput1( e.target.value)}}
+              />
+              <input
+                key="input"
+                type="text"
+                placeholder="(Max if between selected or not used)"
+                onChange={(e) => { setInput2( e.target.value)}}
+              />
+            </div>
+          )
+  
+      }
+
+  const filterNumber = (filterVals, data) => {
+    let compareValCode = filterVals['compareValCode']
+    let inputVal1 = filterVals['inputVal1']
+    let inputVal2 = filterVals['inputVal2']
+    let colName = filterVals['colName']
+    
+    if(compareValCode == 0){
+      // no filter
+      return data;
+    }
+    else if(compareValCode == 1){
+      // <
+      
+      console.log(data.filter(patient_one => patient_one[colName] < inputVal1));
+      return data.filter(patient_one => patient_one[colName] < inputVal1);
+    } else if (compareValCode == 2){
+      // >
+      console.log(data.filter(patient_one => patient_one[colName] > inputVal1));
+      return data.filter(patient_one => patient_one[colName] > inputVal1);
+    } else if (compareValCode == 3){
+      // =
+      console.log(data.filter(patient_one => patient_one[colName] == inputVal1));
+      return data.filter(patient_one => patient_one[colName] == inputVal1);
+    } else if(compareValCode == 4){
+      // Between
+      console.log(data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2 ));
+      return data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2 );
+    }
+
+    
+  }
+
+  const generatePatientTable = (patients_info) => {
+    if(patients_info == null){
+      return;
+    }
+
+    for(let i = 0; i < patients_info.length; i++){
+      var cur_patient = patients_info[i]
+      // patient has no id, so this is fine
+      cur_patient['id'] = i+1
+    }
+
+    // 'id' not need options
+    var patient_columns_list = []
+
+    var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+    for(let i = 0; i < column_possibilities.length; i++){
+      var unique = [...new Set(patients_info.flatMap(item => item[ column_possibilities[i] ] ))];
+
+      let select_options_col = []
+
+      for(let j = 0; j < unique.length; j++){
+        select_options_col.push({value: unique[j], label: unique[j]})
+      }
+
+      var col_obj = {dataField: column_possibilities[i],
+        text: column_possibilities[i]}
+      if(unique.length > 0 && Number.isInteger(unique[0])){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            onFilter:filterNumber
+          }),
+          filterRenderer: (onFilter, column) => {
+            return(
+              <NumberFilter onFilter={ onFilter } column={column} />
+              )
+          }
+        }
+      }
+      else if(unique.length < 10){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            type: FILTER_TYPES.MULTISELECT
+          }),
+        
+          filterRenderer: (onFilter, column) => {
+            return(
+              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+              )
+          }
+        }
+      } else {
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: textFilter({
+            comparator: Comparator.EQ
+          })
+        }
+      }
+      patient_columns_list.push(col_obj)
+    }
+
+    console.log(patient_columns_list);
+    set_patient_columns(patient_columns_list);
+  
+    return patients_info;
+  }
 
   // componentDidMount() {
   useEffect( () => {
@@ -166,18 +421,33 @@ function GenePage() {
       //console.log( patient_data['patient_id'] );
     }
 
+    
+
+    fetchGeneData();
+    
+    
+  } , []);
+
+  useEffect(() => {
     async function fetchPatientsData() {
+      const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
       console.log(patientsDataAPIURL)
       const res = await axios.get(patientsDataAPIURL);
-      set_patient_table_data(res.data);
+      console.log("line 172")
+      console.log(res.data)
+      set_patient_table_data(generatePatientTable(res.data));
       //set_patient_table_input_format( createPatientFormatted(patient_data) );
       // .then(res => {
       // })
       //console.log( patient_data['patient_id'] );
     }
+
     fetchPatientsData()
-    fetchGeneData()
-  } , []);
+  }, [gene_data])
+
+  useEffect(() => {
+    set_patient_information_expanded(generatePatientTable(patient_table_data));
+  }, [patient_table_data])
 
   useEffect( () => {
     // this side effect runs if gene data changes, so that dataset info for the gene can be updated
@@ -345,6 +615,19 @@ function GenePage() {
                       
                   </div>
 
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                            </div>
+
+                            <div class="row" id="table_options_outer">
+                              <div id="patient_table_area">
+                                <BootstrapTable keyField='id' data={ patient_information_expanded } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                              </div>
+                            </div>
+                      </div>
+
+
                   <div class="row">
 
                     <div class="col-xl mb-4">
@@ -376,60 +659,40 @@ function GenePage() {
                         </div>
                     </div>
                     
-                    <div class="col-xl">
-                      <div class="card shadow mb-4">
-                          <div class="card-header py-3">
-                              <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                          </div>
-                      
-                          <MaterialTable columns={columns}
-                           
-                            data={patient_table_data}
-                            icons={tableIcons}
-                            options={{
-                              pageSize: 5,
-                              pageSizeOptions: [5, 10, 15, 25, 50, 100],
-                              showTitle: false
-                            }}
-                            />
-                      
+                      <div class="col-xl">
+
+                        <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                    
+                          <Table style={ { minWidth: 650}} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Code</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            
+                            <TableBody>
+                              {
+                                gene_code_info.code.map(function(item, row_i){
+                                  return <TableRow  key={row_i}>
+                                          <TableCell>
+                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                        {code_str}
+                                                      </div>     
+                                            })}</div>
+                                          </TableCell>
+                                    </TableRow>
+                              
+                              })
+                            }
+                            </TableBody>
+                          </Table>
+                          
+                        </TableContainer>
+
                       </div>
-                    </div>
 
                   </div>
-
-                <div>
-
-                  <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
-                  
-                  <Table style={ { minWidth: 650}} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Code</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    
-                    <TableBody>
-                      {
-                        gene_code_info.code.map(function(item, row_i){
-                          return <TableRow  key={row_i}>
-                                  <TableCell>
-                                      <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                      return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                {code_str}
-                                              </div>     
-                                    })}</div>
-                                  </TableCell>
-                          </TableRow>
-                      
-                        })
-                      }
-                      </TableBody>
-                    </Table>
-                  
-                  </TableContainer>
-
-                </div>
 
               </div> 
 
@@ -467,194 +730,90 @@ function GenePage() {
 
 export default GenePage
 
-{/*<Box >
-          <Card variant="outlined">
-            <CardContent >
-            </CardContent>
-          </Card>
-        </Box>*/}
-{/*<div>
-        <div className="titleLayout">
-          {gene_data?(
-              <div>
-                <p className='gene_name'>{gene_data.name}</p>
-              </div>
-            ):(
-              <div>
-                <CircularProgress />
-                <h3>Fetching Data...</h3>
-              </div>
-            )}
-        </div>
+{/*
+const columns = [ 
+    {title: "Patient ID" , field: "patient_id"},
+    {title: "Age" , field: "age"},
+    {title: "Diabete" , field: "diabete"},
+    {title: "Final Diagnosis" , field: "final_diagnosis"},
+    {title: "Gender" , field: "gender"},
+    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
+    {title: "Hypertension" , field: "hypertension"},
+    {title: "Race" , field: "race"},
+  ]
+*/}
 
-      <div className="headerGroup">
-        <div className="textElement"> <p className="text_label">Last Updated: &nbsp; </p> <p className="text_content">01-03-2023</p> </div>
-        <div className="buttonGroup">
-          <button className="buttonElement"> Download </button>
-          <button className="buttonElement"> Delete </button>
-        </div>
-      </div>
-
-      <hr style={{
-            color: 'black',
-            width: '98%',
-            marginTop: '1%',
-            marginBottom: '1%'
-        }} />
-
-        <div className="cardLayout">
-          <div className='cardContent'>
-            {gene_external_data["description"]?(
-              <div>
-                <p className='cardTitle'>Description</p>
-                <p className='cardBody'>{gene_external_data["description"]}</p>  
-              </div>
-            ):(
-              <div>
-                <CircularProgress />
-                <h3>Fetching Data...</h3>
-              </div>
-            )}
-          </div>
-        </div>
-
-        
-
-        <div className="cardLayout">
-            <div className='cardContent'>
-
-              <p className='cardTitle'>Gene Information</p>
-              {gene_data?(
-                <div className='cardBody'>
-                  <p>ID: {gene_data.id}</p>
-                  <p>Dataset: {gene_data.dataset_id}  <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a></p>
-                </div>
-              ):(
-                <div>
-                  <CircularProgress />
-                  <h3>Fetching Data...</h3>
-                </div>
-              )}
-            </div>
-        </div>
-
-      <div className="bottomInfo">
-
-          <Box className="bottomCard" >
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Stats</h4>
-                <p>Number of Patients: </p>
-                <p>Avg Age of Patients: </p>
-                <p>Number of Missing Cells: </p>
-                <p>Patient Conditions: </p>
-              </CardContent>
-            </Card>
-          </Box>
-
-          <Box className="bottomCard">
-            <Card variant="outlined">
-              <CardContent>
-                <h4 className='cardTitle'>Recently Viewed Members</h4>
-                <p>Person 1</p>
-                <p>Person 2</p>
-                <p>Person 3</p>
-              </CardContent>
-            </Card>
-          </Box>
-
-        </div>
-
-
-        <Box className="cardLayout">
-          <Card variant="outlined">
-            <CardContent>
-              <h4 className='cardTitle'>Data Graph</h4>
-              {gene_data?(
-                <div>
-                  <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
-                  <div className='GraphType'>
-                    <FormControl margin='dense' fullWidth>
-                      <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
-                      <Select
-                        labelId="GraphTypeLabel"
-                        id="GraphTypeSelect"
-                        value={graphType}
-                        label="GraphType"
-                        onChange={(e)=>{setGraphType(e.target.value)}}
-                        >
-                        <MenuItem value={'bar'}>Bar</MenuItem>
-                        <MenuItem value={'line'}>Basic Line</MenuItem>
-                        <MenuItem value={'pie'}>Pie</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-              ):(
-                <div>
-                  <CircularProgress />
-                  <h3>Fetching Data...</h3>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </Box>
-
-        <Box className="cardLayout">
-          <Card variant="outlined">
-            <CardContent>
-              <h4 className='cardTitle'>Patient List</h4>
-              <MaterialTable columns={columns} 
-              data={patient_table_data}
-              icons={tableIcons}
-              options={{
-                paging: false,
-                showTitle: false
-              }}
-              />
-            </CardContent>
-          </Card>
-        </Box>
-
-        <Box className="cardLayout">
-          <Card variant="outlined">
-            <CardContent>
-              <div className="codeCardOuter">
-                
-                <h4 className='cardTitle'>Gene View</h4>
-                <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
-                
-                  <Table style={ { minWidth: 650}} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Code</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    
-                    <TableBody>
-                      {
-                        gene_code_info.code.map(function(item, row_i){
-                          return <TableRow  key={row_i}>
-                                  <TableCell>
-                                      <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                      return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                {code_str}
-                                              </div>     
-                                    })}</div>
-                                  </TableCell>
-                          </TableRow>
-                      
-                        })
-                      }
-                    </TableBody>
-                  </Table>
-                  
-                </TableContainer>
-                
+{/*<div class="col" id="table_content">
+    <MaterialTable columns={columns}
     
+      data={patient_table_data}
+      icons={tableIcons}
+      options={{
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 15, 25, 50, 100],
+        showTitle: false,
+        search: false
+      }}
+      />
+    </div>*/}
+
+{/*<div class="col" id="checkbox_filter">
+
+<div class="card shadow mb-4" >
+      <div class="card-header py-3">
+          <h6 class="m-0">Options</h6>
+      </div>
+      <div class="card-body">
+        {options.map((options_category_list,j) => {
+
+            return(
+              <div>
+                <h6 class="font-weight-bold">{options_category_list['title']}</h6>
+                {options_category_list['cont_arr'].map((option, i) => {
+                return (
+                
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        id={option}
+                        name={option}
+                        value={option}
+                        onChange={(e) => {
+                          //setFilter(setFilteredParams(filterValue, e.target.value));
+                        }}
+                      ></input>
+                      <label
+                        htmlFor={option}
+                        className="ml-1.5 font-medium text-gray-700"
+                      >
+                        {option}
+                      </label>
+                    </div>
+                
+                );
+              })}
               </div>
-              
-            </CardContent>
-          </Card>
-        </Box>
-    </div> */}
+            );
+        })}
+      </div>
+  </div>
+
+</div>*/}
+
+{/*
+const products = [{
+  'id': 1,
+  'name':"Spinach",
+  'quality': "good"
+},{
+  'id': 2,
+  'name':"Juice",
+  'quality': "good"
+},{
+  'id': 3,
+  'name':"Biscuits",
+  'quality': "bad"
+}
+]
+*/}
