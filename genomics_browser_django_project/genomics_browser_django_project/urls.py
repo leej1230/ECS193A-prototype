@@ -31,6 +31,8 @@ urlpatterns = [
     re_path(r'^api/dataset/all',                    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "get_dataset_all"}),
     re_path(r'^api/counter/all',                    views.BackendServer.as_view(), {"inner": "Counters", "callback": "get_counter_all"}),
 
+    path('api/registration',                        views.BackendServer.as_view(), {"inner": "Users",    "callback": "post_user_one"}), 
+    path('api/login',                               views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_one"}), 
 
     path('api/upload_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
 

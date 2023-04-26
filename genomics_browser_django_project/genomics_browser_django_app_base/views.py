@@ -3,6 +3,14 @@ from genomics_browser_django_app_base.database import Database
 from django.views import View
 from django.http import JsonResponse
 
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import status
+
+from genomics_browser_django_app_base.serializers import UserSerializer
+
+from django.contrib.auth.hashers import make_password
+
 class BackendServer(View):
     """
     Overload the get() function to dispatch the request to the appropriate database method.
@@ -54,4 +62,7 @@ class BackendServer(View):
     """
     def render_to_json_response(self, callback, **request_kwargs):
         data = callback(self.kwargs)
-        return JsonResponse(data, **request_kwargs, safe=False)
+        status = 200 # OK
+        if type(data) == int: # If the data is an integer, it is a status code.
+            status = data 
+        return JsonResponse(data, **request_kwargs, safe=False, status=status)
