@@ -14,8 +14,8 @@ from django.contrib.auth.hashers import check_password
 
 from rest_framework import status
 
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
+from Cryptodome.Cipher import AES
+from Cryptodome.Util.Padding import unpad
 
 import base64
 import re
@@ -97,7 +97,7 @@ class Database():
             Returns:
                 dict: The user information.
             """
-            Database.user_collection.delete_one({'id': request['ctx'].POST['id']})
+            Database.user_collection.delete_one({'id': int(request['user_id'])})
             Database.Counters.decrement_user_counter()
 
         def post_superuser_one(request):

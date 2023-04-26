@@ -33,6 +33,8 @@ urlpatterns = [
 
     path('api/registration',                        views.BackendServer.as_view(), {"inner": "Users",    "callback": "post_user_one"}), 
     path('api/login',                               views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_one"}), 
+    path('api/get-user-all',                        views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_all"}),
+    path('api/delete-user/<slug:user_id>/',          views.BackendServer.as_view(), {"inner": "Users",    "callback": "delete_user_one"}),
 
     path('api/upload_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
 #     re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
