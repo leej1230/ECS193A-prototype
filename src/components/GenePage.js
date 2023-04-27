@@ -198,6 +198,7 @@ function GenePage() {
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
   const [graphType, setGraphType] = useState('bar');
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
+  const [graph_table_node, set_graph_table_node] = useState();
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -362,7 +363,8 @@ function GenePage() {
           text: column_possibilities[i],
           filter: customFilter({
             delay: 1000,
-            onFilter:filterNumber
+            onFilter:filterNumber,
+            type: FILTER_TYPES.NUMBER
           }),
           filterRenderer: (onFilter, column) => {
             return(
@@ -371,7 +373,7 @@ function GenePage() {
           }
         }
       }
-      else if(unique.length < 10){
+      else if(unique.length < 3){
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
@@ -412,6 +414,7 @@ function GenePage() {
       const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
       setGeneExternalData(gene_ext.data);
       setGene_data(res.data);
+      set_graph_table_filter_data(res.data);
 
       console.log("fetch gene function: ")
       console.log(gene_data);
@@ -485,6 +488,27 @@ function GenePage() {
   }
   fetchSeqName()
  } , [] );
+
+  const graphDataFilter = (cur_filters) => {
+    // filterType: "TEXT"
+    // filterType: "NUMBER"
+    // filterType: "MULTISELECT"
+
+    let filter_columns = Object.keys(cur_filters);
+    for(let i = 0; i < filter_columns.length; i++){
+      let current_filter = cur_filters[filter_columns[i]];
+      if(current_filter.filterType == "NUMBER"){
+        console.log("num")
+        console.log(current_filter.filterVal)
+      } else if (current_filter.filterType == "TEXT"){
+        console.log("text")
+        console.log(current_filter.filterVal)
+      } else if(current_filter.filterType == "MULTISELECT"){
+        console.log("multis")
+        console.log(current_filter.filterVal)
+      }
+    }
+  }
 
   return (
     <body id="page-top">
@@ -611,7 +635,7 @@ function GenePage() {
                                 
                               </div>
                               <div id='graph_filter'>
-                                <BootstrapTable keyField='id' remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { set_graph_table_filter_data(gene_data) } } />
+                                <BootstrapTable keyField='id' ref={ n => set_graph_table_node( n ) } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { graphDataFilter(graph_table_node.filterContext.currFilters) } } />
                               </div>
                           </div>
                       </div>
