@@ -20,6 +20,7 @@ from django.urls import path, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('', views.index, name='index'),
 #     re_path(r'^api/patientpost', views.BackendServer.POST_Patient_Data),
 
     path('api/patient/<slug:patient_id>',           views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patient_one"}),
@@ -47,4 +48,5 @@ urlpatterns = [
     path('api/delete_dataset/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
 
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
+    re_path(r".*", views.index, name='index'),
 ]
