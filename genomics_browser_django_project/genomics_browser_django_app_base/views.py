@@ -11,6 +11,11 @@ from genomics_browser_django_app_base.serializers import UserSerializer
 
 from django.contrib.auth.hashers import make_password
 
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'index.html')
+
 class BackendServer(View):
     """
     Overload the get() function to dispatch the request to the appropriate database method.
