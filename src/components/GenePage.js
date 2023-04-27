@@ -197,6 +197,7 @@ function GenePage() {
   const [ dataset_info , set_dataset_info ] = useState({name : "" , patient_ids : {'arr':null}});
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
   const [graphType, setGraphType] = useState('bar');
+  const [graph_table_filter_data, set_graph_table_filter_data] = useState();
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -582,9 +583,9 @@ function GenePage() {
                               </div>
                               <div class="card-body">
                                   
-                                {gene_data?(
+                                {graph_table_filter_data?(
                                   <div>
-                                    <SampleGraph categories={gene_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
+                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
                                     <div className='GraphType'>
                                       <FormControl margin='dense' fullWidth>
                                         <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
@@ -608,6 +609,9 @@ function GenePage() {
                                   </div>
                                 )}
                                 
+                              </div>
+                              <div id='graph_filter'>
+                                <BootstrapTable keyField='id' remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { set_graph_table_filter_data(gene_data) } } />
                               </div>
                           </div>
                       </div>
