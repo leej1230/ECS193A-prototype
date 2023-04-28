@@ -1,1 +1,1 @@
-web: gunicorn manage.py:app
+web: gunicorn genomics_browser_django_project.wsgi
