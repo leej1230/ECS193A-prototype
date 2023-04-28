@@ -1,1 +1,1 @@
-web: gunicorn /app/genomics_browser_django_project/genomics_browser_django_project.wsgi:application
+web: gunicorn /app/genomics_browser_django_project/genomics_browser_django_project/wsgi.py
