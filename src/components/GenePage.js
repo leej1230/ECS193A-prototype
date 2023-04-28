@@ -357,7 +357,8 @@ function GenePage() {
           text: column_possibilities[i],
           filter: customFilter({
             delay: 1000,
-            onFilter:filterNumber
+            onFilter:filterNumber,
+            type: FILTER_TYPES.NUMBER
           }),
           filterRenderer: (onFilter, column) => {
             return(
@@ -487,51 +488,34 @@ function GenePage() {
 
   let filter_columns = Object.keys(cur_filters);
 
+  let patients_filtered = patient_information_expanded;
+  let isFiltered = false;
+
   for(let i = 0; i < filter_columns.length; i++){
     let current_filter = cur_filters[filter_columns[i]];
     if(current_filter.filterType == "NUMBER"){
       console.log("num")
       console.log(current_filter.filterVal)
-      console.log(gene_data)
 
       let first_num = current_filter.filterVal.inputVal1
       let second_num = current_filter.filterVal.inputVal2
 
-      let patients_filtered = []
-      let isFiltered = false;
-
       if(current_filter.filterVal.compareValCode == 1){
         // <
         isFiltered = true
-        patients_filtered = patient_information_expanded.filter(patient_one => patient_one[filter_columns[i]] < first_num)
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
       } else if(current_filter.filterVal.compareValCode == 2){
         // >
         isFiltered = true
-        patients_filtered = patient_information_expanded.filter(patient_one => patient_one[filter_columns[i]] > first_num)
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
       } else if(current_filter.filterVal.compareValCode == 3){
         // =
         isFiltered = true
-        patients_filtered = patient_information_expanded.filter(patient_one => patient_one[filter_columns[i]] == first_num)
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
       } else if(current_filter.filterVal.compareValCode == 4){
         // between
         isFiltered = true
-        patients_filtered = patient_information_expanded.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num )
-      }
-
-      console.log("patients info")
-
-      console.log(patients_filtered)
-
-      if(isFiltered == true){
-        let new_patient_ids = []
-        let new_gene_vals = []
-
-        for(let j = 0; j < patients_filtered.length; j++){
-          new_patient_ids.push(patients_filtered[j]['patient_id'])
-          new_gene_vals.push(patients_filtered[j]['gene_val'])
-        }
-
-        set_graph_table_filter_data( {patient_ids: {arr: new_patient_ids} , gene_values: {arr: new_gene_vals}} )
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num )
       }
 
     } else if (current_filter.filterType == "TEXT"){
@@ -541,6 +525,20 @@ function GenePage() {
       console.log("multis")
       console.log(current_filter.filterVal)
     }
+  }
+
+  if(isFiltered == true){
+    let new_patient_ids = []
+    let new_gene_vals = []
+
+    for(let j = 0; j < patients_filtered.length; j++){
+      new_patient_ids.push(patients_filtered[j]['patient_id'])
+      new_gene_vals.push(patients_filtered[j]['gene_val'])
+    }
+
+    set_graph_table_filter_data( {patient_ids: {arr: new_patient_ids} , gene_values: {arr: new_gene_vals}} )
+  } else {
+    set_graph_table_filter_data( gene_data )
   }
 };
 
