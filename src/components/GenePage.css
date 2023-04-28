@@ -226,3 +226,7 @@
     overflow: auto;
 }
 
+#graph_filter{
+    overflow: auto;
+    padding: 1%;
+}
