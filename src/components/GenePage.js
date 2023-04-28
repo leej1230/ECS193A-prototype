@@ -13,7 +13,7 @@ import ScrollBars from "react-custom-scrollbars";
 import { flushSync } from 'react-dom';
 
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator} from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator, multiSelectFilter} from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -53,6 +53,7 @@ import Select  from '@mui/material/Select';
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+import { type } from '@testing-library/user-event/dist/type';
 
 const tableIcons = {
   Add: AddBox,
@@ -531,6 +532,19 @@ function GenePage() {
     } else if(current_filter.filterType == "MULTISELECT"){
       console.log("multis")
       console.log(current_filter.filterVal)
+
+      // need to or through the filters selected for a column
+      let mutliselect_filter_list = []
+      isFiltered = true;
+
+      for(let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++){
+        // each column: one value so will not overlap
+        console.log("iteration ", current_filter_index);
+        mutliselect_filter_list = mutliselect_filter_list.concat( patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]) )
+      }
+
+      // or the multiselect options and set to the patients filter
+      patients_filtered = mutliselect_filter_list;
     }
   }
 
