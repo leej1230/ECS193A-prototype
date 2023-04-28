@@ -357,6 +357,7 @@ function GenePage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             onFilter:filterNumber,
@@ -373,6 +374,7 @@ function GenePage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             type: FILTER_TYPES.MULTISELECT
@@ -388,6 +390,7 @@ function GenePage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           filter: textFilter({
             comparator: Comparator.EQ
           })
