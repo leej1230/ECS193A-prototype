@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react';
+import React, {useEffect,useState, useRef} from 'react';
 import axios from 'axios';
 import { Box, Card , CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
 import "./GenePage.css";
@@ -188,7 +188,6 @@ function GenePage() {
   const [ gene_code_info , set_gene_code_info ] = useState({code : ["mrna"]});
   const [graphType, setGraphType] = useState('bar');
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
-  const [graph_table_node, set_graph_table_node] = useState();
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -237,6 +236,8 @@ function GenePage() {
     dataField: 'race',
     text: 'Race'
   }]);
+
+  const graph_table_node = useRef(null);
 
   const NumberFilter = (props) => {
     const [compCode, setCompCode] =  useState(0);
@@ -367,7 +368,7 @@ function GenePage() {
           }
         }
       }
-      else if(unique.length < 10){
+      else if(unique.length < 3){
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
@@ -494,8 +495,8 @@ function GenePage() {
   for(let i = 0; i < filter_columns.length; i++){
     let current_filter = cur_filters[filter_columns[i]];
     if(current_filter.filterType == "NUMBER"){
-      console.log("num")
-      console.log(current_filter.filterVal)
+      console.log("num");
+      console.log(current_filter.filterVal);
 
       let first_num = current_filter.filterVal.inputVal1
       let second_num = current_filter.filterVal.inputVal2
@@ -521,12 +522,20 @@ function GenePage() {
     } else if (current_filter.filterType == "TEXT"){
       console.log("text")
       console.log(current_filter.filterVal)
+
+      console.log("patients filtered in text: ")
+      console.log(patients_filtered)
+
+      isFiltered = true
+      patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
     } else if(current_filter.filterType == "MULTISELECT"){
       console.log("multis")
       console.log(current_filter.filterVal)
     }
   }
 
+  console.log("patients filtered:")
+  console.log(patients_filtered)
   if(isFiltered == true){
     let new_patient_ids = []
     let new_gene_vals = []
@@ -536,7 +545,12 @@ function GenePage() {
       new_gene_vals.push(patients_filtered[j]['gene_val'])
     }
 
-    set_graph_table_filter_data( {patient_ids: {arr: new_patient_ids} , gene_values: {arr: new_gene_vals}} )
+    let new_obj = {patient_ids: {arr: new_patient_ids} , gene_values: {arr: new_gene_vals}}
+
+    console.log(new_obj)
+
+
+    set_graph_table_filter_data( new_obj )
   } else {
     set_graph_table_filter_data( gene_data )
   }
@@ -641,7 +655,7 @@ function GenePage() {
                                   
                                 {graph_table_filter_data?(
                                   <div>
-                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={gene_data.gene_values["arr"]} type={graphType} />
+                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
                                     <div className='GraphType'>
                                       <FormControl margin='dense' fullWidth>
                                         <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
@@ -668,7 +682,7 @@ function GenePage() {
                               </div>
 
                               <div id='graph_filter'>
-                                <BootstrapTable keyField='id' ref={ n => set_graph_table_node( n ) } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { graphDataFilter(graph_table_node.filterContext.currFilters) } } />
+                                <BootstrapTable keyField='id' ref={ n => graph_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) } } />
                               </div>
                           </div>
                       </div>
