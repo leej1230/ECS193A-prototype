@@ -186,6 +186,41 @@ function DatasetPage() {
 
   const navigate = useNavigate();
 
+  const TextFuzzyFilter = (props) => {
+    const [inputStr, setInputStr] =  useState(0);
+
+    const propTypes = {
+      column: PropTypes.object.isRequired,
+      onFilter: PropTypes.func.isRequired
+    }
+
+    useEffect(() => {
+      async function changedText() {
+        
+        filter();
+      }
+  
+      changedText()
+    }, [inputStr])
+    
+    const filter = () => {
+      props.onFilter(
+        {input_string_value: inputStr, colName: props.column.dataField}, gene_information_expanded
+      );
+    }
+  
+      return (
+            <div>
+              <input
+                key="input"
+                type="text"
+                placeholder="text"
+                onChange={(e) => { setInputStr( e.target.value ) }}
+              />
+            </div>
+          )
+      }
+
   const NumberFilter = (props) => {
     const [compCode, setCompCode] =  useState(0);
     const [input1, setInput1] =  useState(0);
