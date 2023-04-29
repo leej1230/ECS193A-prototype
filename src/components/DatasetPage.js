@@ -191,10 +191,16 @@ function DatasetPage() {
       column: PropTypes.object.isRequired,
       onFilter: PropTypes.func.isRequired
     }
+
+    const reset_list = () => {
+      props.onFilter(
+        {input_string_value: "", colName: props.column.dataField, reset: true}, gene_information_expanded
+      )
+    }
     
     const filter = () => {
       props.onFilter(
-        {input_string_value: inputStr, colName: props.column.dataField}, gene_information_expanded
+        {input_string_value: inputStr, colName: props.column.dataField, reset: false}, gene_information_expanded
       );
     }
   
@@ -209,6 +215,9 @@ function DatasetPage() {
               <button
                 onClick={() => {filter()}}
               >Search</button>
+              <button
+                onClick={() => {reset_list()}}
+              >Reset</button>
             </div>
           )
       }
@@ -283,9 +292,12 @@ function DatasetPage() {
       let input_str = filterVals['input_string_value']
       let colName = filterVals['colName']
 
+      if( filterVals['reset'] == true ){
+        return data;
+      }
+
       console.log("fuzzy filter function: ");
       console.log(input_str);
-      
       
       // equals filter
       return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) );
