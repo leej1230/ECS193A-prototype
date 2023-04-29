@@ -389,9 +389,15 @@ function DatasetPage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
-          filter: textFilter({
-            comparator: Comparator.EQ
-          })
+          filter: customFilter({
+            delay: 1000,
+            onFilter:filterFuzzyText
+          }),
+          filterRenderer: (onFilter, column) => {
+            return(
+              <TextFuzzyFilter onFilter={ onFilter } column={column} />
+              )
+          }
         }
       }
       gene_columns_list.push(col_obj)
