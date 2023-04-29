@@ -53,7 +53,6 @@ class Database():
             cipher = AES.new(encryptionKey, AES.MODE_CBC)
             ciphertext = base64.b64decode(encrypted_password)
             decrypted_password = unpad(cipher.decrypt(ciphertext), AES.block_size)
-
             return decrypted_password
 
         def get_user_one(request):
@@ -69,9 +68,22 @@ class Database():
             
             if not check_password(request['ctx'].POST['password'], user['password']):
                 return status.HTTP_404_NOT_FOUND
+
             serial = UserSerializer(user, many=False)
             user = serial.data
-            return status.HTTP_200_OK
+            return user
+        
+        def get_user_all(request):
+            """
+            Retrieves all users from the database.
+            
+            Returns:
+                    list: The users information.
+            """
+            users = Database.user_collection.find()
+            serial = UserSerializer(users, many=True)
+            json_data = serial.data
+            return json_data 
         
         def post_user_one(request):
             """
@@ -88,6 +100,16 @@ class Database():
             serial = UserSerializer(user, many=False)
             Database.user_collection.insert_one(serial.data)
             Database.Counters.increment_user_counter()
+
+        def delete_user_one(request):
+            """
+            Deletes a user from the database.
+            
+            Returns:
+                dict: The user information.
+            """
+            Database.user_collection.delete_one({'id': int(request['user_id'])})
+            Database.Counters.decrement_user_counter()
 
         def post_superuser_one(request):
             """
@@ -221,6 +243,25 @@ class Database():
                         }
                     }, 
                 upsert=False)
+            return counter
+
+        def decrement_user_counter():
+            """
+            Decrements the user counter value in the database.
+
+            Returns:
+                int: The updated user counter value.
+            """
+            counter = Database.Counters.get_last_user_counter() - 1
+            Database.counter_collection.update_one({
+                Database.Counters.COUNTER_NAME_KEY: Database.Counters.USER_COUNTER_NAME}, 
+                {
+                    Database.Counters.INCREMENT_OPERATION: {
+                        Database.Counters.COUNTER_VALUE_KEY: counter, 
+                        Database.Counters.COUNTER_NAME_KEY: Database.Counters.USER_COUNTER_NAME
+                    }
+                }, 
+            upsert=False)
             return counter
         
         def increment_gene_counter():

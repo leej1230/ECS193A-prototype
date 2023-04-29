@@ -9,8 +9,7 @@
 /coverage
 
 # production
-# Might change but for now, we have to upload build
-# /build
+/build
 
 # misc
 .DS_Store
