@@ -125,8 +125,6 @@ function DatasetPage() {
     { title: "Value", field: "value" }
   ];
 
-  
-
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
     axios.get(url).then((result) => {
@@ -194,14 +192,9 @@ function DatasetPage() {
       onFilter: PropTypes.func.isRequired
     }
 
-    useEffect(() => {
-      async function changedText() {
-        
+    const changedText = () => {
         filter();
-      }
-  
-      changedText()
-    }, [inputStr])
+    }
     
     const filter = () => {
       props.onFilter(
@@ -217,6 +210,9 @@ function DatasetPage() {
                 placeholder="text"
                 onChange={(e) => { setInputStr( e.target.value ) }}
               />
+              <button
+                onClick={changedText()}
+              >Search</button>
             </div>
           )
       }
