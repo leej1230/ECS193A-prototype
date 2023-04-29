@@ -9,23 +9,47 @@ import ScrollBars from "react-custom-scrollbars";
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
+function debounce(fn, ms) {
+  let timer
+  return _ => {
+    clearTimeout(timer)
+    timer = setTimeout(_ => {
+      timer = null
+      fn.apply(this, arguments)
+    }, ms)
+  };
+}
+
 function SliderItemsContainer(props) {
   const [index, setIndex] = useState(0);
 
-  function dotClicked(e) {
-    setIndex(parseInt(e.target.dataset.index, 10));
-  };
+  const [dimensions, setDimensions] = React.useState({ 
+    height: window.innerHeight,
+    width: window.innerWidth
+  })
+
+  React.useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
+    }, 1000)
+
+    window.addEventListener('resize', debouncedHandleResize)
+
+      return _ => {
+        window.removeEventListener('resize', debouncedHandleResize)
+
+      }
+    })
 
   return (
     <div>
-      <meta http-equiv='cache-control' content='no-cache' />
-      <meta http-equiv='expires' content='0' />
-      <meta http-equiv='pragma' content='no-cache' />
 
-      <ScrollBars style={{ width: 1000, height: 400 }}>
+      <ScrollBars style={{ width: parseInt(0.7 * dimensions.width), height: parseInt(0.35 * dimensions.height) }}>
         {props.dataset_groups_list.map((child, index) =>
-          <div key={index}> <DatasetList datasets_arr={props.dataset_groups_list[index]} /> </div>
-        )}
+        <div key={index}> <DatasetList datasets_arr={props.dataset_groups_list[index]} /> </div>)}
       </ScrollBars>
 
       <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>

@@ -54,6 +54,8 @@ function UploadDataset(){
             }
         }
 
+        console.log(api_url)
+
         axios.post(api_url, formData, config)
         .then((result) => {
           console.log('Success', result)

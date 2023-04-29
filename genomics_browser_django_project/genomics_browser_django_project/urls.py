@@ -14,13 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-# # from django.conf.urls import url
 from genomics_browser_django_app_base import views
 from django.urls import path, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-#     re_path(r'^api/patientpost', views.BackendServer.POST_Patient_Data),
 
     path('api/patient/<slug:patient_id>',           views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patient_one"}),
     path('api/gene/<str:gene_name>/<slug:gene_id>', views.BackendServer.as_view(), {"inner": "Genes",    "callback": "get_gene_one"}),
@@ -37,10 +35,12 @@ urlpatterns = [
     path('api/delete-user/<slug:user_id>/',          views.BackendServer.as_view(), {"inner": "Users",    "callback": "delete_user_one"}),
 
     path('api/upload_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
-#     re_path(r'^api/datasetpost', views.BackendServer.POST_Dataset_Data),
-#     re_path(r'^api/genepost', views.BackendServer.POST_Gene_Data),
 
-#     re_path(r'^api/seq/names' , views.BackendServer.GET_SEQ_NAMES),
+    path('api/update_dataset',                      views.BackendServer.as_view(), {"inner": "Datasets", "callback": "update_dataset_one"}),
+
+    re_path(r'^api/seq/names' ,                     views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_seq_names"}),
+
+    path('api/delete_dataset/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
 
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
 ]
