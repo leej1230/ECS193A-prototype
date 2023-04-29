@@ -295,7 +295,11 @@ function DatasetPage() {
       console.log(input_str);
       
       // equals filter
-      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 );
+      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
+        (patient_object_a, patient_object_b) => {
+          return hasHammingDistanceLessThanEqualOne(patient_object_a[colName] , input_str) - hasHammingDistanceLessThanEqualOne(patient_object_b[colName] , input_str);
+        }
+      );
       
     }
 
