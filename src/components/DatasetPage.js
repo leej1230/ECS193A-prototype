@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./DatasetPage.css";
-import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
+import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper, cardActionAreaClasses } from '@mui/material';
 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -212,6 +212,72 @@ function DatasetPage() {
             </div>
           )
       }
+    
+    const hasHammingDistanceLessThanEqualOne = (current_input_str, str_reference) => {
+      if( (current_input_str.length - str_reference.length) > 1 ){
+        return false;
+      }else if( (current_input_str.length - str_reference.length) == 1 ){
+        // distance is 1, make sure no other diff, or else not dist 1
+
+        let larger_str = current_input_str;
+        let smaller_str = str_reference;
+        if(current_input_str.length < str_reference.length){
+          larger_str = str_reference;
+          smaller_str = current_input_str;
+        }
+
+
+        let num_errors = 0;
+        let smaller_index = 0;
+        let larger_index = 0;
+
+        for( ; smaller_index < smaller_str.length && larger_index < larger_str.length; ){
+          if( smaller_str[smaller_index] == larger_str[larger_index]  ){
+            smaller_index++;
+            larger_index++;
+          } else if( (larger_index+1) < larger_str.length && smaller_str[smaller_index] == larger_str[larger_index+1] ){
+            larger_index = larger_index+2;
+            smaller_index++;
+            num_errors++;
+          } else {
+            larger_index++;
+            smaller_index++;
+            num_errors++;
+          }
+        }
+
+        if(num_errors > 1){
+          return false;
+        }
+
+        return true;
+
+      } else {
+        // equal length
+
+        let num_errors = 0;
+        let first_index = 0;
+        let second_index = 0;
+
+        for( ; first_index < current_input_str.length && second_index < str_reference.length; ){
+          if( current_input_str[first_index] == str_reference[second_index]  ){
+            first_index++;
+            second_index++;
+          } else {
+            second_index++;
+            first_index++;
+            num_errors++;
+          }
+        }
+
+        if(num_errors > 1){
+          return false;
+        }
+
+        return true;
+      }
+      
+    }
 
     const filterFuzzyText = (filterVals, data) => {
       let input_str = filterVals['input_string_value']
@@ -222,7 +288,7 @@ function DatasetPage() {
       
       
       // equals filter
-      return data.filter( patient_one => patient_one[colName] == input_str );
+      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) );
       
     }
 
