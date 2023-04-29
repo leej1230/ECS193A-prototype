@@ -221,6 +221,16 @@ function DatasetPage() {
           )
       }
 
+    const filterFuzzyText = (filterVals, data) => {
+      let input_str = filterVals['input_string_value']
+      let colName = filterVals['colName']
+      
+      
+      // equals filter
+      return data.filter( patient_one => patient_one[colName] == input_str );
+      
+    }
+
   const NumberFilter = (props) => {
     const [compCode, setCompCode] =  useState(0);
     const [input1, setInput1] =  useState(0);
