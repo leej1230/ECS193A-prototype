@@ -224,7 +224,8 @@ function DatasetPage() {
     
     const hasHammingDistanceLessThanEqualOne = (current_input_str, str_reference) => {
       if( Math.abs(current_input_str.length - str_reference.length) > 1 ){
-        return false;
+        // rand number more than 1 to be discarded when filtered
+        return 5;
       }else if( Math.abs(current_input_str.length - str_reference.length) == 1 ){
         // distance is 1, make sure no other diff, or else not dist 1
 
@@ -255,11 +256,8 @@ function DatasetPage() {
           }
         }
 
-        if(num_errors > 1){
-          return false;
-        }
-
-        return true;
+        
+        return num_errors;
 
       } else {
         // equal length
@@ -279,11 +277,8 @@ function DatasetPage() {
           }
         }
 
-        if(num_errors > 1){
-          return false;
-        }
-
-        return true;
+      
+        return num_errors;
       }
       
     }
@@ -300,7 +295,7 @@ function DatasetPage() {
       console.log(input_str);
       
       // equals filter
-      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) );
+      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 );
       
     }
 
