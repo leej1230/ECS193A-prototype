@@ -191,10 +191,6 @@ function DatasetPage() {
       column: PropTypes.object.isRequired,
       onFilter: PropTypes.func.isRequired
     }
-
-    const changedText = () => {
-        filter();
-    }
     
     const filter = () => {
       props.onFilter(
@@ -211,7 +207,7 @@ function DatasetPage() {
                 onChange={(e) => { setInputStr( e.target.value ) }}
               />
               <button
-                onClick={changedText()}
+                onClick={() => {filter()}}
               >Search</button>
             </div>
           )
@@ -220,6 +216,9 @@ function DatasetPage() {
     const filterFuzzyText = (filterVals, data) => {
       let input_str = filterVals['input_string_value']
       let colName = filterVals['colName']
+
+      console.log("fuzzy filter function: ");
+      console.log(input_str);
       
       
       // equals filter
