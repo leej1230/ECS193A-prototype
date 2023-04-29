@@ -225,7 +225,7 @@ function DatasetPage() {
     const hasHammingDistanceLessThanEqualOne = (current_input_str, str_reference) => {
       if( Math.abs(current_input_str.length - str_reference.length) > 1 ){
         return false;
-      }else if( (current_input_str.length - str_reference.length) == 1 ){
+      }else if( Math.abs(current_input_str.length - str_reference.length) == 1 ){
         // distance is 1, make sure no other diff, or else not dist 1
 
         let larger_str = current_input_str;
