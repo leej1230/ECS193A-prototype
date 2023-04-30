@@ -387,8 +387,16 @@ function DatasetPage() {
 
   const geneListFilter = (gene_list_filter_value) => {
     console.log("node method");
+    console.log(gene_list_filter_value)
+
     let text_search = gene_list_filter_value.gene_id.filterVal.input_string_value ;
     let column_search = gene_list_filter_value.gene_id.filterVal.colName;
+    let reset_value = gene_list_filter_value.gene_id.filterVal.reset;
+
+    if(reset_value == true){
+      set_gene_list_filtered(gene_information_expanded);
+      return;
+    }
 
     let search_results_genes = filterFuzzyText({input_string_value: text_search, colName: column_search, reset: false}, gene_information_expanded);
 
