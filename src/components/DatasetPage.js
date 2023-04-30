@@ -383,6 +383,12 @@ function DatasetPage() {
     
   }
 
+  const geneListFilter = (gene_list_filter_value) => {
+    console.log("node method");
+    console.log(gene_list_filter_value.gene_id.filterVal.input_string_value );
+    console.log(gene_list_filter_value.gene_id.filterVal.colName)
+  }
+
   const generateGeneObjs = (gene_ids_info) => {
     if(gene_ids_info == null || gene_ids_info.length == 0){
       return [{'id':0,'gene_id': "ENT"}];
@@ -596,7 +602,7 @@ function DatasetPage() {
                   <div class="card-body">
                       <div class="row" id="table_options_outer">
                           <div id="gene_table_area">
-                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_information_expanded } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_information_expanded } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
                           </div>
                         </div>
                   </div>
