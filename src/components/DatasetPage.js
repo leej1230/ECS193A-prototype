@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import "./DatasetPage.css";
 import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper, cardActionAreaClasses } from '@mui/material';
 
@@ -113,6 +113,7 @@ function DatasetPage() {
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
+  const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}])
   const [gene_columns, setGene_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -124,6 +125,8 @@ function DatasetPage() {
     { title: "Field Name", field: "field_name" },
     { title: "Value", field: "value" }
   ];
+
+  const gene_list_node = useRef(null);
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -290,16 +293,15 @@ function DatasetPage() {
       if( filterVals['reset'] == true ){
         return data;
       }
-
-      console.log("fuzzy filter function: ");
-      console.log(input_str);
       
       // equals filter
-      return data.filter( patient_one => hasLevenshteinDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
+      let filtered_list_genes = data.filter( patient_one => hasLevenshteinDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
         (patient_object_a, patient_object_b) => {
           return hasLevenshteinDistanceLessThanEqualOne(patient_object_a[colName] , input_str) - hasLevenshteinDistanceLessThanEqualOne(patient_object_b[colName] , input_str);
         }
       );
+
+      return filtered_list_genes;
       
     }
 
@@ -594,7 +596,7 @@ function DatasetPage() {
                   <div class="card-body">
                       <div class="row" id="table_options_outer">
                           <div id="gene_table_area">
-                            <BootstrapTable keyField='id' data={ gene_information_expanded } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_information_expanded } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
                           </div>
                         </div>
                   </div>
