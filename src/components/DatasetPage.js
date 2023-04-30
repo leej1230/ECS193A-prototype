@@ -222,7 +222,7 @@ function DatasetPage() {
           )
       }
     
-    const hasHammingDistanceLessThanEqualOne = (current_input_str, str_reference) => {
+    const hasLevenshteinDistanceLessThanEqualOne = (current_input_str, str_reference) => {
       if( Math.abs(current_input_str.length - str_reference.length) > 1 ){
         // rand number more than 1 to be discarded when filtered
         return 5;
@@ -295,9 +295,9 @@ function DatasetPage() {
       console.log(input_str);
       
       // equals filter
-      return data.filter( patient_one => hasHammingDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
+      return data.filter( patient_one => hasLevenshteinDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
         (patient_object_a, patient_object_b) => {
-          return hasHammingDistanceLessThanEqualOne(patient_object_a[colName] , input_str) - hasHammingDistanceLessThanEqualOne(patient_object_b[colName] , input_str);
+          return hasLevenshteinDistanceLessThanEqualOne(patient_object_a[colName] , input_str) - hasLevenshteinDistanceLessThanEqualOne(patient_object_b[colName] , input_str);
         }
       );
       
