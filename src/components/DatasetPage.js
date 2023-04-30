@@ -112,7 +112,7 @@ function DatasetPage() {
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
-  const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}])
+  const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_columns, setGene_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -461,6 +461,14 @@ function DatasetPage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          formatter: (cell, row, rowIndex, extraData) => {
+            return(
+              <span>
+                <a href={"/gene/"+ extraData[rowIndex].gene_id +"/1"}>{extraData[rowIndex].gene_id}</a>
+              </span>
+            );
+          },
+          formatExtraData: gene_information_expanded,
           filter: customFilter({
             delay: 1000,
             onFilter:filterFuzzyText
