@@ -142,7 +142,9 @@ function DatasetPage() {
   }, [dataset]);
 
   useEffect(() => {
-    setGene_information_expanded(generateGeneObjs(geneIds))
+    let object_information = generateGeneObjs(geneIds);
+    setGene_information_expanded(object_information);
+    set_gene_list_filtered(object_information);
   }, [geneIds])
 
   useEffect(() => {
@@ -385,8 +387,12 @@ function DatasetPage() {
 
   const geneListFilter = (gene_list_filter_value) => {
     console.log("node method");
-    console.log(gene_list_filter_value.gene_id.filterVal.input_string_value );
-    console.log(gene_list_filter_value.gene_id.filterVal.colName)
+    let text_search = gene_list_filter_value.gene_id.filterVal.input_string_value ;
+    let column_search = gene_list_filter_value.gene_id.filterVal.colName;
+
+    let search_results_genes = filterFuzzyText({input_string_value: text_search, colName: column_search, reset: false}, gene_information_expanded);
+
+    set_gene_list_filtered(search_results_genes);
   }
 
   const generateGeneObjs = (gene_ids_info) => {
@@ -472,11 +478,11 @@ function DatasetPage() {
           formatter: (cell, row, rowIndex, extraData) => {
             return(
               <span>
-                <a href={"/gene/"+ extraData[rowIndex].gene_id +"/1"}>{extraData[rowIndex].gene_id}</a>
+                <a href={"/gene/"+ cell +"/1"}>{cell}</a>
               </span>
             );
           },
-          formatExtraData: gene_information_expanded,
+          formatExtraData: gene_list_filtered,
           filter: customFilter({
             delay: 1000,
             onFilter:filterFuzzyText
@@ -602,7 +608,7 @@ function DatasetPage() {
                   <div class="card-body">
                       <div class="row" id="table_options_outer">
                           <div id="gene_table_area">
-                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_information_expanded } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
                           </div>
                         </div>
                   </div>
