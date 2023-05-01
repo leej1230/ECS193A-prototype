@@ -116,7 +116,7 @@ function Home() {
                     
             <div class="row justify-content-end">
                 <div class="col-md-12 bg-light text-right mr-5 mt-5">
-                    <a href="/upload" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    <a href="/upload" value="upload_button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-upload fa-sm text-white-50"></i>Upload</a>
                 </div>
             </div>
