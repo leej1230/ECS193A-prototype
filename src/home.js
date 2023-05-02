@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from "@mui/material/TextField";
 import { IconButton, Button } from '@mui/material';
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import SampleList from './components/SampleList';
 import Slider from './components/Slider';
+import axios from 'axios';
 
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css"
 
 function Home() {
-    const [search, setSearch] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`
+          );
+          setSearchResult(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
+    const handleSearch = () => {
+      const match = searchResult.some((result) =>
+        result.name === searchInput
+      );
+      if (match) {
+        console.log('match');
+      } else {
+        console.log('no match');
+      }
+    };
+
     return (
         <body id="page-top">
 
@@ -127,25 +156,25 @@ function Home() {
                         </h3>
                     </div>
 
-                    <div class="row justify-content-center mt-5 mb-5">
-                            <div className='search'>
-                                <TextField
-                                    id='input_keyword'
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    variant='outlined'
-                                    fullWidth
-                                    label="Search by gene names or dataset name"
-                                />
-                                <IconButton type="submit" aria-label="search">
-                                <SearchIcon style={{ fill: "blue" }} />
-                                </IconButton>
+                    <div className='row justify-content-center mt-5 mb-5'>
+                        <div className='search'>
+                            <TextField
+                            id='input_keyword'
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            variant='outlined'
+                            fullWidth
+                            label='Search by gene names or dataset name'
+                            />
+                            <IconButton type='submit' aria-label='search' onClick={handleSearch}>
+                            <SearchIcon style={{ fill: 'blue' }} />
+                            </IconButton>
                         </div>
                     </div>
 
-                    <div className="row justify-content-center">
+                    <div className='row justify-content-center'>
                         <div className='search-result mb-5 mt-5'>
                             <ul className='search-result'>
-                                <Slider />  
+                                <Slider />
                             </ul>
                         </div>
                     </div>
@@ -153,7 +182,7 @@ function Home() {
                     <div className="row justify-content-center">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <SampleList kword={search}/>
+                                <SampleList kword={searchInput}/>
                             </div>
                         </div>
                     </div>

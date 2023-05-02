@@ -479,7 +479,7 @@ function DatasetPage() {
                           <p>Number of Patients: </p>
                           <p>Number of Missing Cells: </p>
                         </div>
-                    </div>
+                    </div> 
                  
 
              
