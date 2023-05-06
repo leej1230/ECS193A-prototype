@@ -15,6 +15,7 @@ import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, C
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
@@ -52,27 +53,42 @@ const data_dummy = [{'id': 1, 'first_name': "John", 'last_name':"Doe", 'age': 32
 const data_dummy_cols = [{
                           dataField: 'id',
                           text: 'id',
-                          filter: numberFilter()
+                          filter: numberFilter(),
+                          editor: {
+                            type: Type.NUMBER
+                          }
                         },
                         {
                           dataField: 'first_name',
                           text: 'first_name',
-                          filter: textFilter()
+                          filter: textFilter(),
+                          editor: {
+                            type: Type.TEXTAREA
+                          }
                         },
                         {
                           dataField: 'last_name',
                           text: 'last_name',
-                          filter: textFilter()
+                          filter: textFilter(),
+                          editor: {
+                            type: Type.TEXTAREA
+                          }
                         },
                         {
                           dataField: 'age',
                           text: 'age',
-                          filter: numberFilter()
+                          filter: numberFilter(),
+                          editor: {
+                            type: Type.NUMBER
+                          }
                         },
                         {
                           dataField: 'ice_cream_type',
                           text: 'ice_cream_type',
-                          filter: textFilter()
+                          filter: textFilter(),
+                          editor: {
+                            type: Type.TEXTAREA
+                          }
                         }];
 
 const tableIcons = {
@@ -688,7 +704,7 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body">
-                        <BootstrapTable keyField='id' data={ data_dummy } columns={ data_dummy_cols } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                        <BootstrapTable keyField='id' data={ data_dummy } columns={ data_dummy_cols } filter={ filterFactory() } pagination={ paginationFactory() } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" />
                       </div>
                     </div>
                   </div>
