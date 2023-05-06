@@ -44,6 +44,37 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
+const data_dummy = [{'id': 1, 'first_name': "John", 'last_name':"Doe", 'age': 32, 'ice_cream_type': "vanilla"},
+                    {'id': 1, 'first_name': "Mary", 'last_name':"May", 'age': 32, 'ice_cream_type': "vanilla"},
+                    {'id': 1, 'first_name': "Jeff", 'last_name':"Johnson", 'age': 32, 'ice_cream_type': "vanilla"},
+                    {'id': 1, 'first_name': "Carl", 'last_name':"Lee", 'age': 32, 'ice_cream_type': "vanilla"},
+                    {'id': 1, 'first_name': "Teresa", 'last_name':"Djocovik", 'age': 32, 'ice_cream_type': "vanilla"}  ];
+const data_dummy_cols = [{
+                          dataField: 'id',
+                          text: 'id',
+                          filter: numberFilter()
+                        },
+                        {
+                          dataField: 'first_name',
+                          text: 'first_name',
+                          filter: textFilter()
+                        },
+                        {
+                          dataField: 'last_name',
+                          text: 'last_name',
+                          filter: textFilter()
+                        },
+                        {
+                          dataField: 'age',
+                          text: 'age',
+                          filter: numberFilter()
+                        },
+                        {
+                          dataField: 'ice_cream_type',
+                          text: 'ice_cream_type',
+                          filter: textFilter()
+                        }];
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -647,8 +678,20 @@ function DatasetPage() {
                         </div>
                     </div>
                   </div>
-              
 
+              </div>
+
+              <div class="row">
+                  <div class="col">
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
+                      </div>
+                      <div class="card-body">
+                        <BootstrapTable keyField='id' data={ data_dummy } columns={ data_dummy_cols } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                      </div>
+                    </div>
+                  </div>
               </div>
 
           </div> 
