@@ -174,6 +174,17 @@ function GenePage() {
   const [gene_data, setGene_data] =  useState();
   const [gene_external_data , setGeneExternalData] = useState({description: ""})
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
+  const [ patient_data_table_filtered, set_patient_data_table_filtered ] = useState([
+    {patient_id: ""},
+    {age: 0},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""},
+    {id: 0}
+  ]);
   const [ patient_information_expanded, set_patient_information_expanded ] = useState([
     {patient_id: ""},
     {age: 0},
@@ -239,6 +250,7 @@ function GenePage() {
   }]);
 
   const graph_table_node = useRef(null);
+  const patients_table_node = useRef(null);
 
   const NumberFilter = (props) => {
     const [compCode, setCompCode] =  useState(0);
@@ -573,6 +585,77 @@ function GenePage() {
   }
 };
 
+const patientDataFilter = (cur_filters) => {
+  let filter_columns = Object.keys(cur_filters);
+
+  let patients_filtered = patient_information_expanded;
+  let isFiltered = false;
+
+  for(let i = 0; i < filter_columns.length; i++){
+    let current_filter = cur_filters[filter_columns[i]];
+    if(current_filter.filterType == "NUMBER"){
+      console.log("num");
+      console.log(current_filter.filterVal);
+
+      let first_num = current_filter.filterVal.inputVal1
+      let second_num = current_filter.filterVal.inputVal2
+
+      if(current_filter.filterVal.compareValCode == 1){
+        // <
+        isFiltered = true
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
+      } else if(current_filter.filterVal.compareValCode == 2){
+        // >
+        isFiltered = true
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
+      } else if(current_filter.filterVal.compareValCode == 3){
+        // =
+        isFiltered = true
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
+      } else if(current_filter.filterVal.compareValCode == 4){
+        // between
+        isFiltered = true
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num )
+      }
+
+    } else if (current_filter.filterType == "TEXT"){
+      console.log("text")
+      console.log(current_filter.filterVal)
+
+      console.log("patients filtered in text: ")
+      console.log(patients_filtered)
+
+      isFiltered = true
+      patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
+    } else if(current_filter.filterType == "MULTISELECT"){
+      console.log("multis")
+      console.log(current_filter.filterVal)
+
+      // need to or through the filters selected for a column
+      let mutliselect_filter_list = []
+      isFiltered = true;
+
+      for(let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++){
+        // each column: one value so will not overlap
+        console.log("iteration ", current_filter_index);
+        mutliselect_filter_list = mutliselect_filter_list.concat( patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]) )
+      }
+
+      // or the multiselect options and set to the patients filter
+      patients_filtered = mutliselect_filter_list;
+    }
+  }
+
+  console.log("patients filtered:")
+  console.log(patients_filtered)
+
+  if(isFiltered == true){
+    set_patient_data_table_filtered( patients_filtered )
+  } else {
+    set_patient_data_table_filtered( patient_information_expanded )
+  }
+}
+
   return (
     <body id="page-top">
 
@@ -714,7 +797,8 @@ function GenePage() {
 
                             <div class="row" id="table_options_outer">
                               <div id="patient_table_area">
-                                <BootstrapTable keyField='id' data={ patient_information_expanded } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" />
+                                
+                                <BootstrapTable keyField='id' ref={ n => patients_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ patient_data_table_filtered } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) } } />
                               </div>
                             </div>
                       </div>
