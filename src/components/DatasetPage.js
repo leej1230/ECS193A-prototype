@@ -656,13 +656,16 @@ function DatasetPage() {
         text: column_possibilities[i]}
 
       console.log("unique vals")
-      
-      console.log()
+      console.log(column_possibilities[i])
+      console.log(column_possibilities[i] != 'dataset_id')
+
 
       if( together_patient_gene_information.length > 0){ 
         var example_val = together_patient_gene_information[0][ column_possibilities[i] ]
-        if( ((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val == 'number' && !isNaN(example_val))) ){
+        if( ((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val == 'number' && !isNaN(example_val))) && (column_possibilities[i] != 'dataset_id') ){
           // only allow number and string types
+          // dataset_id column not needed
+
           if(unique.length > 0 && Number.isInteger(unique[0])){
             col_obj = {
               dataField: column_possibilities[i],
