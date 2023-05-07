@@ -420,7 +420,7 @@ class Database():
             Returns:
                 list: A list of patient data objects matching the query.
             """
-            patients_found = Database.patient_collection.find({'dataset_id': int(request['dataset_id'])}) 
+            patients_found = Database.patient_collection.find({'dataset_id': int(request['dataset_id'])}, {'_id':0}) 
 
             patients_found_list = [{}]
             for doc in patients_found:  

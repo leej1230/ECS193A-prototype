@@ -195,14 +195,13 @@ function DatasetPage() {
 
   useEffect(() => {
     // get all patients of a dataset
-    const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients/dataset/${DATASET_ID}`;
+    const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients_in_dataset/${DATASET_ID}`;
     // patient_information
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
-    }).then(() => {
       console.log("get patients in the dataset");
-      console.log(patient_information);
-    });
+      console.log(result.data);
+    })
   }, [dataset])
 
   useEffect(() => {
