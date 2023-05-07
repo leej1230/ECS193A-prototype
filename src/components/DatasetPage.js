@@ -159,23 +159,14 @@ function DatasetPage() {
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
+  const [together_patient_gene_information, set_together_patient_gene_information] = useState([
+    {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
+  ]);
   const [patient_information, set_patient_information] = useState([
-    {patient_id: ""},
-    {age: 0},
-    {diabete: ""},
-    {final_diagnosis: ""},
-    {gender: ""},
-    {hypercholesterolemia: ""},
-    {hypertension: ""},
-    {race: ""},
-    {id: 0}
+    {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: ""}
   ]);
   const [gene_with_value_information, set_gene_with_value_information] = useState([
-    {id: 1},
-    {name: ""},
-    {dataset_id: 0},
-    {patient_ids: {arr: []}},
-    {gene_values: {arr: []}}
+    {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}])
@@ -216,11 +207,27 @@ function DatasetPage() {
     axios.get(gene_full_url).then((result) => {
       set_gene_with_value_information(result.data)
     })
-  },  [dataset])
+  },  [patient_information])
 
   useEffect(() => {
-    var combined_patients_gene_data = get_combined_patients_genes_data();
-  }, [patient_information, gene_with_value_information])
+
+    const setTogetherData = async () => {
+      var combined_patients_gene_data = get_combined_patients_genes_data();
+      await set_together_patient_gene_information(combined_patients_gene_data);
+    }
+    
+
+    setTogetherData();
+    console.log("TOGETHER!!!!")
+    console.log(together_patient_gene_information);
+
+  }, [gene_with_value_information]);
+
+  useEffect(() => {
+    //var together_data_columns = generateDatasetMatrixTable();
+    //console.log("FULL MATRIX:")
+    //console.log(together_data_columns)
+  }, [together_patient_gene_information]);
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());
@@ -268,6 +275,8 @@ function DatasetPage() {
     var combined_dataset_full_information = []
 
     console.log("combined information: ");
+    console.log(patient_information);
+    console.log(gene_with_value_information);
     
     for (var i = 0; i < patient_information.length; i++){
       var existing_patient_info = patient_information[i];
@@ -285,6 +294,8 @@ function DatasetPage() {
 
     
     console.log( combined_dataset_full_information );
+
+    return combined_dataset_full_information;
       
   }
 
@@ -619,6 +630,71 @@ function DatasetPage() {
     console.log(gene_columns_list);
     console.log(gene_information_expanded);
     return gene_columns_list;
+  }
+
+  const generateDatasetMatrixTable = () => {
+    var columns_list = [];
+
+    //var column_possibilities = Object.keys(together_patient_gene_information[0]);
+
+    console.log("create together columns: ")
+    console.log(together_patient_gene_information);
+
+    {/*for(let i = 0; i < column_possibilities.length; i++){
+      var unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_possibilities[i] ] ))];
+
+      let select_options_col = []
+
+      for(let j = 0; j < unique.length; j++){
+        select_options_col.push({value: unique[j], label: unique[j]})
+      }
+
+      var col_obj = {dataField: column_possibilities[i],
+        text: column_possibilities[i]}
+      
+      console.log( col_obj );
+      if(unique.length > 0 && Number.isInteger(unique[0])){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            onFilter:filterNumber
+          }),
+          filterRenderer: (onFilter, column) => {
+            return(
+              <NumberFilter onFilter={ onFilter } column={column} />
+              )
+          }
+        }
+      }
+      else if(unique.length < 5){
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: customFilter({
+            delay: 1000,
+            type: FILTER_TYPES.MULTISELECT
+          }),
+        
+          filterRenderer: (onFilter, column) => {
+            return(
+              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+              )
+          }
+        }
+      } else {
+        col_obj = {
+          dataField: column_possibilities[i],
+          text: column_possibilities[i],
+          filter: textFilter()
+        }
+      }
+      columns_list.push(col_obj)
+    }*/}
+    console.log("together column info:");
+    console.log(columns_list);
+    return columns_list;
   }
 
   return (
