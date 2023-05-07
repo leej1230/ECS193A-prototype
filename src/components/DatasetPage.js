@@ -666,7 +666,7 @@ function DatasetPage() {
           // only allow number and string types
           // dataset_id column not needed
 
-          if(unique.length > 0 && Number.isInteger(unique[0])){
+          if(unique.length > 0 && typeof unique[0] == 'number'){
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
