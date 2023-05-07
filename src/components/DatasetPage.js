@@ -736,6 +736,20 @@ function DatasetPage() {
 
   }
 
+  const updateCellEditMatrix = (stateChangeInfo) => {
+    if( 'cellEdit' in stateChangeInfo){
+      console.log("update matrix: ")
+      let copy_matrix_filtered = table_matrix_filtered;
+      var patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
+      console.log(patient_edited_index);
+      console.log(copy_matrix_filtered)
+      copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
+      console.log(copy_matrix_filtered)
+
+      set_table_matrix_filtered(copy_matrix_filtered);
+    }
+  }
+
   return (
 
 
@@ -883,7 +897,7 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body" id="full_matrix_table">
-                        <BootstrapTable keyField='id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
+                        <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { updateCellEditMatrix(newState); matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
                       </div>
                     </div>
                   </div>
