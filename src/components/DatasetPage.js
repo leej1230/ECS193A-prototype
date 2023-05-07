@@ -190,6 +190,7 @@ function DatasetPage() {
   ];
 
   const gene_list_node = useRef(null);
+  const dataset_matrix_node = useRef(null);
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -655,10 +656,6 @@ function DatasetPage() {
       var col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
 
-      console.log("unique vals")
-      console.log(column_possibilities[i])
-      console.log(column_possibilities[i] != 'dataset_id')
-
 
       if( together_patient_gene_information.length > 0){ 
         var example_val = together_patient_gene_information[0][ column_possibilities[i] ]
@@ -700,7 +697,9 @@ function DatasetPage() {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
-              filter: textFilter()
+              filter: textFilter({
+                comparator: Comparator.EQ
+              })
             }
           }
           columns_list.push(col_obj)
@@ -710,6 +709,10 @@ function DatasetPage() {
     console.log("together column info:");
     console.log(columns_list);
     return columns_list;
+  }
+
+  const matrixFilter = () => {
+    console.log("matrix table filter")
   }
 
   return (
@@ -859,7 +862,7 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body" id="full_matrix_table">
-                        <BootstrapTable keyField='id' data={ together_patient_gene_information } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" />
+                        <BootstrapTable keyField='id' data={ together_patient_gene_information } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
                       </div>
                     </div>
                   </div>
