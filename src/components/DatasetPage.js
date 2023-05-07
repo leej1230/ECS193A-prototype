@@ -586,7 +586,8 @@ function DatasetPage() {
           text: column_possibilities[i],
           filter: customFilter({
             delay: 1000,
-            onFilter:filterNumber
+            onFilter:filterNumber,
+            type: FILTER_TYPES.NUMBER
           }),
           filterRenderer: (onFilter, column) => {
             return(
@@ -671,7 +672,8 @@ function DatasetPage() {
               text: column_possibilities[i],
               filter: customFilter({
                 delay: 1000,
-                onFilter:filterNumber
+                onFilter:filterNumber,
+                type: FILTER_TYPES.NUMBER
               }),
               filterRenderer: (onFilter, column) => {
                 return(
@@ -722,6 +724,10 @@ function DatasetPage() {
 
     for(let i = 0; i < filter_columns.length; i++){
       let current_filter = cur_filters[filter_columns[i]];
+
+      console.log("current filter:  !!! : ")
+      console.log(cur_filters)
+
       if(current_filter.filterType == "NUMBER"){
         console.log("num");
         console.log(current_filter.filterVal);
