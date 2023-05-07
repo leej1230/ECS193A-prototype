@@ -159,6 +159,9 @@ function DatasetPage() {
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
+  const [table_matrix_filtered, set_table_matrix_filtered] = useState([
+    {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
+  ]);
   const [together_patient_gene_information, set_together_patient_gene_information] = useState([
     {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
   ]);
@@ -169,7 +172,7 @@ function DatasetPage() {
     {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
-  const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}])
+  const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_columns, setGene_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -222,12 +225,11 @@ function DatasetPage() {
     const setTogetherData = async () => {
       var combined_patients_gene_data = get_combined_patients_genes_data();
       await set_together_patient_gene_information(combined_patients_gene_data);
+      await set_table_matrix_filtered(combined_patients_gene_data);
     }
     
 
     setTogetherData();
-    console.log("TOGETHER!!!!")
-    console.log(together_patient_gene_information);
 
   }, [gene_with_value_information]);
 
@@ -711,8 +713,75 @@ function DatasetPage() {
     return columns_list;
   }
 
-  const matrixFilter = () => {
-    console.log("matrix table filter")
+  const matrixFilter = (cur_filters) => {
+
+    let filter_columns = Object.keys(cur_filters);
+
+    let matrix_filtered = together_patient_gene_information;
+    let isFiltered = false;
+
+    for(let i = 0; i < filter_columns.length; i++){
+      let current_filter = cur_filters[filter_columns[i]];
+      if(current_filter.filterType == "NUMBER"){
+        console.log("num");
+        console.log(current_filter.filterVal);
+
+        let first_num = current_filter.filterVal.inputVal1
+        let second_num = current_filter.filterVal.inputVal2
+
+        if(current_filter.filterVal.compareValCode == 1){
+          // <
+          isFiltered = true
+          matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
+        } else if(current_filter.filterVal.compareValCode == 2){
+          // >
+          isFiltered = true
+          matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
+        } else if(current_filter.filterVal.compareValCode == 3){
+          // =
+          isFiltered = true
+          matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
+        } else if(current_filter.filterVal.compareValCode == 4){
+          // between
+          isFiltered = true
+          matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num )
+        }
+
+      } else if (current_filter.filterType == "TEXT"){
+        console.log("text")
+        console.log(current_filter.filterVal)
+
+        console.log("patients filtered in text: ")
+        console.log(matrix_filtered)
+
+        isFiltered = true
+        matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
+      } else if(current_filter.filterType == "MULTISELECT"){
+        console.log("multis")
+        console.log(current_filter.filterVal)
+
+        // need to or through the filters selected for a column
+        let mutliselect_filter_list = []
+        isFiltered = true;
+
+        for(let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++){
+          // each column: one value so will not overlap
+
+          mutliselect_filter_list = mutliselect_filter_list.concat( matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]) )
+        }
+
+        // or the multiselect options and set to the patients filter
+        matrix_filtered = mutliselect_filter_list;
+      }
+    }
+
+    if(isFiltered == true){
+  
+      set_table_matrix_filtered( matrix_filtered )
+    } else {
+      set_table_matrix_filtered( together_patient_gene_information )
+    }
+
   }
 
   return (
@@ -862,7 +931,7 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body" id="full_matrix_table">
-                        <BootstrapTable keyField='id' data={ together_patient_gene_information } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
+                        <BootstrapTable keyField='id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
                       </div>
                     </div>
                   </div>
@@ -901,20 +970,3 @@ function DatasetPage() {
 }
 
 export default DatasetPage;
-
-{/*
-{geneIds? (
-                      <div>
-                        {
-                          geneIds.map( (id) =>
-                          <li><a href={'/gene/' + id + '/1'}> {id} </a></li>
-                          )
-                        }
-                      </div>
-                      ):(
-                        <div>
-                          <CircularProgress />
-                        </div>
-                      )
-                    }
-*/}
