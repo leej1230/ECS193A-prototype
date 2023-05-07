@@ -654,46 +654,55 @@ function DatasetPage() {
 
       var col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
+
+      console.log("unique vals")
       
-      console.log( col_obj );
-      if(unique.length > 0 && Number.isInteger(unique[0])){
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          filter: customFilter({
-            delay: 1000,
-            onFilter:filterNumber
-          }),
-          filterRenderer: (onFilter, column) => {
-            return(
-              <NumberFilter onFilter={ onFilter } column={column} />
-              )
+      console.log()
+
+      if( together_patient_gene_information.length > 0){ 
+        var example_val = together_patient_gene_information[0][ column_possibilities[i] ]
+        if( ((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val == 'number' && !isNaN(example_val))) ){
+          // only allow number and string types
+          if(unique.length > 0 && Number.isInteger(unique[0])){
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              filter: customFilter({
+                delay: 1000,
+                onFilter:filterNumber
+              }),
+              filterRenderer: (onFilter, column) => {
+                return(
+                  <NumberFilter onFilter={ onFilter } column={column} />
+                  )
+              }
+            }
           }
+          else if(unique.length < 5){
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              filter: customFilter({
+                delay: 1000,
+                type: FILTER_TYPES.MULTISELECT
+              }),
+            
+              filterRenderer: (onFilter, column) => {
+                return(
+                  <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+                  )
+              }
+            }
+          } else {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              filter: textFilter()
+            }
+          }
+          columns_list.push(col_obj)
         }
       }
-      else if(unique.length < 5){
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          filter: customFilter({
-            delay: 1000,
-            type: FILTER_TYPES.MULTISELECT
-          }),
-        
-          filterRenderer: (onFilter, column) => {
-            return(
-              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
-              )
-          }
-        }
-      } else {
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          filter: textFilter()
-        }
-      }
-      columns_list.push(col_obj)
     }
     console.log("together column info:");
     console.log(columns_list);
