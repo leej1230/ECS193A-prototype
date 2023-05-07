@@ -30,6 +30,8 @@ import json
 
 import numpy as np
 
+import math
+
 import pandas as pd
 
 from django.conf import settings
@@ -531,6 +533,37 @@ class Database():
             """
             genes = Database.gene_collection.find({}, {'_id': 0, 'name': 1, 'id': 1})
             json_data = loads(dumps(genes))
+            return json_data
+        
+        def get_search_gene(request):
+            """Retrieves the name and ID of particular number of genes in the gene collection in the database based on the keyword user input.
+
+            Args:
+                request: Contains the keyword user searched.
+
+            Returns:
+                dict: A dictionary containing the gene names and IDs.
+            """
+
+            search_word = request['search_word']
+            page = int(request['page_id']) - 1
+
+            numberofList = 5
+
+            doc_count = 0
+            
+            if search_word == ' ':
+                doc_count = Database.gene_collection.count_documents({})
+                genes = Database.gene_collection.find({}, {'_id': 0, 'name': 1, 'id': 1}).skip(numberofList*page).limit(numberofList)
+            else:
+                doc_count = Database.gene_collection.count_documents({'name': {'$regex':search_word, '$options':'i'}})
+                genes = Database.gene_collection.find({'name': {'$regex':search_word, '$options':'i'}}, {'_id': 0, 'name': 1, 'id': 1}).skip(numberofList*page).limit(numberofList)
+
+            json_data = loads(dumps(genes))
+
+            totalPages = math.ceil(doc_count/numberofList)
+
+            print(totalPages)
             return json_data
 
         def post_gene_one(request):
