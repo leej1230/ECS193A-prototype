@@ -409,6 +409,27 @@ class Database():
 
             json_data = loads(dumps(patients_found_list))
             return json_data
+        
+        @staticmethod
+        def get_patients_from_dataset(request):
+            """Get all patients from a specified dataset.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                list: A list of patient data objects matching the query.
+            """
+            patients_found = Database.patient_collection.find({'dataset_id': int(request['dataset_id'])}) 
+
+            patients_found_list = [{}]
+            for doc in patients_found:  
+                patients_found_list.append(doc)
+            
+            patients_found_list = patients_found_list[1:]
+
+            json_data = loads(dumps(patients_found_list))
+            return json_data
 
         @staticmethod
         def get_patient_one(request):

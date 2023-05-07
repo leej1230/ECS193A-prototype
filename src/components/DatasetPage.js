@@ -159,6 +159,17 @@ function DatasetPage() {
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
+  const [patient_information, set_patient_information] = useState([
+    {patient_id: ""},
+    {age: 0},
+    {diabete: ""},
+    {final_diagnosis: ""},
+    {gender: ""},
+    {hypercholesterolemia: ""},
+    {hypertension: ""},
+    {race: ""},
+    {id: 0}
+  ]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}])
   const [gene_columns, setGene_columns] = useState([{
@@ -181,6 +192,18 @@ function DatasetPage() {
       setDataset(result.data);
     });
   }, [DATASET_ID]);
+
+  useEffect(() => {
+    // get all patients of a dataset
+    const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients/dataset/${DATASET_ID}`;
+    // patient_information
+    axios.get(patients_url).then((result) => {
+      set_patient_information(result.data);
+    }).then(() => {
+      console.log("get patients in the dataset");
+      console.log(patient_information);
+    });
+  }, [dataset])
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());
