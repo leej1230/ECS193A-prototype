@@ -177,6 +177,13 @@ function DatasetPage() {
     dataField: 'gene_id',
     text: 'gene_id'
   }]);
+  const [together_data_columns, set_together_data_columns] = useState([{
+    dataField: 'id',
+    text: ''
+  },{
+    dataField: 'gene_id',
+    text: 'gene_id'
+  }]);
   const columns = [
     { title: "Field Name", field: "field_name" },
     { title: "Value", field: "value" }
@@ -225,8 +232,7 @@ function DatasetPage() {
 
   useEffect(() => {
     var together_data_columns = generateDatasetMatrixTable();
-    console.log("FULL MATRIX:")
-    console.log(together_data_columns)
+    set_together_data_columns(together_data_columns);
   }, [together_patient_gene_information]);
 
   useEffect(() => {
@@ -841,7 +847,7 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body">
-                        <BootstrapTable keyField='id' data={ data_dummy } columns={ data_dummy_cols } filter={ filterFactory() } pagination={ paginationFactory() } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" />
+                        <BootstrapTable keyField='id' data={ together_patient_gene_information } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" />
                       </div>
                     </div>
                   </div>
