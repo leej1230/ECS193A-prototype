@@ -71,3 +71,6 @@
     width: 42%;
 }
 
+#full_matrix_table{
+    overflow: auto;
+}

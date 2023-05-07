@@ -846,7 +846,7 @@ function DatasetPage() {
                       <div class="card-header py-3">
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
-                      <div class="card-body">
+                      <div class="card-body" id="full_matrix_table">
                         <BootstrapTable keyField='id' data={ together_patient_gene_information } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" />
                       </div>
                     </div>
