@@ -42,6 +42,8 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
+import {clone} from "ramda";
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -177,9 +179,11 @@ function DatasetPage() {
   useEffect(() => {
 
     const setTogetherData = async () => {
-      var combined_patients_gene_data = get_combined_patients_genes_data();
+      let combined_patients_gene_data = get_combined_patients_genes_data();
       await set_together_patient_gene_information(combined_patients_gene_data);
-      await set_table_matrix_filtered(combined_patients_gene_data);
+      // need to use "let" to make copy or else same object in both states will lead change in one to affect other
+      let copy_obj =  clone(combined_patients_gene_data);
+      await set_table_matrix_filtered(copy_obj);
     }
     
 
@@ -188,7 +192,7 @@ function DatasetPage() {
   }, [gene_with_value_information]);
 
   useEffect(() => {
-    var together_data_columns = generateDatasetMatrixTable();
+    let together_data_columns = generateDatasetMatrixTable();
     set_together_data_columns(together_data_columns);
   }, [together_patient_gene_information]);
 
@@ -201,7 +205,8 @@ function DatasetPage() {
   useEffect(() => {
     let object_information = generateGeneObjs(geneIds);
     setGene_information_expanded(object_information);
-    set_gene_list_filtered(object_information);
+    let copy_obj = Object.assign({}, object_information);
+    set_gene_list_filtered(copy_obj);
   }, [geneIds])
 
   useEffect(() => {
@@ -235,20 +240,20 @@ function DatasetPage() {
   };
 
   const get_combined_patients_genes_data = () => {
-    var combined_dataset_full_information = []
+    let combined_dataset_full_information = []
 
     console.log("combined information: ");
     console.log(patient_information);
     console.log(gene_with_value_information);
     
-    for (var i = 0; i < patient_information.length; i++){
-      var existing_patient_info = patient_information[i];
+    for (let i = 0; i < patient_information.length; i++){
+      let existing_patient_info = patient_information[i];
 
-      var gene_patient_subset_values = {};
+      let gene_patient_subset_values = {};
 
-      for(var j = 0; j < gene_with_value_information.length; j++){
+      for(let j = 0; j < gene_with_value_information.length; j++){
 
-        var patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+        let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
         
         gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat( gene_with_value_information[j]["gene_values"]["arr"][patient_index] );
       }
@@ -510,7 +515,7 @@ function DatasetPage() {
   const generateGeneTable = (gene_objs_information) => {
 
     // 'id' not need options
-    var gene_columns_list = []
+    let gene_columns_list = []
 
     if(gene_objs_information == null || gene_objs_information.length == 0){
       return [{
@@ -522,9 +527,9 @@ function DatasetPage() {
       }];
     }
 
-    var column_possibilities = ['gene_id']
+    let column_possibilities = ['gene_id']
     for(let i = 0; i < column_possibilities.length; i++){
-      var unique = [...new Set(gene_objs_information.flatMap(item => item[ column_possibilities[i] ] ))];
+      let unique = [...new Set(gene_objs_information.flatMap(item => item[ column_possibilities[i] ] ))];
 
       let select_options_col = []
 
@@ -532,7 +537,7 @@ function DatasetPage() {
         select_options_col.push({value: unique[j], label: unique[j]})
       }
 
-      var col_obj = {dataField: column_possibilities[i],
+      let col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
       if(unique.length > 0 && Number.isInteger(unique[0])){
         col_obj = {
@@ -597,12 +602,12 @@ function DatasetPage() {
   }
 
   const generateDatasetMatrixTable = () => {
-    var columns_list = [];
+    let columns_list = [];
 
-    var column_possibilities = Object.keys(together_patient_gene_information[0]);
+    let column_possibilities = Object.keys(together_patient_gene_information[0]);
 
     for(let i = 0; i < column_possibilities.length; i++){
-      var unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_possibilities[i] ] ))];
+      let unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_possibilities[i] ] ))];
 
       let select_options_col = []
 
@@ -610,12 +615,12 @@ function DatasetPage() {
         select_options_col.push({value: unique[j], label: unique[j]})
       }
 
-      var col_obj = {dataField: column_possibilities[i],
+      let col_obj = {dataField: column_possibilities[i],
         text: column_possibilities[i]}
 
 
       if( together_patient_gene_information.length > 0){ 
-        var example_val = together_patient_gene_information[0][ column_possibilities[i] ]
+        let example_val = together_patient_gene_information[0][ column_possibilities[i] ]
         if( ((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val == 'number' && !isNaN(example_val))) && (column_possibilities[i] != 'dataset_id') ){
           // only allow number and string types
           // dataset_id column not needed
@@ -673,7 +678,7 @@ function DatasetPage() {
 
     let filter_columns = Object.keys(cur_filters);
 
-    let matrix_filtered = together_patient_gene_information;
+    let matrix_filtered = clone(together_patient_gene_information);
     let isFiltered = false;
 
     for(let i = 0; i < filter_columns.length; i++){
@@ -729,9 +734,9 @@ function DatasetPage() {
 
     if(isFiltered == true){
   
-      set_table_matrix_filtered( matrix_filtered )
+      set_table_matrix_filtered( clone(matrix_filtered) )
     } else {
-      set_table_matrix_filtered( together_patient_gene_information )
+      set_table_matrix_filtered( clone(together_patient_gene_information) )
     }
 
   }
@@ -740,13 +745,57 @@ function DatasetPage() {
     if( 'cellEdit' in stateChangeInfo){
       console.log("update matrix: ")
       let copy_matrix_filtered = table_matrix_filtered;
-      var patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
-      console.log(patient_edited_index);
-      console.log(copy_matrix_filtered)
+      let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
+      
       copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
-      console.log(copy_matrix_filtered)
 
       set_table_matrix_filtered(copy_matrix_filtered);
+
+      // need to modify the column
+      let column_obj_to_modify_index = together_data_columns.findIndex(column_element => column_element["dataField"] == stateChangeInfo["cellEdit"]["dataField"]);
+      let column_obj_to_modify = together_data_columns[column_obj_to_modify_index]
+
+      if(column_obj_to_modify["filter"]["props"]["type"] == "MULTISELECT"){
+        // only need to modify values if multiselect
+        let col_unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_obj_to_modify["dataField"] ] ))];
+
+        console.log(together_patient_gene_information)
+        console.log(table_matrix_filtered)
+        console.log(col_unique)
+
+        if( col_unique.includes(stateChangeInfo["cellEdit"]["newValue"]) == false ){
+
+          let select_options_col = []
+
+          for(let j = 0; j < col_unique.length; j++){
+            select_options_col.push({value: col_unique[j], label: col_unique[j]})
+          }
+          select_options_col.push({value: stateChangeInfo["cellEdit"]["newValue"], label: stateChangeInfo["cellEdit"]["newValue"]})
+
+          let copy_together_cols = together_data_columns;
+
+          copy_together_cols[column_obj_to_modify_index] = {
+            dataField: column_obj_to_modify["dataField"],
+            text: column_obj_to_modify["dataField"],
+            filter: customFilter({
+              delay: 1000,
+              type: FILTER_TYPES.MULTISELECT
+            }),
+          
+            filterRenderer: (onFilter, column) => {
+              return(
+                <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+                )
+            }
+          }
+
+          console.log(copy_together_cols);
+
+          set_together_data_columns(copy_together_cols);
+
+        }
+      }
+
     }
   }
 

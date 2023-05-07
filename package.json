@@ -26,6 +26,7 @@
     "multiselect-react-dropdown": "^2.0.25",
     "path": "^0.12.7",
     "python-bridge": "^1.1.0",
+    "ramda": "^0.29.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-bootstrap-table-next": "^4.0.3",
