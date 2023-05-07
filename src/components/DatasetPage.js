@@ -207,10 +207,6 @@ function DatasetPage() {
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
       
-    }).then(() => {
-      var combined_patients_gene_data = get_combined_patients_genes_data();
-      console.log("get patients in the dataset");
-      console.log(patient_information);
     })
   }, [dataset])
 
@@ -219,11 +215,12 @@ function DatasetPage() {
     
     axios.get(gene_full_url).then((result) => {
       set_gene_with_value_information(result.data)
-    }).then(() => {
-      console.log("gene values info all")
-      console.log(gene_with_value_information)
     })
   },  [dataset])
+
+  useEffect(() => {
+    var combined_patients_gene_data = get_combined_patients_genes_data();
+  }, [patient_information, gene_with_value_information])
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());
@@ -268,7 +265,26 @@ function DatasetPage() {
   };
 
   const get_combined_patients_genes_data = () => {
+    var combined_dataset_full_information = []
+
+    console.log("combined information: ");
     
+    for (var i = 0; i < patient_information.length; i++){
+      var existing_patient_info = patient_information[i];
+
+      var gene_patient_subset_values = {};
+
+      for(var j = 0; j < gene_with_value_information.length; j++){
+
+        var patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+        
+        gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat( gene_with_value_information[j]["gene_values"]["arr"][patient_index] );
+      }
+      combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+    }
+
+    
+    console.log( combined_dataset_full_information );
       
   }
 
