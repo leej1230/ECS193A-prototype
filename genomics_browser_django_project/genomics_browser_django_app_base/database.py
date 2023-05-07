@@ -537,6 +537,26 @@ class Database():
             Database.gene_collection.insert_many(request) 
             return loads(dumps(status.HTTP_201_CREATED)) 
         
+        def get_genes_from_dataset(request):
+            """Get all genes from a specified dataset.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                list: A list of gene data objects matching the query.
+            """
+            genes_found = Database.gene_collection.find({'dataset_id': int(request['dataset_id'])}, {'_id':0}) 
+
+            genes_found_list = [{}]
+            for doc in genes_found:  
+                genes_found_list.append(doc)
+            
+            genes_found_list = genes_found_list[1:]
+
+            json_data = loads(dumps(genes_found_list))
+            return json_data
+        
         def get_seq_names(request):
             gene_ensembl_id = "ENSG00000157764"
             with urllib.request.urlopen('https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues=' + gene_ensembl_id + '&outputs=refseqmrnaaccession,affyid&taxonId=9606&format=row') as url:

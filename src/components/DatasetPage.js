@@ -170,6 +170,13 @@ function DatasetPage() {
     {race: ""},
     {id: 0}
   ]);
+  const [gene_with_value_information, set_gene_with_value_information] = useState([
+    {id: 1},
+    {name: ""},
+    {dataset_id: 0},
+    {patient_ids: {arr: []}},
+    {gene_values: {arr: []}}
+  ]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}])
   const [gene_columns, setGene_columns] = useState([{
@@ -199,10 +206,24 @@ function DatasetPage() {
     // patient_information
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
+      
+    }).then(() => {
+      var combined_patients_gene_data = get_combined_patients_genes_data();
       console.log("get patients in the dataset");
-      console.log(result.data);
+      console.log(patient_information);
     })
   }, [dataset])
+
+  useEffect(() => {
+    const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${DATASET_ID}`;
+    
+    axios.get(gene_full_url).then((result) => {
+      set_gene_with_value_information(result.data)
+    }).then(() => {
+      console.log("gene values info all")
+      console.log(gene_with_value_information)
+    })
+  },  [dataset])
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());
@@ -245,6 +266,11 @@ function DatasetPage() {
 
     return initArr;
   };
+
+  const get_combined_patients_genes_data = () => {
+    
+      
+  }
 
   const saveGeneIdArray = () => {
     const dataInput = dataset;
