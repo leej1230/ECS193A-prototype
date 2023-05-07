@@ -224,9 +224,9 @@ function DatasetPage() {
   }, [gene_with_value_information]);
 
   useEffect(() => {
-    //var together_data_columns = generateDatasetMatrixTable();
-    //console.log("FULL MATRIX:")
-    //console.log(together_data_columns)
+    var together_data_columns = generateDatasetMatrixTable();
+    console.log("FULL MATRIX:")
+    console.log(together_data_columns)
   }, [together_patient_gene_information]);
 
   useEffect(() => {
@@ -635,12 +635,9 @@ function DatasetPage() {
   const generateDatasetMatrixTable = () => {
     var columns_list = [];
 
-    //var column_possibilities = Object.keys(together_patient_gene_information[0]);
+    var column_possibilities = Object.keys(together_patient_gene_information[0]);
 
-    console.log("create together columns: ")
-    console.log(together_patient_gene_information);
-
-    {/*for(let i = 0; i < column_possibilities.length; i++){
+    for(let i = 0; i < column_possibilities.length; i++){
       var unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_possibilities[i] ] ))];
 
       let select_options_col = []
@@ -691,7 +688,7 @@ function DatasetPage() {
         }
       }
       columns_list.push(col_obj)
-    }*/}
+    }
     console.log("together column info:");
     console.log(columns_list);
     return columns_list;
