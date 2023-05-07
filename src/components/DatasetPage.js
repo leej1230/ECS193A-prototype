@@ -45,52 +45,6 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
-const data_dummy = [{'id': 1, 'first_name': "John", 'last_name':"Doe", 'age': 32, 'ice_cream_type': "vanilla"},
-                    {'id': 1, 'first_name': "Mary", 'last_name':"May", 'age': 32, 'ice_cream_type': "vanilla"},
-                    {'id': 1, 'first_name': "Jeff", 'last_name':"Johnson", 'age': 32, 'ice_cream_type': "vanilla"},
-                    {'id': 1, 'first_name': "Carl", 'last_name':"Lee", 'age': 32, 'ice_cream_type': "vanilla"},
-                    {'id': 1, 'first_name': "Teresa", 'last_name':"Djocovik", 'age': 32, 'ice_cream_type': "vanilla"}  ];
-const data_dummy_cols = [{
-                          dataField: 'id',
-                          text: 'id',
-                          filter: numberFilter(),
-                          editor: {
-                            type: Type.NUMBER
-                          }
-                        },
-                        {
-                          dataField: 'first_name',
-                          text: 'first_name',
-                          filter: textFilter(),
-                          editor: {
-                            type: Type.TEXTAREA
-                          }
-                        },
-                        {
-                          dataField: 'last_name',
-                          text: 'last_name',
-                          filter: textFilter(),
-                          editor: {
-                            type: Type.TEXTAREA
-                          }
-                        },
-                        {
-                          dataField: 'age',
-                          text: 'age',
-                          filter: numberFilter(),
-                          editor: {
-                            type: Type.NUMBER
-                          }
-                        },
-                        {
-                          dataField: 'ice_cream_type',
-                          text: 'ice_cream_type',
-                          filter: textFilter(),
-                          editor: {
-                            type: Type.TEXTAREA
-                          }
-                        }];
-
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -682,7 +636,7 @@ function DatasetPage() {
               }
             }
           }
-          else if(unique.length < 5){
+          else if(unique.length < 3){
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
@@ -725,12 +679,7 @@ function DatasetPage() {
     for(let i = 0; i < filter_columns.length; i++){
       let current_filter = cur_filters[filter_columns[i]];
 
-      console.log("current filter:  !!! : ")
-      console.log(cur_filters)
-
       if(current_filter.filterType == "NUMBER"){
-        console.log("num");
-        console.log(current_filter.filterVal);
 
         let first_num = current_filter.filterVal.inputVal1
         let second_num = current_filter.filterVal.inputVal2
@@ -756,9 +705,6 @@ function DatasetPage() {
       } else if (current_filter.filterType == "TEXT"){
         console.log("text")
         console.log(current_filter.filterVal)
-
-        console.log("patients filtered in text: ")
-        console.log(matrix_filtered)
 
         isFiltered = true
         matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
