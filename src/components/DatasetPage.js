@@ -1002,12 +1002,10 @@ function DatasetPage() {
                             console.log(modified_patients_list_full_objs);
 
                             const payload = {'pict[]': modified_patients_list_full_objs};
-                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, JSON.stringify({
+                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                               // Data to be sent to the server
-                              firstName: 'John',
-                              secondName: 'Doe',
-                              email: 'jd@gmail.com',
-                            }), { 'content-type': 'application/json' }).then((response) => {
+                              patient_modify_list: modified_patients_list_full_objs
+                            }, { 'content-type': 'application/json' }).then((response) => {
                               console.log("post has been sent");
                               console.log(response)
                             });

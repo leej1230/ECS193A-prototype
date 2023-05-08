@@ -496,7 +496,8 @@ class Database():
                 dict: HTTP 201 Created status message.
             """
 
-            print( "routed" )
+            orig_request = json.loads(request['ctx'].body)
+            print( orig_request )
 
             return loads(dumps({'status':'success'}))
 
