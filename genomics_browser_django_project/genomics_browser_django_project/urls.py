@@ -50,5 +50,6 @@ urlpatterns = [
     path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
     path('api/patients_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_from_dataset"}),
     path('api/genes_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_genes_from_dataset"}),
+    path('api/update_many_patients',                      views.BackendServer.as_view(), {"inner": "Patients", "callback": "update_patients_many_list"}),
     re_path(r".*", views.index, name='index'),
 ]

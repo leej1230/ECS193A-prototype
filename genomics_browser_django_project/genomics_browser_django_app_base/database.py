@@ -484,6 +484,21 @@ class Database():
             """
             Database.patient_collection.insert_many(request)
             return loads(dumps(status.HTTP_201_CREATED))
+        
+        @staticmethod
+        def update_patients_many_list(request):
+            """Update multiple patient records in the database.
+
+            Args:
+                request (list): A list of dictionaries containing patient data.
+
+            Returns:
+                dict: HTTP 201 Created status message.
+            """
+
+            print( "routed" )
+
+            return loads(dumps({'status':'success'}))
 
     class Genes:
         def get_gene_one(request):

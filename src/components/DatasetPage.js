@@ -993,9 +993,26 @@ function DatasetPage() {
                       <div class="card-header py-3">
                         <div id="table_edit_header">
                           <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
-                          <button class="btn btn-primary" id="table_edit_btn_content" onClick={() => {
+                          <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
                             console.log("can click button for saving edit changes from table");
                             console.log(modified_patients_list_to_update_back);
+
+                            let modified_patients_list_full_objs = table_matrix_filtered.filter(patient_element => modified_patients_list_to_update_back.includes(patient_element["patient_id"]));
+
+                            console.log(modified_patients_list_full_objs);
+
+                            const payload = {'pict[]': modified_patients_list_full_objs};
+                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, JSON.stringify({
+                              // Data to be sent to the server
+                              firstName: 'John',
+                              secondName: 'Doe',
+                              email: 'jd@gmail.com',
+                            }), { 'content-type': 'application/json' }).then((response) => {
+                              console.log("post has been sent");
+                              console.log(response)
+                            });
+
+                            
                           }}>Save Changes</button>
                         </div>
                       </div>
