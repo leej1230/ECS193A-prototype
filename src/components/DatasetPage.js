@@ -792,6 +792,21 @@ function DatasetPage() {
               )
           }
         }
+      } else if(typeof col_unique[0] == 'number'){
+        copy_together_cols[column_obj_to_modify_index] = {
+          dataField: column_obj_to_modify["dataField"],
+          text: column_obj_to_modify["dataField"],
+          filter: customFilter({
+            delay: 1000,
+            onFilter:filterNumber,
+            type: FILTER_TYPES.NUMBER
+          }),
+          filterRenderer: (onFilter, column) => {
+            return(
+              <NumberFilter onFilter={ onFilter } column={column} />
+              )
+          }
+        }
       } else {
         copy_together_cols[column_obj_to_modify_index] = {
           dataField: column_obj_to_modify["dataField"],
