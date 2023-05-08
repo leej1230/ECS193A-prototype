@@ -564,7 +564,7 @@ function DatasetPage() {
         
           filterRenderer: (onFilter, column) => {
             return(
-              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+              <ProductFilter onFilter={onFilter} column={column} optionsInput={clone(select_options_col)}/>
               )
           }
         }
@@ -650,7 +650,7 @@ function DatasetPage() {
             
               filterRenderer: (onFilter, column) => {
                 return(
-                  <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
+                  <ProductFilter onFilter={onFilter} column={column} optionsInput={clone(select_options_col)}/>
                   )
               }
             }
