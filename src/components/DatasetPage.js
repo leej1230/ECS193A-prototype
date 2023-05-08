@@ -986,7 +986,12 @@ function DatasetPage() {
                   <div class="col">
                     <div class="card shadow mb-4">
                       <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
+                        <div id="table_edit_header">
+                          <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
+                          <button class="btn btn-primary" id="table_edit_btn_content" onClick={() => {
+                            console.log("can click button for saving edit changes from table")
+                          }}>Save Changes</button>
+                        </div>
                       </div>
                       <div class="card-body" id="full_matrix_table">
                         <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
