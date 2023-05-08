@@ -184,6 +184,8 @@ function DatasetPage() {
       // need to use "let" to make copy or else same object in both states will lead change in one to affect other
       let copy_obj =  clone(combined_patients_gene_data);
       await set_table_matrix_filtered(copy_obj);
+      let together_data_columns = generateDatasetMatrixTable();
+      await set_together_data_columns(clone(together_data_columns));
     }
     
 
@@ -191,10 +193,6 @@ function DatasetPage() {
 
   }, [gene_with_value_information]);
 
-  useEffect(() => {
-    let together_data_columns = generateDatasetMatrixTable();
-    set_together_data_columns(together_data_columns);
-  }, [together_patient_gene_information]);
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());
@@ -205,7 +203,7 @@ function DatasetPage() {
   useEffect(() => {
     let object_information = generateGeneObjs(geneIds);
     setGene_information_expanded(object_information);
-    let copy_obj = Object.assign({}, object_information);
+    let copy_obj = clone( object_information);
     set_gene_list_filtered(copy_obj);
   }, [geneIds])
 
@@ -484,13 +482,13 @@ function DatasetPage() {
     let reset_value = gene_list_filter_value.gene_id.filterVal.reset;
 
     if(reset_value == true){
-      set_gene_list_filtered(gene_information_expanded);
+      set_gene_list_filtered(clone(gene_information_expanded));
       return;
     }
 
     let search_results_genes = filterFuzzyText({input_string_value: text_search, colName: column_search, reset: false}, gene_information_expanded);
 
-    set_gene_list_filtered(search_results_genes);
+    set_gene_list_filtered(clone(search_results_genes));
   }
 
   const generateGeneObjs = (gene_ids_info) => {
@@ -742,61 +740,74 @@ function DatasetPage() {
   }
 
   const updateCellEditMatrix = (stateChangeInfo) => {
-    if( 'cellEdit' in stateChangeInfo){
+    
       console.log("update matrix: ")
+      console.log(stateChangeInfo)
       let copy_matrix_filtered = table_matrix_filtered;
       let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
       
       copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
 
       set_table_matrix_filtered(copy_matrix_filtered);
+      set_together_patient_gene_information(table_matrix_filtered);
 
       // need to modify the column
       let column_obj_to_modify_index = together_data_columns.findIndex(column_element => column_element["dataField"] == stateChangeInfo["cellEdit"]["dataField"]);
-      let column_obj_to_modify = together_data_columns[column_obj_to_modify_index]
+      let column_obj_to_modify = clone(together_data_columns[column_obj_to_modify_index])
 
-      if(column_obj_to_modify["filter"]["props"]["type"] == "MULTISELECT"){
-        // only need to modify values if multiselect
-        let col_unique = [...new Set(together_patient_gene_information.flatMap(item => item[ column_obj_to_modify["dataField"] ] ))];
+      // any type of the three -> see if can change: to or from multiselect to its own type
+      // because of state -> possible to have or not updated by this time so consider rest of values and new one
+      let map_col_values = together_patient_gene_information.flatMap(item => item[ column_obj_to_modify["dataField"] ] );
+      map_col_values = map_col_values.slice(0, patient_edited_index).concat(map_col_values.slice(patient_edited_index+1))
+      let col_unique = [...new Set(map_col_values)];
 
-        console.log(together_patient_gene_information)
-        console.log(table_matrix_filtered)
-        console.log(col_unique)
+      let copy_together_cols = clone(together_data_columns);
 
-        if( col_unique.includes(stateChangeInfo["cellEdit"]["newValue"]) == false ){
 
-          let select_options_col = []
+      if(col_unique.includes(stateChangeInfo["cellEdit"]["newValue"]) == false){
+        col_unique.push(stateChangeInfo["cellEdit"]["newValue"])
+      }
 
-          for(let j = 0; j < col_unique.length; j++){
-            select_options_col.push({value: col_unique[j], label: col_unique[j]})
+      console.log(col_unique)
+
+      if( col_unique.length < 3 ){
+
+        let select_options_col = []
+
+        for(let j = 0; j < col_unique.length; j++){
+          select_options_col.push({value: col_unique[j], label: col_unique[j]})
+        }
+
+        copy_together_cols[column_obj_to_modify_index] = {
+          dataField: column_obj_to_modify["dataField"],
+          text: column_obj_to_modify["dataField"],
+          filter: customFilter({
+            delay: 1000,
+            type: FILTER_TYPES.MULTISELECT
+          }),
+        
+          filterRenderer: (onFilter, column) => {
+            return(
+              <ProductFilter onFilter={onFilter} column={column} optionsInput={(select_options_col)}/>
+              )
           }
-          select_options_col.push({value: stateChangeInfo["cellEdit"]["newValue"], label: stateChangeInfo["cellEdit"]["newValue"]})
-
-          let copy_together_cols = together_data_columns;
-
-          copy_together_cols[column_obj_to_modify_index] = {
-            dataField: column_obj_to_modify["dataField"],
-            text: column_obj_to_modify["dataField"],
-            filter: customFilter({
-              delay: 1000,
-              type: FILTER_TYPES.MULTISELECT
-            }),
-          
-            filterRenderer: (onFilter, column) => {
-              return(
-                <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))}/>
-                )
-            }
-          }
-
-          console.log(copy_together_cols);
-
-          set_together_data_columns(copy_together_cols);
-
+        }
+      } else {
+        copy_together_cols[column_obj_to_modify_index] = {
+          dataField: column_obj_to_modify["dataField"],
+          text: column_obj_to_modify["dataField"],
+          filter: textFilter({
+            comparator: Comparator.EQ
+          })
         }
       }
 
-    }
+      set_together_data_columns(copy_together_cols);
+
+
+
+
+
   }
 
   return (
@@ -946,7 +957,13 @@ function DatasetPage() {
                           <h6 class="m-0 font-weight-bold text-primary">Dataset Viewer</h6>
                       </div>
                       <div class="card-body" id="full_matrix_table">
-                        <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { updateCellEditMatrix(newState); matrixFilter(dataset_matrix_node.current.filterContext.currFilters) } } />
+                        <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                          if( 'cellEdit' in newState){
+                            updateCellEditMatrix(newState);
+                          } else{
+                            matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
+                          }
+                        } } />
                       </div>
                     </div>
                   </div>
