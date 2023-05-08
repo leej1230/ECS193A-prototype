@@ -765,7 +765,23 @@ function DatasetPage() {
 
 
       if(col_unique.includes(stateChangeInfo["cellEdit"]["newValue"]) == false){
-        col_unique.push(stateChangeInfo["cellEdit"]["newValue"])
+        if(typeof col_unique[0] == 'number'){
+          let converted_val = 0
+          if(Number.isInteger(col_unique[0])){
+            converted_val = parseInt(stateChangeInfo["cellEdit"]["newValue"])
+          }else{
+            converted_val = parseFloat(stateChangeInfo["cellEdit"]["newValue"])
+          }
+
+          if(col_unique.includes(converted_val) == false){
+            col_unique.push(converted_val)
+          }
+
+          
+        }else {
+          col_unique.push(stateChangeInfo["cellEdit"]["newValue"])
+        }
+        
       }
 
       console.log(col_unique)
@@ -775,6 +791,7 @@ function DatasetPage() {
         let select_options_col = []
 
         for(let j = 0; j < col_unique.length; j++){
+          
           select_options_col.push({value: col_unique[j], label: col_unique[j]})
         }
 
