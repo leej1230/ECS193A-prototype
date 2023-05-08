@@ -127,6 +127,7 @@ function DatasetPage() {
   const [gene_with_value_information, set_gene_with_value_information] = useState([
     {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
+  const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState([]);
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_columns, setGene_columns] = useState([{
@@ -739,7 +740,7 @@ function DatasetPage() {
 
   }
 
-  const updateCellEditMatrix = (stateChangeInfo) => {
+  const updateCellEditMatrix = async (stateChangeInfo) => {
     
       console.log("update matrix: ")
       console.log(stateChangeInfo)
@@ -748,8 +749,14 @@ function DatasetPage() {
       
       copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
 
-      set_table_matrix_filtered(copy_matrix_filtered);
-      set_together_patient_gene_information(table_matrix_filtered);
+      if(modified_patients_list_to_update_back.includes(stateChangeInfo["cellEdit"]["rowId"]) == false){
+        let copy_modified_patients_list = modified_patients_list_to_update_back;
+        copy_modified_patients_list.push(stateChangeInfo["cellEdit"]["rowId"])
+        await set_modified_patients_list_to_update_back(copy_modified_patients_list);
+      }
+
+      await set_table_matrix_filtered(copy_matrix_filtered);
+      await set_together_patient_gene_information(table_matrix_filtered);
 
       // need to modify the column
       let column_obj_to_modify_index = together_data_columns.findIndex(column_element => column_element["dataField"] == stateChangeInfo["cellEdit"]["dataField"]);
@@ -834,9 +841,7 @@ function DatasetPage() {
         }
       }
 
-      set_together_data_columns(copy_together_cols);
-
-
+      await set_together_data_columns(copy_together_cols);
 
 
 
@@ -989,7 +994,8 @@ function DatasetPage() {
                         <div id="table_edit_header">
                           <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
                           <button class="btn btn-primary" id="table_edit_btn_content" onClick={() => {
-                            console.log("can click button for saving edit changes from table")
+                            console.log("can click button for saving edit changes from table");
+                            console.log(modified_patients_list_to_update_back);
                           }}>Save Changes</button>
                         </div>
                       </div>
