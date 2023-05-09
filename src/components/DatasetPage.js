@@ -751,17 +751,35 @@ function DatasetPage() {
 
       let copy_modified_patients_list = modified_patients_list_to_update_back;
 
+      let sample_val = together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
+      let type_str = "str"
+      if(Number.isInteger(sample_val)){
+        type_str = "int"
+      }else if(typeof sample_val == 'number'){
+        type_str = "float"
+      }
+
       if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
         
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"]
         let new_patient_update = {'dataset_id': parseInt(DATASET_ID)  };
-        new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+        
+        if(type_str == "int"){
+          new_patient_update[data_field_key] = parseInt(stateChangeInfo["cellEdit"]["newValue"]);
+        } else {
+          new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+        }
+
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
       }else{
         let existing_patient_update_info = copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]];
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
 
-        existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+        if(type_str == "float"){
+          existing_patient_update_info[data_field_key] = parseFloat(stateChangeInfo["cellEdit"]["newValue"]);
+        } else {
+          existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+        }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
       }
@@ -778,7 +796,7 @@ function DatasetPage() {
       // any type of the three -> see if can change: to or from multiselect to its own type
       // because of state -> possible to have or not updated by this time so consider rest of values and new one
       let map_col_values = together_patient_gene_information.flatMap(item => item[ column_obj_to_modify["dataField"] ] );
-      map_col_values = map_col_values.slice(0, patient_edited_index).concat(map_col_values.slice(patient_edited_index+1))
+      map_col_values = map_col_values.slice(0, patient_edited_index).concat(map_col_values.slice(patient_edited_index+1));
       let col_unique = [...new Set(map_col_values)];
 
       let copy_together_cols = clone(together_data_columns);
