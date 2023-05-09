@@ -501,52 +501,34 @@ class Database():
             data_request = json.loads(request['ctx'].body)
 
 
-            patients_update_list = data_request['patient_modify_list']
-            patients_dataset_id = patients_update_list[0]['dataset_id']
+            patients_update_dict = data_request['patient_modify_list']
 
-            patients_genes_update_list = copy.deepcopy(patients_update_list)
+            patients_list = list(patients_update_dict.keys())
+
+            patients_dataset_id = 0
+            if( len(patients_list) > 0):
+                patients_dataset_id = patients_update_dict[patients_list[0]]['dataset_id']
 
             # for updating patients: need to only focus on patient info
-            for i in range(0, len(patients_update_list)):
-                cur_patient = patients_update_list[i]
-                keys_list = list(cur_patient.keys())
-                for j in range(0, len(keys_list)):
-                    if keys_list[j] == "gene_ids" or keys_list[j][0:4] == "ENSG":
-                        cur_patient.pop(keys_list[j] , None)
-                
-                patients_update_list[i] = cur_patient
+            for i in range(0, len(patients_list)):
+                cur_patient_obj = patients_update_dict[patients_list[i]]
+                keys_attributes_list = list(cur_patient_obj.keys())
+                update_patient_obj = copy.deepcopy(cur_patient_obj)
+                for j in range(0, len(keys_attributes_list)):
+                    if keys_attributes_list[j][0:4] == "ENSG":
+                        # gene modify so remove key from patient info to modify since gene modified separately
+                        update_patient_obj.pop(keys_attributes_list[j], None)
 
-            for i in range(0, len(patients_update_list)):
-                cur_patient = patients_update_list[i]
-                Database.patient_collection.update_one({'$and': [{'patient_id': str(cur_patient['patient_id'])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": cur_patient})
-            
-
-            # need to update the genes
-            for i in range( 0 , len(patients_genes_update_list) ):
-                cur_patient = patients_genes_update_list[i]
-                keys_list = list(cur_patient.keys())
-                for j in range(0, len(keys_list)):
-                    if keys_list[j] == "gene_ids" or (keys_list[j][0:4] != "ENSG" and keys_list[j] != "patient_id"):
-                        cur_patient.pop(keys_list[j] , None)
-                
-                patients_genes_update_list[i] = cur_patient
-
-            for i in range(0, len(patients_genes_update_list)):
-                cur_patient = patients_genes_update_list[i]
-                keys_list = list(cur_patient.keys())
-
-                for j in range(0, len(keys_list)):
-                    gene_values_list = None
-                    if keys_list[j][0:4] == "ENSG":
-                        # update the gene value
-                        gene = Database.gene_collection.find_one({'name': str(keys_list[j]), 'dataset_id': int(patients_dataset_id)})
+                        gene = Database.gene_collection.find_one({'name': str(keys_attributes_list[j]), 'dataset_id': int(patients_dataset_id)})
                         gene_patients_list = gene['patient_ids']['arr']
-                        gene_patient_index = gene_patients_list.index( cur_patient['patient_id'] )
+                        gene_patient_index = gene_patients_list.index( patients_list[i] )
                         gene_values_list = gene['gene_values']['arr']
-                        gene_values_list[gene_patient_index] = float(cur_patient[keys_list[j]])
+                        gene_values_list[gene_patient_index] = float(cur_patient_obj[keys_attributes_list[j]])
                         
-                        Database.gene_collection.update_one({'$and': [{'name': str(keys_list[j])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": {'gene_values' : {'arr': gene_values_list}}})
-            
+                        Database.gene_collection.update_one({'$and': [{'name': str(keys_attributes_list[j])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": {'gene_values' : {'arr': gene_values_list}}})
+                
+                # patient modify: set to all new attributes, but removed gene names above
+                Database.patient_collection.update_one({'$and': [{'patient_id': str(patients_list[i])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": update_patient_obj})
             
             return loads(dumps({'status':'success'}))
 
@@ -725,7 +707,7 @@ class Database():
 
                 datasets_deleted = Database.dataset_collection.delete_one({'id': int(request['dataset_id'])})
                 genes_deleted = Database.gene_collection.delete_many({'dataset_id': int(request['dataset_id'])})
-                patients_deleted = Database.patient_collection.delete_many({'dataset_id': int(1)})
+                patients_deleted = Database.patient_collection.delete_many({'dataset_id': int(request['dataset_id'])})
 
                 last_dataset_counter = Database.Counters.get_last_dataset_counter()
                 last_gene_counter = Database.Counters.get_last_gene_counter()

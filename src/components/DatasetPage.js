@@ -127,7 +127,7 @@ function DatasetPage() {
   const [gene_with_value_information, set_gene_with_value_information] = useState([
     {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
-  const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState([]);
+  const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState({});
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_columns, setGene_columns] = useState([{
@@ -743,17 +743,30 @@ function DatasetPage() {
   const updateCellEditMatrix = async (stateChangeInfo) => {
     
       console.log("update matrix: ")
-      console.log(stateChangeInfo)
+
       let copy_matrix_filtered = table_matrix_filtered;
       let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
       
       copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
 
-      if(modified_patients_list_to_update_back.includes(stateChangeInfo["cellEdit"]["rowId"]) == false){
-        let copy_modified_patients_list = modified_patients_list_to_update_back;
-        copy_modified_patients_list.push(stateChangeInfo["cellEdit"]["rowId"])
-        await set_modified_patients_list_to_update_back(copy_modified_patients_list);
+      let copy_modified_patients_list = modified_patients_list_to_update_back;
+
+      if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
+        
+        let data_field_key = stateChangeInfo["cellEdit"]["dataField"]
+        let new_patient_update = {'dataset_id': DATASET_ID  };
+        new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+        copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
+      }else{
+        let existing_patient_update_info = copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]];
+        let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
+
+        existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+
+        copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
       }
+
+      await set_modified_patients_list_to_update_back(copy_modified_patients_list);
 
       await set_table_matrix_filtered(copy_matrix_filtered);
       await set_together_patient_gene_information(table_matrix_filtered);
@@ -997,14 +1010,9 @@ function DatasetPage() {
                             console.log("can click button for saving edit changes from table");
                             console.log(modified_patients_list_to_update_back);
 
-                            let modified_patients_list_full_objs = table_matrix_filtered.filter(patient_element => modified_patients_list_to_update_back.includes(patient_element["patient_id"]));
-
-                            console.log(modified_patients_list_full_objs);
-
-                            const payload = {'pict[]': modified_patients_list_full_objs};
                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                               // Data to be sent to the server
-                              patient_modify_list: modified_patients_list_full_objs
+                              patient_modify_list: clone(modified_patients_list_to_update_back)
                             }, { 'content-type': 'application/json' }).then((response) => {
                               console.log("post has been sent");
                               console.log(response)
