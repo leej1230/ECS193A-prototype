@@ -31,6 +31,16 @@ function Home() {
     }
   };
 
+  const handleIncrementPage = () => {
+    setListPage(prevPage => prevPage + 1);
+  }
+
+  const handleDecrementPage = () => {
+    if (listPage > 1) {
+      setListPage(prevPage => prevPage - 1);
+    }
+  }
+
   return (
     <body id="page-top">
       <div id="wrapper">
@@ -241,6 +251,14 @@ function Home() {
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
                   <SampleList resultList={searchResult} />
+                  <div>
+                    <div className="float-left">
+                      <button onClick={handleDecrementPage}>Prev Page</button>
+                    </div>
+                    <div className="float-right">
+                      <button onClick={handleIncrementPage}>Next Page</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
