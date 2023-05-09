@@ -683,8 +683,6 @@ const patientDataFilter = (cur_filters) => {
                       <div>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                                 class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"><i
-                                class="fas fa-sm text-white-50"></i>Delete</a>
                       </div>
                   </div>
 

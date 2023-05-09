@@ -1,20 +1,20 @@
 describe('Test Home Page', () => {
   it('Try to visit home page', () => {
-    cy.visit('https://ecs-193-a-prototype.vercel.app/')
+    cy.visit('http://localhost:3000/')
   })
 })
 
 describe('Test Upload Page', () => {
   it('Try to visit upload page', () => {
-    cy.visit('https://ecs-193-a-prototype.vercel.app/')
+    cy.visit('http://localhost:3000/')
     cy.contains('Upload').click()
-    cy.url().should('eq', 'https://ecs-193-a-prototype.vercel.app/upload')
+    cy.url().should('eq', 'http://localhost:3000/upload')
   })
 })
 
 describe('Test Gene Page', () => {
   it('Try to visit gene page', () => {
-    cy.visit('https://ecs-193-a-prototype.vercel.app/')
+    cy.visit('http://localhost:3000/')
     cy.contains('Gene Name:').click()
     cy.url().should('includes', '/gene/')
   })
@@ -22,7 +22,7 @@ describe('Test Gene Page', () => {
 
 describe('Test Dataset Page', () => {
   it('Try to visit dataset page', () => {
-    cy.visit('https://ecs-193-a-prototype.vercel.app/')
+    cy.visit('http://localhost:3000/')
     cy.contains('Learn more').click()
     cy.url().should('includes', '/dataset/')
   })

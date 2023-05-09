@@ -304,12 +304,15 @@ function DatasetPage() {
                 key="input"
                 type="text"
                 placeholder="text"
+                data-cy="genelistinputbox"
                 onChange={(e) => { setInputStr( e.target.value ) }}
               />
               <button
+                id="gene_list_search"
                 onClick={() => {filter()}}
               >Search</button>
               <button
+                id="gene_list_reset"
                 onClick={() => {reset_list()}}
               >Reset</button>
             </div>
@@ -579,7 +582,7 @@ function DatasetPage() {
           formatter: (cell, row, rowIndex, extraData) => {
             return(
               <span>
-                <a href={"/gene/"+ cell +"/1"}>{cell}</a>
+                <a id="gene_list_single_link" href={"/gene/"+ cell +"/1"}>{cell}</a>
               </span>
             );
           },
