@@ -246,7 +246,7 @@ function DatasetPage() {
     console.log(gene_with_value_information);
     
     for (let i = 0; i < patient_information.length; i++){
-      let existing_patient_info = patient_information[i];
+      let existing_patient_info = clone(patient_information[i]);
 
       let gene_patient_subset_values = {};
 

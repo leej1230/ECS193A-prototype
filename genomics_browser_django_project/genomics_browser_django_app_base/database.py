@@ -496,9 +496,27 @@ class Database():
                 dict: HTTP 201 Created status message.
             """
 
-            orig_request = json.loads(request['ctx'].body)
-            print( orig_request )
+            data_request = json.loads(request['ctx'].body)
 
+
+            patients_update_list = data_request['patient_modify_list']
+            patients_dataset_id = patients_update_list[0]['dataset_id']
+
+            # for updating patients: need to only focus on patient info
+            for i in range(0, len(patients_update_list)):
+                cur_patient = patients_update_list[i]
+                keys_list = list(cur_patient.keys())
+                for j in range(0, len(keys_list)):
+                    if keys_list[j] == "gene_ids" or keys_list[j][0:4] == "ENSG":
+                        cur_patient.pop(keys_list[j] , None)
+                
+                patients_update_list[i] = cur_patient
+
+            for i in range(0, len(patients_update_list)):
+                cur_patient = patients_update_list[i]
+                Database.patient_collection.update_one({'$and': [{'patient_id': str(cur_patient['patient_id'])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": cur_patient})
+
+            
             return loads(dumps({'status':'success'}))
 
     class Genes:
