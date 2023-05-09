@@ -754,7 +754,7 @@ function DatasetPage() {
       if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
         
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"]
-        let new_patient_update = {'dataset_id': DATASET_ID  };
+        let new_patient_update = {'dataset_id': parseInt(DATASET_ID)  };
         new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
       }else{
