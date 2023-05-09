@@ -542,6 +542,7 @@ function DatasetPage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             onFilter:filterNumber,
@@ -558,6 +559,7 @@ function DatasetPage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             type: FILTER_TYPES.MULTISELECT
@@ -573,6 +575,7 @@ function DatasetPage() {
         col_obj = {
           dataField: column_possibilities[i],
           text: column_possibilities[i],
+          headerStyle: { minWidth: '150px' },
           formatter: (cell, row, rowIndex, extraData) => {
             return(
               <span>
@@ -628,6 +631,7 @@ function DatasetPage() {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
               filter: customFilter({
                 delay: 1000,
                 onFilter:filterNumber,
@@ -644,6 +648,7 @@ function DatasetPage() {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
               filter: customFilter({
                 delay: 1000,
                 type: FILTER_TYPES.MULTISELECT
@@ -659,6 +664,7 @@ function DatasetPage() {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
               filter: textFilter({
                 comparator: Comparator.EQ
               })
@@ -766,8 +772,10 @@ function DatasetPage() {
         
         if(type_str == "int"){
           new_patient_update[data_field_key] = parseInt(stateChangeInfo["cellEdit"]["newValue"]);
+        } else if(type_str == "float") {
+          new_patient_update[data_field_key] = parseFloat(stateChangeInfo["cellEdit"]["newValue"]);
         } else {
-          new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+          new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
@@ -775,10 +783,13 @@ function DatasetPage() {
         let existing_patient_update_info = copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]];
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
 
+        if(type_str == "int"){
+          existing_patient_update_info[data_field_key] = parseInt(stateChangeInfo["cellEdit"]["newValue"]);
+        }
         if(type_str == "float"){
           existing_patient_update_info[data_field_key] = parseFloat(stateChangeInfo["cellEdit"]["newValue"]);
         } else {
-          existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"];
+          existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
@@ -817,7 +828,11 @@ function DatasetPage() {
 
           
         }else {
-          col_unique.push(stateChangeInfo["cellEdit"]["newValue"])
+          // string lowercase
+          let converted_val = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
+          if(col_unique.includes(converted_val) == false){
+            col_unique.push(converted_val)
+          }
         }
         
       }
@@ -836,6 +851,7 @@ function DatasetPage() {
         copy_together_cols[column_obj_to_modify_index] = {
           dataField: column_obj_to_modify["dataField"],
           text: column_obj_to_modify["dataField"],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             type: FILTER_TYPES.MULTISELECT
@@ -851,6 +867,7 @@ function DatasetPage() {
         copy_together_cols[column_obj_to_modify_index] = {
           dataField: column_obj_to_modify["dataField"],
           text: column_obj_to_modify["dataField"],
+          headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
             onFilter:filterNumber,
@@ -866,6 +883,7 @@ function DatasetPage() {
         copy_together_cols[column_obj_to_modify_index] = {
           dataField: column_obj_to_modify["dataField"],
           text: column_obj_to_modify["dataField"],
+          headerStyle: { minWidth: '150px' },
           filter: textFilter({
             comparator: Comparator.EQ
           })
