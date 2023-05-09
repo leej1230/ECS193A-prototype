@@ -32,6 +32,8 @@ import numpy as np
 
 import pandas as pd
 
+import copy
+
 from django.conf import settings
 
 class Database(): 
@@ -502,6 +504,8 @@ class Database():
             patients_update_list = data_request['patient_modify_list']
             patients_dataset_id = patients_update_list[0]['dataset_id']
 
+            patients_genes_update_list = copy.deepcopy(patients_update_list)
+
             # for updating patients: need to only focus on patient info
             for i in range(0, len(patients_update_list)):
                 cur_patient = patients_update_list[i]
@@ -515,7 +519,34 @@ class Database():
             for i in range(0, len(patients_update_list)):
                 cur_patient = patients_update_list[i]
                 Database.patient_collection.update_one({'$and': [{'patient_id': str(cur_patient['patient_id'])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": cur_patient})
+            
 
+            # need to update the genes
+            for i in range( 0 , len(patients_genes_update_list) ):
+                cur_patient = patients_genes_update_list[i]
+                keys_list = list(cur_patient.keys())
+                for j in range(0, len(keys_list)):
+                    if keys_list[j] == "gene_ids" or (keys_list[j][0:4] != "ENSG" and keys_list[j] != "patient_id"):
+                        cur_patient.pop(keys_list[j] , None)
+                
+                patients_genes_update_list[i] = cur_patient
+
+            for i in range(0, len(patients_genes_update_list)):
+                cur_patient = patients_genes_update_list[i]
+                keys_list = list(cur_patient.keys())
+
+                for j in range(0, len(keys_list)):
+                    gene_values_list = None
+                    if keys_list[j][0:4] == "ENSG":
+                        # update the gene value
+                        gene = Database.gene_collection.find_one({'name': str(keys_list[j]), 'dataset_id': int(patients_dataset_id)})
+                        gene_patients_list = gene['patient_ids']['arr']
+                        gene_patient_index = gene_patients_list.index( cur_patient['patient_id'] )
+                        gene_values_list = gene['gene_values']['arr']
+                        gene_values_list[gene_patient_index] = float(cur_patient[keys_list[j]])
+                        
+                        Database.gene_collection.update_one({'$and': [{'name': str(keys_list[j])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": {'gene_values' : {'arr': gene_values_list}}})
+            
             
             return loads(dumps({'status':'success'}))
 
