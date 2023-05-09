@@ -16,6 +16,15 @@ function Home() {
   const [searchInput, setSearchInput] = useState(" ");
   const [searchFilter, setSearchFilter] = useState("gene");
   const [listPage, setListPage] = useState(1);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    if (isMounted) {
+      handleSearch();
+    } else {
+      setIsMounted(true);
+    }
+  }, [listPage]);
 
   //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
   const handleSearch = async () => {
@@ -29,16 +38,21 @@ function Home() {
     } catch (error) {
       console.error(error);
     }
+    console.log(listPage)
   };
 
-  const handleIncrementPage = () => {
-    setListPage(prevPage => prevPage + 1);
+  const handleIncrementPage = async () => {
+    setListPage(listPage + 1);
+    // handleSearch();
+    // console.log(listPage)
   }
 
   const handleDecrementPage = () => {
     if (listPage > 1) {
-      setListPage(prevPage => prevPage - 1);
+      setListPage(listPage - 1);
+      // handleSearch();
     }
+    // console.log(listPage)
   }
 
   return (
