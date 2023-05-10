@@ -755,24 +755,18 @@ function DatasetPage() {
 
       let copy_matrix_filtered = table_matrix_filtered;
       let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
-      
-      copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = stateChangeInfo["cellEdit"]["newValue"];
 
       let copy_modified_patients_list = modified_patients_list_to_update_back;
 
       let sample_val = together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
       let type_str = "str"
 
-      console.log(sample_val)
-      
 
       if(Number.isInteger(sample_val)){
         type_str = "int"
       }else if(typeof sample_val == 'number'){
         type_str = "float"
       }
-
-      console.log(type_str)
 
       if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
         
@@ -789,13 +783,12 @@ function DatasetPage() {
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
       }else{
-        let existing_patient_update_info = copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]];
+        let existing_patient_update_info = clone( copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] );
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
 
         if(type_str == "int"){
           existing_patient_update_info[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
-        }
-        if(type_str == "float"){
+        }else if(type_str == "float"){
           existing_patient_update_info[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
         } else {
           existing_patient_update_info[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
@@ -804,12 +797,18 @@ function DatasetPage() {
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
       }
 
-      console.log(copy_modified_patients_list)
+      if(type_str == "int"){
+        copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
+      }else if(type_str == "float"){
+        copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
+      } else {
+        copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
+      }
 
       await set_modified_patients_list_to_update_back(copy_modified_patients_list);
 
       await set_table_matrix_filtered(copy_matrix_filtered);
-      await set_together_patient_gene_information(table_matrix_filtered);
+      await set_together_patient_gene_information(copy_matrix_filtered);
 
       // need to modify the column
       let column_obj_to_modify_index = together_data_columns.findIndex(column_element => column_element["dataField"] == stateChangeInfo["cellEdit"]["dataField"]);
@@ -828,9 +827,9 @@ function DatasetPage() {
         if(typeof col_unique[0] == 'number'){
           let converted_val = 0
           if(Number.isInteger(col_unique[0])){
-            converted_val = parseInt(stateChangeInfo["cellEdit"]["newValue"])
+            converted_val = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]))
           }else{
-            converted_val = parseFloat(stateChangeInfo["cellEdit"]["newValue"])
+            converted_val = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]))
           }
 
           if(col_unique.includes(converted_val) == false){
@@ -840,7 +839,7 @@ function DatasetPage() {
           
         }else {
           // string lowercase
-          let converted_val = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
+          let converted_val = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
           if(col_unique.includes(converted_val) == false){
             col_unique.push(converted_val)
           }
@@ -1062,7 +1061,8 @@ function DatasetPage() {
                               patient_modify_list: clone(modified_patients_list_to_update_back)
                             }, { 'content-type': 'application/json' }).then((response) => {
                               console.log("post has been sent");
-                              console.log(response)
+                              console.log(response);
+                              alert("Data Updated");
                             });
 
                             
