@@ -422,7 +422,7 @@ function GenePage() {
     async function fetchGeneData() {
       //await console.log(URL);
       const res = await axios.get(URL);
-      const gene_ext = await axios.get(`http://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
+      const gene_ext = await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
       setGeneExternalData(gene_ext.data);
       setGene_data(res.data);
       set_graph_table_filter_data(res.data);
