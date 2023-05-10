@@ -13,6 +13,18 @@ from django.contrib.auth.hashers import make_password
 
 class BackendServer(View):
     """
+    index function
+
+    ### Params
+    @request: The WSGI request object resulting from calling View.as_view() in urls.py.
+
+    ### Returns
+    - `JsonResponse`: An object containing the data returned by the dispatched database method.
+    """
+    def index(request):
+        return Response("Hello, world. You're at the poll index.")
+    
+    """
     Overload the get() function to dispatch the request to the appropriate database method.
 
     ### Params

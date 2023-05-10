@@ -71,3 +71,17 @@
     width: 42%;
 }
 
+#full_matrix_table{
+    overflow: auto;
+}
+
+
+#table_edit_title{
+    display: inline-block;
+    float: left;
+}
+
+#table_edit_btn_content{
+    display: inline-block;
+    float: right;
+}

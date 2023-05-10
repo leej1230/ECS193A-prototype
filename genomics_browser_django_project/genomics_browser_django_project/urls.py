@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from genomics_browser_django_app_base import views
+
 from django.urls import path, re_path
 
 urlpatterns = [
@@ -42,6 +43,11 @@ urlpatterns = [
     re_path(r'^api/seq/names' ,                             views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_seq_names"}),
 
     path('api/delete_dataset/<slug:dataset_id>',            views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
+    path('api/delete_dataset/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
 
-    path('api/patients/<str:gene_id>/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
+    path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
+    path('api/patients_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_from_dataset"}),
+    path('api/genes_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_genes_from_dataset"}),
+    path('api/update_many_patients',                      views.BackendServer.as_view(), {"inner": "Patients", "callback": "update_patients_many_list"}),
+    re_path(r".*", views.BackendServer.index, name='index'),
 ]

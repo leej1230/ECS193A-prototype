@@ -72,7 +72,7 @@ class ParsedDataset :
 
     def get_patients(self) :
         gene_ids = list(self.df.filter(regex="ENSG").columns)
-        dataset_id = 1
+        dataset_id = self.dataset_id
 
         print("in parsed dataset")
 

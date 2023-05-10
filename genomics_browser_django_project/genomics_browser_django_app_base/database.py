@@ -34,6 +34,8 @@ import math
 
 import pandas as pd
 
+import copy
+
 from django.conf import settings
 
 class Database(): 
@@ -439,14 +441,40 @@ class Database():
             """
             gene = Database.gene_collection.find_one( {'$and': [{'name': str(request['gene_id'])},{'dataset_id': int(request['dataset_id'])}] })
 
-            list_possible_patients = gene['patient_ids']['arr']
-            str_list_possible_patients = [str(cur_patient) for cur_patient in list_possible_patients]
+            if gene is not None:
 
-            patients_found = Database.patient_collection.find({'patient_id': {'$in': str_list_possible_patients} }, {'_id':0}) 
+                list_possible_patients = gene['patient_ids']['arr']
+                str_list_possible_patients = [str(cur_patient) for cur_patient in list_possible_patients]
+
+                patients_found = Database.patient_collection.find({'patient_id': {'$in': str_list_possible_patients} }, {'_id':0}) 
+
+                patients_found_list = [{}]
+                for doc in patients_found:  
+                    patients_found_list.append(doc)
+                
+                patients_found_list = patients_found_list[1:]
+
+                json_data = loads(dumps(patients_found_list))
+                return json_data
+
+            return loads(dumps([{}]))
+        
+        @staticmethod
+        def get_patients_from_dataset(request):
+            """Get all patients from a specified dataset.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                list: A list of patient data objects matching the query.
+            """
+            patients_found = Database.patient_collection.find({'dataset_id': int(request['dataset_id'])}, {'_id':0}) 
 
             patients_found_list = [{}]
             for doc in patients_found:  
                 patients_found_list.append(doc)
+        
             
             patients_found_list = patients_found_list[1:]
 
@@ -506,6 +534,53 @@ class Database():
             """
             Database.patient_collection.insert_many(request)
             return loads(dumps(status.HTTP_201_CREATED))
+        
+        @staticmethod
+        def update_patients_many_list(request):
+            """Update multiple patient records in the database.
+
+            Args:
+                request (list): A list of dictionaries containing patient data.
+
+            Returns:
+                dict: HTTP 201 Created status message.
+            """
+
+            data_request = json.loads(request['ctx'].body)
+
+
+            patients_update_dict = data_request['patient_modify_list']
+
+            patients_list = list(patients_update_dict.keys())
+
+            patients_dataset_id = 0
+            if( len(patients_list) > 0):
+                patients_dataset_id = patients_update_dict[patients_list[0]]['dataset_id']
+
+            # for updating patients: need to only focus on patient info
+            for i in range(0, len(patients_list)):
+                cur_patient_obj = patients_update_dict[patients_list[i]]
+
+                keys_attributes_list = list(cur_patient_obj.keys())
+                update_patient_obj = copy.deepcopy(cur_patient_obj)
+                for j in range(0, len(keys_attributes_list)):
+                    if keys_attributes_list[j][0:4] == "ENSG":
+                        # gene modify so remove key from patient info to modify since gene modified separately
+                        update_patient_obj.pop(keys_attributes_list[j], None)
+
+                        gene = Database.gene_collection.find_one({'name': str(keys_attributes_list[j]), 'dataset_id': int(patients_dataset_id)})
+                        gene_patients_list = gene['patient_ids']['arr']
+                        gene_patient_index = gene_patients_list.index( patients_list[i] )
+                        gene_values_list = gene['gene_values']['arr']
+                        gene_values_list[gene_patient_index] = float(cur_patient_obj[keys_attributes_list[j]])
+                        
+                        Database.gene_collection.update_one({'$and': [{'name': str(keys_attributes_list[j])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": {'gene_values' : {'arr': gene_values_list}}})
+                
+            
+                # patient modify: set to all new attributes, but removed gene names above
+                Database.patient_collection.update_one({'$and': [{'patient_id': str(patients_list[i])},{'dataset_id': int(patients_dataset_id)}] }, {"$set": update_patient_obj})
+            
+            return loads(dumps({'status':'success'}))
 
     class Genes:
         def get_gene_one(request):
@@ -589,6 +664,26 @@ class Database():
             """
             Database.gene_collection.insert_many(request) 
             return loads(dumps(status.HTTP_201_CREATED)) 
+        
+        def get_genes_from_dataset(request):
+            """Get all genes from a specified dataset.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                list: A list of gene data objects matching the query.
+            """
+            genes_found = Database.gene_collection.find({'dataset_id': int(request['dataset_id'])}, {'_id':0}) 
+
+            genes_found_list = [{}]
+            for doc in genes_found:  
+                genes_found_list.append(doc)
+            
+            genes_found_list = genes_found_list[1:]
+
+            json_data = loads(dumps(genes_found_list))
+            return json_data
         
         def get_seq_names(request):
             gene_ensembl_id = "ENSG00000157764"
@@ -693,7 +788,7 @@ class Database():
 
                 datasets_deleted = Database.dataset_collection.delete_one({'id': int(request['dataset_id'])})
                 genes_deleted = Database.gene_collection.delete_many({'dataset_id': int(request['dataset_id'])})
-                patients_deleted = Database.patient_collection.delete_many({'dataset_id': int(1)})
+                patients_deleted = Database.patient_collection.delete_many({'dataset_id': int(request['dataset_id'])})
 
                 last_dataset_counter = Database.Counters.get_last_dataset_counter()
                 last_gene_counter = Database.Counters.get_last_gene_counter()
