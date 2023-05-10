@@ -441,19 +441,23 @@ class Database():
             """
             gene = Database.gene_collection.find_one( {'$and': [{'name': str(request['gene_id'])},{'dataset_id': int(request['dataset_id'])}] })
 
-            list_possible_patients = gene['patient_ids']['arr']
-            str_list_possible_patients = [str(cur_patient) for cur_patient in list_possible_patients]
+            if gene is not None:
 
-            patients_found = Database.patient_collection.find({'patient_id': {'$in': str_list_possible_patients} }, {'_id':0}) 
+                list_possible_patients = gene['patient_ids']['arr']
+                str_list_possible_patients = [str(cur_patient) for cur_patient in list_possible_patients]
 
-            patients_found_list = [{}]
-            for doc in patients_found:  
-                patients_found_list.append(doc)
-            
-            patients_found_list = patients_found_list[1:]
+                patients_found = Database.patient_collection.find({'patient_id': {'$in': str_list_possible_patients} }, {'_id':0}) 
 
-            json_data = loads(dumps(patients_found_list))
-            return json_data
+                patients_found_list = [{}]
+                for doc in patients_found:  
+                    patients_found_list.append(doc)
+                
+                patients_found_list = patients_found_list[1:]
+
+                json_data = loads(dumps(patients_found_list))
+                return json_data
+
+            return loads(dumps([{}]))
         
         @staticmethod
         def get_patients_from_dataset(request):
@@ -470,6 +474,7 @@ class Database():
             patients_found_list = [{}]
             for doc in patients_found:  
                 patients_found_list.append(doc)
+        
             
             patients_found_list = patients_found_list[1:]
 

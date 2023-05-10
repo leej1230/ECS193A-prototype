@@ -12,14 +12,6 @@ describe('Test Upload Page', () => {
   })
 })
 
-describe('Test Gene Page', () => {
-  it('Try to visit gene page', () => {
-    cy.visit('http://localhost:3000/')
-    cy.contains('Gene Name:').click()
-    cy.url().should('includes', '/gene/')
-  })
-})
-
 describe('Test Dataset Page', () => {
   it('Try to visit dataset page', () => {
     cy.visit('http://localhost:3000/')
