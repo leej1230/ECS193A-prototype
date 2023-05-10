@@ -762,11 +762,17 @@ function DatasetPage() {
 
       let sample_val = together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
       let type_str = "str"
+
+      console.log(sample_val)
+      
+
       if(Number.isInteger(sample_val)){
         type_str = "int"
       }else if(typeof sample_val == 'number'){
         type_str = "float"
       }
+
+      console.log(type_str)
 
       if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
         
@@ -774,11 +780,11 @@ function DatasetPage() {
         let new_patient_update = {'dataset_id': parseInt(DATASET_ID)  };
         
         if(type_str == "int"){
-          new_patient_update[data_field_key] = parseInt(stateChangeInfo["cellEdit"]["newValue"]);
+          new_patient_update[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
         } else if(type_str == "float") {
-          new_patient_update[data_field_key] = parseFloat(stateChangeInfo["cellEdit"]["newValue"]);
+          new_patient_update[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
         } else {
-          new_patient_update[data_field_key] = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
+          new_patient_update[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
@@ -787,16 +793,18 @@ function DatasetPage() {
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
 
         if(type_str == "int"){
-          existing_patient_update_info[data_field_key] = parseInt(stateChangeInfo["cellEdit"]["newValue"]);
+          existing_patient_update_info[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
         }
         if(type_str == "float"){
-          existing_patient_update_info[data_field_key] = parseFloat(stateChangeInfo["cellEdit"]["newValue"]);
+          existing_patient_update_info[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
         } else {
-          existing_patient_update_info[data_field_key] = stateChangeInfo["cellEdit"]["newValue"].toLowerCase();
+          existing_patient_update_info[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
       }
+
+      console.log(copy_modified_patients_list)
 
       await set_modified_patients_list_to_update_back(copy_modified_patients_list);
 

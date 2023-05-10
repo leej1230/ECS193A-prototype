@@ -512,6 +512,7 @@ class Database():
             # for updating patients: need to only focus on patient info
             for i in range(0, len(patients_list)):
                 cur_patient_obj = patients_update_dict[patients_list[i]]
+                print(cur_patient_obj)
                 keys_attributes_list = list(cur_patient_obj.keys())
                 update_patient_obj = copy.deepcopy(cur_patient_obj)
                 for j in range(0, len(keys_attributes_list)):
