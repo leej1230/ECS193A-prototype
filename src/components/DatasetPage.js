@@ -279,7 +279,7 @@ function DatasetPage() {
   const navigate = useNavigate();
 
   const TextFuzzyFilter = (props) => {
-    const [inputStr, setInputStr] =  useState(0);
+    const [inputStr, setInputStr] =  useState("");
 
     const propTypes = {
       column: PropTypes.object.isRequired,
