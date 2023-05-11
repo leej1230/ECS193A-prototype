@@ -9,7 +9,7 @@ import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
-const encryptionKey = process.env.ENCRYPTION_SECRET_KEY;
+const encryptionKey = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
