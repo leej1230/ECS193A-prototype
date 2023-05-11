@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
-import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
-
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-//import './bootstrap_landing_page_template/css/styles.css'
+import React from 'react';
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import './HomePage.css'
-import { Margin } from '@mui/icons-material';
 
 function HomePage(){
     return(
@@ -48,8 +40,9 @@ function HomePage(){
             <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
             <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
             <div className="d-flex align-items-center justify-content-center">
-                <button class="btn btn-primary" type="submit">Login</button>&nbsp; &nbsp; &nbsp;  
-                <button class="btn btn-primary" type="submit">Signup</button> 
+                {/* TODO: comeback and link href to login page */}
+                <a class="btn btn-primary" type="submit" href="/console">Login</a>&nbsp; &nbsp; &nbsp;  
+                {/* <button class="btn btn-primary" type="submit">Signup</button>  */}
             </div>
         </div>
 
