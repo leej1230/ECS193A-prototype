@@ -20,11 +20,20 @@ function app() {
       <Routes>
         <Route
           exact
-          path="/"
+          path="/console"
           element={
             <>
               <Navbar />
               <Home />
+            </>
+          }
+        />
+        <Route
+          exact
+          path="/"
+          element={
+            <>
+              <HomePage />
             </>
           }
         />
@@ -103,15 +112,6 @@ function app() {
             <>
               <Navbar />
               <DatasetPage />
-            </>
-          }
-        />
-        <Route
-          exact
-          path="/homepage"
-          element={
-            <>
-              <HomePage />
             </>
           }
         />
