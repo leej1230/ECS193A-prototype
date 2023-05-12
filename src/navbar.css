@@ -12,7 +12,7 @@
 }
 
 #navbar_element_link_top li a:hover {
-    background: rgb(216, 216, 216);
+    background: rgb(235, 235, 235);
 }
 
 #navigation_bar_top{
@@ -30,6 +30,24 @@
     position: fixed;
     top: 70px;
     right: 0;
+    left: auto;
+    overflow: auto;
+}
+
+#drop_down_login_user{
+    color: black;
+}
+
+#user_account_drop_down a:hover {
+    background: rgb(235, 235, 235);
+}
+
+#user_dropdown_menu_outer{
+    width: fit-content;
+    margin: 0;
+    position: fixed;
+    right: 0;
+    top: 70px;
     left: auto;
     overflow: auto;
 }
