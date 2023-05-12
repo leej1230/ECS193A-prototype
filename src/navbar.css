@@ -13,13 +13,26 @@
 
 #navbar_element_link_top li a:hover {
     background: rgb(216, 216, 216);
-  }
-
-.notification_dropdown_menu_outer{
-    min-width: 200px;
 }
 
+#navigation_bar_top{
+    position: fixed;
+    height: 70px;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
 
+#notification_dropdown_menu_outer{
+    width: fit-content;
+    margin: 0;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    left: auto;
+    overflow: auto;
+}
 
 /*
 .outer_bar {

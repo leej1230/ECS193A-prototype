@@ -89,13 +89,14 @@
 #control_buttons_dataset{
     position: absolute;
     right: 0;
+    top: 4%;
     margin-right: 2%;
     margin-left: 2%;
     margin-top: 3%;
 }
 
 #dataset_name_holder{
-    margin-top: 6%;
+    margin-top: 9%;
     margin-right: 2%;
     margin-left: 2%;
 }

@@ -13,11 +13,11 @@ function Navbar() {
 
   const [dropdown, setDropdown] = useState(false);
 
-  var menuClass = `dropdown-menu dropdown-menu-end${dropdown ? " show" : ""}`;
+  var menuClass = `dropdown-menu ${dropdown ? " show" : ""}`;
   
   return (
     <div>
-        <nav class="navbar navbar-expand navbar-light bg-light topbar static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-light topbar static-top shadow" id="navigation_bar_top">
 
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
               <i class="fa fa-bars"></i>
@@ -39,7 +39,7 @@ function Navbar() {
 
           <ul class="navbar-nav ml-auto">
 
-          <li class="nav-item dropdown no-arrow mx-1" >
+          <li class="nav-item dropdown no-arrow mx-1" id="navbar_option_notification" >
                 <a class="nav-link dropdown-toggle" id="alertsDropdown" role="button"
                       data-toggle="dropdown" aria-haspopup="true" onClick={ async () => {
                         if(dropdown == true){
@@ -52,45 +52,46 @@ function Navbar() {
 
                         <span class="badge badge-danger badge-counter">3+</span>
                 </a>
-                <div className={menuClass} aria-labelledby="alertsDropdown" id="notification_dropdown_menu_outer">
+                <div className={menuClass} aria-labelledby="alertsDropdown" id="notification_dropdown_menu_outer" >
                     
-                    <h6 id="notifications_dropdown_item_header" class="dropdown-header">
-                        Alerts Center
-                    </h6>
-                    <a id="notifications_dropdown_item_body" class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-1">
-                            <div class="icon-circle bg-primary">
-                                <i class="fas fa-file-alt text-white"></i>
+                        <h6 id="notifications_dropdown_item_header" class="dropdown-header">
+                            Alerts Center
+                        </h6>
+                        <a id="notifications_dropdown_item_body" class="dropdown-item d-flex align-items-center" href="#">
+                            <div class="mr-1">
+                                <div class="icon-circle bg-primary">
+                                    <i class="fas fa-file-alt text-white"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                        </div>
-                    </a>
+                            <div>
+                                <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                            </div>
+                        </a>
 
-                    {/*<a id="notifications_dropdown_item_body_second" class="dropdown-item d-flex align-items-center" href="#">
-                          <div class="mr-3">
-                              <div class="icon-circle bg-success">
-                                  <i class="fas fa-donate text-white"></i>
-                              </div>
-                          </div>
-                          <div>
-                              <div class="small text-gray-500">December 7, 2019</div>
-                              $290.29 has been deposited into your account!
-                          </div>
-                      </a>
-                      <a id="notifications_dropdown_item_body_third" class="dropdown-item d-flex align-items-center" href="#">
-                          <div class="mr-3">
-                              <div class="icon-circle bg-warning">
-                                  <i class="fas fa-exclamation-triangle text-white"></i>
-                              </div>
-                          </div>
-                          <div>
-                              <div class="small text-gray-500">December 2, 2019</div>
-                              Spending Alert: We've noticed unusually high spending for your account.
-                          </div>
-                      </a>
-            <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>*/}
+                        {/*<a id="notifications_dropdown_item_body_second" class="dropdown-item d-flex align-items-center" href="#">
+                            <div class="mr-3">
+                                <div class="icon-circle bg-success">
+                                    <i class="fas fa-donate text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500">December 7, 2019</div>
+                                $290.29 has been deposited into your account!
+                            </div>
+                        </a>
+                        <a id="notifications_dropdown_item_body_third" class="dropdown-item d-flex align-items-center" href="#">
+                            <div class="mr-3">
+                                <div class="icon-circle bg-warning">
+                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500">December 2, 2019</div>
+                                Spending Alert: We've noticed unusually high spending for your account.
+                            </div>
+                        </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>*/}
+
                 </div>
 
             </li>
