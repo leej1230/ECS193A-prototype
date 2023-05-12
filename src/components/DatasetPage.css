@@ -85,3 +85,29 @@
     display: inline-block;
     float: right;
 }
+
+#control_buttons_dataset{
+    position: absolute;
+    right: 0;
+    margin-right: 2%;
+    margin-left: 2%;
+    margin-top: 3%;
+}
+
+#dataset_name_holder{
+    margin-top: 6%;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+
+#description_box_dataset{
+    margin-top: 1%;
+}
+
+#dataset_table_and_stats_row{
+    margin-top: 2%;
+}
+
+#dataset_view_table{
+    margin-top: 2%;
+}

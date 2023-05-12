@@ -919,50 +919,37 @@ function DatasetPage() {
       <div id="content">
 
           <div class="container-fluid">
+              <div class="row">
+                  <div id="control_buttons_dataset">
+                    <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
+                              class="fas fa-sm text-white-50"></i>Update</a>
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
+                              class="fas fa-download fa-sm text-white-50"></i>Generate</a>
+                      <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
+                              
+                              axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`);
+                        
+                              navigate('/');
 
-              <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5">
-                  <h1 class="h1 mb-0 text-gray-800">
-                    {dataset["name"]}
-                  </h1>
-                  <div>
-                  <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
-                            class="fas fa-sm text-white-50"></i>Update</a>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
-                            class="fas fa-download fa-sm text-white-50"></i>Generate</a>
-                    <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
-                            
-                            axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`)
-                       
-                            navigate('/');
+                            }} >
+                            <i class="fas fa-sm text-white-50"></i>
+                            Delete
+                        </button>
+                    </div>
 
-                          }} >
-                          <i class="fas fa-sm text-white-50"></i>
-                          Delete
-                      </button>
+              </div>
+
+              <div>
+                  <div class="row">
+                    <h1 id="dataset_name_holder" class="h1 text-gray-800">
+                      {dataset["name"]}
+                    </h1>
                   </div>
               </div>
 
               <div class="row">
-
-                <div class="col-xl-3 col-md-6 mb-4">
-                  <div class="card shadow mb-4 border-left-primary">
-                      <div class="card-body">
-                          <div class="row no-gutters align-items-center">
-                              <div class="col mr-2">
-                                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Last Updated</div>
-                                  <div class="text-xs mb-0 text-gray-800">01-03-2023</div>
-                              </div>
-                              <div class="col-auto">
-                                  <i class="fas fa-calendar text-gray-300"></i>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-
-
-                <div class="col-xl-8 col-lg-7">
-                      <div class="card shadow mb-4">
+                <div class="col">
+                      <div id="description_box_dataset" class="card shadow">
                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                               <h5 class="m-0 font-weight-bold text-primary">Description</h5>
                           </div>
@@ -973,11 +960,13 @@ function DatasetPage() {
                   </div>
               </div>
 
-              <div class="row">
+
+              <div id="dataset_table_and_stats_row">
+                <div class="row">
 
                   <div class="col-xl-6 col-lg-5">
 
-                    <div class="card shadow mb-4">
+                    <div class="card shadow">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
                         </div>
@@ -1005,21 +994,21 @@ function DatasetPage() {
                     </div>
                   </div>
 
-                  <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
-                  </div>
-                  <div class="card-body">
-                      <div class="row" id="table_options_outer">
-                          <div id="gene_table_area">
-                            <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                  <div class="card shadow">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="table_options_outer">
+                            <div id="gene_table_area">
+                              <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                            </div>
                           </div>
-                        </div>
+                    </div>
                   </div>
-                </div>
            
-                  <div class="col-lg-3 mb-4">
-                    <div class="card shadow mb-4">
+                  <div class="col-lg-3">
+                    <div class="card shadow">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
                         </div>
@@ -1032,7 +1021,7 @@ function DatasetPage() {
                  
 
              
-                    <div class="card shadow mb-4">
+                    <div class="card shadow">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
                         </div>
@@ -1044,43 +1033,45 @@ function DatasetPage() {
                     </div>
                   </div>
 
+                </div>
               </div>
 
-              <div class="row">
-                  <div class="col">
-                    <div class="card shadow mb-4">
-                      <div class="card-header py-3">
-                        <div id="table_edit_header">
-                          <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
-                          <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
-                            console.log("can click button for saving edit changes from table");
-                            console.log(modified_patients_list_to_update_back);
+              <div id="dataset_view_table"></div>
+                <div class="row">
+                    <div class="col">
+                      <div class="card shadow">
+                        <div class="card-header py-3">
+                          <div id="table_edit_header">
+                            <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
+                            <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
+                              console.log("can click button for saving edit changes from table");
+                              console.log(modified_patients_list_to_update_back);
 
-                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
-                              // Data to be sent to the server
-                              patient_modify_list: clone(modified_patients_list_to_update_back)
-                            }, { 'content-type': 'application/json' }).then((response) => {
-                              console.log("post has been sent");
-                              console.log(response);
-                              alert("Data Updated");
-                            });
+                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                // Data to be sent to the server
+                                patient_modify_list: clone(modified_patients_list_to_update_back)
+                              }, { 'content-type': 'application/json' }).then((response) => {
+                                console.log("post has been sent");
+                                console.log(response);
+                                alert("Data Updated");
+                              });
 
-                            
-                          }}>Save Changes</button>
+                              
+                            }}>Save Changes</button>
+                          </div>
+                        </div>
+                        <div class="card-body" id="full_matrix_table">
+                          <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                            if( 'cellEdit' in newState){
+                              updateCellEditMatrix(newState);
+                            } else{
+                              matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
+                            }
+                          } } />
                         </div>
                       </div>
-                      <div class="card-body" id="full_matrix_table">
-                        <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
-                          if( 'cellEdit' in newState){
-                            updateCellEditMatrix(newState);
-                          } else{
-                            matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
-                          }
-                        } } />
-                      </div>
                     </div>
-                  </div>
-              </div>
+                </div>
 
           </div> 
 
