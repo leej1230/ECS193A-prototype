@@ -12,38 +12,96 @@ import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 function Navbar() {
 
   const [dropdown, setDropdown] = useState(false);
+
+  var menuClass = `dropdown-menu${dropdown ? " show" : ""}`;
   
   return (
     <div>
-        <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-light topbar static-top shadow">
 
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
               <i class="fa fa-bars"></i>
           </button>
-
+          
           <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul id="navbar_element_link_top" class="navbar-nav">
               <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a id="navbar_element_link_home" class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
+                <a id="navbar_element_link_about" class="nav-link" href="#">About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Contact Us</a>
+                <a id="navbar_element_link_contact_us" class="nav-link" href="#">Contact Us</a>
               </li>
             </ul>
           </div>
 
           <ul class="navbar-nav ml-auto">
 
-              <li class="nav-item dropdown no-arrow mx-1">
-                  <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <li class="nav-item dropdown no-arrow mx-1" >
+                <a class="nav-link dropdown-toggle" id="userDropdown" role="button"
+                      data-toggle="dropdown" aria-haspopup="true" onClick={ async () => {
+                        if(dropdown == true){
+                            await setDropdown( false )
+                        } else {
+                            await setDropdown( true )
+                        }
+                }}>
+                        Dropdown
+                </a>
+
+                <div className={menuClass} aria-labelledby="dropdownMenuButton">
+                    <a className="dropdown-item" href="#">
+                        Item 1
+                    </a>
+                    <a className="dropdown-item" href="#">
+                        Item 2
+                    </a>
+                    <a className="dropdown-item" href="#">
+                        Item 3
+                    </a>
+                </div>
+
+            </li>
+
+            {/*
+                <a
+                    className="btn btn-secondary dropdown-toggle"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    >
+                    Dropdown
+                </a>
+
+                <div className={menuClass} aria-labelledby="dropdownMenuButton">
+                    <a className="dropdown-item" href="#">
+                        Item 1
+                    </a>
+                    <a className="dropdown-item" href="#">
+                        Item 2
+                    </a>
+                    <a className="dropdown-item" href="#">
+                        Item 3
+                    </a>
+                </div>
+            */}
+
+              {/*<li class="nav-item dropdown no-arrow mx-1">
+                  <li class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded={dropdown}  onClick={ async () => {
+                        if(dropdown == true){
+                            await setDropdown( false )
+                        } else {
+                            await setDropdown( true )
+                        }
+                        
+                      }}>
                       <i class="fas fa-bell fa-fw"></i>
 
                       <span class="badge badge-danger badge-counter">3+</span>
-                  </a>
+                  </li>
 
                   <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                       aria-labelledby="alertsDropdown">
@@ -85,7 +143,7 @@ function Navbar() {
                       </a>
                       <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                   </div>
-              </li>
+                </li>*/}
 
               <div class="topbar-divider d-none d-sm-block"></div>
 

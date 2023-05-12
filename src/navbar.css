@@ -1,7 +1,25 @@
 
+#navbar_element_link_home{
+    color: black;
+}
+
+#navbar_element_link_about{
+    color: black;
+}
+
+#navbar_element_link_contact_us{
+    color: black;
+}
+
+#navbar_element_link_top li a:hover {
+    background: rgb(216, 216, 216);
+  }
+
+
+/*
 .outer_bar {
     margin: 0;
-    background-color: rgb(80, 123, 139);
+    background-color: rgb(216, 216, 216);
     overflow: hidden;
     height: 2%;
 }
@@ -18,7 +36,7 @@
     text-align: center;
     display: inline;
     margin: 1rem;
-    background-color: rgb(80, 123, 139);
+    background-color: rgb(216, 216, 216);
 }
 
 .bar_item_right {
@@ -29,19 +47,19 @@
     text-align: center;
     display: inline;
     margin: 1rem;
-    background-color: rgb(80, 123, 139);
+    background-color: rgb(216, 216, 216);
 }
 
 .bar_link {
     text-decoration: none;
-    color: white;
+    color: black;
 }
 
 #logo_header{
     list-style-type: none;
     margin: 0;
     overflow: hidden;
-    background-color: rgb(31, 68, 99);
+    background-color: rgb(216, 216, 216);
     height: 40px;
 }
 
@@ -51,10 +69,11 @@
 
 #logo {
     height: 40px;
-}
+} 
+
 
 .title {
-    color: white;
+    color: black;
     margin-top: 200px;
     margin-left: 10%;
     font-size: 70px;
@@ -62,19 +81,20 @@
 }
 
 .title_caption {
-    color: white;
+    color: black;
     margin-left: 10%;
     font-size: 20px;
     display: inline-block;
 }
+
 
 .button_group{
     margin-left: 10%;
 }
 
 .button_element {
-    background-color: white;
-    color: black;
+    background-color: black;
+    color: white;
     font-size: 20px;
     padding: 10px 60px;
     border-radius: 5px;
@@ -83,9 +103,11 @@
     margin-left: 2%;
     transition-duration: 0.4s;
 }
-
+*/
+/* Green */
+/*
 .button_element:hover {
-    background-color: rgb(122, 194, 223); /* Green */
+    background-color: rgb(216, 216, 216); 
  }
 
  .services-submenu {
@@ -97,12 +119,12 @@
   }
   
   .services-submenu li {
-    background:  rgb(80, 123, 139);
+    background:  rgb(216, 216, 216);
     cursor: pointer;
   }
   
   .services-submenu li a:hover {
-    background: rgb(113, 155, 170);
+    background: rgb(216, 216, 216);
   }
   
   .services-submenu.clicked {
@@ -112,12 +134,13 @@
   .submenu-item {
     display: block;
     text-decoration: none;
-    color: white;
+    color: black;
     padding: 16px;
     cursor: pointer;
   }
 
   .submenu-link {
-    color: white;
+    color: black;
     text-decoration: none;
   }
+  */
