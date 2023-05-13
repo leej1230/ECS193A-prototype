@@ -981,11 +981,6 @@ function DatasetPage() {
                     &nbsp;
                     <p class="d-sm-inline-block subtitle_content" >{DATASET_ID}</p>
                   </div>
-                  <div>
-                    <p class="d-sm-inline-block subtitle_tag" >Description:</p>
-                    &nbsp;
-                    <p class="d-sm-inline-block subtitle_content">{dataset["description"]}</p> 
-                  </div>
                 </h5>
               </div>
 
@@ -999,25 +994,33 @@ function DatasetPage() {
                   </TabList>
 
                   <TabPanel >
-                    <div class="row" id="dataset_table_and_stats_row">
-
-                      <div class="card shadow" id="dataset_basics">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
-                        </div>
+                    <div  id="dataset_basics">
+                      
+                      <div class="card shadow dataset_info_block" >
+                      
                         <div class="card-body">
+                        
+                          <div >
+                            <h5 class="dataset_subheader">Description </h5>
+                            <hr class="line_div_category_header_content" />
+                            <p class="dataset_subcontent">{dataset["description"]}</p>
+                          </div>
+
+                        
                         {datasetTableInputFormat.length>3 ? (
                           <div>
-                            {
-                              <MaterialTable columns={columns} 
-                              data={datasetTableInputFormat}
-                              icons={tableIcons}
-                              options={{
-                                paging: false,
-                                showTitle: false
-                              }}
-                              />
-                            }
+                            {datasetTableInputFormat.map((table_property) => {
+
+                              if(table_property.field_name != 'id' && table_property.field_name != 'name' && table_property.field_name != 'description'){
+                                console.log("info dataset table objs: !!!: ")
+                                console.log(table_property)
+                                return(<div >
+                                  <h5 class="dataset_subheader">{table_property.field_name} </h5>
+                                  <hr class="line_div_category_header_content" />
+                                  <p class="dataset_subcontent">{table_property.value}</p>
+                                </div>)
+                              }
+                            })}
                           </div>
                           ):(
                             <div>
@@ -1027,6 +1030,7 @@ function DatasetPage() {
                         }
                         </div>
                       </div>
+                      
                     </div>
                   </TabPanel>
                   <TabPanel>
@@ -1034,7 +1038,7 @@ function DatasetPage() {
 
                       <div class="card shadow" id="dataset_genes_list">
                         <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
+                          <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>
                         </div>
                         <div class="card-body">
                             <div class="row" id="table_options_outer">
@@ -1056,7 +1060,7 @@ function DatasetPage() {
                             <div class="card shadow">
                               <div class="card-header py-3">
                                 <div id="table_edit_header">
-                                  <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
+                                  <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
                                   <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
                                     console.log("can click button for saving edit changes from table");
                                     console.log(modified_patients_list_to_update_back);
@@ -1158,3 +1162,31 @@ export default DatasetPage;
                   </div>
 
                   */
+/*
+<div class="card shadow" >
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+    </div>
+    <div class="card-body">
+    {datasetTableInputFormat.length>3 ? (
+      <div>
+        {
+          <MaterialTable columns={columns} 
+          data={datasetTableInputFormat}
+          icons={tableIcons}
+          options={{
+            paging: false,
+            showTitle: false
+          }}
+          />
+        }
+      </div>
+      ):(
+        <div>
+          <CircularProgress />
+        </div>
+      )
+    }
+    </div>
+  </div>
+*/
