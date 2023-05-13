@@ -1,12 +1,14 @@
 
+body{
+    min-height: 100vh;
+}
+
 #dataset_full_page{
     width:74vw;
     justify-content: center;
-    position: relative;
-    margin-top: 150px;
     min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    position: relative;
+    top: 0;
 }
 
 /*.headerGroup {
@@ -63,22 +65,23 @@
 #control_buttons_dataset{
     position: absolute;
     right: 0;
-    margin-right: 2px;
-    top: 0;
+    float: right;
+    margin-top: 130px;
 }
 
 #dataset_name_holder{
     position: absolute;
-    top: 40px;
+    margin-top: 170px;
     left: 0;
-    margin-left: 2px;
+    float: left;
+    margin-left: 25px;
 }
 
 #dataset_table_and_stats_row {
     margin-top: 2%;
     margin-left: 1px;
-    margin-right: 1px;
     display: flex;
+    margin-right: 1px;
 }
 
 /* flex help stretch, equal columns, here 1 col */
@@ -108,17 +111,17 @@
 #tabs_container{
     position: absolute;
     min-width: 100%;
-    top: 120px;
+    top: 250px;
     left: 0;
-    margin-left: 0;
+    float: left;
     justify-content: center;
 }
 
 #tab_info{
     margin-top: 3%;
     margin-left: 0;
-    min-width: 74vw;
-    width: 74vw;
+    min-width: 72vw;
+    width: 72vw;
     max-width: 74vw;
     left: 0;
     justify-content: center;
@@ -160,6 +163,8 @@
 #gene_table_area{
     width: 100%;
     text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 #column_gene_search_input{

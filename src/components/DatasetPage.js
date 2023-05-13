@@ -929,7 +929,7 @@ function DatasetPage() {
       <div id="content">
 
           <div class="container-fluid" id="dataset_full_page" >
-              <div class="row" id="control_buttons_dataset">
+              <div  id="control_buttons_dataset">
                   <div>
                     <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
                               class="fas fa-sm text-white-50"></i>Update</a>
@@ -950,7 +950,7 @@ function DatasetPage() {
               </div>
 
 
-              <div class="row" id="dataset_name_holder">
+              <div id="dataset_name_holder">
                 <h5  class="h5 text-gray-800">
                   <div id="text_title">
                     <div class="d-sm-inline-block" id="title_tage">Dataset:</div>
@@ -983,7 +983,7 @@ function DatasetPage() {
               </div>
 
 
-              <div class="row container-fluid" id="tabs_container" >
+              <div class="container-fluid" id="tabs_container" >
                 <Tabs id="tab_info">
                   <TabList class="tabs_row">
                     <Tab>Basic Info</Tab>
@@ -1071,7 +1071,6 @@ function DatasetPage() {
                                       console.log(response);
                                       alert("Data Updated");
                                     });
-
                                     
                                   }}>Save Changes</button>
                                 </div>
@@ -1091,9 +1090,6 @@ function DatasetPage() {
                   </TabPanel>
                 </Tabs>
               </div>
-        
-
-              
 
           </div> 
 
