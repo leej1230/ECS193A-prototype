@@ -89,14 +89,14 @@
 #control_buttons_dataset{
     position: absolute;
     right: 0;
-    top: 4%;
+    top: 100px;
     margin-right: 2%;
     margin-left: 2%;
-    margin-top: 3%;
 }
 
 #dataset_name_holder{
-    margin-top: 9%;
+    position: relative;
+    margin-top: 140px;
     margin-right: 2%;
     margin-left: 2%;
 }
@@ -107,8 +107,17 @@
 
 #dataset_table_and_stats_row{
     margin-top: 2%;
+    display: flex;
+    align-items: stretch;
+}
+
+/* children of above element */
+#dataset_basics, #dataset_genes_list, #dataset_statistics{
+    flex: 1;
 }
 
 #dataset_view_table{
     margin-top: 2%;
 }
+
+

@@ -919,13 +919,13 @@ function DatasetPage() {
       <div id="content">
 
           <div class="container-fluid">
-              <div class="row">
-                  <div id="control_buttons_dataset">
+              <div class="row" id="control_buttons_dataset">
+                  <div>
                     <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
                               class="fas fa-sm text-white-50"></i>Update</a>
                       <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                               class="fas fa-download fa-sm text-white-50"></i>Generate</a>
-                      <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
+                        <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
                               
                               axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`);
                         
@@ -935,21 +935,21 @@ function DatasetPage() {
                             <i class="fas fa-sm text-white-50"></i>
                             Delete
                         </button>
-                    </div>
-
-              </div>
-
-              <div>
-                  <div class="row">
-                    <h1 id="dataset_name_holder" class="h1 text-gray-800">
-                      {dataset["name"]}
-                    </h1>
                   </div>
+
               </div>
 
-              <div class="row">
+
+              <div class="row" id="dataset_name_holder">
+                <h1  class="h1 text-gray-800">
+                  {dataset["name"]}
+                </h1>
+              </div>
+    
+
+              <div class="row" id="description_box_dataset">
                 <div class="col">
-                      <div id="description_box_dataset" class="card shadow">
+                      <div class="card shadow">
                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                               <h5 class="m-0 font-weight-bold text-primary">Description</h5>
                           </div>
@@ -961,40 +961,37 @@ function DatasetPage() {
               </div>
 
 
-              <div id="dataset_table_and_stats_row">
-                <div class="row">
+              <div class="row" id="dataset_table_and_stats_row">
 
-                  <div class="col-xl-6 col-lg-5">
-
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+                  <div class="card shadow" id="dataset_basics">
+                      <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+                      </div>
+                      <div class="card-body">
+                      {datasetTableInputFormat.length>3 ? (
+                        <div>
+                          {
+                            <MaterialTable columns={columns} 
+                            data={datasetTableInputFormat}
+                            icons={tableIcons}
+                            options={{
+                              paging: false,
+                              showTitle: false
+                            }}
+                            />
+                          }
                         </div>
-                        <div class="card-body">
-                        {datasetTableInputFormat.length>3 ? (
+                        ):(
                           <div>
-                            {
-                              <MaterialTable columns={columns} 
-                              data={datasetTableInputFormat}
-                              icons={tableIcons}
-                              options={{
-                                paging: false,
-                                showTitle: false
-                              }}
-                              />
-                            }
+                            <CircularProgress />
                           </div>
-                          ):(
-                            <div>
-                              <CircularProgress />
-                            </div>
-                          )
-                        }
-                        </div>
-                    </div>
+                        )
+                      }
+                      </div>
                   </div>
+             
 
-                  <div class="card shadow">
+                  <div class="card shadow" id="dataset_genes_list">
                     <div class="card-header py-3">
                       <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
                     </div>
@@ -1007,7 +1004,7 @@ function DatasetPage() {
                     </div>
                   </div>
            
-                  <div class="col-lg-3">
+                  <div class="col-lg-3" id="dataset_statistics">
                     <div class="card shadow">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
@@ -1033,8 +1030,8 @@ function DatasetPage() {
                     </div>
                   </div>
 
-                </div>
               </div>
+        
 
               <div id="dataset_view_table"></div>
                 <div class="row">
