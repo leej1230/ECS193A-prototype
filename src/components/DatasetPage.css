@@ -101,22 +101,8 @@
     margin-left: 2%;
 }
 
-#description_box_dataset{
-    margin-top: 1%;
-    width: 95vw;
-    margin-right: auto;
-    margin-left: auto;
-}
-
 #dataset_table_and_stats_row{
     margin-top: 2%;
-    display: flex;
-    align-items: stretch;
-}
-
-/* children of above element */
-#dataset_basics, #dataset_genes_list, #dataset_statistics{
-    flex: 1;
 }
 
 #dataset_view_table {
@@ -131,7 +117,7 @@
     margin: 0;
 }
 
-#subtitle_tag, #subtitle_content{
+.subtitle_tag, .subtitle_content{
     color: gray;
     font-size:medium;
     margin: 0;
@@ -139,10 +125,24 @@
 }
 
 #tab_info{
+    position: relative;
     margin-top: 3%;
-    width: 97vw;
-    margin-right: auto;
-    margin-left: auto;
+    min-width: 93vw;
+    width: 93vw;
+    max-width: 94vw;
+    margin-right: 1%;
+    margin-left: 1%;
+    left: 0;
+    justify-content: center;
+}
+
+#tabs_row{
+    position: absolute;
+    width: 100%;
+    margin-right: 1%;
+    margin-left: 1%;
+    left: 0;
+    right: 0;
     justify-content: center;
 }
 

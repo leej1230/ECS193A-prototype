@@ -977,36 +977,27 @@ function DatasetPage() {
                     
                   </div>
                   <div>
-                    <p class="d-sm-inline-block" id="subtitle_tag">Dataset ID:</p>
+                    <p class="d-sm-inline-block subtitle_tag" >Dataset ID:</p>
                     &nbsp;
-                    <p class="d-sm-inline-block" id="subtitle_content">{DATASET_ID}</p>
+                    <p class="d-sm-inline-block subtitle_content" >{DATASET_ID}</p>
+                  </div>
+                  <div>
+                    <p class="d-sm-inline-block subtitle_tag" >Description:</p>
+                    &nbsp;
+                    <p class="d-sm-inline-block subtitle_content">{dataset["description"]}</p> 
                   </div>
                 </h5>
               </div>
 
-              <div class="row container-fluid" id="tab_info">
-                <Tabs class="tab_panels">
-                  <TabList>
-                    <Tab>Title 1</Tab>
-                    <Tab>Title 2</Tab>
-                    <Tab>Title 3</Tab>
-                    <Tab>Title 4</Tab>
+
+              <div class="row container-fluid" >
+                <Tabs id="tab_info">
+                  <TabList class="tabs_row">
+                    <Tab>Basic Info</Tab>
+                    <Tab>Genes List</Tab>
+                    <Tab>Edit Dataset</Tab>
                   </TabList>
 
-                  <TabPanel >
-                    <div class="row" id="description_box_dataset">
-                      <div class="col">
-                            <div class="card shadow">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Description</h6>
-                                </div>
-                                <div class="card-body">
-                                  <p>{dataset["description"]}</p> 
-                                </div>
-                            </div>
-                      </div>
-                    </div>
-                  </TabPanel>
                   <TabPanel >
                     <div class="row" id="dataset_table_and_stats_row">
 
