@@ -312,22 +312,20 @@ function DatasetPage() {
     }
   
       return (
-            <div>
-              <input
-                key="input"
-                type="text"
-                placeholder="text"
-                data-cy="genelistinputbox"
-                onChange={(e) => { setInputStr( e.target.value ) }}
-              />
-              <button
-                id="gene_list_search"
-                onClick={() => {filter()}}
-              >Search</button>
-              <button
-                id="gene_list_reset"
-                onClick={() => {reset_list()}}
-              >Reset</button>
+            <div id="column_gene_search_input">
+              <div class="input-group" >
+                <div class="form-outline gene_input_txt">
+                  <input type="text" id="form1" class="form-control" placeholder="text" data-cy="genelistinputbox" onChange={(e) => { setInputStr( e.target.value ) }} />
+                </div>
+                <button type="button"  onClick={() => {filter()}} class="btn btn-primary gene_search_btn">
+                  <i id="gene_list_search" class="fas fa-search"></i>
+                </button>
+                <button
+                    id="gene_list_reset"
+                    onClick={() => {reset_list()}}
+                  >Reset</button>
+              </div>
+
             </div>
           )
       }
@@ -1190,3 +1188,21 @@ export default DatasetPage;
     </div>
   </div>
 */
+
+/*
+<input
+    key="input"
+    type="text"
+    placeholder="text"
+    data-cy="genelistinputbox"
+    onChange={(e) => { setInputStr( e.target.value ) }}
+  />
+  <button
+    id="gene_list_search"
+    onClick={() => {filter()}}
+  >Search</button>
+  <button
+    id="gene_list_reset"
+    onClick={() => {reset_list()}}
+  >Reset</button>
+      */

@@ -74,8 +74,16 @@
     margin-left: 2px;
 }
 
-#dataset_table_and_stats_row{
+#dataset_table_and_stats_row {
     margin-top: 2%;
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+}
+
+/* flex help stretch, equal columns, here 1 col */
+#dataset_genes_list{
+    flex: 1;
 }
 
 #dataset_view_table {
@@ -137,4 +145,27 @@
 .dataset_subcontent{
     color: black;
     margin-bottom: 3%;
+}
+
+#gene_list_search{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#gene_list_reset{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#gene_table_area{
+    width: 100%;
+    text-align: center;
+}
+
+#column_gene_search_input{
+    display: inline-block;    
+}
+
+.gene_input_txt, .gene_search_btn, #gene_list_reset{
+    display: inline;
 }
