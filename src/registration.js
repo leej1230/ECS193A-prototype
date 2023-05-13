@@ -9,7 +9,7 @@ import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
-const encryptionKey = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;
+const encryptionKey = `${process.env.REACT_APP_ENCRYPTION_SECRET_KEY}`;
 
 function Registration() {
   const [firstName, setFirstName] = useState("");
@@ -46,16 +46,17 @@ function Registration() {
     }
 
     // Encrypt password to send to backend
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      password,
-      encryptionKey
-    ).toString();
+    // TODO make encrypt work
+    // const encryptedPassword = CryptoJS.AES.encrypt(
+    //   CryptoJS.enc.Utf8.parse(password),
+    //   encryptionKey
+    // ).toString();
 
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("email", email);
-    formData.append("password", encryptedPassword);
+    formData.append("password", password);
     axios
       .post(api_url, formData)
       .then((result) => {

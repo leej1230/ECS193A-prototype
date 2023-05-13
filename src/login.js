@@ -10,7 +10,8 @@ import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
 
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
-const encryptionKey = `${process.env.REACT_APP_ENCRYPTION_SECRET_KEY}`;
+const encryptionKey = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_ENCRYPTION_SECRET_KEY);
+// const encryptionKey = `${process.env.REACT_APP_ENCRYPTION_SECRET_KEY}`;
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,8 +20,8 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [disableButton, setDisableButton] = useState(true);
-  
-  const handleSubmit = async(e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // if (email === "" || password === "") {
@@ -29,14 +30,14 @@ function Login() {
     // }
 
     // Encrypt password to send to backend
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      CryptoJS.enc.Utf8.parse(password),
-      encryptionKey
-    ).toString(CryptoJS.enc.Hex);
+    // TODO encrypt properly
+    // const encryptedPassword = CryptoJS.AES.encrypt(password.toString(), encryptionKey.toString()).toString();
 
     const formData = new FormData();
     formData.append("email", email);
-    formData.append("password", encryptedPassword);
+    formData.append("password", password);
+
+    // console.log(encryptedPassword);
 
     axios
       .post(api_url, formData)
@@ -68,7 +69,7 @@ function Login() {
             id="Email_Address"
             onChange={(e) => {
               setEmail(e.target.value)
-              if(e.target.value && password){
+              if (e.target.value && password) {
                 setDisableButton(false);
               } else {
                 setDisableButton(true);
@@ -87,7 +88,7 @@ function Login() {
             id="Password"
             onChange={(e) => {
               setPassword(e.target.value);
-              if(e.target.value && email){
+              if (e.target.value && email) {
                 setDisableButton(false);
               } else {
                 setDisableButton(true);

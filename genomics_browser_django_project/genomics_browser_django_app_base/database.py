@@ -48,15 +48,27 @@ class Database():
     superuser_collection    = client['superusers']
 
     class Users:
-        def decrypt_password(encrypted_password:str) -> str:
-            encryptionKey = os.environ.get('ENCRYPTION_SECRET_KEY')
+        # TODO implement decrypt algorithm that works
+        def decrypt_password(encrypted_password) -> str:
+            """
+            Decrypt the password given by frontend.
+
+            Args: 
+                encrypted_password: encrypted password
+                iv: initialization vector
+            
+            Returns:
+                str: Original Password
+            """
+            encryptionKey = os.environ.get('REACT_APP_ENCRYPTION_SECRET_KEY')
             if not encryptionKey:
                 print("Environmental Variable has not been set up!")
                 return "Random String"
             
-            cipher = AES.new(encryptionKey, AES.MODE_CBC)
-            ciphertext = base64.b64decode(encrypted_password)
-            decrypted_password = unpad(cipher.decrypt(ciphertext), AES.block_size)
+            encryptionKey = encryptionKey.encode() # convert str to bytes
+            nonce = encrypted_password[:16]
+            cipher = AES.new(encryptionKey, AES.MODE_EAX, nonce=nonce.encode())
+            decrypted_password = cipher.decrypt(encrypted_password[16:].encode()).decode('latin1')
             return decrypted_password
 
         def get_user_one(request):
@@ -69,7 +81,7 @@ class Database():
             user = Database.user_collection.find_one({'email': request['ctx'].POST['email']})
             if not user:
                 return status.HTTP_404_NOT_FOUND 
-            
+
             if not check_password(request['ctx'].POST['password'], user['password']):
                 return status.HTTP_404_NOT_FOUND
 
