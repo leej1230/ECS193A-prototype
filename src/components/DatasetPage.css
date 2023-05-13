@@ -116,8 +116,10 @@
     flex: 1;
 }
 
-#dataset_view_table{
+#dataset_view_table {
     margin-top: 2%;
 }
 
-
+#title_tage{
+    color: gray;
+}

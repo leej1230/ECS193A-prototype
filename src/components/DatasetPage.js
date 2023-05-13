@@ -47,6 +47,13 @@ import {clone} from "ramda";
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+//import FontAwesomeIcon from 'react-fontawesome'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -111,6 +118,7 @@ const selectOptions = [
 
 function DatasetPage() {
   const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
+  const [bookmarked, setBookmarked] = useState(false);
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
@@ -151,6 +159,8 @@ function DatasetPage() {
 
   const gene_list_node = useRef(null);
   const dataset_matrix_node = useRef(null);
+
+  var bookmarkStyle = `${bookmarked ? "solid" : "regular"}`;
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -908,12 +918,11 @@ function DatasetPage() {
 
   return (
 
-
     <body id="page-top">
 
-  <div id="wrapper">
+      <div id="wrapper">
 
-  <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content-wrapper" class="d-flex flex-column">
 
 
       <div id="content">
@@ -941,17 +950,36 @@ function DatasetPage() {
 
 
               <div class="row" id="dataset_name_holder">
-                <h1  class="h1 text-gray-800">
-                  {dataset["name"]}
-                </h1>
+                <h5  class="h5 text-gray-800">
+                  <div id="text_title">
+                    <div class="d-sm-inline-block" id="title_tage">Dataset:</div>
+                    &nbsp;
+                    <div class="d-sm-inline-block font-weight-bold" id="title_content">{dataset["name"]}</div>
+                    &nbsp;
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-secondary m-2 ml-auto"
+                      onClick={ async () => {
+                        if(bookmarked == true){
+                            await setBookmarked( false )
+                        } else {
+                            await setBookmarked( true )
+                        }
+                      }}
+                    >
+                      {bookmarked ? <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> }
+                    
+                    </button>
+                    
+                  </div>
+                </h5>
               </div>
     
-
               <div class="row" id="description_box_dataset">
                 <div class="col">
                       <div class="card shadow">
                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                              <h5 class="m-0 font-weight-bold text-primary">Description</h5>
+                              <h6 class="m-0 font-weight-bold text-primary">Description</h6>
                           </div>
                           <div class="card-body">
                             <p>{dataset["description"]}</p> 
@@ -1099,6 +1127,7 @@ function DatasetPage() {
   <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
 
   </body>
+
   )
 }
 
