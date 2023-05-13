@@ -921,7 +921,7 @@ function DatasetPage() {
 
   return (
 
-    <body id="page-top">
+    <body id="page-top" >
 
       <div id="wrapper">
 
@@ -930,7 +930,7 @@ function DatasetPage() {
 
       <div id="content">
 
-          <div class="container-fluid">
+          <div class="container-fluid" id="dataset_full_page" >
               <div class="row" id="control_buttons_dataset">
                   <div>
                     <a href="/update/dataset" class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"><i
@@ -985,7 +985,7 @@ function DatasetPage() {
               </div>
 
 
-              <div class="row container-fluid" >
+              <div class="row container-fluid" id="tabs_container" >
                 <Tabs id="tab_info">
                   <TabList class="tabs_row">
                     <Tab>Basic Info</Tab>
@@ -1105,13 +1105,13 @@ function DatasetPage() {
 
   </div>
 
-  <footer class="sticky-footer bg-white">
-  <div class="container my-auto">
-      <div class="copyright text-center my-auto">
-          <span>Copyright &copy; Your Website 2021</span>
-      </div>
-  </div>
-  </footer>
+  {/*<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2021</span>
+        </div>
+    </div>
+  </footer>*/}
 
   <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
   <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

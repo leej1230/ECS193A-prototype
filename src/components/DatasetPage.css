@@ -1,45 +1,19 @@
 
-.headerGroup {
+#dataset_full_page{
+    width:74vw;
+    justify-content: center;
+    position: relative;
+    margin-top: 150px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+/*.headerGroup {
     display: flex;
     align-items: center;
     margin-right: 10%;
     margin-left: 10%;
-}
-
-
-.textElement{
-    float: left;
-}
-
-.buttonGroup{
-    float: right;
-    display: flex;
-    align-items: center;
-    margin-left: 60%;
-}
-
-.buttonElement {
-    transition-duration: 0.4s;
-    color: white;
-    background-color:black;
-    margin-top: 1%;
-    margin-left: 10%;
-    margin-right: 2%;
-    padding: 10%;
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    border-width: 0px;
-}
-
-.buttonElement:hover {
-    background-color: rgb(60, 114, 24); /* Green */
- }
-
-.titleLayout{
-    align-items: center;
-    margin-right: 10%;
-    margin-left: 10%;
-    font-size:xx-large;
 }
 
 .cardLayout {
@@ -69,7 +43,7 @@
     box-shadow: 0px 0px 8px #ccc;
     margin: 1%;
     width: 42%;
-}
+}*/
 
 #full_matrix_table{
     overflow: auto;
@@ -89,16 +63,15 @@
 #control_buttons_dataset{
     position: absolute;
     right: 0;
-    top: 100px;
-    margin-right: 2%;
-    margin-left: 2%;
+    margin-right: 2px;
+    top: 0;
 }
 
 #dataset_name_holder{
-    position: relative;
-    margin-top: 140px;
-    margin-right: 2%;
-    margin-left: 2%;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    margin-left: 2px;
 }
 
 #dataset_table_and_stats_row{
@@ -124,23 +97,27 @@
     padding: 0;
 }
 
+#tabs_container{
+    position: absolute;
+    min-width: 100%;
+    top: 120px;
+    left: 0;
+    margin-left: 0;
+    justify-content: center;
+}
+
 #tab_info{
-    position: relative;
     margin-top: 3%;
-    min-width: 93vw;
-    width: 93vw;
-    max-width: 94vw;
-    margin-right: 1%;
-    margin-left: 1%;
+    margin-left: 0;
+    min-width: 74vw;
+    width: 74vw;
+    max-width: 74vw;
     left: 0;
     justify-content: center;
 }
 
 #tabs_row{
-    position: absolute;
     width: 100%;
-    margin-right: 1%;
-    margin-left: 1%;
     left: 0;
     right: 0;
     justify-content: center;
