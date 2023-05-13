@@ -54,6 +54,9 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -956,6 +959,7 @@ function DatasetPage() {
                     &nbsp;
                     <div class="d-sm-inline-block font-weight-bold" id="title_content">{dataset["name"]}</div>
                     &nbsp;
+                    &nbsp;
                     <button
                       type="button"
                       className="btn btn-sm btn-secondary m-2 ml-auto"
@@ -972,131 +976,131 @@ function DatasetPage() {
                     </button>
                     
                   </div>
+                  <div>
+                    <p class="d-sm-inline-block" id="subtitle_tag">Dataset ID:</p>
+                    &nbsp;
+                    <p class="d-sm-inline-block" id="subtitle_content">{DATASET_ID}</p>
+                  </div>
                 </h5>
               </div>
-    
-              <div class="row" id="description_box_dataset">
-                <div class="col">
-                      <div class="card shadow">
-                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                              <h6 class="m-0 font-weight-bold text-primary">Description</h6>
-                          </div>
-                          <div class="card-body">
-                            <p>{dataset["description"]}</p> 
-                          </div>
+
+              <div class="row container-fluid" id="tab_info">
+                <Tabs class="tab_panels">
+                  <TabList>
+                    <Tab>Title 1</Tab>
+                    <Tab>Title 2</Tab>
+                    <Tab>Title 3</Tab>
+                    <Tab>Title 4</Tab>
+                  </TabList>
+
+                  <TabPanel >
+                    <div class="row" id="description_box_dataset">
+                      <div class="col">
+                            <div class="card shadow">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Description</h6>
+                                </div>
+                                <div class="card-body">
+                                  <p>{dataset["description"]}</p> 
+                                </div>
+                            </div>
                       </div>
-                  </div>
-              </div>
-
-
-              <div class="row" id="dataset_table_and_stats_row">
-
-                  <div class="card shadow" id="dataset_basics">
-                      <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
-                      </div>
-                      <div class="card-body">
-                      {datasetTableInputFormat.length>3 ? (
-                        <div>
-                          {
-                            <MaterialTable columns={columns} 
-                            data={datasetTableInputFormat}
-                            icons={tableIcons}
-                            options={{
-                              paging: false,
-                              showTitle: false
-                            }}
-                            />
-                          }
-                        </div>
-                        ):(
-                          <div>
-                            <CircularProgress />
-                          </div>
-                        )
-                      }
-                      </div>
-                  </div>
-             
-
-                  <div class="card shadow" id="dataset_genes_list">
-                    <div class="card-header py-3">
-                      <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
                     </div>
-                    <div class="card-body">
-                        <div class="row" id="table_options_outer">
-                            <div id="gene_table_area">
-                              <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                  </TabPanel>
+                  <TabPanel >
+                    <div class="row" id="dataset_table_and_stats_row">
+
+                      <div class="card shadow" id="dataset_basics">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+                        </div>
+                        <div class="card-body">
+                        {datasetTableInputFormat.length>3 ? (
+                          <div>
+                            {
+                              <MaterialTable columns={columns} 
+                              data={datasetTableInputFormat}
+                              icons={tableIcons}
+                              options={{
+                                paging: false,
+                                showTitle: false
+                              }}
+                              />
+                            }
+                          </div>
+                          ):(
+                            <div>
+                              <CircularProgress />
+                            </div>
+                          )
+                        }
+                        </div>
+                      </div>
+                    </div>
+                  </TabPanel>
+                  <TabPanel>
+                    <div class="row" id="dataset_table_and_stats_row">
+
+                      <div class="card shadow" id="dataset_genes_list">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold text-primary">Dataset View</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="table_options_outer">
+                                <div id="gene_table_area">
+                                  <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                                </div>
+                              </div>
+                        </div>
+                      </div>
+
+
+
+                    </div>
+                  </TabPanel>
+                  <TabPanel>
+                    <div id="dataset_view_table"></div>
+                      <div class="row">
+                          <div class="col">
+                            <div class="card shadow">
+                              <div class="card-header py-3">
+                                <div id="table_edit_header">
+                                  <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
+                                  <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
+                                    console.log("can click button for saving edit changes from table");
+                                    console.log(modified_patients_list_to_update_back);
+
+                                    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                      // Data to be sent to the server
+                                      patient_modify_list: clone(modified_patients_list_to_update_back)
+                                    }, { 'content-type': 'application/json' }).then((response) => {
+                                      console.log("post has been sent");
+                                      console.log(response);
+                                      alert("Data Updated");
+                                    });
+
+                                    
+                                  }}>Save Changes</button>
+                                </div>
+                              </div>
+                              <div class="card-body" id="full_matrix_table">
+                                <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                                  if( 'cellEdit' in newState){
+                                    updateCellEditMatrix(newState);
+                                  } else{
+                                    matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
+                                  }
+                                } } />
+                              </div>
                             </div>
                           </div>
                     </div>
-                  </div>
-           
-                  <div class="col-lg-3" id="dataset_statistics">
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
-                        </div>
-                        <div class="card-body">
-                          <p>Number of Genes: </p>
-                          <p>Number of Patients: </p>
-                          <p>Number of Missing Cells: </p>
-                        </div>
-                    </div> 
-                 
-
-             
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
-                        </div>
-                        <div class="card-body">
-                            <p>Dataset 1</p>
-                            <p>Dataset 2</p>
-                            <p>Dataset 3</p>
-                        </div>
-                    </div>
-                  </div>
-
+                  </TabPanel>
+                </Tabs>
               </div>
         
 
-              <div id="dataset_view_table"></div>
-                <div class="row">
-                    <div class="col">
-                      <div class="card shadow">
-                        <div class="card-header py-3">
-                          <div id="table_edit_header">
-                            <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Viewer</h5>
-                            <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
-                              console.log("can click button for saving edit changes from table");
-                              console.log(modified_patients_list_to_update_back);
-
-                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
-                                // Data to be sent to the server
-                                patient_modify_list: clone(modified_patients_list_to_update_back)
-                              }, { 'content-type': 'application/json' }).then((response) => {
-                                console.log("post has been sent");
-                                console.log(response);
-                                alert("Data Updated");
-                              });
-
-                              
-                            }}>Save Changes</button>
-                          </div>
-                        </div>
-                        <div class="card-body" id="full_matrix_table">
-                          <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
-                            if( 'cellEdit' in newState){
-                              updateCellEditMatrix(newState);
-                            } else{
-                              matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
-                            }
-                          } } />
-                        </div>
-                      </div>
-                    </div>
-                </div>
+              
 
           </div> 
 
@@ -1132,3 +1136,34 @@ function DatasetPage() {
 }
 
 export default DatasetPage;
+
+/*
+<div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
+                        </div>
+                        <div class="card-body">
+                          <p>Number of Genes: </p>
+                          <p>Number of Patients: </p>
+                          <p>Number of Missing Cells: </p>
+                        </div>
+                    </div> 
+*/
+
+/*
+
+<div class="col-lg-3" id="dataset_statistics">
+       
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Dataset 1</p>
+                            <p>Dataset 2</p>
+                            <p>Dataset 3</p>
+                        </div>
+                    </div>
+                  </div>
+
+                  */

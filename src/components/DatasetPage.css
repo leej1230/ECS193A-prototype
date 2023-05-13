@@ -103,6 +103,9 @@
 
 #description_box_dataset{
     margin-top: 1%;
+    width: 95vw;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #dataset_table_and_stats_row{
@@ -123,3 +126,24 @@
 #title_tage{
     color: gray;
 }
+
+#text_title{
+    margin: 0;
+}
+
+#subtitle_tag, #subtitle_content{
+    color: gray;
+    font-size:medium;
+    margin: 0;
+    padding: 0;
+}
+
+#tab_info{
+    margin-top: 3%;
+    width: 97vw;
+    margin-right: auto;
+    margin-left: auto;
+    justify-content: center;
+}
+
+
