@@ -18,41 +18,27 @@ import Login from "./login";
 const privateRoutes = [
   {
     path: "/console",
-    element: (
-      <>
-        <Navbar /> <Home />
-      </>
-    ),
+    element: <PrivateRoute><Navbar /><Home /></PrivateRoute>,
   },
   {
     path: "/data/:id",
     element: (
       <>
         <Navbar />
-        <div>
-          <Sample />
-        </div>
+        <Sample />
       </>
     ),
   },
   {
     path: "/gene/:name/:id",
     element: (
-      <>
+      <PrivateRoute>
+
         <Navbar />
         <div>
           <GenePage />
         </div>
-      </>
-    ),
-  },
-  {
-    path: "/data",
-    element: (
-      <>
-        <Navbar />
-        <Data />
-      </>
+      </PrivateRoute>
     ),
   },
   {
@@ -88,12 +74,11 @@ const privateRoutes = [
   },
   {
     path: "/dataset/:id",
-    element: (
-      <>
+    element:
+      <PrivateRoute>
         <Navbar />
         <DatasetPage />
-      </>
-    ),
+      </PrivateRoute>
   },
   {
     path: "/gene_bootstrap",
@@ -143,7 +128,8 @@ function app() {
         ))}
         {privateRoutes.map((route) => (
           // <Route exact path={route.path} element={<PrivateRoute component={() => route.element} />} />
-          <Route exact path={route.path} element={<PrivateRoute element={route.element} />} />
+          // <Route exact path={route.path} element={<PrivateRoute component={route.element} />} />
+          <Route exact path={route.path} element={route.element} />
         ))}
       </Routes>
     </Router>
