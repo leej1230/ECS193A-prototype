@@ -54,8 +54,11 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+//import { Tab, Tabs, TabList, TabPanel,  ReactTabsFunctionComponent, TabProps } from 'react-tabs';
+//import 'react-tabs/style/react-tabs.css';
+
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 const tableIcons = {
   Add: AddBox,
@@ -118,6 +121,7 @@ const selectOptions = [
   {value: "No", label: 'no'},
   {value: "unknown", label: 'Unknown'}
 ];
+
 
 function DatasetPage() {
   const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
@@ -982,113 +986,124 @@ function DatasetPage() {
                 </h5>
               </div>
 
-
               <div class="container-fluid" id="tabs_container" >
-                <Tabs id="tab_info">
+                  <Tabs
+                      defaultActiveKey="profile"
+                      id="uncontrolled-tab-example"
+                      className="mb-3"
+                    >
+                      <Tab eventKey="basic_info" title="Basic Info">
+                          <div  id="dataset_basics">
+                          
+                            <div class="card shadow dataset_info_block" >
+                            
+                              <div class="card-body">
+                              
+                                <div >
+                                  <h5 class="dataset_subheader">Description </h5>
+                                  <hr class="line_div_category_header_content" />
+                                  <p class="dataset_subcontent">{dataset["description"]}</p>
+                                </div>
+
+                              
+                              {datasetTableInputFormat.length>3 ? (
+                                <div>
+                                  {datasetTableInputFormat.map((table_property) => {
+
+                                    if(table_property.field_name != 'id' && table_property.field_name != 'name' && table_property.field_name != 'description'){
+                                      console.log("info dataset table objs: !!!: ")
+                                      console.log(table_property)
+                                      return(<div >
+                                        <h5 class="dataset_subheader">{table_property.field_name} </h5>
+                                        <hr class="line_div_category_header_content" />
+                                        <p class="dataset_subcontent">{table_property.value}</p>
+                                      </div>)
+                                    }
+                                  })}
+                                </div>
+                                ):(
+                                  <div>
+                                    <CircularProgress />
+                                  </div>
+                                )
+                              }
+                              </div>
+                            </div>
+                            
+                          </div>
+                      </Tab>
+                      <Tab eventKey="genes_list" title="Genes List">
+                        <div class="row" id="dataset_table_and_stats_row">
+                            <div class="card shadow" id="dataset_genes_list">
+                              <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>
+                              </div>
+                              <div class="card-body">
+                                  <div class="row" id="table_options_outer">
+                                      <div id="gene_table_area">
+                                        <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                      </Tab>
+                      <Tab eventKey="edit_dataset" title="Edit Dataset">
+                        <div id="dataset_view_table"></div>
+                          <div class="row">
+                              <div class="col">
+                                <div class="card shadow">
+                                  <div class="card-header py-3">
+                                    <div id="table_edit_header">
+                                      <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
+                                      <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
+                                        console.log("can click button for saving edit changes from table");
+                                        console.log(modified_patients_list_to_update_back);
+
+                                        axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                          // Data to be sent to the server
+                                          patient_modify_list: clone(modified_patients_list_to_update_back)
+                                        }, { 'content-type': 'application/json' }).then((response) => {
+                                          console.log("post has been sent");
+                                          console.log(response);
+                                          alert("Data Updated");
+                                        });
+                                        
+                                      }}>Save Changes</button>
+                                    </div>
+                                  </div>
+                                  <div class="card-body" id="full_matrix_table">
+                                    <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                                      if( 'cellEdit' in newState){
+                                        updateCellEditMatrix(newState);
+                                      } else{
+                                        matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
+                                      }
+                                    } } />
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                      </Tab>
+                    </Tabs>
+                {/*<Tabs id="tab_info">
                   <TabList class="tabs_row">
-                    <Tab>Basic Info</Tab>
+                    <Tab >Basic Info</Tab>
                     <Tab>Genes List</Tab>
                     <Tab>Edit Dataset</Tab>
                   </TabList>
 
                   <TabPanel >
-                    <div  id="dataset_basics">
-                      
-                      <div class="card shadow dataset_info_block" >
-                      
-                        <div class="card-body">
-                        
-                          <div >
-                            <h5 class="dataset_subheader">Description </h5>
-                            <hr class="line_div_category_header_content" />
-                            <p class="dataset_subcontent">{dataset["description"]}</p>
-                          </div>
-
-                        
-                        {datasetTableInputFormat.length>3 ? (
-                          <div>
-                            {datasetTableInputFormat.map((table_property) => {
-
-                              if(table_property.field_name != 'id' && table_property.field_name != 'name' && table_property.field_name != 'description'){
-                                console.log("info dataset table objs: !!!: ")
-                                console.log(table_property)
-                                return(<div >
-                                  <h5 class="dataset_subheader">{table_property.field_name} </h5>
-                                  <hr class="line_div_category_header_content" />
-                                  <p class="dataset_subcontent">{table_property.value}</p>
-                                </div>)
-                              }
-                            })}
-                          </div>
-                          ):(
-                            <div>
-                              <CircularProgress />
-                            </div>
-                          )
-                        }
-                        </div>
-                      </div>
-                      
-                    </div>
+                    
                   </TabPanel>
                   <TabPanel>
-                    <div class="row" id="dataset_table_and_stats_row">
-
-                      <div class="card shadow" id="dataset_genes_list">
-                        <div class="card-header py-3">
-                          <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row" id="table_options_outer">
-                                <div id="gene_table_area">
-                                  <BootstrapTable keyField='id' ref={ n => gene_list_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ gene_list_filtered } columns={ gene_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) } } />
-                                </div>
-                              </div>
-                        </div>
-                      </div>
-
-
-
-                    </div>
+           
+                    
                   </TabPanel>
                   <TabPanel>
-                    <div id="dataset_view_table"></div>
-                      <div class="row">
-                          <div class="col">
-                            <div class="card shadow">
-                              <div class="card-header py-3">
-                                <div id="table_edit_header">
-                                  <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
-                                  <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
-                                    console.log("can click button for saving edit changes from table");
-                                    console.log(modified_patients_list_to_update_back);
 
-                                    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
-                                      // Data to be sent to the server
-                                      patient_modify_list: clone(modified_patients_list_to_update_back)
-                                    }, { 'content-type': 'application/json' }).then((response) => {
-                                      console.log("post has been sent");
-                                      console.log(response);
-                                      alert("Data Updated");
-                                    });
-                                    
-                                  }}>Save Changes</button>
-                                </div>
-                              </div>
-                              <div class="card-body" id="full_matrix_table">
-                                <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
-                                  if( 'cellEdit' in newState){
-                                    updateCellEditMatrix(newState);
-                                  } else{
-                                    matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
-                                  }
-                                } } />
-                              </div>
-                            </div>
-                          </div>
-                    </div>
                   </TabPanel>
-                </Tabs>
+                </Tabs>*/}
               </div>
 
           </div> 
