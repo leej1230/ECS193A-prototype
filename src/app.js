@@ -32,13 +32,13 @@ const privateRoutes = [
   {
     path: "/gene/:name/:id",
     element: (
-      <PrivateRoute>
+      <>
 
         <Navbar />
         <div>
           <GenePage />
         </div>
-      </PrivateRoute>
+      </>
     ),
   },
   {
@@ -75,10 +75,10 @@ const privateRoutes = [
   {
     path: "/dataset/:id",
     element:
-      <PrivateRoute>
+      <>
         <Navbar />
         <DatasetPage />
-      </PrivateRoute>
+      </>
   },
   {
     path: "/gene_bootstrap",
@@ -127,9 +127,7 @@ function app() {
           <Route exact path={route.path} element={route.element} />
         ))}
         {privateRoutes.map((route) => (
-          // <Route exact path={route.path} element={<PrivateRoute component={() => route.element} />} />
-          // <Route exact path={route.path} element={<PrivateRoute component={route.element} />} />
-          <Route exact path={route.path} element={route.element} />
+          <Route exact path={route.path} element={<PrivateRoute>{route.element}</PrivateRoute>} />
         ))}
       </Routes>
     </Router>
