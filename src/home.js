@@ -10,6 +10,9 @@ import axios from "axios";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
+import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+
 function Home() {
   const [searchResult, setSearchResult] = useState([]);
   //   Space so that user can run "blank" search
@@ -58,7 +61,138 @@ function Home() {
   return (
     <body id="page-top">
       <div id="wrapper">
-        <ul
+        
+
+        <div id="content-wrapper" class="d-flex flex-column">
+          <div id="content">
+            <SideNav
+              onSelect={(selected) => {
+                  // Add your code here
+              }}>
+              <SideNav.Toggle />
+                <SideNav.Nav defaultSelected="home">
+                    <NavItem eventKey="home">
+                        <NavIcon>
+                            <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
+                        </NavIcon>
+                        <NavText>
+                            Home
+                        </NavText>
+                    </NavItem>
+                    <NavItem eventKey="charts">
+                        <NavIcon>
+                            <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em' }} />
+                        </NavIcon>
+                        <NavText>
+                            Charts
+                        </NavText>
+                        <NavItem eventKey="charts/linechart">
+                            <NavText>
+                                Line Chart
+                            </NavText>
+                        </NavItem>
+                        <NavItem eventKey="charts/barchart">
+                            <NavText>
+                                Bar Chart
+                            </NavText>
+                        </NavItem>
+                    </NavItem>
+                </SideNav.Nav>
+              </SideNav>
+            <div class="row justify-content-end">
+              <div class="col-md-12 bg-light text-right mr-5 mt-5">
+                <a
+                  href="/upload"
+                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                >
+                  <i class="fas fa-upload fa-sm text-white-50"></i>Upload
+                </a>
+              </div>
+            </div>
+
+            <div class="row justify-content-center">
+              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
+            </div>
+
+            <div className="row justify-content-center mt-5 mb-5">
+              <div className="search">
+                <TextField
+                  id="input_keyword"
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  variant="outlined"
+                  fullWidth
+                  label="Search by gene names or dataset name"
+                />
+
+                <TextField
+                  value={searchFilter}
+                  label="Filter"
+                  select
+                  style={{ width: "10rem" }}
+                  onChange={(e) => {
+                    setSearchFilter(e.target.value);
+                  }}
+                >
+                  <MenuItem value={"gene"}>Gene</MenuItem>
+                  <MenuItem value={"dataset"}>Dataset</MenuItem>
+                  <MenuItem value={"all"}>All</MenuItem>
+                </TextField>
+                <IconButton
+                  type="submit"
+                  aria-label="search"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon style={{ fill: "blue" }} />
+                </IconButton>
+              </div>
+            </div>
+
+            <div className="row justify-content-center">
+              <div className="search-result mb-5 mt-5">
+                <ul className="search-result">
+                  <Slider />
+                </ul>
+              </div>
+            </div>
+
+            <div className="row justify-content-center">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <SampleList resultList={searchResult} />
+                  <div>
+                    <div className="float-left">
+                      <button onClick={handleDecrementPage}>Prev Page</button>
+                    </div>
+                    <div className="float-right">
+                      <button onClick={handleIncrementPage}>Next Page</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+    </body>
+  );
+}
+
+export default Home;
+
+{/*
+<ul
           class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
           id="accordionSidebar"
         >
@@ -202,97 +336,4 @@ function Home() {
 
           <hr class="sidebar-divider d-none d-md-block" />
         </ul>
-
-        <div id="content-wrapper" class="d-flex flex-column">
-          <div id="content">
-            <div class="row justify-content-end">
-              <div class="col-md-12 bg-light text-right mr-5 mt-5">
-                <a
-                  href="/upload"
-                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                >
-                  <i class="fas fa-upload fa-sm text-white-50"></i>Upload
-                </a>
-              </div>
-            </div>
-
-            <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
-            </div>
-
-            <div className="row justify-content-center mt-5 mb-5">
-              <div className="search">
-                <TextField
-                  id="input_keyword"
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  label="Search by gene names or dataset name"
-                />
-
-                <TextField
-                  value={searchFilter}
-                  label="Filter"
-                  select
-                  style={{ width: "10rem" }}
-                  onChange={(e) => {
-                    setSearchFilter(e.target.value);
-                  }}
-                >
-                  <MenuItem value={"gene"}>Gene</MenuItem>
-                  <MenuItem value={"dataset"}>Dataset</MenuItem>
-                  <MenuItem value={"all"}>All</MenuItem>
-                </TextField>
-                <IconButton
-                  type="submit"
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon style={{ fill: "blue" }} />
-                </IconButton>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div className="search-result mb-5 mt-5">
-                <ul className="search-result">
-                  <Slider />
-                </ul>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <SampleList resultList={searchResult} />
-                  <div>
-                    <div className="float-left">
-                      <button onClick={handleDecrementPage}>Prev Page</button>
-                    </div>
-                    <div className="float-right">
-                      <button onClick={handleIncrementPage}>Next Page</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-    </body>
-  );
-}
-
-export default Home;
+*/}
