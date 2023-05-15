@@ -83,6 +83,7 @@
     padding-left: 0;
     margin-right: 0;
     padding-right: 0;
+    margin-top: 40px;
 }
 
 #gene_info_box{
@@ -110,5 +111,21 @@
     margin-right: 0;
     padding-right: 0;
     max-width: 100%;
+}
+
+.title_tag, .gene_name{
+    margin: 0;
+    padding: 0;
+}
+
+.subtitle_tag, .subtitle_content{
+    color: gray;
+    font-size:medium;
+    margin: 0;
+    padding: 0;
+}
+
+.title_tag{
+    color: gray;
 }
 

@@ -63,18 +63,33 @@ body{
 }
 
 #control_buttons_dataset{
-    position: absolute;
+    position: relative;
     right: 0;
+    top: 0;
     float: right;
     margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 #dataset_name_holder{
-    position: absolute;
+    /*position: absolute;
     margin-top: 170px;
     left: 0;
     float: left;
-    margin-left: 25px;
+    margin-left: 25px;*/
+    position: relative;
+    margin-top: 0px;
+    left: 0;
+    top: 0;
+    float: left;
+    min-width: 100%;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 #dataset_table_and_stats_row {
@@ -109,13 +124,18 @@ body{
 }
 
 #tabs_container{
-    position: absolute;
     min-width: 100%;
     max-width: 100%;
-    margin-top: 280px;
+    /*margin-top: 280px;*/
     left: 0;
     float: left;
     justify-content: center;
+
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
 }
 
 #tab_info{
@@ -176,3 +196,10 @@ body{
     display: inline;
 }
 
+/* buttons top right:  */
+/*
+position: absolute;
+right: 0;
+float: right;
+margin-top: 130px;
+*/

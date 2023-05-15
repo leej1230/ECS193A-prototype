@@ -959,12 +959,12 @@ function DatasetPage() {
                   <div id="text_title">
                     <div class="d-sm-inline-block" id="title_tage">Dataset:</div>
                     &nbsp;
-                    <div class="d-sm-inline-block font-weight-bold" id="title_content">{dataset["name"]}</div>
+                    <div class="d-sm-inline-block" id="title_content">{dataset["name"]}</div>
                     &nbsp;
                     &nbsp;
                     <button
                       type="button"
-                      className="btn btn-sm btn-secondary m-2 ml-auto"
+                      className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
                       onClick={ async () => {
                         if(bookmarked == true){
                             await setBookmarked( false )

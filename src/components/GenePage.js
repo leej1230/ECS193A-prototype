@@ -53,6 +53,9 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -170,7 +173,8 @@ function getColor(index_group){
 function GenePage() {
   // state = {samples: []}
   const [gene_data, setGene_data] =  useState({id: 1, dataset_id: 0, name: "ENSG", patient_ids: {arr: [0]}, gene_values: {arr: [0]}});
-  const [gene_external_data , setGeneExternalData] = useState({description: ""})
+  const [gene_external_data , setGeneExternalData] = useState({description: ""});
+  const [bookmarked, setBookmarked] = useState(false);
   const [ gene_table_input_format , set_gene_table_input_format ] = useState([{field_name : "" , value : ""}]);
   const [ patient_data_table_filtered, set_patient_data_table_filtered ] = useState([
     {patient_id: ""},
@@ -677,17 +681,42 @@ const patientDataFilter = (cur_filters) => {
                   </div>
 
                   <div id="gene_name_box">
-                      <h1 class="h3 text-gray-800">
+                      <h5  class="h5 text-gray-800">  
                         {gene_data?(
                           <div>
-                            <p className='gene_name'>{gene_data.name}</p>
+                            <div>
+                              <p className='d-sm-inline-block title_tag'>Gene Name:</p>
+                              &nbsp;
+                              <p className='d-sm-inline-block gene_name'>{gene_data.name}</p>
+                              &nbsp;
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
+                                onClick={ async () => {
+                                  if(bookmarked == true){
+                                      await setBookmarked( false );
+                                  } else {
+                                      await setBookmarked( true );
+                                  }
+                                }}
+                              >
+                                {bookmarked ? <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> }
+                              
+                              </button>
+                            
+                            </div>
+                            <div>
+                              <p class="d-sm-inline-block subtitle_tag" >Gene ID:</p>
+                              &nbsp;
+                              <p class="d-sm-inline-block subtitle_content" >{gene_data.id}</p>
+                            </div>
                           </div>
                         ):(
                           <div>
                             <CircularProgress />
                           </div>
                         )}
-                      </h1>
+                      </h5>
                   </div>
 
                   <div class="container-fluid" id="gene_tabs_container_content" >
@@ -702,27 +731,11 @@ const patientDataFilter = (cur_filters) => {
                               <div
                                   class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                   <h6 class="m-0 font-weight-bold text-primary">Gene Information</h6>
-                                  <div class="dropdown no-arrow">
-                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                      </a>
-                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                          aria-labelledby="dropdownMenuLink">
-                                          <div class="dropdown-header">Dropdown Header:</div>
-                                          <a class="dropdown-item" href="#">Action</a>
-                                          <a class="dropdown-item" href="#">Another action</a>
-                                          <div class="dropdown-divider"></div>
-                                          <a class="dropdown-item" href="#">Something else here</a>
-                                      </div>
-                                  </div>
                               </div>
 
                               <div class="card-body" >
                                   {gene_data?(
                                     <div>
-                                      <p>ID: {gene_data.id}</p>
-                                      <br />
                                       <p>Description: {gene_external_data.description}</p>
                                       <br />
                                       <p>Dataset ID: {gene_data.dataset_id}</p>
@@ -745,20 +758,7 @@ const patientDataFilter = (cur_filters) => {
                               <div
                                   class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                   <h6 class="m-0 font-weight-bold text-primary">Data Graph</h6>
-                                  <div class="dropdown no-arrow">
-                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                      </a>
-                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                          aria-labelledby="dropdownMenuLink">
-                                          <div class="dropdown-header">Dropdown Header:</div>
-                                          <a class="dropdown-item" href="#">Action</a>
-                                          <a class="dropdown-item" href="#">Another action</a>
-                                          <div class="dropdown-divider"></div>
-                                          <a class="dropdown-item" href="#">Something else here</a>
-                                      </div>
-                                  </div>
+                                  
                               </div>
                               <div class="card-body">
                                   
@@ -819,7 +819,6 @@ const patientDataFilter = (cur_filters) => {
                                 <TableCell>Code</TableCell>
                               </TableRow>
                             </TableHead>
-                            
                             <TableBody>
                               {
                                 gene_code_info.code.map(function(item, row_i){
@@ -997,4 +996,22 @@ const products = [{
                   
                     </div>
                    
+*/
+
+/* card header */
+/*
+<div class="dropdown no-arrow">
+    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+        aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-header">Dropdown Header:</div>
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Something else here</a>
+    </div>
+</div>
 */
