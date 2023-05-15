@@ -14,11 +14,12 @@ import PrivateRoute from "./privateRoute";
 import UpdateDataset from "./components/UpdateDataset";
 import Registration from "./registration";
 import Login from "./login";
+import Profile from "./profile";
 
 const privateRoutes = [
   {
     path: "/console",
-    element: <PrivateRoute><Navbar /><Home /></PrivateRoute>,
+    element: <><Navbar /><Home /></>,
   },
   {
     path: "/data/:id",
@@ -106,6 +107,15 @@ const privateRoutes = [
   //     </>
   //   ),
   // },
+  {
+    path: "/profile",
+    element: (
+      <>
+        <Navbar />
+        <Profile />
+      </>
+    )
+  }
 ];
 
 const publicRoutes = [
