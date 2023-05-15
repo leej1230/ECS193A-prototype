@@ -65,106 +65,109 @@ function Home() {
 
         <div id="content-wrapper" class="d-flex flex-column">
           <div id="content">
-            <SideNav
-              onSelect={(selected) => {
-                  // Add your code here
-              }}>
-              <SideNav.Toggle />
-                <SideNav.Nav defaultSelected="home">
-                    <NavItem eventKey="home">
-                        <NavIcon>
-                            <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
-                        </NavIcon>
-                        <NavText>
-                            Home
-                        </NavText>
-                    </NavItem>
-                    <NavItem eventKey="charts">
-                        <NavIcon>
-                            <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em' }} />
-                        </NavIcon>
-                        <NavText>
-                            Charts
-                        </NavText>
-                        <NavItem eventKey="charts/linechart">
-                            <NavText>
-                                Line Chart
+            
+            <div class="container-fluid" id="home_page_full">
+                <SideNav id="side_navigation_menu"
+                  onSelect={(selected) => {
+                      // Add your code here
+                  }}>
+                  <SideNav.Toggle />
+                    <SideNav.Nav defaultSelected="home">
+                        <NavItem eventKey="home">
+                            <NavIcon>
+                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                                Home
                             </NavText>
                         </NavItem>
-                        <NavItem eventKey="charts/barchart">
-                            <NavText>
-                                Bar Chart
+                        <NavItem eventKey="charts">
+                            <NavIcon>
+                                <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em', color: 'white' }} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                                Charts
                             </NavText>
+                            <NavItem eventKey="charts/linechart">
+                                <NavText style={{ color: 'white' }}>
+                                    Line Chart
+                                </NavText>
+                            </NavItem>
+                            <NavItem eventKey="charts/barchart">
+                                <NavText style={{ color: 'white' }}>
+                                    Bar Chart
+                                </NavText>
+                            </NavItem>
                         </NavItem>
-                    </NavItem>
-                </SideNav.Nav>
-              </SideNav>
-            <div class="row justify-content-end">
-              <div class="col-md-12 bg-light text-right mr-5 mt-5">
-                <a
-                  href="/upload"
-                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                >
-                  <i class="fas fa-upload fa-sm text-white-50"></i>Upload
-                </a>
+                    </SideNav.Nav>
+                  </SideNav>
+              <div class="row justify-content-end">
+                <div class="col-md-12 bg-light text-right mr-5 mt-5">
+                  <a
+                    href="/upload"
+                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                  >
+                    <i class="fas fa-upload fa-sm text-white-50"></i>Upload
+                  </a>
+                </div>
               </div>
-            </div>
 
-            <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
-            </div>
-
-            <div className="row justify-content-center mt-5 mb-5">
-              <div className="search">
-                <TextField
-                  id="input_keyword"
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  label="Search by gene names or dataset name"
-                />
-
-                <TextField
-                  value={searchFilter}
-                  label="Filter"
-                  select
-                  style={{ width: "10rem" }}
-                  onChange={(e) => {
-                    setSearchFilter(e.target.value);
-                  }}
-                >
-                  <MenuItem value={"gene"}>Gene</MenuItem>
-                  <MenuItem value={"dataset"}>Dataset</MenuItem>
-                  <MenuItem value={"all"}>All</MenuItem>
-                </TextField>
-                <IconButton
-                  type="submit"
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon style={{ fill: "blue" }} />
-                </IconButton>
+              <div class="row justify-content-center">
+                <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
               </div>
-            </div>
 
-            <div className="row justify-content-center">
-              <div className="search-result mb-5 mt-5">
-                <ul className="search-result">
-                  <Slider />
-                </ul>
+              <div className="row justify-content-center mt-5 mb-5">
+                <div className="search">
+                  <TextField
+                    id="input_keyword"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    label="Search by gene names or dataset name"
+                  />
+
+                  <TextField
+                    value={searchFilter}
+                    label="Filter"
+                    select
+                    style={{ width: "10rem" }}
+                    onChange={(e) => {
+                      setSearchFilter(e.target.value);
+                    }}
+                  >
+                    <MenuItem value={"gene"}>Gene</MenuItem>
+                    <MenuItem value={"dataset"}>Dataset</MenuItem>
+                    <MenuItem value={"all"}>All</MenuItem>
+                  </TextField>
+                  <IconButton
+                    type="submit"
+                    aria-label="search"
+                    onClick={handleSearch}
+                  >
+                    <SearchIcon style={{ fill: "blue" }} />
+                  </IconButton>
+                </div>
               </div>
-            </div>
 
-            <div className="row justify-content-center">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <SampleList resultList={searchResult} />
-                  <div>
-                    <div className="float-left">
-                      <button onClick={handleDecrementPage}>Prev Page</button>
-                    </div>
-                    <div className="float-right">
-                      <button onClick={handleIncrementPage}>Next Page</button>
+              <div className="row justify-content-center">
+                <div className="search-result mb-5 mt-5">
+                  <ul className="search-result">
+                    <Slider />
+                  </ul>
+                </div>
+              </div>
+
+              <div className="row justify-content-center">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <SampleList resultList={searchResult} />
+                    <div>
+                      <div className="float-left">
+                        <button onClick={handleDecrementPage}>Prev Page</button>
+                      </div>
+                      <div className="float-right">
+                        <button onClick={handleIncrementPage}>Next Page</button>
+                      </div>
                     </div>
                   </div>
                 </div>
