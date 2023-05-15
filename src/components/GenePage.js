@@ -6,11 +6,7 @@ import "./GenePage.css";
 import SampleGraph from './echartdemo';
 
 //import { useTable } from "react-table";
-import MaterialTable from 'material-table';
-
-import ScrollBars from "react-custom-scrollbars";
-
-import { flushSync } from 'react-dom';
+//import MaterialTable from 'material-table';
 
 import Multiselect from "multiselect-react-dropdown";
 import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator, multiSelectFilter} from 'react-bootstrap-table2-filter';
@@ -53,7 +49,6 @@ import Select  from '@mui/material/Select';
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
-import { type } from '@testing-library/user-event/dist/type';
 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -665,7 +660,7 @@ const patientDataFilter = (cur_filters) => {
 }
 
   return (
-    <body id="page-top">
+    <body id="page-top" class="gene_body">
 
       <div id="wrapper">
 
@@ -695,7 +690,7 @@ const patientDataFilter = (cur_filters) => {
                       </h1>
                   </div>
 
-                  <div class="container-fluid" id="tabs_container" >
+                  <div class="container-fluid" id="gene_tabs_container_content" >
                   <Tabs
                       defaultActiveKey="profile"
                       id="uncontrolled-tab-example"
@@ -745,7 +740,7 @@ const patientDataFilter = (cur_filters) => {
                         </div> 
                       </Tab>
                       <Tab eventKey="gene_graph" title="Graph">
-                        <div class="col-xl-8 col-lg-7" id="graph_gene_box">
+                        <div id="graph_gene_box">
                           <div class="card shadow mb-4">
                               <div
                                   class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -850,13 +845,7 @@ const patientDataFilter = (cur_filters) => {
                     </Tabs>
               </div>
 
-{/*
-<div id="tabs_container_content">
-                    
-                  </div>
-*/}
-
-              </div>
+            </div>
           </div>
 
         </div>

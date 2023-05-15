@@ -1,12 +1,9 @@
-body{
-    min-height: 100vh;
-}
+
 
 #gene_page_full{
     width:74vw;
     justify-content: center;
     min-height: 100vh;
-    position: relative;
     top: 0;
 }
 
@@ -16,6 +13,10 @@ body{
     top: 0;
     float: right;
     margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 #gene_name_box{
@@ -26,6 +27,9 @@ body{
     float: left;
     min-width: 100%;
     margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 .codeCard{
@@ -69,14 +73,16 @@ body{
     padding: 1%;
 }
 
-#tabs_container_content{
-    position: absolute;
+#gene_tabs_container_content{
     min-width: 100%;
     max-width: 100%;
-    margin-top: 280px;
     left: 0;
     float: left;
     justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 #gene_info_box{
@@ -84,16 +90,25 @@ body{
     top: 0;
     float: left;
     margin-top: 0px;
-    margin-top: 50px;
     min-width: 100%;
+    justify-content: center;
 }
 
 #graph_gene_box{
-    position: relative;
-    
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
 }
 
 #display_filter_patients_gene{
-    position: relative;
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
 }
 
