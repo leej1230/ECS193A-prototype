@@ -1086,24 +1086,6 @@ function DatasetPage() {
                         </div>
                       </Tab>
                     </Tabs>
-                {/*<Tabs id="tab_info">
-                  <TabList class="tabs_row">
-                    <Tab >Basic Info</Tab>
-                    <Tab>Genes List</Tab>
-                    <Tab>Edit Dataset</Tab>
-                  </TabList>
-
-                  <TabPanel >
-                    
-                  </TabPanel>
-                  <TabPanel>
-           
-                    
-                  </TabPanel>
-                  <TabPanel>
-
-                  </TabPanel>
-                </Tabs>*/}
               </div>
 
           </div> 

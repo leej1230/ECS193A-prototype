@@ -111,7 +111,8 @@ body{
 #tabs_container{
     position: absolute;
     min-width: 100%;
-    top: 250px;
+    max-width: 100%;
+    margin-top: 280px;
     left: 0;
     float: left;
     justify-content: center;

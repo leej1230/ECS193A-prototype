@@ -671,10 +671,15 @@ const patientDataFilter = (cur_filters) => {
 
           <div id="content">
 
-              <div class="container-fluid">
+              <div class="container-fluid" id="gene_page_full">
 
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-5">
-                      <h1 class="h3 mb-0 text-gray-800">
+                  <div id="control_buttons_gene_page">
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
+                            class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
+                  </div>
+
+                  <div id="gene_name_box">
+                      <h1 class="h3 text-gray-800">
                         {gene_data?(
                           <div>
                             <p className='gene_name'>{gene_data.name}</p>
@@ -685,16 +690,16 @@ const patientDataFilter = (cur_filters) => {
                           </div>
                         )}
                       </h1>
-                      <div>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
-                                class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
-                      </div>
                   </div>
 
-                  <div class="row">
+{/*
+<div id="tabs_container_content">
+                    
+                  </div>
+*/}
 
-                      <div class="col-xl-4 col-lg-5">
-                          <div class="card shadow mb-4">
+                        <div class="row" id="gene_info_box">
+                          <div class="card shadow" >
                               <div
                                   class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                   <h6 class="m-0 font-weight-bold text-primary">Gene Information</h6>
@@ -713,7 +718,8 @@ const patientDataFilter = (cur_filters) => {
                                       </div>
                                   </div>
                               </div>
-                              <div class="card-body">
+
+                              <div class="card-body" >
                                   {gene_data?(
                                     <div>
                                       <p>ID: {gene_data.id}</p>
@@ -732,149 +738,12 @@ const patientDataFilter = (cur_filters) => {
                                   
                               </div>
                           </div>
-                      </div>
-
-                      <div class="col-xl-8 col-lg-7">
-                          <div class="card shadow mb-4">
-                              <div
-                                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                  <h6 class="m-0 font-weight-bold text-primary">Data Graph</h6>
-                                  <div class="dropdown no-arrow">
-                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                      </a>
-                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                          aria-labelledby="dropdownMenuLink">
-                                          <div class="dropdown-header">Dropdown Header:</div>
-                                          <a class="dropdown-item" href="#">Action</a>
-                                          <a class="dropdown-item" href="#">Another action</a>
-                                          <div class="dropdown-divider"></div>
-                                          <a class="dropdown-item" href="#">Something else here</a>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="card-body">
-                                  
-                                {graph_table_filter_data?(
-                                  <div>
-                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
-                                    <div className='GraphType'>
-                                      <FormControl margin='dense' fullWidth>
-                                        <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
-                                        <Select
-                                          labelId="GraphTypeLabel"
-                                          id="GraphTypeSelect"
-                                          value={graphType}
-                                          label="GraphType"
-                                          onChange={(e)=>{setGraphType(e.target.value)}}
-                                          >
-                                          <MenuItem value={'bar'}>Bar</MenuItem>
-                                          <MenuItem value={'line'}>Basic Line</MenuItem>
-                                          <MenuItem value={'pie'}>Pie</MenuItem>
-                                        </Select>
-                                      </FormControl>
-                                    </div>
-                                  </div>
-                                ):(
-                                  <div>
-                                    <CircularProgress />
-                                  </div>
-                                )}
-                                
-                              </div>
-
-                              <div id='graph_filter'>
-                                <BootstrapTable keyField='id' ref={ n => graph_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) } } />
-                              </div>
-                          </div>
-                      </div>
-
-                      
-                  </div>
-
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                            </div>
-
-                            <div class="row" id="table_options_outer">
-                              <div id="patient_table_area">
-                                
-                                <BootstrapTable keyField='id' ref={ n => patients_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ patient_data_table_filtered } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) } } />
-                              </div>
-                            </div>
-                      </div>
+                        </div>        
 
 
-                  <div class="row">
 
-                    <div class="col-xl mb-4">
 
-                      
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Number of Patients: </p>
-                                <p>Avg Age of Patients: </p>
-                                <p>Number of Missing Cells: </p>
-                                <p>Patient Conditions: </p>
-                            </div>
-                        </div>
-                  
-
-             
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Related Genes</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Gene 1</p>
-                                <p>Gene 2</p>
-                                <p>Gene 3</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                      <div class="col-xl">
-
-                        <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
-                    
-                          <Table style={ { minWidth: 650}} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Code</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            
-                            <TableBody>
-                              {
-                                gene_code_info.code.map(function(item, row_i){
-                                  return <TableRow  key={row_i}>
-                                          <TableCell>
-                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
-                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
-                                                        {code_str}
-                                                      </div>     
-                                            })}</div>
-                                          </TableCell>
-                                    </TableRow>
-                              
-                              })
-                            }
-                            </TableBody>
-                          </Table>
-                          
-                        </TableContainer>
-
-                      </div>
-
-                  </div>
-
-              </div> 
-
+              </div>
           </div>
 
         </div>
@@ -1009,3 +878,171 @@ const products = [{
 }
 ]
 */}
+
+/*
+<div  id="gene_info_box">
+                          <div class="card shadow mb-4">
+                              <div
+                                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                  <h6 class="m-0 font-weight-bold text-primary">Gene Information</h6>
+                                  <div class="dropdown no-arrow">
+                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                      </a>
+                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                          aria-labelledby="dropdownMenuLink">
+                                          <div class="dropdown-header">Dropdown Header:</div>
+                                          <a class="dropdown-item" href="#">Action</a>
+                                          <a class="dropdown-item" href="#">Another action</a>
+                                          <div class="dropdown-divider"></div>
+                                          <a class="dropdown-item" href="#">Something else here</a>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <div class="card-body" >
+                                  {gene_data?(
+                                    <div>
+                                      <p>ID: {gene_data.id}</p>
+                                      <br />
+                                      <p>Description: {gene_external_data.description}</p>
+                                      <br />
+                                      <p>Dataset ID: {gene_data.dataset_id}</p>
+                                      <br />
+                                      <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a>
+                                    </div>
+                                  ):(
+                                    <div>
+                                      <CircularProgress />
+                                    </div>
+                                  )}
+                                  
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="col-xl-8 col-lg-7" id="graph_gene_box">
+                          <div class="card shadow mb-4">
+                              <div
+                                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                  <h6 class="m-0 font-weight-bold text-primary">Data Graph</h6>
+                                  <div class="dropdown no-arrow">
+                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                      </a>
+                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                          aria-labelledby="dropdownMenuLink">
+                                          <div class="dropdown-header">Dropdown Header:</div>
+                                          <a class="dropdown-item" href="#">Action</a>
+                                          <a class="dropdown-item" href="#">Another action</a>
+                                          <div class="dropdown-divider"></div>
+                                          <a class="dropdown-item" href="#">Something else here</a>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="card-body">
+                                  
+                                {graph_table_filter_data?(
+                                  <div>
+                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
+                                    <div className='GraphType'>
+                                      <FormControl margin='dense' fullWidth>
+                                        <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                                        <Select
+                                          labelId="GraphTypeLabel"
+                                          id="GraphTypeSelect"
+                                          value={graphType}
+                                          label="GraphType"
+                                          onChange={(e)=>{setGraphType(e.target.value)}}
+                                          >
+                                          <MenuItem value={'bar'}>Bar</MenuItem>
+                                          <MenuItem value={'line'}>Basic Line</MenuItem>
+                                          <MenuItem value={'pie'}>Pie</MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    </div>
+                                  </div>
+                                ):(
+                                  <div>
+                                    <CircularProgress />
+                                  </div>
+                                )}
+                                
+                              </div>
+
+                              <div id='graph_filter'>
+                                <BootstrapTable keyField='id' ref={ n => graph_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ [] } columns={ patient_columns } filter={ filterFactory() } filterPosition="top" onTableChange={ (type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) } } />
+                              </div>
+                          </div>
+                      </div>
+
+                      
+                  
+
+                        <div class="card shadow mb-4" id="display_filter_patients_gene">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                            </div>
+
+                            <div class="row" id="table_options_outer">
+                              <div id="patient_table_area">
+                                <BootstrapTable keyField='id' ref={ n => patients_table_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: false } } data={ patient_data_table_filtered } columns={ patient_columns } filter={ filterFactory() } pagination={ paginationFactory() } filterPosition="top" onTableChange={ (type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) } } />
+                              </div>
+                            </div>
+                        </div>
+
+
+                  
+
+                    <div class="col-xl mb-4" id="">
+
+                      
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Number of Patients: </p>
+                                <p>Avg Age of Patients: </p>
+                                <p>Number of Missing Cells: </p>
+                                <p>Patient Conditions: </p>
+                            </div>
+                        </div>
+                  
+                    </div>
+                    
+                      <div class="col-xl" id="gene_animation">
+
+                        <TableContainer style={{ width: '100%', height: '500px', overflow:'scroll' }}>
+                    
+                          <Table style={ { minWidth: 650}} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Code</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            
+                            <TableBody>
+                              {
+                                gene_code_info.code.map(function(item, row_i){
+                                  return <TableRow  key={row_i}>
+                                          <TableCell>
+                                              <div className="codeRow" >{breakUpCode(item).map(function(code_str, i){
+                                              return <div className = "codeCard" style={{backgroundColor: getColor(i)}}>
+                                                        {code_str}
+                                                      </div>     
+                                            })}</div>
+                                          </TableCell>
+                                    </TableRow>
+                              
+                              })
+                            }
+                            </TableBody>
+                          </Table>
+                          
+                        </TableContainer>
+
+                      </div>
+*/
