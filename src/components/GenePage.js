@@ -721,7 +721,7 @@ const patientDataFilter = (cur_filters) => {
 
                   <div class="container-fluid" id="gene_tabs_container_content" >
                   <Tabs
-                      defaultActiveKey="profile"
+                      defaultActiveKey="basic_info"
                       id="uncontrolled-tab-example"
                       className="mb-3"
                     >

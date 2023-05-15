@@ -988,7 +988,7 @@ function DatasetPage() {
 
               <div class="container-fluid" id="tabs_container" >
                   <Tabs
-                      defaultActiveKey="profile"
+                      defaultActiveKey="basic_info"
                       id="uncontrolled-tab-example"
                       className="mb-3"
                     >
