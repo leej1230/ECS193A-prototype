@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
 
@@ -14,31 +14,93 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import './HomePage.css'
 
+function debounce(fn, ms) {
+    let timer
+    return _ => {
+      clearTimeout(timer)
+      timer = setTimeout(_ => {
+        timer = null
+        fn.apply(this, arguments)
+      }, ms)
+    };
+  }
+
 function HomePage(){
+    const [dimensions, setDimensions] = React.useState({ 
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
+    const [vid_width, setVidWidth] = React.useState(
+        window.innerWidth
+    )
+    const [vid_height, setVidHeight] = React.useState( 
+        window.innerHeight
+      )
+
+    React.useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+        setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+        });
+
+        setVidWidth(window.innerWidth)
+        setVidHeight(window.innerHeight)
+
+        console.log("1. height: ")
+        console.log(vid_height)
+        console.log("2. w: ")
+        console.log(vid_width)
+    }, 1000)
+
+    window.addEventListener('resize', debouncedHandleResize)
+
+        return _ => {
+        window.removeEventListener('resize', debouncedHandleResize)
+
+        }
+    })
     return(
-        <body class="home_page_body">
+        <div class="home_page_body">
 
-            <ReactPlayer 
-                id="video_back" 
-                url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
-                loop={true}
-                playing={true}
-                width='100%'
-                height='100%'
-                volume={0}
-                muted={true}
-                controls={false} />
 
-            <div id="title_landing_info">
+
+                <ReactPlayer 
+                    id="video_back" 
+                    url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
+                    loop={true}
+                    playing={true}
+                    volume={0}
+                    muted={true}
+                    controls={false}
+                    style={{ minWidth:'100%',minHeight:'100%',  width: parseInt( dimensions.width), height: parseInt( dimensions.height), position: 'absolute', left: 0, right: 0 }}
+                    onLoad={async (response) => {
+                        const { width, height } = response.naturalSize;
+                        await setVidHeight(height);
+                        await setVidWidth(width);
+                    }}
+                    />
+     
+
+            {/*<video
+                autoPlay
+                muted
+                loop
+                style={{ height: "100%", width: "100%", objectFit: "cover" }} //object-fit:cover
+                >
+                <source src="https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4" type="video/mp4" />
+                </video>*/}
+
+            {/*</div><div id="title_landing_info">
                 <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
                 <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
                 <div className="d-flex align-items-center justify-content-center">
                     <button class="btn btn-primary" type="submit">Login</button>&nbsp; &nbsp; &nbsp;  
                     <button class="btn btn-primary" type="submit">Signup</button> 
                 </div>
-            </div>
+            </div>*/}
 
-        </body>
+        </div>
     )
 
 }
