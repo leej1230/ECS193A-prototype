@@ -186,13 +186,13 @@ html, body{
     left: 0;
 }
 
-/*#title_landing_info{
+#title_landing_info{
     position: absolute;
     margin: auto;
     width: 100%;
     top: 0;
     margin-top: 150px;
-}*/
+}
 
 #title_website{
     margin-top: 10%;

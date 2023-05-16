@@ -26,6 +26,8 @@ function debounce(fn, ms) {
   }
 
 function HomePage(){
+
+    // orig window dimensions: 1536 x 754 (width x height)
     const [dimensions, setDimensions] = React.useState({ 
         height: window.innerHeight,
         width: window.innerWidth
@@ -99,7 +101,7 @@ function HomePage(){
         }
     })
     return(
-        <div class="home_page_body">
+        <body class="home_page_body">
 
 
 
@@ -112,33 +114,35 @@ function HomePage(){
                     muted={true}
                     controls={false}
                     //style={{ minWidth:parseInt(dimensions.width), minHeight:parseInt(dimensions.height),  width: parseInt(dimensions.width), height: parseInt(dimensions.height), position: 'absolute', left: 0, right: 0 }}
-                    style={{ minWidth: vid_width, minHeight: vid_height,  width: vid_width, height: vid_height, position: 'absolute', left: 0, right: 0 }}
+                    style={{ minWidth: vid_width, minHeight: vid_height,  width: vid_width, height: vid_height, position: 'absolute', left: 0, right: 0, zindex:-1 }}
                     onLoad={async (response) => {
                         const { width, height } = response.naturalSize;
                         //
                     }}
                     />
-     
 
-            {/*<video
-                autoPlay
-                muted
-                loop
-                style={{ height: "100%", width: "100%", objectFit: "cover" }} //object-fit:cover
-                >
-                <source src="https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4" type="video/mp4" />
-                </video>*/}
-
-            {/*</div><div id="title_landing_info">
+            <div id="title_landing_info">
                 <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
                 <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
                 <div className="d-flex align-items-center justify-content-center">
                     <button class="btn btn-primary" type="submit">Login</button>&nbsp; &nbsp; &nbsp;  
                     <button class="btn btn-primary" type="submit">Signup</button> 
                 </div>
-            </div>*/}
+            </div>
 
-        </div>
+            <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+            <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+            <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+            <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+            <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+
+        </body>
     )
 
 }
@@ -186,16 +190,13 @@ export default HomePage
         </div>
         </footer>
 
-    <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-    <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
-
-    <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
-
-    <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-    <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-
         */}
+
+{/*<video
+                autoPlay
+                muted
+                loop
+                style={{ height: "100%", width: "100%", objectFit: "cover" }} //object-fit:cover
+                >
+                <source src="https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4" type="video/mp4" />
+                </video>*/}
