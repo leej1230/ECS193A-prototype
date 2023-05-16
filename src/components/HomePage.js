@@ -30,11 +30,13 @@ function HomePage(){
         height: window.innerHeight,
         width: window.innerWidth
       })
+
+    // initially width too small so modify for that in initial case
     const [vid_width, setVidWidth] = React.useState(
-        window.innerWidth
+        Math.ceil( (Math.ceil((window.innerHeight * 16) / 9)) * ( (window.innerWidth / (Math.ceil((window.innerHeight * 16) / 9)) ) + 0.2))
     )
     const [vid_height, setVidHeight] = React.useState( 
-        window.innerHeight
+        Math.ceil(window.innerHeight * ( (window.innerWidth / (Math.ceil((window.innerHeight * 16) / 9)) ) + 0.2))
       )
 
     React.useEffect(() => {
