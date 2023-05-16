@@ -38,19 +38,55 @@ function HomePage(){
       )
 
     React.useEffect(() => {
-    const debouncedHandleResize = debounce(function handleResize() {
-        setDimensions({
+    const debouncedHandleResize = debounce(async function handleResize() {
+
+        // aspect ratio: 16 : 9 (width to heigth)
+        let new_width = 0;
+        let new_height = 0;
+
+        if( (window.innerWidth / window.innerHeight) > (16/9)){
+            // height matches but the width does not match
+            // width of video smaller
+            new_height = window.innerHeight
+            new_width = Math.ceil((new_height * 16) / 9)
+
+            // but need to scale up to match window
+            // cusion up for safety
+            let scale = window.innerWidth / new_width
+            scale = scale + 0.2
+
+            new_height = Math.ceil(new_height * scale)
+            new_width = Math.ceil(new_width * scale)
+
+        } else {
+            // width matches but height of video smaller
+            new_width = window.innerWidth
+            new_height = Math.floor((new_width * 9) / 16)
+
+            // but need to scale up to match window
+            // cusion up for safety
+            let scale = window.innerHeight / new_height
+            scale = scale + 0.2
+
+            new_height = Math.ceil(new_height * scale)
+            new_width = Math.ceil(new_width * scale)
+        }
+
+        console.log("aspect ratio cur: ")
+        console.log((window.innerWidth / window.innerHeight))
+        console.log("new height: ", new_height, "  new width: ", new_width )
+        console.log( "window height: ", window.innerHeight, "   window width: ", window.innerWidth )
+
+
+        await setDimensions({
         height: window.innerHeight,
         width: window.innerWidth
         });
 
-        setVidWidth(window.innerWidth)
-        setVidHeight(window.innerHeight)
+        await setVidWidth(new_width)
+        await setVidHeight(new_height)
 
-        console.log("1. height: ")
-        console.log(vid_height)
-        console.log("2. w: ")
-        console.log(vid_width)
+        
     }, 1000)
 
     window.addEventListener('resize', debouncedHandleResize)
@@ -73,11 +109,11 @@ function HomePage(){
                     volume={0}
                     muted={true}
                     controls={false}
-                    style={{ minWidth:'100%',minHeight:'100%',  width: parseInt( dimensions.width), height: parseInt( dimensions.height), position: 'absolute', left: 0, right: 0 }}
+                    //style={{ minWidth:parseInt(dimensions.width), minHeight:parseInt(dimensions.height),  width: parseInt(dimensions.width), height: parseInt(dimensions.height), position: 'absolute', left: 0, right: 0 }}
+                    style={{ minWidth: vid_width, minHeight: vid_height,  width: vid_width, height: vid_height, position: 'absolute', left: 0, right: 0 }}
                     onLoad={async (response) => {
                         const { width, height } = response.naturalSize;
-                        await setVidHeight(height);
-                        await setVidWidth(width);
+                        //
                     }}
                     />
      
