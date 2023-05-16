@@ -1,9 +1,13 @@
+import uuid
+
 from django.db import models
 
 
 class UserModel(models.Model):
-    id = models.PositiveBigIntegerField(blank=False, primary_key=True)
-    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    email = models.EmailField(
+        verbose_name="email address", max_length=255, unique=True
+    )
     first_name = models.CharField(max_length=200, null=False)
     last_name = models.CharField(max_length=200, null=False)
     password = models.CharField(max_length=200, null=False)
