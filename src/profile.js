@@ -1,6 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from './components/spinner/spinner';
+// import axios from 'axios';
+
+// const getAuth0Users = async () => {
+//     const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+//     const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+//     const clientSecret = process.env.REACT_APP_AUTH0_CLIENT_SECRET;
+
+//     try {
+//         // Get an access token to authenticate the API request
+//         const authResponse = await axios.post(`https://${domain}/oauth/token`, {
+//             grant_type: 'client_credentials',
+//             client_id: clientId,
+//             client_secret: clientSecret,
+//             audience: `https://${domain}/api/v2/`,
+//         });
+
+//         const accessToken = authResponse.data.access_token;
+
+//         // Make a request to the Management API to fetch the users
+//         const usersResponse = await axios.get(`https://${domain}/api/v2/users`, {
+//             headers: {
+//                 Authorization: `Bearer ${accessToken}`,
+//             },
+//             params: {
+//                 per_page: 100, // Adjust the number of users per page as needed
+//             },
+//         });
+
+//         const users = usersResponse.data;
+//         console.log('User List:', users);
+
+//         // Process the user data as needed
+
+//     } catch (error) {
+//         console.error('Error retrieving users:', error);
+//     }
+// };
+
+// getAuth0Users();
 
 // Assume list of bookmarked genes has provided by api
 const bookmarkedGenes = [
@@ -17,7 +56,7 @@ const is_member = true;
 const url = process.env.REACT_APP_FRONTEND_URL;
 
 function Profile() {
-    const { user, isLoading } = useAuth0();
+    const { user, isLoading, getAccessTokenSilently, isAuthenticated } = useAuth0();
 
     const userMetadata = user?.['https://unique.app.com/user_metadata'];
 
