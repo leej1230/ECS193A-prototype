@@ -5,17 +5,38 @@ import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableR
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import ReactPlayer from 'react-player'
+
 //import './bootstrap_landing_page_template/css/styles.css'
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import './HomePage.css'
-import { Margin } from '@mui/icons-material';
 
 function HomePage(){
     return(
-        <body id="page-top" class="home_page_body">
+        <body class="home_page_body">
+
+            <ReactPlayer 
+                id="video_back" 
+                url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
+                loop={true}
+                playing={true}
+                width='100%'
+                height='100%'
+                volume={0}
+                muted={true}
+                controls={false} />
+
+            </body>
+    )
+
+}
+
+export default HomePage
+
+{/*
         <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
 
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -38,11 +59,7 @@ function HomePage(){
 
             </nav>
 
-            <div class="bg" >
-                
-            </div>
-    
-
+            
 
         <div class="container">
             <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
@@ -69,7 +86,7 @@ function HomePage(){
                 </div>
             </div>
         </div>
-    </footer>
+        </footer>
 
     <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
     <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -83,9 +100,4 @@ function HomePage(){
     <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
     <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
 
-</body>
-    )
-
-}
-
-export default HomePage
+        */}

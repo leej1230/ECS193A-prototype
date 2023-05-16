@@ -116,17 +116,48 @@ p {
  }
 */
 
+/*
 .home_page_body {
-    background-image: url("https://as2.ftcdn.net/v2/jpg/02/44/28/75/1000_F_244287519_RoEredXSEUy46jCwJLAMruvfmweIr5g9.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
     position:absolute;
     top:0px;
     right:0px;
     bottom:0px;
     left:0px;
+    background-image: url("https://as2.ftcdn.net/v2/jpg/02/44/28/75/1000_F_244287519_RoEredXSEUy46jCwJLAMruvfmweIr5g9.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+} 
+*/
+
+
+.home_page_body {
+    top:0;
+    left:0;
+    background-color: black;
+    min-width: 100%;
+    min-height: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-top: 0;
 }
+/*
+#video_back{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+}*/
 
 #title_website{
     margin-top: 10%;
