@@ -21,15 +21,11 @@ function Navbar() {
   return (
     <div>
         <nav class="navbar navbar-expand navbar-light bg-light topbar static-top shadow" id="navigation_bar_top">
-
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-              <i class="fa fa-bars"></i>
-          </button>
           
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul id="navbar_element_link_top" class="navbar-nav">
               <li class="nav-item active">
-                <a id="navbar_element_link_home" class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a id="navbar_element_link_home" class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a id="navbar_element_link_about" class="nav-link" href="#">About</a>

@@ -10,6 +10,9 @@ import axios from "axios";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
@@ -81,23 +84,21 @@ function Home() {
                                 Home
                             </NavText>
                         </NavItem>
-                        <NavItem eventKey="charts">
-                            <NavIcon>
-                                <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em', color: 'white' }} />
+                        <NavItem eventKey="search_gene">
+                            <NavIcon >
+                                <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
                             </NavIcon>
                             <NavText style={{ color: 'white' }}>
-                                Charts
+                                Gene Search
                             </NavText>
-                            <NavItem eventKey="charts/linechart">
-                                <NavText style={{ color: 'white' }}>
-                                    Line Chart
-                                </NavText>
-                            </NavItem>
-                            <NavItem eventKey="charts/barchart">
-                                <NavText style={{ color: 'white' }}>
-                                    Bar Chart
-                                </NavText>
-                            </NavItem>
+                        </NavItem>
+                        <NavItem eventKey="search_dataset">
+                            <NavIcon >
+                                <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                                Dataset Search
+                            </NavText>
                         </NavItem>
                     </SideNav.Nav>
                   </SideNav>

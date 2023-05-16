@@ -33,5 +33,18 @@
     left: 0;
     top: 0;
     z-index: 1;
-    background-color: rgb(56, 100, 120);
+    background-color: rgb(116, 120, 123);
+    color: white;
+}
+
+#gene_icon{
+    color: white;
+}
+
+#dataset_search_icon{
+    color: white;
+}
+
+#search_dashboard_icon{
+    pointer-events: none;
 }
