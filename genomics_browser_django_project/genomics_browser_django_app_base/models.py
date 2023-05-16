@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 
-class UserModel(models.Model):
+class BaseUser(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     email = models.EmailField(
         verbose_name="email address", max_length=255, unique=True
@@ -11,8 +11,16 @@ class UserModel(models.Model):
     first_name = models.CharField(max_length=200, null=False)
     last_name = models.CharField(max_length=200, null=False)
     password = models.CharField(max_length=200, null=False)
+
+
+class UserModel(BaseUser):
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+
+
+class SuperUserModel(BaseUser):
+    is_admin = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
 
 
 class PatientModel(models.Model):
