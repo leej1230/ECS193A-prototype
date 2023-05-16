@@ -29,7 +29,16 @@ function HomePage(){
                 muted={true}
                 controls={false} />
 
-            </body>
+            <div id="title_landing_info">
+                <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
+                <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
+                <div className="d-flex align-items-center justify-content-center">
+                    <button class="btn btn-primary" type="submit">Login</button>&nbsp; &nbsp; &nbsp;  
+                    <button class="btn btn-primary" type="submit">Signup</button> 
+                </div>
+            </div>
+
+        </body>
     )
 
 }
@@ -58,17 +67,6 @@ export default HomePage
             </div>
 
             </nav>
-
-            
-
-        <div class="container">
-            <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
-            <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
-            <div className="d-flex align-items-center justify-content-center">
-                <button class="btn btn-primary" type="submit">Login</button>&nbsp; &nbsp; &nbsp;  
-                <button class="btn btn-primary" type="submit">Signup</button> 
-            </div>
-        </div>
 
 
     <footer class="footer py-4 fixed-bottom bg-secondary">

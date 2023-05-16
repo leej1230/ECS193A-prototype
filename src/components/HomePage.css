@@ -132,6 +132,7 @@ p {
 
 
 .home_page_body {
+    position: relative;
     top:0;
     left:0;
     background-color: black;
@@ -158,6 +159,18 @@ p {
     padding-right: 0;
     padding-bottom: 0;
 }*/
+
+#video_back{
+    z-index: -1;
+}
+
+#title_landing_info{
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    top: 0;
+    margin-top: 150px;
+}
 
 #title_website{
     margin-top: 10%;
