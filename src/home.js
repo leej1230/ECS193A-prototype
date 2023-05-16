@@ -17,6 +17,8 @@ function Home() {
   const [searchFilter, setSearchFilter] = useState("gene");
   const [listPage, setListPage] = useState(1);
   const [isMounted, setIsMounted] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+
 
   useEffect(() => {
     if (isMounted) {
@@ -34,6 +36,7 @@ function Home() {
         }/api/${searchFilter}/search/${searchInput}/${listPage.toString()}`
       );
       setSearchResult(response.data);
+      setHasSearched(true);
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -264,15 +267,29 @@ function Home() {
             <div className="row justify-content-center">
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <SampleList resultList={searchResult} />
                   <div>
-                    <div className="float-left">
-                      <button onClick={handleDecrementPage}>Prev Page</button>
-                    </div>
-                    <div className="float-right">
-                      <button onClick={handleIncrementPage}>Next Page</button>
-                    </div>
+                    <SampleList resultList={searchResult} />
+                    {!hasSearched && (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        Start Searching!
+                      </div>
+                    )}
+                    {hasSearched && searchResult.length === 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        No results
+                      </div>
+                    )}
                   </div>
+                  {searchResult.length > 0 && (
+                    <div>
+                      <div className="float-left">
+                        <button onClick={handleDecrementPage}>Prev Page</button>
+                      </div>
+                      <div className="float-right">
+                        <button onClick={handleIncrementPage}>Next Page</button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
