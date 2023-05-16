@@ -2,6 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from './components/spinner/spinner';
 
+// Assume list of bookmarked genes has provided by api
+const bookmarkedGenes = [
+    "ENSG00000000003.14/1",
+    "ENSG00000000003.15/1",
+    "ENSG00000000003.16/1",
+    "ENSG00000000003.17/1",
+]
+
+// Assume Permission is provided by api
+const is_admin = true;
+const is_member = true;
+
+const url = process.env.REACT_APP_FRONTEND_URL;
+
 function Profile() {
     const { user, isLoading } = useAuth0();
 
@@ -14,7 +28,25 @@ function Profile() {
     ) : (
         <div>
             {userMetadata && (
-                <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
+                // <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
+                <div >
+                    <h1>User Page</h1>
+                    <div className='mx-3 my-2'>
+                        <h2>{userMetadata.given_name} {userMetadata.family_name}</h2>
+                    </div>
+                    <div>
+                        <h2>Bookmarked Genes</h2>
+                        {bookmarkedGenes.map((geneUrl) =>
+                            <a href={`${url}/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>{geneUrl}</a>
+                        )}
+
+                    </div>
+                    {is_admin && (
+                        <div>
+                            <a href={`${url}/manage`}>Manage Users</a>
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );
