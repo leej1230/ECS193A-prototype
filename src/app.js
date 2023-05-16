@@ -15,6 +15,7 @@ import UpdateDataset from "./components/UpdateDataset";
 import Registration from "./registration";
 import Login from "./login";
 import Profile from "./profile";
+import Management from "./management";
 
 const privateRoutes = [
   {
@@ -113,6 +114,15 @@ const privateRoutes = [
       <>
         <Navbar />
         <Profile />
+      </>
+    )
+  },
+  {
+    path: "/manage",
+    element: (
+      <>
+        <Navbar />
+        <Management />
       </>
     )
   }
