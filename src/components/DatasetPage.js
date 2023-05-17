@@ -980,7 +980,7 @@ function DatasetPage() {
                         }
                       }}
                     >
-                      {bookmarked ? <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> : <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> }
+                      {bookmarked ? <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> }
                     
                     </button>
                     
