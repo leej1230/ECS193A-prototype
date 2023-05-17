@@ -43,14 +43,14 @@ class Database:
             Returns:
                 dict: The user information.
             """
-            user = Database.user_collection.find_one({'id': request['user_id']})
+            user = Database.user_collection.find_one({'auth0_uid': request['user_id']})
             if not user:
                 return status.HTTP_404_NOT_FOUND
 
-            if not check_password(
-                request['ctx'].POST['password'], user['password']
-            ):
-                return status.HTTP_404_NOT_FOUND
+            # if not check_password(
+            #     request['ctx'].POST['password'], user['password']
+            # ):
+            #     return status.HTTP_404_NOT_FOUND
 
             serial = UserSerializer(user, many=False)
             user = serial.data
@@ -78,7 +78,7 @@ class Database:
             user = request['ctx'].POST.copy()
             if Database.user_collection.find_one({'email': user['email']}):
                 return status.HTTP_409_CONFLICT
-            user['password'] = make_password(user['password'])
+            user['auth0_uid'] = make_password(user['auth0_uid'])
             user.update({'id': uuid.uuid4()})
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
@@ -93,7 +93,7 @@ class Database:
             Returns:
                 dict: The user information.
             """
-            Database.user_collection.delete_one({'id': int(request['user_id'])})
+            Database.user_collection.delete_one({'auth0_uid': int(request['user_id'])})
             Database.Counters.decrement_user_counter()
 
         def post_superuser_one(request):
