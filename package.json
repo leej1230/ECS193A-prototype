@@ -74,6 +74,7 @@
     ]
   },
   "devDependencies": {
+    "@types/ramda": "^0.29.1",
     "dotenv-webpack": "^8.0.1"
   }
 }
