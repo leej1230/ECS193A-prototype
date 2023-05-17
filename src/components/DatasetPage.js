@@ -1122,7 +1122,9 @@ function DatasetPage() {
                                           
                                         });
 
+                                        // each save is independent
                                         await set_prev_patients_list_to_undo({});
+                                        await set_modified_patients_list_to_update_back({});
                                         
                                       }}>Save Changes</button>
                                     </div>
