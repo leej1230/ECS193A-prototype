@@ -660,7 +660,9 @@ class Database:
             print("count: ")
             current_num_edits_saved = Database.edit_collection.count_documents({})
 
-            Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'edit_date':datetime.datetime.now() })
+            if 'patient_save_undo_list' in data_request :
+                patients_old_values_saved = data_request['patient_save_undo_list']
+                Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
 
             patients_dataset_id = 0
             if len(patients_list) > 0:
