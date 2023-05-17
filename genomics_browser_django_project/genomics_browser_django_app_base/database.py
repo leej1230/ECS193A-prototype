@@ -639,9 +639,9 @@ class Database:
             print( patients_update_dict )
 
             print("count: ")
-            print(Database.edit_collection.count_documents({}))
+            current_num_edits_saved = Database.edit_collection.count_documents({})
 
-            Database.edit_collection.insert_one({ 'edit_info':copy.deepcopy(patients_update_dict) })
+            Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'edit_date':datetime.datetime.now() })
 
             patients_dataset_id = 0
             if len(patients_list) > 0:
