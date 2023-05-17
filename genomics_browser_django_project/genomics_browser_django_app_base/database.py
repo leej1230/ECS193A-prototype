@@ -82,6 +82,9 @@ class Database:
                 return status.HTTP_409_CONFLICT
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
+            # Temporary
+            user.update({'is_admin': True})
+            user.update({'is_staff': True})
             serial = UserSerializer(user, many=False)
             Database.user_collection.insert_one(serial.data)
             # Database.Counters.increment_user_counter()
