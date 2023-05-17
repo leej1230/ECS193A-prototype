@@ -12,6 +12,7 @@ class BaseUser(models.Model):
     last_name = models.CharField(max_length=200, null=False)
     password = models.CharField(max_length=200, null=False)
     date_created = models.DateField(auto_now_add=True, null=False)
+    bookmarked_genes = models.JSONField(blank=True, null=True)
 
 
 class UserModel(BaseUser):
