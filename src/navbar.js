@@ -118,7 +118,7 @@ function Navbar() {
                 Profile
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item d-flex align-items-center" data-toggle="modal" data-target="#logoutModal" onClick={() => logout({ returnTo: window.location.origin })} id="user_dropdown_item_body_logout">
+              <a class="dropdown-item d-flex align-items-center" data-toggle="modal" data-target="#logoutModal" onClick={() => logout({ returnTo: process.env.REACT_APP_FRONTEND_URL })} id="user_dropdown_item_body_logout">
                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                 Logout
               </a>
