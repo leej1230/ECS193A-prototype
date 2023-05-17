@@ -20,12 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b2qbs_a(h6)b-n#!r8o%#3&@1vnr%l3ef%y$%-&hqg&m-nyisl'
+SECRET_KEY = (
+    'django-insecure-b2qbs_a(h6)b-n#!r8o%#3&@1vnr%l3ef%y$%-&hqg&m-nyisl'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -82,7 +84,7 @@ DATABASES = {
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': 'mongodb+srv://jaewoo1230:foreveryone1230@test.dq6btwc.mongodb.net/?retryWrites=true&w=majority'
-        }
+        },
     }
 }
 

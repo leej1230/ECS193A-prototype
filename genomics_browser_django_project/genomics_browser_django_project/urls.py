@@ -14,40 +14,118 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from genomics_browser_django_app_base import views
-
 from django.urls import path, re_path
+from genomics_browser_django_app_base import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('api/patient/<slug:patient_id>',                   views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patient_one"}),
-    path('api/gene/<str:gene_name>/<slug:gene_id>',         views.BackendServer.as_view(), {"inner": "Genes",    "callback": "get_gene_one"}),
-    path('api/dataset/<slug:dataset_id>',                   views.BackendServer.as_view(), {"inner": "Datasets", "callback": "get_dataset_one"}),
-    path('api/gene/search/<str:search_word>/<str:page_id>', views.BackendServer.as_view(), {"inner": "Genes",    "callback": "get_search_gene"}),
-    
-    re_path(r'^api/patient/all',                            views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patient_all"}),
-    re_path(r'^api/gene/all',                               views.BackendServer.as_view(), {"inner": "Genes",    "callback": "get_gene_all"}),
-    re_path(r'^api/dataset/all',                            views.BackendServer.as_view(), {"inner": "Datasets", "callback": "get_dataset_all"}),
-    re_path(r'^api/counter/all',                            views.BackendServer.as_view(), {"inner": "Counters", "callback": "get_counter_all"}),
-
-    path('api/registration',                                views.BackendServer.as_view(), {"inner": "Users",    "callback": "post_user_one"}), 
-    path('api/login',                                       views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_one"}), 
-    path('api/get-user-all',                                views.BackendServer.as_view(), {"inner": "Users",    "callback": "get_user_all"}),
-    path('api/delete-user/<slug:user_id>/',                 views.BackendServer.as_view(), {"inner": "Users",    "callback": "delete_user_one"}),
-
-    path('api/upload_dataset',                              views.BackendServer.as_view(), {"inner": "Datasets", "callback": "post_dataset_one"}),
-
-    path('api/update_dataset',                              views.BackendServer.as_view(), {"inner": "Datasets", "callback": "update_dataset_one"}),
-
-    re_path(r'^api/seq/names' ,                             views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_seq_names"}),
-
-    path('api/delete_dataset/<slug:dataset_id>',            views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
-    path('api/delete_dataset/<slug:dataset_id>',    views.BackendServer.as_view(), {"inner": "Datasets", "callback": "delete_dataset_one"}),
-
-    path('api/patients/<str:gene_id>/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_with_gene_from_dataset"}),
-    path('api/patients_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Patients", "callback": "get_patients_from_dataset"}),
-    path('api/genes_in_dataset/<slug:dataset_id>', views.BackendServer.as_view(), {"inner": "Genes", "callback": "get_genes_from_dataset"}),
-    path('api/update_many_patients',                      views.BackendServer.as_view(), {"inner": "Patients", "callback": "update_patients_many_list"}),
+    path(
+        'api/patient/<slug:patient_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Patients", "callback": "get_patient_one"},
+    ),
+    path(
+        'api/gene/<str:gene_name>/<slug:gene_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_one"},
+    ),
+    path(
+        'api/dataset/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_one"},
+    ),
+    path(
+        'api/gene/search/<str:search_word>/<str:page_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_search_gene"},
+    ),
+    re_path(
+        r'^api/patient/all',
+        views.BackendServer.as_view(),
+        {"inner": "Patients", "callback": "get_patient_all"},
+    ),
+    re_path(
+        r'^api/gene/all',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_all"},
+    ),
+    re_path(
+        r'^api/dataset/all',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_all"},
+    ),
+    re_path(
+        r'^api/counter/all',
+        views.BackendServer.as_view(),
+        {"inner": "Counters", "callback": "get_counter_all"},
+    ),
+    path(
+        'api/registration',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "post_user_one"},
+    ),
+    path(
+        'api/login/<slug:user_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "get_user_one"},
+    ),
+    path(
+        'api/get-user-all',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "get_user_all"},
+    ),
+    path(
+        'api/delete-user/<slug:user_id>/',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "delete_user_one"},
+    ),
+    path(
+        'api/upload_dataset',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "post_dataset_one"},
+    ),
+    path(
+        'api/update_dataset',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "update_dataset_one"},
+    ),
+    re_path(
+        r'^api/seq/names',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_seq_names"},
+    ),
+    path(
+        'api/delete_dataset/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "delete_dataset_one"},
+    ),
+    path(
+        'api/delete_dataset/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "delete_dataset_one"},
+    ),
+    path(
+        'api/patients/<str:gene_id>/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {
+            "inner": "Patients",
+            "callback": "get_patients_with_gene_from_dataset",
+        },
+    ),
+    path(
+        'api/patients_in_dataset/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Patients", "callback": "get_patients_from_dataset"},
+    ),
+    path(
+        'api/genes_in_dataset/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_genes_from_dataset"},
+    ),
+    path(
+        'api/update_many_patients',
+        views.BackendServer.as_view(),
+        {"inner": "Patients", "callback": "update_patients_many_list"},
+    ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]
