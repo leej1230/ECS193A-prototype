@@ -103,25 +103,21 @@ function HomePage(){
     return(
         <body class="home_page_body">
 
-                <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
+                <nav id="landing_page_navbar" class="navbar navbar-expand bg-transparent shadow">
 
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="#">Contact Us</a>
-                    </li>
-                </ul>
-                </div>
+          
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                        <a class="nav-link" href="#"> <div id="landing_page_nav_text">Home</div> <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#"> <div id="landing_page_nav_text">About</div> </a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#"> <div id="landing_page_nav_text">Contact Us</div> </a>
+                        </li>
+                    </ul>
+            
 
                 </nav>
 

@@ -197,3 +197,16 @@ html, body{
 #title_website{
     margin-top: 10%;
 }
+
+#landing_page_navbar{
+    background-color: transparent;
+    z-index: 1;
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    top: 0;
+}
+
+#landing_page_nav_text{
+    color: white;
+}
