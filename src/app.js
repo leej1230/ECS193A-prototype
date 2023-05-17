@@ -20,7 +20,7 @@ import Management from "./management";
 const privateRoutes = [
   {
     path: "/console",
-    element: <><Home /></>,
+    element: <><Navbar /><Home /></>,
   },
   {
     path: "/data/:id",
