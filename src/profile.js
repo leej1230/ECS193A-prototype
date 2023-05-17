@@ -77,7 +77,7 @@ function Profile() {
                         <h2>Bookmarked Genes</h2>
                         {bookmarkedGenes.length !== 0 ? (
                             bookmarkedGenes.map((geneUrl) => (
-                                <a href={`${url}/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
+                                <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
                                     {geneUrl}
                                 </a>
                             ))
