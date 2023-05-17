@@ -271,7 +271,7 @@ function GenePage() {
       }
   
       changedNumberComparison()
-    }, [compCode])
+    }, [compCode, input1, input2])
     
     const filter = () => {
       props.onFilter(
