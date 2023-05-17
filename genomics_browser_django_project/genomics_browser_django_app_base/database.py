@@ -514,6 +514,24 @@ class Database:
             json_data = loads(dumps(records_found_list))
             return json_data
 
+        @staticmethod
+        def delete_one_edit(request):
+            """Delete an edit record since undone likely"""
+            try:
+                edits_deleted = Database.edit_collection.delete_one(
+                        {'id': int(request['edit_record_id'])}
+                    )
+              
+                if edits_deleted.deleted_count != 1:
+                    print("Delete record not complete")
+            
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
+
+
+
+
     class Patients:
         @staticmethod
         def get_patients_with_gene_from_dataset(request):

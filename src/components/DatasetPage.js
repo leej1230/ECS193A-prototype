@@ -1172,6 +1172,8 @@ function DatasetPage() {
                                             
                                           });
 
+                                          axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
+
                                         }} >Undo Change</button>
                                       <p>id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
                                       <p>edit date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
