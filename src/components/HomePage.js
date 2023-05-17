@@ -103,6 +103,27 @@ function HomePage(){
     return(
         <body class="home_page_body">
 
+                <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
+
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                </ul>
+                </div>
+
+                </nav>
 
 
                 <ReactPlayer 
@@ -119,6 +140,7 @@ function HomePage(){
                         const { width, height } = response.naturalSize;
                         //
                     }}
+                    disablePictureInPicture={true}
                     />
 
             <div id="title_landing_info">
@@ -150,27 +172,6 @@ function HomePage(){
 export default HomePage
 
 {/*
-        <nav class="navbar navbar-expand navbar-light bg-primary topbar static-top shadow">
-
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Contact Us</a>
-                </li>
-            </ul>
-            </div>
-
-            </nav>
 
 
     <footer class="footer py-4 fixed-bottom bg-secondary">
