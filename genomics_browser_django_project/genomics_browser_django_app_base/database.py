@@ -136,6 +136,19 @@ class Database:
 
             Database.user_collection.update_one(query, update)
 
+        def update_role(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_uid']}
+            )
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+
+            query = {'auth0_uid': request_data['user_uid']}
+            update = {"$set": {request_data['role_label']: request_data['value']}}  # Replace 'myArray' with the actual array field name
+
+            Database.user_collection.update_one(query, update)
+
         def post_superuser_one(request):
             """
             Creates a superuser in the database.

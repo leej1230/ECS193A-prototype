@@ -39,7 +39,7 @@ function Profile() {
 
     useEffect(() => {
         handleFetchUser();
-    }, []); // Add an empty dependency array to run the effect only once
+    }, []);
 
     return isLoading || !userInfo ? (
         <div>
