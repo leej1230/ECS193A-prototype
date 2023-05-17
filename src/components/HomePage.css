@@ -210,3 +210,8 @@ html, body{
 #landing_page_nav_text{
     color: white;
 }
+
+#landing_page_link_from_home{
+    text-decoration: none;
+    color: white
+}

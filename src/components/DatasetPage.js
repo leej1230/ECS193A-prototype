@@ -402,9 +402,17 @@ function DatasetPage() {
       if( filterVals['reset'] == true ){
         return data;
       }
+
+      // not exact match or exact off by 1: need to be ok with includes
+
+      // also discarding decimal in search important
+      let removed_decimal_input = input_str
+      if( removed_decimal_input.includes(".") ){
+        removed_decimal_input = removed_decimal_input.substring(0, removed_decimal_input.indexOf("."))
+      }
       
       // equals filter
-      let filtered_list_genes = data.filter( patient_one => hasLevenshteinDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1 ).sort(
+      let filtered_list_genes = data.filter( patient_one => (hasLevenshteinDistanceLessThanEqualOne(patient_one[colName] , input_str) <= 1) || (patient_one[colName].includes(input_str)) || (patient_one[colName].includes(removed_decimal_input)) ).sort(
         (patient_object_a, patient_object_b) => {
           return hasLevenshteinDistanceLessThanEqualOne(patient_object_a[colName] , input_str) - hasLevenshteinDistanceLessThanEqualOne(patient_object_b[colName] , input_str);
         }
@@ -426,12 +434,11 @@ function DatasetPage() {
 
     useEffect(() => {
       async function changedNumberComparison() {
-        
         filter();
       }
   
       changedNumberComparison()
-    }, [compCode])
+    }, [compCode , input1 , input2 ])
     
     const filter = () => {
       props.onFilter(

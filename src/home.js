@@ -100,6 +100,13 @@ function Home() {
                                 Dataset Search
                             </NavText>
                         </NavItem>
+                        <NavItem eventKey="search_dataset">
+                            <NavIcon >
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                                <a href="/homepage" id="landing_page_link_from_home">Landing Page</a>
+                            </NavText>
+                        </NavItem>
                     </SideNav.Nav>
                   </SideNav>
               <div class="row justify-content-end">
