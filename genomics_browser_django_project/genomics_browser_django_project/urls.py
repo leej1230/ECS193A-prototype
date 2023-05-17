@@ -65,7 +65,7 @@ urlpatterns = [
         {"inner": "Users", "callback": "post_user_one"},
     ),
     path(
-        'api/login',
+        'api/login/<slug:user_id>',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "get_user_one"},
     ),

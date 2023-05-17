@@ -11,6 +11,7 @@ class BaseUser(models.Model):
     first_name = models.CharField(max_length=200, null=False)
     last_name = models.CharField(max_length=200, null=False)
     password = models.CharField(max_length=200, null=False)
+    date_created = models.DateField(auto_now_add=True, null=False)
 
 
 class UserModel(BaseUser):

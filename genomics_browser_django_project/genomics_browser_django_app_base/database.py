@@ -17,13 +17,12 @@ from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
 from django.http.response import JsonResponse
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
-from genomics_browser_django_app_base.pymongo_get_database import get_connection
-from genomics_browser_django_app_base.serializers import (
-    CounterSerializer,
-    DatasetSerializer,
-    GeneSerializer,
-    UserSerializer,
-)
+from genomics_browser_django_app_base.pymongo_get_database import \
+    get_connection
+from genomics_browser_django_app_base.serializers import (CounterSerializer,
+                                                          DatasetSerializer,
+                                                          GeneSerializer,
+                                                          UserSerializer)
 from rest_framework import status
 
 
@@ -57,9 +56,7 @@ class Database:
             Returns:
                 dict: The user information.
             """
-            user = Database.user_collection.find_one(
-                {'email': request['ctx'].POST['email']}
-            )
+            user = Database.user_collection.find_one({'id': request['user_id']})
             if not user:
                 return status.HTTP_404_NOT_FOUND
 
@@ -96,6 +93,8 @@ class Database:
                 return status.HTTP_409_CONFLICT
             user['password'] = make_password(user['password'])
             user.update({'id': uuid.uuid4()})
+            user.update({'date_created': datetime.datetime.now()})
+            user.update({'bookmarked_genes': []})
             serial = UserSerializer(user, many=False)
             Database.user_collection.insert_one(serial.data)
             # Database.Counters.increment_user_counter()
