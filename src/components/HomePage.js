@@ -30,7 +30,7 @@ function debounce(fn, ms) {
 }
 
 function HomePage() {
-    const { loginWithRedirect } = useAuth0;
+    const { loginWithRedirect } = useAuth0();
 
     // orig window dimensions: 1536 x 754 (width x height)
     const [dimensions, setDimensions] = React.useState({
