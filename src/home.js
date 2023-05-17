@@ -6,9 +6,12 @@ import "./home.css";
 import SampleList from "./components/SampleList";
 import Slider from "./components/Slider";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
+
+const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
 function Home() {
   const [searchResult, setSearchResult] = useState([]);
@@ -19,11 +22,14 @@ function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  const { user } = useAuth0();
+  const userMetadata = user?.['https://unique.app.com/user_metadata'];
 
   useEffect(() => {
     if (isMounted) {
       handleSearch();
     } else {
+      handleUserSubmit();
       setIsMounted(true);
     }
   }, [listPage]);
@@ -45,6 +51,7 @@ function Home() {
   };
 
   const handleIncrementPage = async () => {
+    console.log(user)
     setListPage(listPage + 1);
     // handleSearch();
     // console.log(listPage)
@@ -57,6 +64,31 @@ function Home() {
     }
     // console.log(listPage)
   }
+
+  const handleUserSubmit = async () => {
+
+    const email = user.email
+    const first_name = userMetadata.given_name
+    const last_name = userMetadata.family_name
+    const auth0_uid = user.sub
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("first_name", first_name);
+    formData.append("last_name", last_name);
+    formData.append("auth0_uid", auth0_uid);
+
+    axios
+      .post(user_post_url, formData)
+      .then(() => {
+        console.log("Account information successfully submitted on backend.");
+      })
+      .catch((error) => {
+        if (error.response.status === 409) {
+          console.log("Account informaiton already registered in DB. No update needed.")
+        }
+      });
+  };
 
   return (
     <body id="page-top">

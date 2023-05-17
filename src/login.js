@@ -8,8 +8,10 @@ import { InputAdornment } from "@material-ui/core";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
+
 const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
-const encryptionKey = process.env.ENCRYPTION_SECRET_KEY;
+const encryptionKey = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_ENCRYPTION_SECRET_KEY);
+// const encryptionKey = `${process.env.REACT_APP_ENCRYPTION_SECRET_KEY}`;
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,23 +19,25 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [disableButton, setDisableButton] = useState(false);
+  const [disableButton, setDisableButton] = useState(true);
 
-  const handleSubmit = () => {
-    if (email === "" || password === "") {
-      alert("Either Email or Password is missing.");
-      return;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // if (email === "" || password === "") {
+    //   alert("Either Email or Password is missing.");
+    //   return;
+    // }
 
     // Encrypt password to send to backend
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      password,
-      encryptionKey
-    ).toString();
+    // TODO encrypt properly
+    // const encryptedPassword = CryptoJS.AES.encrypt(password.toString(), encryptionKey.toString()).toString();
 
     const formData = new FormData();
     formData.append("email", email);
-    formData.append("password", encryptedPassword);
+    formData.append("password", password);
+
+    // console.log(encryptedPassword);
 
     axios
       .post(api_url, formData)
@@ -63,7 +67,15 @@ function Login() {
         <div class="form-outline mb-4">
           <TextField
             id="Email_Address"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (e.target.value && password) {
+                setDisableButton(false);
+              } else {
+                setDisableButton(true);
+
+              }
+            }}
             type="text"
             variant="outlined"
             fullWidth
@@ -72,17 +84,16 @@ function Login() {
         </div>
 
         <div class="form-outline mb-4">
-          {/* <TextField
-            id="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            variant="outlined"
-            fullWidth
-            label="Password"
-          /> */}
           <TextField
             id="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (e.target.value && email) {
+                setDisableButton(false);
+              } else {
+                setDisableButton(true);
+              }
+            }}
             type={showPassword ? "text" : "password"}
             variant="outlined"
             fullWidth
