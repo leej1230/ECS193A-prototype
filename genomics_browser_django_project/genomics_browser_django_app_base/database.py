@@ -16,12 +16,13 @@ from Crypto.Util.Padding import unpad
 from django.conf import settings
 from django.http.response import JsonResponse
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
-from genomics_browser_django_app_base.pymongo_get_database import \
-    get_connection
-from genomics_browser_django_app_base.serializers import (CounterSerializer,
-                                                          DatasetSerializer,
-                                                          GeneSerializer,
-                                                          UserSerializer)
+from genomics_browser_django_app_base.pymongo_get_database import get_connection
+from genomics_browser_django_app_base.serializers import (
+    CounterSerializer,
+    DatasetSerializer,
+    GeneSerializer,
+    UserSerializer,
+)
 from rest_framework import status
 
 
@@ -42,7 +43,9 @@ class Database:
             Returns:
                 dict: The user information.
             """
-            user = Database.user_collection.find_one({'auth0_uid': request['user_id']})
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request['user_id']}
+            )
             if not user:
                 return status.HTTP_404_NOT_FOUND
 
@@ -77,7 +80,6 @@ class Database:
             user = request['ctx'].POST.copy()
             if Database.user_collection.find_one({'email': user['email']}):
                 return status.HTTP_409_CONFLICT
-            user.update({'id': uuid.uuid4()})
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
             serial = UserSerializer(user, many=False)
@@ -91,28 +93,28 @@ class Database:
             Returns:
                 dict: The user information.
             """
-            Database.user_collection.delete_one({'auth0_uid': int(request['user_id'])})
+            Database.user_collection.delete_one(
+                {'auth0_uid': int(request['user_id'])}
+            )
             Database.Counters.decrement_user_counter()
-        
+
         def post_bookmarked_genes(request):
             request_data = request['ctx'].POST.copy()
-            user = Database.user_collection.find_one({'auth0_uid': request_data['user_id']})
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_id']}
+            )
             if not user:
                 return status.HTTP_404_NOT_FOUND
             updated_bookmarked_genes = set(user['bookmarked_genes'])
             updated_bookmarked_genes.add(request_data['gene_url'])
             Database.user_collection.update_one(
-                            {
-                                '$and': {
-                                    {'auth0_uid': request_data['user_id']}
-                                }
-                            },
-                            {
-                                "$set": {
-                                    {'bookmarked_genes': list(updated_bookmarked_genes)}
-                                }
-                            },
-                        )
+                {'$and': {{'auth0_uid': request_data['user_id']}}},
+                {
+                    "$set": {
+                        {'bookmarked_genes': list(updated_bookmarked_genes)}
+                    }
+                },
+            )
 
         def post_superuser_one(request):
             """
