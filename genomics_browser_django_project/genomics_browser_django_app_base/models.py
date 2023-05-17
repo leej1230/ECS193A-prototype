@@ -1,14 +1,26 @@
+import datetime
+
 from django.db import models
 
 
-class UserModel(models.Model):
-    id = models.PositiveBigIntegerField(blank=False, primary_key=True)
-    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
+class BaseUserModel(models.Model):
+    auth0_uid = models.CharField(max_length=200, null=False)
+    email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=200, null=False)
     last_name = models.CharField(max_length=200, null=False)
-    password = models.CharField(max_length=200, null=False)
+    auth0_uid = models.CharField(max_length=200, null=False)
+    date_created = models.DateTimeField(default=datetime.date.today, null=False)
+    bookmarked_genes = models.JSONField(blank=True, null=True)
+
+
+class UserModel(BaseUserModel):
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+
+
+class SuperUserModel(BaseUserModel):
+    is_admin = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
 
 
 class PatientModel(models.Model):

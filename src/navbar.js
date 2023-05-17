@@ -1,5 +1,6 @@
-import React , {useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import "./navbar.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { Link } from 'react-router-dom';
 
@@ -11,9 +12,11 @@ import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
 function Navbar() {
 
+
   const [dropdown_notifications, setDropdownNotifications] = useState(false);
   const [dropdown_user, setDropdownUser] = useState(false);
   const [num_notifications, set_num_notifications] = useState(3);
+  const { logout, isAuthenticated } = useAuth0();
 
   var menuClass = `dropdown-menu ${dropdown_notifications ? " show" : ""}`;
   var userMenuClass = `dropdown-menu ${dropdown_user ? " show" : ""}`;
@@ -95,7 +98,7 @@ function Navbar() {
 
             </li>
 
-              <div class="topbar-divider d-none d-sm-block"></div>
+            <div class="topbar-divider d-none d-sm-block"></div>
 
               <li class="nav-item dropdown no-arrow mx-1" id="user_account_drop_down" >
                 <a class="nav-link dropdown-toggle" id="userDropdown" role="button"
@@ -114,7 +117,7 @@ function Navbar() {
                           Profile
                     </a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#logoutModal" id="user_dropdown_item_body_logout">
+                      <a class="dropdown-item d-flex align-items-center" data-toggle="modal" data-target="#logoutModal" onClick={() => logout()} id="user_dropdown_item_body_logout">
                           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                           Logout
                       </a>
@@ -122,24 +125,24 @@ function Navbar() {
 
             </li>
 
-          </ul>
+                </ul>
 
-          </nav>
+            </nav>
 
-          <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-          <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-          <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-          <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+            <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
 
-          <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
 
-          <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-          <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-          
-    </div>
-  )
+            <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+            <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+
+        </div>
+    )
 }
 
 export default Navbar
@@ -149,6 +152,7 @@ export default Navbar
             <li className='bar'><a href='/' className='bar'>About</a></li>
             <li className='bar'><a href='/' className='bar'>Contact</a></li>
           </ul> */}
+
 
 
           /*<div id='logo_header'>
@@ -202,3 +206,27 @@ export default Navbar
                     </div>
         </li> 
       */
+
+/*<div id='logo_header'>
+<div id='logo_item'><img id='logo' src={process.env.PUBLIC_URL+ "/davis_logo.jpg"} /></div>
+</div>
+<div  className='outer_bar'>
+<div className='bar_group'>
+  
+    <div  className='bar_item'><Link className='bar_link'  to='/' >Home</Link></div>
+    <div  className='bar_item'><Link className='bar_link'  to='/' >About</Link></div>
+    <div  className='bar_item'><Link  className='bar_link' to='/' >Contact</Link></div>
+    <li  className='bar_item_right' onMouseEnter={() => {setDropdown(true); console.log("enter")}} onMouseLeave={() => setDropdown(false)} >
+      <Link  className='bar_link' to='/'>My Account</Link>
+      {dropdown && <ul className={"services-submenu"} >
+                      {navitems.map(item => {
+                        return(
+                          <li onClick={() => setDropdown(false)} key={item.id} className={item.cName}><Link className='submenu-link' to={item.path}>{item.title}</Link></li>
+                        )
+                      })}
+                    </ul>}
+    </li>
+    
+</div>
+</div> */
+

@@ -1,9 +1,13 @@
+from genomics_browser_django_app_base.models import (
+    BaseUserModel,
+    CounterModel,
+    DatasetModel,
+    GeneModel,
+    PatientModel,
+    UserModel,
+)
 from rest_framework import serializers
-from genomics_browser_django_app_base.models import PatientModel
-from genomics_browser_django_app_base.models import GeneModel
-from genomics_browser_django_app_base.models import DatasetModel
-from genomics_browser_django_app_base.models import CounterModel
-from genomics_browser_django_app_base.models import UserModel
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,10 +15,15 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'email',
-            'password',
+            'first_name',
+            'last_name',
+            'auth0_uid',
+            'date_created',
+            'bookmarked_genes',
             'is_staff',
-            'is_admin'
-        )      
+            'is_admin',
+        )
+
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,20 +40,15 @@ class PatientSerializer(serializers.ModelSerializer):
             'race',
             'gene_ids',
             # 'gene_values',
-            'dataset_id'
+            'dataset_id',
         )
 
 
 class GeneSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeneModel
-        fields = (
-            'id',
-            'name',
-            'dataset_id',
-            'patient_ids',
-            'gene_values'
-        )
+        fields = ('id', 'name', 'dataset_id', 'patient_ids', 'gene_values')
+
 
 class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,10 +65,8 @@ class DatasetSerializer(serializers.ModelSerializer):
             'url',
         )
 
+
 class CounterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CounterModel
-        fields = (
-            'seq_val',
-            'name_use'
-        )
+        fields = ('seq_val', 'name_use')
