@@ -98,7 +98,7 @@ const privateRoutes = [
               <UpdateDataset />
             </>
           )
-    }
+    },
   // {
   //   path: "/registration",
   //   element: (
