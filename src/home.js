@@ -11,15 +11,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
 
-<<<<<<< HEAD
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-=======
 const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
->>>>>>> login_system
 
 function Home() {
   const [searchResult, setSearchResult] = useState([]);
@@ -158,54 +155,67 @@ function Home() {
               </div>
 
               <div class="row justify-content-center">
-                <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
+              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
+            </div>
+
+            <div className="row justify-content-center mt-5 mb-5">
+              <div className="search">
+                <TextField
+                  id="input_keyword"
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  variant="outlined"
+                  fullWidth
+                  label="Search by gene names or dataset name"
+                />
+
+                <TextField
+                  value={searchFilter}
+                  label="Filter"
+                  select
+                  style={{ width: "10rem" }}
+                  onChange={(e) => {
+                    setSearchFilter(e.target.value);
+                  }}
+                >
+                  <MenuItem value={"gene"}>Gene</MenuItem>
+                  <MenuItem value={"dataset"}>Dataset</MenuItem>
+                  <MenuItem value={"all"}>All</MenuItem>
+                </TextField>
+                <IconButton
+                  type="submit"
+                  aria-label="search"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon style={{ fill: "blue" }} />
+                </IconButton>
               </div>
+            </div>
 
-              <div className="row justify-content-center mt-5 mb-5">
-                <div className="search">
-                  <TextField
-                    id="input_keyword"
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    variant="outlined"
-                    fullWidth
-                    label="Search by gene names or dataset name"
-                  />
-
-                  <TextField
-                    value={searchFilter}
-                    label="Filter"
-                    select
-                    style={{ width: "10rem" }}
-                    onChange={(e) => {
-                      setSearchFilter(e.target.value);
-                    }}
-                  >
-                    <MenuItem value={"gene"}>Gene</MenuItem>
-                    <MenuItem value={"dataset"}>Dataset</MenuItem>
-                    <MenuItem value={"all"}>All</MenuItem>
-                  </TextField>
-                  <IconButton
-                    type="submit"
-                    aria-label="search"
-                    onClick={handleSearch}
-                  >
-                    <SearchIcon style={{ fill: "blue" }} />
-                  </IconButton>
-                </div>
+            <div className="row justify-content-center">
+              <div className="search-result mb-5 mt-5">
+                <ul className="search-result">
+                  <Slider />
+                </ul>
               </div>
+            </div>
 
-              <div className="row justify-content-center">
-                <div className="search-result mb-5 mt-5">
-                  <ul className="search-result">
-                    <Slider />
-                  </ul>
-                </div>
-              </div>
-
-              <div className="row justify-content-center">
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
+            <div className="row justify-content-center">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <div>
                     <SampleList resultList={searchResult} />
+                    {!hasSearched && (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        Start Searching!
+                      </div>
+                    )}
+                    {hasSearched && searchResult.length === 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        No results
+                      </div>
+                    )}
+                  </div>
+                  {searchResult.length > 0 && (
                     <div>
                       <div className="float-left">
                         <button onClick={handleDecrementPage}>Prev Page</button>
@@ -214,13 +224,14 @@ function Home() {
                         <button onClick={handleIncrementPage}>Next Page</button>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
       <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
       <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -384,115 +395,6 @@ export default Home;
 
           <hr class="sidebar-divider d-none d-md-block" />
         </ul>
-<<<<<<< HEAD
+
 */}
-=======
 
-        <div id="content-wrapper" class="d-flex flex-column">
-          <div id="content">
-            <div class="row justify-content-end">
-              <div class="col-md-12 bg-light text-right mr-5 mt-5">
-                <a
-                  href="/upload"
-                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                >
-                  <i class="fas fa-upload fa-sm text-white-50"></i>Upload
-                </a>
-              </div>
-            </div>
-
-            <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
-            </div>
-
-            <div className="row justify-content-center mt-5 mb-5">
-              <div className="search">
-                <TextField
-                  id="input_keyword"
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  label="Search by gene names or dataset name"
-                />
-
-                <TextField
-                  value={searchFilter}
-                  label="Filter"
-                  select
-                  style={{ width: "10rem" }}
-                  onChange={(e) => {
-                    setSearchFilter(e.target.value);
-                  }}
-                >
-                  <MenuItem value={"gene"}>Gene</MenuItem>
-                  <MenuItem value={"dataset"}>Dataset</MenuItem>
-                  <MenuItem value={"all"}>All</MenuItem>
-                </TextField>
-                <IconButton
-                  type="submit"
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon style={{ fill: "blue" }} />
-                </IconButton>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div className="search-result mb-5 mt-5">
-                <ul className="search-result">
-                  <Slider />
-                </ul>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <div>
-                    <SampleList resultList={searchResult} />
-                    {!hasSearched && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        Start Searching!
-                      </div>
-                    )}
-                    {hasSearched && searchResult.length === 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        No results
-                      </div>
-                    )}
-                  </div>
-                  {searchResult.length > 0 && (
-                    <div>
-                      <div className="float-left">
-                        <button onClick={handleDecrementPage}>Prev Page</button>
-                      </div>
-                      <div className="float-right">
-                        <button onClick={handleIncrementPage}>Next Page</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
-
-      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
-
-      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-    </body>
-  );
-}
-
-export default Home;
->>>>>>> login_system
