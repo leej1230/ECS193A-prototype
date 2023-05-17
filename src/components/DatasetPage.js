@@ -145,6 +145,7 @@ function DatasetPage() {
     {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
   const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState({});
+  const [prev_patients_list_to_undo, set_prev_patients_list_to_undo] = useState({});
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}]);
   const [gene_columns, setGene_columns] = useState([{
@@ -790,6 +791,8 @@ function DatasetPage() {
 
       let copy_modified_patients_list = modified_patients_list_to_update_back;
 
+      let copy_prev_patients_undo_list = prev_patients_list_to_undo;
+
       let sample_val = together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
       let type_str = "str"
 
@@ -814,6 +817,18 @@ function DatasetPage() {
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
+
+        // store old value
+        let new_patient_save_old_info = {'dataset_id': parseInt(DATASET_ID)  };
+        if(type_str == "int"){
+          new_patient_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else if(type_str == "float") {
+          new_patient_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else {
+          new_patient_save_old_info[data_field_key] = String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
+        }
+        copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_save_old_info;
+
       }else{
         let existing_patient_update_info = clone( copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] );
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
@@ -827,6 +842,17 @@ function DatasetPage() {
         }
 
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
+
+        // store old value
+        let existing_patient_save_old_info = clone( copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
+        if(type_str == "int"){
+          existing_patient_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else if(type_str == "float") {
+          existing_patient_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else {
+          existing_patient_save_old_info[data_field_key] = String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
+        }
+        copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_save_old_info;
       }
 
       if(type_str == "int"){
@@ -838,6 +864,8 @@ function DatasetPage() {
       }
 
       await set_modified_patients_list_to_update_back(copy_modified_patients_list);
+
+      await set_prev_patients_list_to_undo(copy_prev_patients_undo_list);
 
       await set_table_matrix_filtered(copy_matrix_filtered);
       await set_together_patient_gene_information(copy_matrix_filtered);
@@ -1080,15 +1108,21 @@ function DatasetPage() {
                                       <button class="btn btn-primary table_btn_content"  onClick={async () => {
                                         console.log("can click button for saving edit changes from table");
                                         console.log(modified_patients_list_to_update_back);
+                                        console.log("old info: ", prev_patients_list_to_undo);
 
                                         axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                           // Data to be sent to the server
-                                          patient_modify_list: clone(modified_patients_list_to_update_back)
+                                          patient_modify_list: clone(modified_patients_list_to_update_back),
+                                          patient_save_undo_list: clone(prev_patients_list_to_undo)
                                         }, { 'content-type': 'application/json' }).then((response) => {
                                           console.log("post has been sent");
                                           console.log(response);
+
                                           alert("Data Updated");
+                                          
                                         });
+
+                                        await set_prev_patients_list_to_undo({});
                                         
                                       }}>Save Changes</button>
                                     </div>
