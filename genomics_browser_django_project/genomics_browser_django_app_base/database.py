@@ -14,7 +14,6 @@ from bson.json_util import dumps, loads
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from django.conf import settings
-from django.contrib.auth.hashers import check_password, make_password
 from django.http.response import JsonResponse
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
 from genomics_browser_django_app_base.pymongo_get_database import \
@@ -78,7 +77,6 @@ class Database:
             user = request['ctx'].POST.copy()
             if Database.user_collection.find_one({'email': user['email']}):
                 return status.HTTP_409_CONFLICT
-            user['auth0_uid'] = make_password(user['auth0_uid'])
             user.update({'id': uuid.uuid4()})
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
@@ -95,6 +93,26 @@ class Database:
             """
             Database.user_collection.delete_one({'auth0_uid': int(request['user_id'])})
             Database.Counters.decrement_user_counter()
+        
+        def post_bookmarked_genes(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one({'auth0_uid': request_data['user_id']})
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+            updated_bookmarked_genes = set(user['bookmarked_genes'])
+            updated_bookmarked_genes.add(request_data['gene_url'])
+            Database.user_collection.update_one(
+                            {
+                                '$and': {
+                                    {'auth0_uid': request_data['user_id']}
+                                }
+                            },
+                            {
+                                "$set": {
+                                    {'bookmarked_genes': list(updated_bookmarked_genes)}
+                                }
+                            },
+                        )
 
         def post_superuser_one(request):
             """
