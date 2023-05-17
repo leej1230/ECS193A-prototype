@@ -20,7 +20,7 @@ import Management from "./management";
 const privateRoutes = [
   {
     path: "/console",
-    element: <><Navbar /><Home /></>,
+    element: <><Home /></>,
   },
   {
     path: "/data/:id",
@@ -90,6 +90,15 @@ const privateRoutes = [
       </>
     ),
   },
+  {
+          path: "/update/dataset",
+          element: (
+            <>
+              <Navbar />
+              <UpdateDataset />
+            </>
+          )
+    }
   // {
   //   path: "/registration",
   //   element: (
