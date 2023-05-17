@@ -1106,34 +1106,31 @@ function DatasetPage() {
                     <p>Edit History</p>
                     <ul id="history_results_list">
                       <li>
-                        <div class="card shadow mb-4">
+                        <div class="card shadow edit_single_display">
                           <div class="card-body">
-                            <h5 class="card-title">Edit 1</h5>
+                            <p class="card-title">Edit 1</p>
                             <p class="card-text">Edit Date</p>
-                            <br />
-                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                            
                           </div>
                         </div>
                       </li>
                       
                       <li>
-                        <div class="card shadow mb-4">
+                        <div class="card shadow edit_single_display">
                           <div class="card-body">
-                            <h5 class="card-title">Edit 2</h5>
+                            <p class="card-title">Edit 2</p>
                             <p class="card-text">Edit Date</p>
-                            <br />
-                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                            
                           </div>
                         </div>
                       </li>
 
                       <li>
-                        <div class="card shadow mb-4">
+                        <div class="card shadow edit_single_display">
                           <div class="card-body">
-                            <h5 class="card-title">Edit 3</h5>
+                            <p class="card-title">Edit 3</p>
                             <p class="card-text">Edit Date</p>
-                            <br />
-                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                            
                           </div>
                         </div>
                       </li>

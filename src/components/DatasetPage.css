@@ -220,6 +220,12 @@ body{
     list-style-type: none;
 }
 
+.edit_single_display{
+    margin-bottom: 5px;
+    max-height: 100px;
+    overflow: hidden;
+}
+
 /* buttons top right:  */
 /*
 position: absolute;
