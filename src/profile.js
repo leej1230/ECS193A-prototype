@@ -66,6 +66,8 @@ function Profile() {
         </div>
     ) : (
         <div>
+            {/* Move down to avoid overlap with navbar */}
+            <div className="container" style={{ height: "70px", border: "1px solid black" }}></div>
             {userMetadata && (
                 // <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
                 <div >

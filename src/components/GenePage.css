@@ -1,192 +1,35 @@
 
-.headerGroup {
-    display: flex;
-    align-items: center;
-    margin-right: 10%;
-    margin-left: 10%;
+
+#gene_page_full{
+    width:74vw;
+    justify-content: center;
+    min-height: 100vh;
+    top: 0;
 }
 
-
-.textElement{
-    float: left;
-}
-
-.buttonGroup{
+#control_buttons_gene_page{
+    position: relative;
+    right: 0;
+    top: 0;
     float: right;
-    display: flex;
-    align-items: center;
-    margin-left: 60%;
+    margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
-.buttonElement {
-    transition-duration: 0.4s;
-    color: white;
-    background-color:black;
-    margin-top: 1%;
-    margin-left: 10%;
-    margin-right: 2%;
-    padding: 10%;
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    border-width: 0px;
-}
-
-.buttonElement:hover {
-    background-color: rgb(60, 114, 24); /* Green */
- }
-
- .cardLayout_outer {
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    margin-top: 0.3%;
-    margin-left: 1%;
-    margin-right: 1%;
-    margin-bottom: 1%;
-}
-
-.cardLayout {
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    margin: 1% 10%;
-}
-
-.cardTitle{
-    font-size: large;
-}
-
-.cardContent{
-    padding-left: 1%;
-    padding-top: 1%;
-    padding-bottom: 1%;
-}
-
-.bottomInfo{
-    display: flex;
-    align-items: center;
-    margin-left: 10%;
-}
-
-.bottomCard {
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    margin: 1%;
-    width: 42%;
-}
-
-.nav_index{
-    margin-left: 5%;
-    margin-top: 2%;
-}
-
-.nav_index_ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav_index_li {
-    display: inline;
-    border: solid;
-    border-width: 2px 2px 0 2px;
-    border-radius: 3px;
-    margin: 0 5px 0 0;
-    padding: 5px;
-    font-size:xx-large;
-}
-
-
-.headerGroup {
-    display: flex;
-    align-items: center;
-    margin-right: 2%;
-    margin-left: 2%;
-}
-
-.gene_name {
-    font-size: larger;
-}
-
-.textElement{
+#gene_name_box{
+    position: relative;
+    margin-top: 0px;
+    left: 0;
+    top: 0;
     float: left;
-    display: flex; 
-}
-
-.text_label {
-    font-weight: bold;
-}
-
-
-.buttonGroup{
-    float: right;
-    display: flex;
-    align-items: center;
-    margin-left: 60%;
-}
-
-.buttonElement {
-    transition-duration: 0.4s;
-    color: white;
-    background-color:black;
-    margin-top: 1%;
-    margin-left: 10%;
-    margin-right: 2%;
-    padding: 10%;
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    border-width: 0px;
-}
-
-.buttonElement:hover {
-    background-color: rgb(60, 114, 24); /* Green */
- }
-
-.titleLayout{
-    align-items: center;
-    margin-right: 2%;
-    margin-left: 2%;
-    font-size:xx-large;
-    margin-top: 3%;
-
-}
-
-.cardLayout {
-    /*border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;*/
-    box-shadow: 0px 0px 0px #ffffff;
-    margin: 1% 1%;
-}
-
-.cardTitle{
-    font-size:x-large;
-}
-
-/*.cardContent{
-    padding-left: 1%;
-    padding-top: 1%;
-    padding-bottom: 1%;
-}*/
-
-.cardBody{
-    margin-left: 2%;
-    font-size: medium;
-}
-
-.bottomInfo{
-    display: flex;
-    align-items: center;
-    margin-left: 10%;
-}
-
-.bottomCard {
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    margin: 1%;
-    width: 42%;
-}
-
-.cardRow{
-    display: flex;
-    align-items: center;
+    min-width: 100%;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
 }
 
 .codeCard{
@@ -197,7 +40,6 @@
 }
 
 #table_options_outer{
-    position: relative;
     display: flex;
     justify-content: center;
 }
@@ -230,3 +72,60 @@
     overflow: auto;
     padding: 1%;
 }
+
+#gene_tabs_container_content{
+    min-width: 100%;
+    max-width: 100%;
+    left: 0;
+    float: left;
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#gene_info_box{
+    left: 0;
+    top: 0;
+    float: left;
+    margin-top: 0px;
+    min-width: 100%;
+    justify-content: center;
+}
+
+#graph_gene_box{
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
+}
+
+#display_filter_patients_gene{
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
+}
+
+.title_tag, .gene_name{
+    margin: 0;
+    padding: 0;
+}
+
+.subtitle_tag, .subtitle_content{
+    color: gray;
+    font-size:medium;
+    margin: 0;
+    padding: 0;
+}
+
+.title_tag{
+    color: gray;
+}
+

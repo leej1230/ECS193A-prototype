@@ -12,17 +12,17 @@ const redirectUri = `${window.location.origin}/console`
 
 
 root.render(
-  <React.StrictMode>
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      authorizationParams={{
-        redirect_uri: redirectUri,
-      }}
+  // <React.StrictMode>
+  <Auth0Provider
+    domain={domain}
+    clientId={clientId}
+    authorizationParams={{
+      redirect_uri: redirectUri,
+    }}
 
-    >
+  >
 
-      <App />
-    </Auth0Provider>
-  </React.StrictMode>
+    <App />
+  </Auth0Provider>
+  // </React.StrictMode>
 );
