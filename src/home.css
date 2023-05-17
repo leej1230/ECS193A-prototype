@@ -19,3 +19,32 @@
     justify-content: space-between;
     flex-flow: column;
 }
+
+#home_page_full{
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    top: 0;
+    width: 100%;
+    margin-top: 70px;
+}
+
+#side_navigation_menu{
+    left: 0;
+    top: 0;
+    z-index: 1;
+    background-color: rgb(116, 120, 123);
+    color: white;
+}
+
+#gene_icon{
+    color: white;
+}
+
+#dataset_search_icon{
+    color: white;
+}
+
+#search_dashboard_icon{
+    pointer-events: none;
+}

@@ -1,45 +1,21 @@
 
-.headerGroup {
+body{
+    min-height: 100vh;
+}
+
+#dataset_full_page{
+    width:74vw;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    top: 0;
+}
+
+/*.headerGroup {
     display: flex;
     align-items: center;
     margin-right: 10%;
     margin-left: 10%;
-}
-
-
-.textElement{
-    float: left;
-}
-
-.buttonGroup{
-    float: right;
-    display: flex;
-    align-items: center;
-    margin-left: 60%;
-}
-
-.buttonElement {
-    transition-duration: 0.4s;
-    color: white;
-    background-color:black;
-    margin-top: 1%;
-    margin-left: 10%;
-    margin-right: 2%;
-    padding: 10%;
-    border-radius: 8px;
-    box-shadow: 0px 0px 8px #ccc;
-    border-width: 0px;
-}
-
-.buttonElement:hover {
-    background-color: rgb(60, 114, 24); /* Green */
- }
-
-.titleLayout{
-    align-items: center;
-    margin-right: 10%;
-    margin-left: 10%;
-    font-size:xx-large;
 }
 
 .cardLayout {
@@ -69,7 +45,7 @@
     box-shadow: 0px 0px 8px #ccc;
     margin: 1%;
     width: 42%;
-}
+}*/
 
 #full_matrix_table{
     overflow: auto;
@@ -81,7 +57,179 @@
     float: left;
 }
 
-#table_edit_btn_content{
+.table_btn_content{
     display: inline-block;
     float: right;
+    margin-right: 2px;
 }
+
+#control_buttons_dataset{
+    position: relative;
+    right: 0;
+    top: 0;
+    float: right;
+    margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#dataset_name_holder{
+    /*position: absolute;
+    margin-top: 170px;
+    left: 0;
+    float: left;
+    margin-left: 25px;*/
+    position: relative;
+    margin-top: 0px;
+    left: 0;
+    top: 0;
+    float: left;
+    min-width: 100%;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#dataset_table_and_stats_row {
+    margin-top: 2%;
+    margin-left: 1px;
+    display: flex;
+    margin-right: 1px;
+}
+
+/* flex help stretch, equal columns, here 1 col */
+#dataset_genes_list{
+    flex: 1;
+}
+
+#dataset_view_table {
+    margin-top: 2%;
+}
+
+#title_tage{
+    color: gray;
+}
+
+#text_title{
+    margin: 0;
+}
+
+.subtitle_tag, .subtitle_content{
+    color: gray;
+    font-size:medium;
+    margin: 0;
+    padding: 0;
+}
+
+#tabs_container{
+    min-width: 100%;
+    max-width: 100%;
+    /*margin-top: 280px;*/
+    left: 0;
+    float: left;
+    justify-content: center;
+
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#tab_info{
+    margin-top: 3%;
+    margin-left: 0;
+    min-width: 72vw;
+    width: 72vw;
+    max-width: 74vw;
+    left: 0;
+    justify-content: center;
+}
+
+#tabs_row{
+    width: 100%;
+    left: 0;
+    right: 0;
+    justify-content: center;
+}
+
+.dataset_info_block{
+    margin-top: 2%;
+}
+.dataset_subheader{
+    font-weight: bold;
+}
+
+.line_div_category_header_content{
+    margin-top: 0px;
+}
+
+.dataset_subcontent{
+    color: black;
+    margin-bottom: 3%;
+}
+
+#gene_list_search{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#gene_list_reset{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#gene_table_area{
+    width: 100%;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#column_gene_search_input{
+    display: inline-block;    
+}
+
+.gene_input_txt, .gene_search_btn, #gene_list_reset{
+    display: inline;
+}
+
+#history_display_container{
+    min-width: 100%;
+    max-width: 100%;
+    /*margin-top: 280px;*/
+    left: 0;
+    float: left;
+    justify-content: center;
+
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#no_history_display_content{
+    text-align: center;
+}
+
+#history_results_list{
+    list-style-type: none;
+}
+
+.edit_single_display{
+    margin-bottom: 5px;
+    max-height: 100px;
+    overflow: hidden;
+}
+
+/* buttons top right:  */
+/*
+position: absolute;
+right: 0;
+float: right;
+margin-top: 130px;
+*/

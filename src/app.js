@@ -92,6 +92,15 @@ const privateRoutes = [
       </>
     ),
   },
+  {
+          path: "/update/dataset",
+          element: (
+            <>
+              <Navbar />
+              <UpdateDataset />
+            </>
+          )
+    },
   // {
   //   path: "/registration",
   //   element: (
