@@ -128,6 +128,7 @@ function DatasetPage() {
   const [bookmarked, setBookmarked] = useState(false);
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
+  const [edit_records_list, set_edit_records_list] = useState([]);
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
   const [patientIds, setPatientIds] = useState([]);
@@ -228,7 +229,15 @@ function DatasetPage() {
 
   useEffect(() => {
     setGene_columns(generateGeneTable(gene_information_expanded));
-  }, [gene_information_expanded])
+  }, [gene_information_expanded]);
+
+  useEffect(() => {
+    const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits/all`;
+    
+    axios.get(edit_recs_url).then( async (result) => {
+      await set_edit_records_list(result.data);
+    })
+  }, [DATASET_ID])
 
   const createDatasetFormatted = () => {
     // return dataset formatted for table
@@ -1104,37 +1113,25 @@ function DatasetPage() {
                 {displayHistoryTable ? 
                   <div >
                     <p>Edit History</p>
-                    <ul id="history_results_list">
-                      <li>
-                        <div class="card shadow edit_single_display">
-                          <div class="card-body">
-                            <p class="card-title">Edit 1</p>
-                            <p class="card-text">Edit Date</p>
+                    
+                      {edit_records_list.length > 0 ? 
+                        <ul id="history_results_list">
+                          {edit_records_list.map((single_edit_record, index) => {
                             
-                          </div>
-                        </div>
-                      </li>
-                      
-                      <li>
-                        <div class="card shadow edit_single_display">
-                          <div class="card-body">
-                            <p class="card-title">Edit 2</p>
-                            <p class="card-text">Edit Date</p>
+                              return <li>
+                                  <div class="card shadow edit_single_display">
+                                    <div class="card-body">
+                                      <p>id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
+                                      <p>edit date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
+                                      
+                                    </div>
+                                  </div>
+                                </li>
                             
-                          </div>
-                        </div>
-                      </li>
-
-                      <li>
-                        <div class="card shadow edit_single_display">
-                          <div class="card-body">
-                            <p class="card-title">Edit 3</p>
-                            <p class="card-text">Edit Date</p>
-                            
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
+                          })}
+                        </ul> 
+                        : 
+                        <p>empty list</p>}
                   </div>
                   :
                   <div id="no_history_display_content">
