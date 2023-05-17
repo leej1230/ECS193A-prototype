@@ -432,16 +432,15 @@ function GenePage() {
 
   const handleFetchUser = async () => {
     const userSub = user.sub.split("|")[1];
-    console.log(`${user_get_url}/${userSub}`)
     axios
       .get(`${user_get_url}/${userSub}`)
       .then((res) => {
         console.log(res.data);
         setUserInfo(res.data);
-        setBookmarked(userInfo.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_ID}`))
+        setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_ID}`))
       })
-      .catch(() => {
-        console.log("Failed to fetch user Info.")
+      .catch((e) => {
+        console.log("Failed to fetch user Info.", e)
       });
   };
 
@@ -724,7 +723,15 @@ function GenePage() {
                           onClick={async () => {
                             if (bookmarked == true) {
                               await setBookmarked(false);
+                              const formData = new FormData();
+                              formData.append("user_id", user.sub.split("|")[1]);
+                              formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`, formData)
                             } else {
+                              const formData = new FormData();
+                              formData.append("user_id", user.sub.split("|")[1]);
+                              formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`, formData)
                               await setBookmarked(true);
                             }
                           }}

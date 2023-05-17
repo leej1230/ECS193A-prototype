@@ -75,6 +75,16 @@ urlpatterns = [
         {"inner": "Users", "callback": "get_user_all"},
     ),
     path(
+        'api/add-bookmark',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "post_bookmarked_genes"},
+    ),
+    path(
+        'api/remove-bookmark',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "delete_bookmarked_genes"},
+    ),
+    path(
         'api/delete-user/<slug:user_id>/',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "delete_user_one"},
