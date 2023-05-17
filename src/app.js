@@ -16,6 +16,8 @@ import Registration from "./registration";
 import Login from "./login";
 import Profile from "./profile";
 import Management from "./management";
+import About from "./about";
+import Contact from "./contact";
 
 const privateRoutes = [
   {
@@ -134,6 +136,22 @@ const publicRoutes = [
     element: (
       <>
         <HomePage />
+      </>
+    ),
+  },
+  {
+    path: "/about",
+    element: (
+      <>
+        <About />
+      </>
+    ),
+  },
+  {
+    path: "/contact",
+    element: (
+      <>
+        <Contact />
       </>
     ),
   },
