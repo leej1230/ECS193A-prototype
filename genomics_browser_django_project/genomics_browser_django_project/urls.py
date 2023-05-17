@@ -127,5 +127,10 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "update_patients_many_list"},
     ),
+    re_path(
+        r'^api/edits/all',
+        views.BackendServer.as_view(),
+        {"inner": "Edits", "callback": "get_edits_all"},
+    ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]

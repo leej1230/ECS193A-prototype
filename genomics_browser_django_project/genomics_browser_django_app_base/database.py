@@ -495,6 +495,16 @@ class Database:
                 )
             return request['new_counter_value']
 
+    class Edits:
+        @staticmethod
+        def get_edits_all(request):
+            """Get all edits for display"""
+            edit_records = Database.edit_collection.find(
+                {}, {'_id': 0}
+            )
+            json_data = loads(dumps(edit_records))
+            return json_data
+
     class Patients:
         @staticmethod
         def get_patients_with_gene_from_dataset(request):
