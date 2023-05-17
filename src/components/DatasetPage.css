@@ -222,8 +222,17 @@ body{
 
 .edit_single_display{
     margin-bottom: 5px;
-    max-height: 100px;
+    /*max-height: 100px;*/
     overflow: hidden;
+}
+
+.patient_editted_display{
+    font-size: small;
+    margin-left: 10px;
+}
+
+.undo_btn{
+    float: right;
 }
 
 /* buttons top right:  */
