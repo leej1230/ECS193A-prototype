@@ -75,7 +75,8 @@ function Home() {
     const email = user.email
     const first_name = userMetadata.given_name
     const last_name = userMetadata.family_name
-    const auth0_uid = user.sub
+    // ONLY STORE USER UID part
+    const auth0_uid = user.sub.split("|")[1];
 
     const formData = new FormData();
     formData.append("email", email);
@@ -98,51 +99,51 @@ function Home() {
   return (
     <body id="page-top">
       <div id="wrapper">
-        
+
 
         <div id="content-wrapper" class="d-flex flex-column">
           <div id="content">
-            
+
             <div class="container-fluid" id="home_page_full">
-                <SideNav id="side_navigation_menu"
-                  onSelect={(selected) => {
-                      // Add your code here
-                  }}>
-                  <SideNav.Toggle />
-                    <SideNav.Nav defaultSelected="home">
-                        <NavItem eventKey="home">
-                            <NavIcon>
-                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                Home
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_gene">
-                            <NavIcon >
-                                <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                Gene Search
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_dataset">
-                            <NavIcon >
-                                <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                Dataset Search
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_dataset">
-                            <NavIcon >
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                <a href="/homepage" id="landing_page_link_from_home">Landing Page</a>
-                            </NavText>
-                        </NavItem>
-                    </SideNav.Nav>
-                  </SideNav>
+              <SideNav id="side_navigation_menu"
+                onSelect={(selected) => {
+                  // Add your code here
+                }}>
+                <SideNav.Toggle />
+                <SideNav.Nav defaultSelected="home">
+                  <NavItem eventKey="home">
+                    <NavIcon>
+                      <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      Home
+                    </NavText>
+                  </NavItem>
+                  <NavItem eventKey="search_gene">
+                    <NavIcon >
+                      <FontAwesomeIcon id="gene_icon" icon={icon({ name: 'dna', style: 'solid' })} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      Gene Search
+                    </NavText>
+                  </NavItem>
+                  <NavItem eventKey="search_dataset">
+                    <NavIcon >
+                      <FontAwesomeIcon id="dataset_search_icon" icon={icon({ name: 'file', style: 'solid' })} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      Dataset Search
+                    </NavText>
+                  </NavItem>
+                  <NavItem eventKey="search_dataset">
+                    <NavIcon >
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      <a href="/homepage" id="landing_page_link_from_home">Landing Page</a>
+                    </NavText>
+                  </NavItem>
+                </SideNav.Nav>
+              </SideNav>
               <div class="row justify-content-end">
                 <div class="col-md-12 bg-light text-right mr-5 mt-5">
                   <a
@@ -155,83 +156,83 @@ function Home() {
               </div>
 
               <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
-            </div>
-
-            <div className="row justify-content-center mt-5 mb-5">
-              <div className="search">
-                <TextField
-                  id="input_keyword"
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  label="Search by gene names or dataset name"
-                />
-
-                <TextField
-                  value={searchFilter}
-                  label="Filter"
-                  select
-                  style={{ width: "10rem" }}
-                  onChange={(e) => {
-                    setSearchFilter(e.target.value);
-                  }}
-                >
-                  <MenuItem value={"gene"}>Gene</MenuItem>
-                  <MenuItem value={"dataset"}>Dataset</MenuItem>
-                  <MenuItem value={"all"}>All</MenuItem>
-                </TextField>
-                <IconButton
-                  type="submit"
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon style={{ fill: "blue" }} />
-                </IconButton>
+                <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
               </div>
-            </div>
 
-            <div className="row justify-content-center">
-              <div className="search-result mb-5 mt-5">
-                <ul className="search-result">
-                  <Slider />
-                </ul>
+              <div className="row justify-content-center mt-5 mb-5">
+                <div className="search">
+                  <TextField
+                    id="input_keyword"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    label="Search by gene names or dataset name"
+                  />
+
+                  <TextField
+                    value={searchFilter}
+                    label="Filter"
+                    select
+                    style={{ width: "10rem" }}
+                    onChange={(e) => {
+                      setSearchFilter(e.target.value);
+                    }}
+                  >
+                    <MenuItem value={"gene"}>Gene</MenuItem>
+                    <MenuItem value={"dataset"}>Dataset</MenuItem>
+                    <MenuItem value={"all"}>All</MenuItem>
+                  </TextField>
+                  <IconButton
+                    type="submit"
+                    aria-label="search"
+                    onClick={handleSearch}
+                  >
+                    <SearchIcon style={{ fill: "blue" }} />
+                  </IconButton>
+                </div>
               </div>
-            </div>
 
-            <div className="row justify-content-center">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <div>
-                    <SampleList resultList={searchResult} />
-                    {!hasSearched && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        Start Searching!
-                      </div>
-                    )}
-                    {hasSearched && searchResult.length === 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        No results
+              <div className="row justify-content-center">
+                <div className="search-result mb-5 mt-5">
+                  <ul className="search-result">
+                    <Slider />
+                  </ul>
+                </div>
+              </div>
+
+              <div className="row justify-content-center">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <div>
+                      <SampleList resultList={searchResult} />
+                      {!hasSearched && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          Start Searching!
+                        </div>
+                      )}
+                      {hasSearched && searchResult.length === 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          No results
+                        </div>
+                      )}
+                    </div>
+                    {searchResult.length > 0 && (
+                      <div>
+                        <div className="float-left">
+                          <button onClick={handleDecrementPage}>Prev Page</button>
+                        </div>
+                        <div className="float-right">
+                          <button onClick={handleIncrementPage}>Next Page</button>
+                        </div>
                       </div>
                     )}
                   </div>
-                  {searchResult.length > 0 && (
-                    <div>
-                      <div className="float-left">
-                        <button onClick={handleDecrementPage}>Prev Page</button>
-                      </div>
-                      <div className="float-right">
-                        <button onClick={handleIncrementPage}>Next Page</button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
       <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
       <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
