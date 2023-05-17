@@ -14,7 +14,9 @@ from bson.json_util import dumps, loads
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from django.conf import settings
-from django.http.response import JsonResponse
+#from django.http.response import JsonResponse
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.decorators import api_view, renderer_classes
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
 from genomics_browser_django_app_base.pymongo_get_database import get_connection
 from genomics_browser_django_app_base.serializers import (
@@ -502,7 +504,14 @@ class Database:
             edit_records = Database.edit_collection.find(
                 {}, {'_id': 0}
             )
-            json_data = loads(dumps(edit_records))
+
+            records_found_list = [{}]
+            for doc in edit_records:
+                records_found_list.append(doc)
+
+            records_found_list = records_found_list[1:]
+            
+            json_data = loads(dumps(records_found_list))
             return json_data
 
     class Patients:
