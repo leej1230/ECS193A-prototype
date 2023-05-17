@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { Box, Card, CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
 import "./GenePage.css";
 
 import SampleGraph from './echartdemo';
@@ -9,9 +9,9 @@ import SampleGraph from './echartdemo';
 //import MaterialTable from 'material-table';
 
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter, numberFilter, Comparator, multiSelectFilter } from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types';
 import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { Comparator, FILTER_TYPES, customFilter, textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
@@ -41,20 +41,19 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
-import { color } from 'echarts';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
-import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css";
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -364,6 +363,7 @@ function GenePage() {
     // 'id' not need options
     var patient_columns_list = []
 
+    const column_names = ['Patient ID', 'Age', 'Diabetes', 'Final Diagnosis', 'Gender', 'Hypercholesterolemia', 'Hypertension', 'Race'];
     var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
     for (let i = 0; i < column_possibilities.length; i++) {
       var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
@@ -381,7 +381,7 @@ function GenePage() {
       if (unique.length > 0 && Number.isInteger(unique[0])) {
         col_obj = {
           dataField: column_possibilities[i],
-          text: column_possibilities[i],
+          text: column_names[i],
           headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
@@ -398,7 +398,7 @@ function GenePage() {
       else if (unique.length < 3) {
         col_obj = {
           dataField: column_possibilities[i],
-          text: column_possibilities[i],
+          text: column_names[i],
           headerStyle: { minWidth: '150px' },
           filter: customFilter({
             delay: 1000,
@@ -414,7 +414,7 @@ function GenePage() {
       } else {
         col_obj = {
           dataField: column_possibilities[i],
-          text: column_possibilities[i],
+          text: column_names[i],
           headerStyle: { minWidth: '150px' },
           filter: textFilter({
             comparator: Comparator.EQ
