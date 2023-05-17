@@ -1104,7 +1104,40 @@ function DatasetPage() {
                 {displayHistoryTable ? 
                   <div >
                     <p>Edit History</p>
+                    <ul id="history_results_list">
+                      <li>
+                        <div class="card shadow mb-4">
+                          <div class="card-body">
+                            <h5 class="card-title">Edit 1</h5>
+                            <p class="card-text">Edit Date</p>
+                            <br />
+                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                          </div>
+                        </div>
+                      </li>
+                      
+                      <li>
+                        <div class="card shadow mb-4">
+                          <div class="card-body">
+                            <h5 class="card-title">Edit 2</h5>
+                            <p class="card-text">Edit Date</p>
+                            <br />
+                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                          </div>
+                        </div>
+                      </li>
 
+                      <li>
+                        <div class="card shadow mb-4">
+                          <div class="card-body">
+                            <h5 class="card-title">Edit 3</h5>
+                            <p class="card-text">Edit Date</p>
+                            <br />
+                            <a class="btn btn-primary btn-sm"> Learn more </a>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                   :
                   <div id="no_history_display_content">

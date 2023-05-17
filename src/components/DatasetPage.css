@@ -216,6 +216,10 @@ body{
     text-align: center;
 }
 
+#history_results_list{
+    list-style-type: none;
+}
+
 /* buttons top right:  */
 /*
 position: absolute;
