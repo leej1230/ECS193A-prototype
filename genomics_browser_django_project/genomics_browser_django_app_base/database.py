@@ -34,6 +34,7 @@ class Database:
     counter_collection = client['counters']
     user_collection = client['users']
     superuser_collection = client['superusers']
+    edit_collection = client['edits']
 
     class Users:
         def get_user_one(request):
@@ -634,13 +635,21 @@ class Database:
 
             patients_list = list(patients_update_dict.keys())
 
+            print("update information line 638: ")
+            print( patients_update_dict )
+
+            print("count: ")
+            print(Database.edit_collection.count_documents({}))
+
+            Database.edit_collection.insert_one({ 'edit_info':copy.deepcopy(patients_update_dict) })
+
             patients_dataset_id = 0
             if len(patients_list) > 0:
                 patients_dataset_id = patients_update_dict[patients_list[0]][
                     'dataset_id'
                 ]
 
-            # for updating patients: need to only focus on patient info
+            # for updating patients
             for i in range(0, len(patients_list)):
                 cur_patient_obj = patients_update_dict[patients_list[i]]
 
