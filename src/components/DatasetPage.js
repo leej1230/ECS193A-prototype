@@ -126,6 +126,7 @@ const selectOptions = [
 function DatasetPage() {
   const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
   const [bookmarked, setBookmarked] = useState(false);
+  const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
@@ -1063,7 +1064,11 @@ function DatasetPage() {
                                   <div class="card-header py-3">
                                     <div id="table_edit_header">
                                       <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
-                                      <button class="btn btn-primary" id="table_edit_btn_content" onClick={async () => {
+                                      <button class="btn btn-primary table_btn_content"  onClick={async () => {
+                                        let new_val = !displayHistoryTable;
+                                        await setDisplayHistoryTable(new_val);
+                                      }}>Toggle Show History and Undo</button>
+                                      <button class="btn btn-primary table_btn_content"  onClick={async () => {
                                         console.log("can click button for saving edit changes from table");
                                         console.log(modified_patients_list_to_update_back);
 
@@ -1093,6 +1098,18 @@ function DatasetPage() {
                         </div>
                       </Tab>
                     </Tabs>
+              </div>
+
+              <div id="history_display_container">
+                {displayHistoryTable ? 
+                  <div >
+                    <p>Edit History</p>
+
+                  </div>
+                  :
+                  <div id="no_history_display_content">
+                    <p>----- Edit History Hidden -----</p>
+                  </div>  }
               </div>
 
           </div> 

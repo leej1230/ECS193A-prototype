@@ -57,9 +57,10 @@ body{
     float: left;
 }
 
-#table_edit_btn_content{
+.table_btn_content{
     display: inline-block;
     float: right;
+    margin-right: 2px;
 }
 
 #control_buttons_dataset{
@@ -194,6 +195,25 @@ body{
 
 .gene_input_txt, .gene_search_btn, #gene_list_reset{
     display: inline;
+}
+
+#history_display_container{
+    min-width: 100%;
+    max-width: 100%;
+    /*margin-top: 280px;*/
+    left: 0;
+    float: left;
+    justify-content: center;
+
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#no_history_display_content{
+    text-align: center;
 }
 
 /* buttons top right:  */
