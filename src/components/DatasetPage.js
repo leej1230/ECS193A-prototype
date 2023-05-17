@@ -1156,19 +1156,31 @@ function DatasetPage() {
                                   <div class="card shadow edit_single_display">
                                     <div class="card-body">
                                       <button class="btn btn-primary undo_btn"
-                                        onClick={() => {
+                                        onClick={async () => {
                                           console.log("undo button clicked");
+
+                                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                            // Data to be sent to the server
+                                            patient_modify_list: clone(single_edit_record["old_values"])
+                                          }, { 'content-type': 'application/json' }).then((response) => {
+                                            console.log("post has been sent");
+                                            console.log(response);
+  
+                                            alert("Data Changes Undone");
+                                            
+                                          });
+
                                         }} >Undo Change</button>
                                       <p>id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
                                       <p>edit date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
                                       {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
                                         // each patient modified
-                                       
+                                        
                                         return <div >
                                           <p>Patient: {patient_key}</p>
                                           {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
                                             // info for that particular patient
-                                            return <p class="patient_editted_display">{editted_patient_info_key} : {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
+                                            return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
                                           })}
                                         </div>
                                           
