@@ -2,14 +2,13 @@
 // Add URL of the file
 // Use material ui for components
 
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Button, TextareaAutosize } from '@mui/material';
 import './UploadDataset.css';
 
-import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
-import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css";
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 
 function UploadDataset(){
     const [selectedFile, setSelectedFile] = useState();
@@ -18,6 +17,7 @@ function UploadDataset(){
     const [dateCreated, setDateCreated] = useState();
     const [progress, setProgress] = useState(0)
     const [isFilePicked, setIsFilePicked] = useState(false);
+    const[color, setColor] = useState('rgba(62, 152, 199)');
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
 
@@ -28,6 +28,7 @@ function UploadDataset(){
     }
 
     const handleSubmission = () => {
+        setColor('rgba(62, 152, 199)')
         const formData = new FormData();
 
         console.log(selectedFile);
@@ -50,7 +51,10 @@ function UploadDataset(){
                 'content-type': 'multipart/form-data'
             },
             onUploadProgress: function(e) {
-              setProgress(Math.round( (e.loaded * 100) / e.total))
+              setProgress((e.loaded/e.total)*50);
+            },
+            onDownloadProgress: function(e) {
+              setProgress(50+(e.loaded/e.total)*50);
             }
         }
 
@@ -58,12 +62,10 @@ function UploadDataset(){
 
         axios.post(api_url, formData, config)
         .then((result) => {
-          console.log('Success', result)
-          alert("Data has been posted")
+          setColor('green')
         })
         .catch((error) => {
-          console.error('Post failed', error);
-          alert("Due to some error, data has not been posted")
+          setColor('red')
         })
     }
     
@@ -102,7 +104,7 @@ function UploadDataset(){
                       <div className='progress-bar' style={{ width: 200, height: 200 }}>
                         <CircularProgressbar 
                           value={progress} 
-                          text={`${progress}%`}
+                          // text={`${progress}%`}
                           styles={buildStyles({
                             // How long animation takes to go from one percentage to another, in seconds
                             pathTransitionDuration: 0.5,
@@ -112,7 +114,7 @@ function UploadDataset(){
                             root:{verticalAlign: "middle"},
                         
                             // Colors
-                            pathColor: `rgba(62, 152, 199`,
+                            pathColor: `${color}`,
                             trailColor: '#d6d6d6',
                             backgroundColor: '#03fc80',
                           })}
