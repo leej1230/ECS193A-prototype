@@ -3,6 +3,8 @@ import "./Dataset.css";
 import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
 import {Button} from "@mui/material";
 
+import LimitedText from './LimitedText.js'
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
@@ -12,9 +14,11 @@ function Dataset(props) {
       <div class="card shadow" id="dataset_card_display" style={{minWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`, maxWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`}}>
         <div class="card-body">
           <h5 class="card-title">{props.dataset.name}</h5>
-          <p class="card-text">{props.dataset.description}</p>
+          <LimitedText text={props.dataset.description} />
+          
+          {/*<p class="card-text">{props.dataset.description}</p>*/}
           <br />
-          <a href={"/dataset/" + props.dataset.id} class="btn btn-primary btn-sm"> Learn more </a>
+          <a href={"/dataset/" + props.dataset.id} class="btn btn-primary btn-sm" id="button_dataset_card"> Learn more </a>
         </div>
       </div>
 
