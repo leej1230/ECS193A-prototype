@@ -9,7 +9,7 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 function Dataset(props) {
   return (
     <div> 
-      <div class="card shadow mb-4">
+      <div class="card shadow" id="dataset_card_display" style={{minWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`, maxWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`}}>
         <div class="card-body">
           <h5 class="card-title">{props.dataset.name}</h5>
           <p class="card-text">{props.dataset.description}</p>

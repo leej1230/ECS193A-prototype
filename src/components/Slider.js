@@ -47,9 +47,10 @@ function SliderItemsContainer(props) {
   return (
     <div>
 
-      <ScrollBars style={{ width: parseInt(0.7 * dimensions.width), height: parseInt(0.35 * dimensions.height) }}>
+      <ScrollBars
+       style={{ width: parseInt(0.7 * dimensions.width), height: '400px' }}  >
         {props.dataset_groups_list.map((child, index) =>
-        <div key={index}> <DatasetList datasets_arr={props.dataset_groups_list[index]} /> </div>)}
+        <div key={index}> <DatasetList curWindowWidth={dimensions.width} curWindowHeight={dimensions.height} datasets_arr={props.dataset_groups_list[index]} /> </div>)}
       </ScrollBars>
 
       <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>

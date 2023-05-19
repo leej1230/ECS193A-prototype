@@ -13,7 +13,7 @@ function DatabaseList(props) {
       <div class="card-body">
         <div className="outer_grid">
           {props.datasets_arr.map((data_set_single, index) => (
-            <Dataset dataset={props.datasets_arr[index]} />
+            <Dataset curOuterWindowWidth={props.curWindowWidth} curOuterWindowHeight={props.curWindowHeight} dataset={props.datasets_arr[index]} />
           ))}
         </div>
       </div>

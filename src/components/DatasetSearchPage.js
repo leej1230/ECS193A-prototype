@@ -148,7 +148,7 @@ function DatasetSearchPage() {
               </div>
 
               <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Genomics Dataset Search</h3>
+              <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
             </div>
 
             <div className="row justify-content-center mt-5 mb-5">
