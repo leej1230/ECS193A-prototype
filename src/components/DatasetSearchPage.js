@@ -3,13 +3,13 @@ import TextField from "@mui/material/TextField";
 import { IconButton, Select, MenuItem } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import "./DatasetSearchPage.css";
-import SampleList from "./components/SampleList";
-import Slider from "./components/Slider";
+import SampleList from "./SampleList";
+import Slider from "./Slider";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
-import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
+import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
@@ -126,7 +126,7 @@ function DatasetSearchPage() {
                                 Gene Search
                             </NavText>
                         </NavItem>
-                        <NavItem eventKey="search_dataset">
+                        <NavItem eventKey="search_dataset" href="/search_datasets_page">
                             <NavIcon >
                                 <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
                             </NavIcon>
@@ -148,7 +148,7 @@ function DatasetSearchPage() {
               </div>
 
               <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
+              <h3 class="h3 mb-5 text-gray-800">Genomics Dataset Search</h3>
             </div>
 
             <div className="row justify-content-center mt-5 mb-5">

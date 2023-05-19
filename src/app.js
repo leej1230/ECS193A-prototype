@@ -16,6 +16,7 @@ import Registration from "./registration";
 import Login from "./login";
 import Profile from "./profile";
 import Management from "./management";
+import DatasetSearchPage from "./components/DatasetSearchPage";
 
 const privateRoutes = [
   {
@@ -39,6 +40,16 @@ const privateRoutes = [
         <Navbar />
         <div>
           <GenePage />
+        </div>
+      </>
+    ),
+  },{
+    path: "/search_datasets_page",
+    element: (
+      <>
+        <Navbar />
+        <div>
+          <DatasetSearchPage />
         </div>
       </>
     ),

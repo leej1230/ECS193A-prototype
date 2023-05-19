@@ -131,7 +131,7 @@ function Home() {
                                 <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
                             </NavIcon>
                             <NavText style={{ color: 'white' }}>
-                                Dataset Search
+                                <a href="/search_datasets_page" style={{textDecoration: 'None'}}>Dataset Search</a>
                             </NavText>
                         </NavItem>
                     </SideNav.Nav>
