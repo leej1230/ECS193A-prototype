@@ -6,3 +6,9 @@
     min-height: 175px;
     max-height: 175px;
 }
+
+#button_dataset_card{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
+}
