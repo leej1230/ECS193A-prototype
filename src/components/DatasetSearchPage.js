@@ -161,26 +161,9 @@ function DatasetSearchPage() {
                   label="Search by gene names or dataset name"
                 />
 
-                <TextField
-                  value={searchFilter}
-                  label="Filter"
-                  select
-                  style={{ width: "10rem" }}
-                  onChange={(e) => {
-                    setSearchFilter(e.target.value);
-                  }}
-                >
-                  <MenuItem value={"gene"}>Gene</MenuItem>
-                  <MenuItem value={"dataset"}>Dataset</MenuItem>
-                  <MenuItem value={"all"}>All</MenuItem>
-                </TextField>
-                <IconButton
-                  type="submit"
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon style={{ fill: "blue" }} />
-                </IconButton>
+                <button type="submit" onClick={handleSearch} class="btn btn-primary" aria-label="search">
+                  <i  class="fas fa-search"></i>
+                </button>
               </div>
             </div>
 
@@ -242,3 +225,29 @@ function DatasetSearchPage() {
 }
 
 export default DatasetSearchPage;
+
+/*
+<TextField
+    value={searchFilter}
+    label="Filter"
+    select
+    style={{ width: "10rem" }}
+    onChange={(e) => {
+      setSearchFilter(e.target.value);
+    }}
+  >
+    <MenuItem value={"gene"}>Gene</MenuItem>
+    <MenuItem value={"dataset"}>Dataset</MenuItem>
+    <MenuItem value={"all"}>All</MenuItem>
+  </TextField>
+  */
+
+/*
+<IconButton
+  type="submit"
+  aria-label="search"
+  onClick={handleSearch}
+>
+  <SearchIcon style={{ fill: "blue" }} />
+</IconButton>
+*/
