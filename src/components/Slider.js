@@ -77,8 +77,13 @@ export default function Slider() {
       var num_datasets = datasets_list.length;
       var num_groups = Math.floor(num_datasets / 6);
       var last_group_num_datasets = num_datasets % 6;
+
+      if(last_group_num_datasets > 0){
+        num_groups = num_groups + 1
+      }
+
       var groups_list = [];
-      for (let index = 0; index <= num_groups; index++) {
+      for (let index = 0; index < num_groups; index++) {
         const start_dataset_index = index * 6;
         var end_dataset_index = start_dataset_index + 6;
         if (index === num_groups) {
@@ -90,6 +95,7 @@ export default function Slider() {
         }
         groups_list.push(cur_group);
       }
+
       return groups_list;
     }
 

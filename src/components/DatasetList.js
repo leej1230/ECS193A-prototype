@@ -7,7 +7,7 @@ import Dataset from "./Dataset"
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
-function DatabaseList(props) {
+function DatasetList(props) {
   return (
     <div class="card shadow mb-4">
       <div class="card-body">
@@ -33,4 +33,4 @@ function DatabaseList(props) {
   );
 }
 
-export default DatabaseList;
+export default DatasetList;
