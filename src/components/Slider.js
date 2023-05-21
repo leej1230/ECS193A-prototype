@@ -118,7 +118,7 @@ export default function Slider() {
 
   return (
     <div>
-      <SliderItemsContainer dataset_groups_list={groupings} />
+      {datasets_list.length > 0 ? <SliderItemsContainer dataset_groups_list={groupings} /> : <></>}
       <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
       <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
