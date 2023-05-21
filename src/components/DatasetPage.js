@@ -269,6 +269,13 @@ function DatasetPage() {
   const get_combined_patients_genes_data = () => {
     let combined_dataset_full_information = []
 
+    if(patient_information.length == 1 && patient_information[0]["patient_id"] == ""){
+      // not set yet
+      return [
+        {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
+      ]
+    }
+
     console.log("combined information: ");
     console.log(patient_information);
     console.log(gene_with_value_information);
@@ -641,6 +648,12 @@ function DatasetPage() {
 
   const generateDatasetMatrixTable = () => {
     let columns_list = [];
+
+    if(together_patient_gene_information.length < 1){
+      return [
+        {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
+      ]
+    }
 
     let column_possibilities = Object.keys(together_patient_gene_information[0]);
 

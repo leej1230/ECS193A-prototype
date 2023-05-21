@@ -58,14 +58,14 @@ function GeneSearchPage() {
   const handleIncrementPage = async () => {
     console.log(user)
     setListPage(listPage + 1);
-    // handleSearch();
+    handleSearch();
     // console.log(listPage)
   }
 
   const handleDecrementPage = () => {
     if (listPage > 1) {
       setListPage(listPage - 1);
-      // handleSearch();
+      handleSearch();
     }
     // console.log(listPage)
   }

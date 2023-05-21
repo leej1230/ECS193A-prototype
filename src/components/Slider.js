@@ -78,7 +78,7 @@ export default function Slider() {
       var num_groups = Math.floor(num_datasets / 6);
       var last_group_num_datasets = num_datasets % 6;
 
-      if(num_groups == 0){
+      if(num_datasets == 0){
         return []
       }
 
@@ -101,15 +101,15 @@ export default function Slider() {
         groups_list.push(cur_group);
       }
 
-      console.log("groups: ", groups_list)
-
       return groups_list;
     }
 
     axios
       .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/all/`)
-      .then((result) => {
-        setDatasetsList(result.data);
+      .then(async (result) => {
+        await setDatasetsList(result.data);
+        console.log("datasets from backend: ")
+        console.log(result.data)
       })
       .then(() => {
         setGroupings(createDatasetListGroups());
