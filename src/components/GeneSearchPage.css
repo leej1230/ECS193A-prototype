@@ -15,7 +15,7 @@ html, body{
     left: 0;
 }*/
 
-#full_dataset_search_page{
+#full_gene_search_page{
     position: relative;
     min-width: 100vw; 
     min-height: 100vh; 
@@ -23,7 +23,7 @@ html, body{
     left: 0;
 }
 
-#dataset_search_page_content{
+#gene_search_page_content{
     width:78vw;
     justify-content: center;
     min-height: 100%;
@@ -34,7 +34,7 @@ html, body{
     position: relative;
 }
 
-#title_box{
+#title_box_gene_search{
     display: inline-block;
     left: 0;
     top: 0;
@@ -46,12 +46,12 @@ html, body{
     margin-right: 0;
     padding-right: 0;
 
-    margin-top: 20px;
+    margin-top: 130px;
 
     margin-bottom: 0px;
 }
 
-#control_buttons_dataset_search{
+#control_buttons_gene_search{
     right: 0;
     top: 0;
     float: right;
@@ -62,7 +62,7 @@ html, body{
     padding-right: 0;
 }
 
-#dataset_search_input{
+#gene_search_input{
     
     left: 0;
     top: 0;
@@ -79,15 +79,15 @@ html, body{
     margin-bottom: 0px;
 }
 
-#input_text_box_dataset{
+#input_text_box_gene{
     display: inline;
 }
 
-#search_dataset_button{
+#search_gene_button{
     display: inline;
 }
 
-#dataset_search_results_display_container{
+#gene_search_results_display_container{
     
     top: 0;
     justify-content: center;
@@ -103,7 +103,7 @@ html, body{
     margin-bottom: 0px;
 }
 
-#dataset_search_results_display{
+#gene_search_results_display{
     
     width: fit-content;
     max-width: 100%;
@@ -115,7 +115,7 @@ html, body{
     
 }
 
-#bookmarked_datasets_container{
+#bookmarked_genes_container{
 
     min-width: 100%;
     max-width: 100%;
@@ -133,7 +133,7 @@ html, body{
     
 }
 
-#bookmark_datasets_card_header{
+#bookmark_genes_card_header{
     justify-content: center;
 
     min-width: 100%;
@@ -146,7 +146,7 @@ html, body{
     padding-right: 0px;
 }
 
-#bookmark_datasets_card_header_text{
+#bookmark_genes_card_header_text{
     justify-content: center;
     text-align: center;
 
@@ -157,7 +157,7 @@ html, body{
     padding-right: 0px;
 }
 
-#bookmark_datasets_card_body{
+#bookmark_genes_card_body{
     justify-content: center;
 
     margin-left: auto;

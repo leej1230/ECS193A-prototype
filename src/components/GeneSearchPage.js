@@ -103,7 +103,7 @@ function GeneSearchPage() {
         <div id="content-wrapper" class="d-flex flex-column">
           <div id="content">
             
-            <div class="container-fluid" id="full_dataset_search_page">
+            <div class="container-fluid" id="full_gene_search_page">
                 <SideNav id="side_navigation_menu"
                   onSelect={(selected) => {
                       // Add your code here
@@ -138,37 +138,28 @@ function GeneSearchPage() {
                   </SideNav>
                   
               
-              <div id="dataset_search_page_content">
+              <div id="gene_search_page_content">
 
-                <div  id="control_buttons_dataset_search">
-                  <a
-                    href="/upload"
-                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                  >
-                    <i class="fas fa-upload fa-sm text-white-50"></i>Upload
-                  </a>
-                </div>
-
-                <div id="title_box">
+                <div id="title_box_gene_search">
                   <h3 class="h3 mb-5 text-gray-800">Gene Search</h3>
                 </div>
 
-                <div className="search" id="dataset_search_input">
+                <div className="search" id="gene_search_input">
                   <TextField
-                    id="input_text_box_dataset"
+                    id="input_text_box_gene"
                     onChange={(e) => setSearchInput(e.target.value)}
                     variant="outlined"
                     fullWidth
                     label="Search by gene names or dataset name"
                   />
 
-                  <button type="submit" onClick={handleSearch} class="btn btn-primary" id="search_dataset_button" aria-label="search">
+                  <button type="submit" onClick={handleSearch} class="btn btn-primary" id="search_gene_button" aria-label="search">
                     <i  class="fas fa-search"></i>
                   </button>
                 </div>
 
-                <div id="dataset_search_results_display_container">
-                  <div class="card shadow" id="dataset_search_results_display">
+                <div id="gene_search_results_display_container">
+                  <div class="card shadow" id="gene_search_results_display">
                     <div class="card-header py-3">
                       <div>
                         <SampleList resultList={searchResult} />
@@ -197,12 +188,12 @@ function GeneSearchPage() {
                   </div>
                 </div>
        
-                <div id="bookmarked_datasets_container" class="card">
+                <div id="bookmarked_genes_container" class="card">
           
-                  <div class="card-header py-3" id="bookmark_datasets_card_header">
-                    <h5 id="bookmark_datasets_card_header_text">Bookmarked Genes</h5>
+                  <div class="card-header py-3" id="bookmark_genes_card_header">
+                    <h5 id="bookmark_genes_card_header_text">Bookmarked Genes</h5>
                   </div>
-                  <div class="card-body" id="bookmark_datasets_card_body">
+                  <div class="card-body" id="bookmark_genes_card_body">
                         <Slider />
                   </div>
                   
