@@ -1,5 +1,6 @@
 import React from 'react';
 import "./Dataset.css";
+import { useEffect, useState } from "react";
 import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
 import {Button} from "@mui/material";
 
@@ -9,20 +10,19 @@ import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 function Dataset(props) {
+
   return (
     <div> 
-      <div class="card shadow" style={{minWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`, maxWidth: `${parseInt((0.7 * props.curOuterWindowWidth) / 3)}`, minHeight: '175px', maxHeight: '175px'}}>
+      <div class="card shadow" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
           <h5 class="card-title">{props.dataset.name}</h5>
           <LimitedText text={props.dataset.description} />
           
-          {/*<p class="card-text">{props.dataset.description}</p>*/}
-          {/* href={"/dataset/" + props.dataset.id} */}
+          {/*<p >{props.dataset.description}</p>*/}
           <br />
-          <a  class="btn btn-primary btn-sm" id="button_dataset_card" onClick={() => {
-            console.log("line 22 : DatasetList: width smaller size");
-            console.log((0.7 * props.curOuterWindowWidth) / 3);
-          }}> Learn more </a>
+          <a href={"/dataset/" + props.dataset.id} class="btn btn-primary btn-sm" id="button_dataset_card" onClick={() => {
+            
+          }} > Learn more </a>
         </div>
       </div>
 
