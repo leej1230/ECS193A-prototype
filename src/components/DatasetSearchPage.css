@@ -5,7 +5,8 @@ html, body{
     padding: 0;
 }
 
-.home_page_body{
+
+/*.home_page_body{
     position: relative;
     min-width: 100vw; 
     min-height: 100vh; 
@@ -13,9 +14,60 @@ html, body{
     background-color: black;
     top: 0;
     left: 0;
+}*/
+
+#full_dataset_search_page{
+    position: relative;
+    min-width: 100vw; 
+    min-height: 100vh; 
+    top: 0;
+    left: 0;
 }
 
-#title_landing_info{
+#dataset_search_page_content{
+    width:78vw;
+    justify-content: center;
+    min-height: 100%;
+    top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 70px;
+    position: relative;
+}
+
+
+#control_buttons_dataset_search{
+    right: 0;
+    top: 0;
+    float: right;
+    margin-top: 60px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#bookmarked_datasets_container{
+
+    display: inline-block;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    justify-content: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
+
+    margin-top: 50px;
+
+    
+}
+
+/*#title_landing_info{
     position: absolute;
     margin: auto;
     width: 100%;
@@ -43,4 +95,4 @@ html, body{
 #landing_page_link_from_home{
     text-decoration: none;
     color: white
-}
+}*/

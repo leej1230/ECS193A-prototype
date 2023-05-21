@@ -21,7 +21,6 @@ function SampleList(props) {
 
   return (
     <div>
-      <h5>Popular Genes</h5>
 
       {gene_data ? (
         <div>

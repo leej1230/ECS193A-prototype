@@ -103,7 +103,7 @@ function DatasetSearchPage() {
         <div id="content-wrapper" class="d-flex flex-column">
           <div id="content">
             
-            <div class="container-fluid" id="home_page_full">
+            <div class="container-fluid" id="full_dataset_search_page">
                 <SideNav id="side_navigation_menu"
                   onSelect={(selected) => {
                       // Add your code here
@@ -136,8 +136,11 @@ function DatasetSearchPage() {
                         </NavItem>
                     </SideNav.Nav>
                   </SideNav>
-              <div class="row justify-content-end">
-                <div class="col-md-12 bg-light text-right mr-5 mt-5">
+                  
+              
+              <div id="dataset_search_page_content">
+
+                <div  id="control_buttons_dataset_search">
                   <a
                     href="/upload"
                     class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
@@ -145,66 +148,27 @@ function DatasetSearchPage() {
                     <i class="fas fa-upload fa-sm text-white-50"></i>Upload
                   </a>
                 </div>
-              </div>
 
-              <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
-            </div>
 
-            <div className="row justify-content-center mt-5 mb-5">
-              <div className="search">
-                <TextField
-                  id="input_keyword"
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  label="Search by gene names or dataset name"
-                />
-
-                <button type="submit" onClick={handleSearch} class="btn btn-primary" aria-label="search">
-                  <i  class="fas fa-search"></i>
-                </button>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div className="search-result mb-5 mt-5">
-                <ul className="search-result">
-                  <Slider />
-                </ul>
-              </div>
-            </div>
-
-            <div className="row justify-content-center">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <div>
-                    <SampleList resultList={searchResult} />
-                    {!hasSearched && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        Start Searching!
-                      </div>
-                    )}
-                    {hasSearched && searchResult.length === 0 && (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        No results
-                      </div>
-                    )}
-                  </div>
-                  {searchResult.length > 0 && (
-                    <div>
-                      <div className="float-left">
-                        <button onClick={handleDecrementPage}>Prev Page</button>
-                      </div>
-                      <div className="float-right">
-                        <button onClick={handleIncrementPage}>Next Page</button>
-                      </div>
+       
+                  <div id="bookmarked_datasets_container" class="card">
+            
+                    <div  class="card-header py-3">
+                      <h6>Bookmarked Datasets</h6>
                     </div>
-                  )}
-                </div>
+                    <div class="card-body">
+                          <Slider />
+                    </div>
+                    
+                  </div>
+             
+
+
               </div>
+
+
             </div>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -251,3 +215,69 @@ export default DatasetSearchPage;
   <SearchIcon style={{ fill: "blue" }} />
 </IconButton>
 */
+
+/*
+<div className="search-result">
+                    <ul className="search-result">
+                      <Slider />
+                    </ul>
+                  </div>
+*/
+
+/*
+
+<div class="row justify-content-end">
+                
+              </div>
+
+              <div class="row justify-content-center">
+              <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
+            
+
+              <div className="row justify-content-center mt-5 mb-5">
+                <div className="search">
+                  <TextField
+                    id="input_keyword"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    label="Search by gene names or dataset name"
+                  />
+
+                  <button type="submit" onClick={handleSearch} class="btn btn-primary" aria-label="search">
+                    <i  class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div className="row justify-content-center">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <div>
+                      <SampleList resultList={searchResult} />
+                      {!hasSearched && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          Start Searching!
+                        </div>
+                      )}
+                      {hasSearched && searchResult.length === 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          No results
+                        </div>
+                      )}
+                    </div>
+                    {searchResult.length > 0 && (
+                      <div>
+                        <div className="float-left">
+                          <button onClick={handleDecrementPage}>Prev Page</button>
+                        </div>
+                        <div className="float-right">
+                          <button onClick={handleIncrementPage}>Next Page</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+  */
