@@ -48,7 +48,7 @@ function SliderItemsContainer(props) {
     <div>
 
       <ScrollBars
-       style={{ width: parseInt(0.7 * dimensions.width), height: '400px' }}  >
+       style={{ width: parseInt(0.7 * dimensions.width), height: '450px' }}  >
         {props.dataset_groups_list.map((child, index) =>
         <div key={index}> <DatasetList curWindowWidth={dimensions.width} curWindowHeight={dimensions.height} datasets_arr={props.dataset_groups_list[index]} /> </div>)}
       </ScrollBars>

@@ -15,12 +15,12 @@ function Dataset(props) {
     <div> 
       <div class="card shadow" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title">{props.dataset.name}</h5>
-          <LimitedText text={props.dataset.description} />
+          <h5 class="card-title">{props.dataset ? props.dataset.name : ""}</h5>
+          <LimitedText text={props.dataset ? props.dataset.description : ""} />
           
           {/*<p >{props.dataset.description}</p>*/}
           <br />
-          <a href={"/dataset/" + props.dataset.id} class="btn btn-primary btn-sm" id="button_dataset_card" onClick={() => {
+          <a href={props.dataset ? "/dataset/" + props.dataset.id : "#"} class="btn btn-primary btn-sm" id="button_dataset_card" onClick={() => {
             
           }} > Learn more </a>
         </div>
