@@ -82,19 +82,28 @@ export default function Slider() {
         num_groups = num_groups + 1
       }
 
+      console.log("num datasets: ", num_datasets)
+      console.log("num groups: ", num_groups)
+      console.log("last group: ", last_group_num_datasets)
+
       var groups_list = [];
       for (let index = 0; index < num_groups; index++) {
         const start_dataset_index = index * 6;
-        var end_dataset_index = start_dataset_index + 6;
-        if (index === num_groups) {
+        let end_dataset_index = start_dataset_index + 6;
+        if ((index+1) === num_groups) {
           end_dataset_index = start_dataset_index + last_group_num_datasets;
         }
-        var cur_group = [];
+
+        console.log("ending dataset: ", end_dataset_index)
+        console.log("starting dataset: ", start_dataset_index)
+        let cur_group = [];
         for (let j = start_dataset_index; j < end_dataset_index; j++) {
           cur_group.push(datasets_list[j]);
         }
         groups_list.push(cur_group);
       }
+
+      console.log(groups_list)
 
       return groups_list;
     }
