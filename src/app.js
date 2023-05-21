@@ -17,6 +17,7 @@ import Login from "./login";
 import Profile from "./profile";
 import Management from "./management";
 import DatasetSearchPage from "./components/DatasetSearchPage";
+import GeneSearchPage from "./components/GeneSearchPage";
 
 const privateRoutes = [
   {
@@ -50,6 +51,17 @@ const privateRoutes = [
         <Navbar />
         <div>
           <DatasetSearchPage />
+        </div>
+      </>
+    ),
+  },
+  {
+    path: "/search_genes_page",
+    element: (
+      <>
+        <Navbar />
+        <div>
+          <GeneSearchPage />
         </div>
       </>
     ),

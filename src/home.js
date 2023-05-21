@@ -115,7 +115,7 @@ function Home() {
                                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
                             </NavIcon>
                             <NavText style={{ color: 'white' }}>
-                                Home
+                              <a href="/console" style={{textDecoration: 'None'}}>Home</a>
                             </NavText>
                         </NavItem>
                         <NavItem eventKey="search_gene">
@@ -123,7 +123,7 @@ function Home() {
                                 <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
                             </NavIcon>
                             <NavText style={{ color: 'white' }}>
-                                Gene Search
+                              <a href="/search_genes_page" style={{textDecoration: 'None'}}>Gene Search</a>
                             </NavText>
                         </NavItem>
                         <NavItem eventKey="search_dataset">
