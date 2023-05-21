@@ -147,6 +147,17 @@ html, body{
     padding-right: 0px;
 }
 
+#bookmark_datasets_card_header_text{
+    justify-content: center;
+    text-align: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
+}
+
 #bookmark_datasets_card_body{
     justify-content: center;
 

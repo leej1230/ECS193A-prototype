@@ -199,8 +199,8 @@ function DatasetSearchPage() {
        
                 <div id="bookmarked_datasets_container" class="card">
           
-                  <div  class="card-header py-3" id="bookmark_datasets_card_header">
-                    <h6>Bookmarked Datasets</h6>
+                  <div class="card-header py-3" id="bookmark_datasets_card_header">
+                    <h5 id="bookmark_datasets_card_header_text">Bookmarked Datasets</h5>
                   </div>
                   <div class="card-body" id="bookmark_datasets_card_body">
                         <Slider />
