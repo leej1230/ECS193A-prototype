@@ -13,7 +13,7 @@ function Dataset(props) {
 
   return (
     <div> 
-      <div class="card shadow" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
+      <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
           <h5 class="card-title">{props.dataset ? props.dataset.name : ""}</h5>
           <LimitedText text={props.dataset ? props.dataset.description : ""} />

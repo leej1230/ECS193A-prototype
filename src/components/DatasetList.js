@@ -9,7 +9,7 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 function DatasetList(props) {
   return (
-    <div class="card shadow mb-4">
+    <div class="card" style={{margin: '0px', padding: '0px'}}>
       <div class="card-body">
         <div className="outer_grid">
           {props.datasets_arr.map((data_set_single, index) => (

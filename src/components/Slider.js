@@ -48,7 +48,7 @@ function SliderItemsContainer(props) {
     <div>
 
       <ScrollBars
-       style={{ width: parseInt(0.7 * dimensions.width), height: '450px' }}  >
+       style={{ width: parseInt(0.7 * dimensions.width), height: '405px', margin: '0px', padding: '0px' }}  >
         {props.dataset_groups_list.map((child, index) =>
         <div key={index}> <DatasetList curWindowWidth={dimensions.width} curWindowHeight={dimensions.height} datasets_arr={props.dataset_groups_list[index]} /> </div>)}
       </ScrollBars>
@@ -78,24 +78,22 @@ export default function Slider() {
       var num_groups = Math.floor(num_datasets / 6);
       var last_group_num_datasets = num_datasets % 6;
 
+      if(num_groups == 0){
+        return []
+      }
+
       if(last_group_num_datasets > 0){
         num_groups = num_groups + 1
       }
-
-      console.log("num datasets: ", num_datasets)
-      console.log("num groups: ", num_groups)
-      console.log("last group: ", last_group_num_datasets)
 
       var groups_list = [];
       for (let index = 0; index < num_groups; index++) {
         const start_dataset_index = index * 6;
         let end_dataset_index = start_dataset_index + 6;
-        if ((index+1) === num_groups) {
+        if ((index+1) === num_groups && num_datasets % 6 > 0 ) {
           end_dataset_index = start_dataset_index + last_group_num_datasets;
         }
 
-        console.log("ending dataset: ", end_dataset_index)
-        console.log("starting dataset: ", start_dataset_index)
         let cur_group = [];
         for (let j = start_dataset_index; j < end_dataset_index; j++) {
           cur_group.push(datasets_list[j]);
@@ -103,7 +101,7 @@ export default function Slider() {
         groups_list.push(cur_group);
       }
 
-      console.log(groups_list)
+      console.log("groups: ", groups_list)
 
       return groups_list;
     }
