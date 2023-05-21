@@ -35,6 +35,22 @@ html, body{
     position: relative;
 }
 
+#title_box{
+    display: inline-block;
+    left: 0;
+    top: 0;
+    text-align: center;
+    justify-content: center;
+    min-width: 100%;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+
+    margin-top: 20px;
+
+    margin-bottom: 0px;
+}
 
 #control_buttons_dataset_search{
     right: 0;
@@ -47,14 +63,66 @@ html, body{
     padding-right: 0;
 }
 
-#bookmarked_datasets_container{
+#dataset_search_input{
+    
+    left: 0;
+    top: 0;
+    text-align: center;
+    justify-content: center;
+    max-width: 100%;
+    margin-left: auto;
+    padding-left: 0;
+    margin-right: auto;
+    padding-right: 0;
 
-    display: inline-block;
+    margin-top: 30px;
+
+    margin-bottom: 0px;
+}
+
+#input_text_box_dataset{
+    display: inline;
+}
+
+#search_dataset_button{
+    display: inline;
+}
+
+#dataset_search_results_display_container{
+    
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    margin-left: auto;
+    padding-left: 0;
+    margin-right: auto;
+    padding-right: 0;
+
+    margin-top: 30px;
+
+    margin-bottom: 0px;
+}
+
+#dataset_search_results_display{
+    
+    width: fit-content;
+    max-width: 100%;
+    justify-content: center;
+    margin-left: auto;
+    padding-left: 0;
+    margin-right: auto;
+    padding-right: 0;
+    
+}
+
+#bookmarked_datasets_container{
 
     min-width: 100%;
     max-width: 100%;
 
     justify-content: center;
+    align-items: center;
 
     margin-left: auto;
     padding-left: 0px;
@@ -62,9 +130,31 @@ html, body{
     margin-right: auto;
     padding-right: 0px;
 
-    margin-top: 50px;
-
+    margin-top: 30px;
     
+}
+
+#bookmark_datasets_card_header{
+    justify-content: center;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    margin-left: 0px;
+    padding-left: 0px;
+
+    margin-right: 0px;
+    padding-right: 0px;
+}
+
+#bookmark_datasets_card_body{
+    justify-content: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
 }
 
 /*#title_landing_info{

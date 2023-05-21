@@ -149,18 +149,64 @@ function DatasetSearchPage() {
                   </a>
                 </div>
 
+                <div id="title_box">
+                  <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
+                </div>
 
-       
-                  <div id="bookmarked_datasets_container" class="card">
-            
-                    <div  class="card-header py-3">
-                      <h6>Bookmarked Datasets</h6>
+                <div className="search" id="dataset_search_input">
+                  <TextField
+                    id="input_text_box_dataset"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    label="Search by gene names or dataset name"
+                  />
+
+                  <button type="submit" onClick={handleSearch} class="btn btn-primary" id="search_dataset_button" aria-label="search">
+                    <i  class="fas fa-search"></i>
+                  </button>
+                </div>
+
+                <div id="dataset_search_results_display_container">
+                  <div class="card shadow" id="dataset_search_results_display">
+                    <div class="card-header py-3">
+                      <div>
+                        <SampleList resultList={searchResult} />
+                        {!hasSearched && (
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            Start Searching!
+                          </div>
+                        )}
+                        {hasSearched && searchResult.length === 0 && (
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            No results
+                          </div>
+                        )}
+                      </div>
+                      {searchResult.length > 0 && (
+                        <div>
+                          <div className="float-left">
+                            <button onClick={handleDecrementPage}>Prev Page</button>
+                          </div>
+                          <div className="float-right">
+                            <button onClick={handleIncrementPage}>Next Page</button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div class="card-body">
-                          <Slider />
-                    </div>
-                    
                   </div>
+                </div>
+       
+                <div id="bookmarked_datasets_container" class="card">
+          
+                  <div  class="card-header py-3" id="bookmark_datasets_card_header">
+                    <h6>Bookmarked Datasets</h6>
+                  </div>
+                  <div class="card-body" id="bookmark_datasets_card_body">
+                        <Slider />
+                  </div>
+                  
+                </div>
              
 
 
@@ -231,53 +277,15 @@ export default DatasetSearchPage;
               </div>
 
               <div class="row justify-content-center">
-              <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
+              
             
 
               <div className="row justify-content-center mt-5 mb-5">
-                <div className="search">
-                  <TextField
-                    id="input_keyword"
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    variant="outlined"
-                    fullWidth
-                    label="Search by gene names or dataset name"
-                  />
-
-                  <button type="submit" onClick={handleSearch} class="btn btn-primary" aria-label="search">
-                    <i  class="fas fa-search"></i>
-                  </button>
-                </div>
+                
               </div>
 
               <div className="row justify-content-center">
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <div>
-                      <SampleList resultList={searchResult} />
-                      {!hasSearched && (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                          Start Searching!
-                        </div>
-                      )}
-                      {hasSearched && searchResult.length === 0 && (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                          No results
-                        </div>
-                      )}
-                    </div>
-                    {searchResult.length > 0 && (
-                      <div>
-                        <div className="float-left">
-                          <button onClick={handleDecrementPage}>Prev Page</button>
-                        </div>
-                        <div className="float-right">
-                          <button onClick={handleIncrementPage}>Next Page</button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                
               </div>
 
   */
