@@ -11,7 +11,7 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 function LimitedText(props) {
   return (
         <div >
-            <p id="dataset_text_clipping">{props.text}</p>
+            <p id="dataset_text_clipping" style={{WebkitLineClamp: props.numLines ? props.numLines : 1}}>{props.text}</p>
         </div>
   );
 }

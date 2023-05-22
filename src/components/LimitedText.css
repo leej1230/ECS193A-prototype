@@ -1,9 +1,16 @@
 #dataset_text_clipping{
     overflow: hidden;
-   text-overflow: ellipsis;
-   display: -webkit-box;
-   -webkit-box-orient: vertical;
-   -webkit-line-clamp: 2; /* number of lines to show */
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+    margin: 0px;
+    padding: 0px;
+
+    font-size: 14px;
+   
+   /* number of lines to show */
 
    /* fallback */
    /*line-height: 10px;        
