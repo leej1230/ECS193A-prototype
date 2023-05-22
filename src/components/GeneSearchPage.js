@@ -4,7 +4,7 @@ import { IconButton, Select, MenuItem } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import "./GeneSearchPage.css";
 import SampleList from "./SampleList";
-import Slider from "./Slider";
+import SliderGene from "./SliderGene";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -204,7 +204,7 @@ function GeneSearchPage() {
                     <h5 id="bookmark_genes_card_header_text">Bookmarked Genes</h5>
                   </div>
                   <div class="card-body" id="bookmark_genes_card_body">
-                        <Slider />
+                        <SliderGene />
                   </div>
                   
                 </div>

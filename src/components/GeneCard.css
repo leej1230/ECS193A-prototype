@@ -1,0 +1,9 @@
+.gene_element{
+    border-radius: 3%;
+ }
+
+#button_gene_card{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
+}
