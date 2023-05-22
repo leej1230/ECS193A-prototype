@@ -1,12 +1,33 @@
-.patient-display {
-    list-style-type: none;
-}
 
 .gene-display {
     list-style-type: none;
 }
 
-.GraphType {
-    margin: auto;
-    width: 16rem;
+#gene_display_result_single{
+    min-width: 100%;
+    max-width: 100%;
+    padding: 0px;
+    margin: 0px;
+
+    background-color: white;
+
+    margin-bottom: 10px;
+}
+
+#search_gene_result_name_display{
+    font-size: medium;
+    margin: 0px;
+    padding: 0px;
+}
+
+#search_gene_result_link_display{
+    font-size: small;
+    margin: 0px;
+    padding: 0px;
+}
+
+#search_gene_result_id_display{
+    padding: 0px;
+    margin: 0px;
+    font-size: small;
 }

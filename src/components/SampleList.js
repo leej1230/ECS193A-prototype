@@ -26,11 +26,10 @@ function SampleList(props) {
         <div>
           {gene_data &&
             gene_data.map((gene_val) => (
-              <li class="gene-display">
-                <a href={"/gene/" + gene_val.name + "/" + gene_val.id}>
-                  Gene Name: {gene_val.name} ID: {gene_val.id}
-                </a>
-              </li>
+              <div id="gene_display_result_single">
+                  <p id="search_gene_result_name_display">{gene_val.name} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={"/gene/" + gene_val.name + "/" + gene_val.id}>Link to Gene Page</a> </p>
+                  <p id="search_gene_result_id_display">ID: {gene_val.id}</p>
+              </div>
             ))}
         </div>
       ) : (
@@ -55,3 +54,11 @@ function SampleList(props) {
 }
 
 export default SampleList;
+
+/*
+<li class="gene-display">
+    <a href={"/gene/" + gene_val.name + "/" + gene_val.id}>
+      Gene Name: {gene_val.name} ID: {gene_val.id}
+    </a>
+  </li>
+*/
