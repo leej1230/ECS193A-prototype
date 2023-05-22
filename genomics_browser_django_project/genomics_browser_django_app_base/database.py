@@ -793,7 +793,7 @@ class Database:
 
             doc_count = 0
 
-            if search_word == ' ':
+            if search_word == " ":
                 doc_count = Database.gene_collection.count_documents({})
                 genes = (
                     Database.gene_collection.find(

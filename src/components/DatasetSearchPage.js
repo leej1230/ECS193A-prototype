@@ -14,6 +14,8 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
+import {clone} from "ramda";
+
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
@@ -42,9 +44,13 @@ function DatasetSearchPage() {
   //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
   const handleSearch = async () => {
     try {
+      let search_input_for_url = clone(searchInput)
+      if( search_input_for_url == "" ){
+        search_input_for_url = " ";
+      }
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URL
-        }/api/${searchFilter}/search/${searchInput}/${listPage.toString()}`
+        }/api/${searchFilter}/search/${search_input_for_url}/${listPage.toString()}`
       );
       setSearchResult(response.data);
       setHasSearched(true);

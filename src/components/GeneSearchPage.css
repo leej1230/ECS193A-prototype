@@ -38,6 +38,7 @@ html, body{
     display: inline-block;
     left: 0;
     top: 0;
+    /*text-align: left;*/
     text-align: center;
     justify-content: center;
     min-width: 100%;
@@ -66,9 +67,12 @@ html, body{
     
     left: 0;
     top: 0;
-    text-align: center;
-    justify-content: center;
+    justify-content: left;
+    float: left;
+    /*text-align: center;
+    justify-content: center;*/
     max-width: 100%;
+    min-width: 100%;
     margin-left: auto;
     padding-left: 0;
     margin-right: auto;
@@ -76,7 +80,7 @@ html, body{
 
     margin-top: 30px;
 
-    margin-bottom: 0px;
+    margin-bottom: 10px;
 
     min-height: 35px;
 }
