@@ -1,13 +1,16 @@
-import React from 'react';
+import React from "react";
+import Dataset from "./Dataset";
 import "./DatasetList.css";
-import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
-import {Button} from "@mui/material";
-import Dataset from "./Dataset"
 
-import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
-import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css";
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 
 function DatasetList(props) {
+
+  if (props.datasets_arr[0] === undefined) {
+      return;
+  }
+
   return (
     <div class="card" style={{margin: '0px', padding: '0px'}}>
       <div class="card-body">
@@ -15,6 +18,7 @@ function DatasetList(props) {
           {props.datasets_arr.map((data_set_single, index) => (
             <Dataset curOuterWindowWidth={props.curWindowWidth} curOuterWindowHeight={props.curWindowHeight} dataset={props.datasets_arr[index]} />
           ))}
+
         </div>
       </div>
 
@@ -29,6 +33,7 @@ function DatasetList(props) {
 
       <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
       <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+
     </div>
   );
 }

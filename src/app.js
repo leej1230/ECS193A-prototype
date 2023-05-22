@@ -18,6 +18,8 @@ import Profile from "./profile";
 import Management from "./management";
 import DatasetSearchPage from "./components/DatasetSearchPage";
 import GeneSearchPage from "./components/GeneSearchPage";
+import About from "./about";
+import Contact from "./contact";
 
 const privateRoutes = [
   {
@@ -114,14 +116,14 @@ const privateRoutes = [
     ),
   },
   {
-          path: "/update/dataset",
-          element: (
-            <>
-              <Navbar />
-              <UpdateDataset />
-            </>
-          )
-    },
+    path: "/update/dataset",
+    element: (
+      <>
+        <Navbar />
+        <UpdateDataset />
+      </>
+    )
+  },
   // {
   //   path: "/registration",
   //   element: (
@@ -166,6 +168,22 @@ const publicRoutes = [
     element: (
       <>
         <HomePage />
+      </>
+    ),
+  },
+  {
+    path: "/about",
+    element: (
+      <>
+        <About />
+      </>
+    ),
+  },
+  {
+    path: "/contact",
+    element: (
+      <>
+        <Contact />
       </>
     ),
   },
