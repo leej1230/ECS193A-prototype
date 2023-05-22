@@ -15,14 +15,18 @@ function GeneCard(props) {
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title">{props.gene ? props.gene.name : ""}</h5>
+          <h5 class="card-title"><a href={props.gene ? "/gene/" + props.gene.id : "#"} onClick={() => {
+            }} >{props.gene ? props.gene.name : ""}</a></h5>
+          <p className="gene_content_card">Gene ID: 1  Dataset ID: 1 </p>
+          <p className="gene_content_card">Gene Type: Protein Coding</p>
+          <p className="gene_content_card">Other Name: ANKR1</p>
+          <p className="gene_content_card">Dataset Name: SOME_DATASET</p>
+
           {/*<LimitedText text={props.gene ? props.gene.description : ""} />*/}
           
           {/*<p >{props.gene.description}</p>*/}
           <br />
-          <a href={props.gene ? "/gene/" + props.gene.id : "#"} class="btn btn-primary btn-sm" id="button_gene_card" onClick={() => {
-            
-          }} > Learn more </a>
+          
         </div>
       </div>
 
@@ -38,3 +42,7 @@ function GeneCard(props) {
 }
 
 export default GeneCard;
+
+/*
+class="btn btn-primary btn-sm"
+*/
