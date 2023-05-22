@@ -108,8 +108,6 @@ export default function Slider() {
       .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/all/`)
       .then(async (result) => {
         await setDatasetsList(result.data);
-        console.log("datasets from backend: ")
-        console.log(result.data)
       })
       .then(() => {
         setGroupings(createDatasetListGroups());

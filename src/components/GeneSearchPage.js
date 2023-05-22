@@ -169,16 +169,21 @@ function GeneSearchPage() {
                           </div>
                         )}
                         {hasSearched && searchResult.length === 0 && (
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            No results
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                              No results
+                            </div>
+                            { listPage > 1 ? <div className="float-left">
+                              <button onClick={handleDecrementPage}>Prev Page</button>
+                            </div> : <div></div> }
                           </div>
                         )}
                       </div>
                       {searchResult.length > 0 && (
                         <div>
-                          <div className="float-left">
-                            <button onClick={handleDecrementPage}>Prev Page</button>
-                          </div>
+                          { listPage > 1 ? <div className="float-left">
+                              <button onClick={handleDecrementPage}>Prev Page</button>
+                            </div> : <div></div> }
                           <div className="float-right">
                             <button onClick={handleIncrementPage}>Next Page</button>
                           </div>
