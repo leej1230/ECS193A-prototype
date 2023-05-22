@@ -6,28 +6,33 @@
 #gene_display_result_single{
     min-width: 100%;
     max-width: 100%;
-    padding: 0px;
+    padding: 10px;
     margin: 0px;
 
     background-color: white;
-
-    margin-bottom: 10px;
 }
 
 #search_gene_result_name_display{
+    font-size: larger;
+    margin: 0px;
+    padding: 0px;
+    font-weight: bold;
+}
+
+#search_gene_result_link_display{
     font-size: medium;
     margin: 0px;
     padding: 0px;
 }
 
-#search_gene_result_link_display{
-    font-size: small;
-    margin: 0px;
+#search_gene_result_info_display{
     padding: 0px;
+    margin: 0px;
+    font-size: medium;
 }
 
-#search_gene_result_id_display{
-    padding: 0px;
+#line_div_category_search_content{
     margin: 0px;
-    font-size: small;
+    padding: 0px;
+    margin-top: 10px;
 }

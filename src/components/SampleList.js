@@ -12,6 +12,8 @@ const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`;
 function SampleList(props) {
   const [gene_data, setGENE_data] = useState();
 
+  const [extra_gene_information, set_extra_gene_information] = useState({})
+
   useEffect(() => {
     async function updateGeneList() {
       setGENE_data(props.resultList);
@@ -28,7 +30,9 @@ function SampleList(props) {
             gene_data.map((gene_val) => (
               <div id="gene_display_result_single">
                   <p id="search_gene_result_name_display">{gene_val.name} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={"/gene/" + gene_val.name + "/" + gene_val.id}>Link to Gene Page</a> </p>
-                  <p id="search_gene_result_id_display">ID: {gene_val.id}</p>
+                  <p id="search_gene_result_info_display">Gene ID: {gene_val.id} &nbsp; &nbsp; &nbsp; Dataset Name: SOME_DATASET &nbsp; &nbsp; &nbsp; Dataset ID: 1 &nbsp; &nbsp; &nbsp; Gene Type: Protein Coding &nbsp; &nbsp; &nbsp; Other Name: ANKR1 &nbsp; &nbsp; &nbsp; </p>
+                  <p id="search_gene_result_info_display">Description: ghghg hghgh ghgh &nbsp; &nbsp; &nbsp;</p>
+                  <hr id="line_div_category_search_content" />
               </div>
             ))}
         </div>

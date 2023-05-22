@@ -141,7 +141,7 @@ function GeneSearchPage() {
               <div id="gene_search_page_content">
 
                 <div id="title_box_gene_search">
-                  <h3 class="h3 mb-5 text-gray-800">Gene Search</h3>
+                  <h3 class="h3 text-gray-800">Gene Search</h3>
                 </div>
 
                 <div className="search" id="gene_search_input">
@@ -150,6 +150,7 @@ function GeneSearchPage() {
                     onChange={(e) => setSearchInput(e.target.value)}
                     variant="outlined"
                     fullWidth
+                    fullHeight
                     label="Search by gene names or dataset name"
                   />
 
@@ -160,8 +161,7 @@ function GeneSearchPage() {
 
                 <div id="gene_search_results_display_container">
                   <div class="card shadow" id="gene_search_results_display">
-                    <div class="card-header py-3">
-                      <div>
+                    
                         <SampleList resultList={searchResult} />
                         {!hasSearched && (
                           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -178,8 +178,7 @@ function GeneSearchPage() {
                             </div> : <div></div> }
                           </div>
                         )}
-                      </div>
-                      {searchResult.length > 0 && (
+                        {searchResult.length > 0 && (
                         <div>
                           { listPage > 1 ? <div className="float-left">
                               <button onClick={handleDecrementPage}>Prev Page</button>
@@ -189,7 +188,7 @@ function GeneSearchPage() {
                           </div>
                         </div>
                       )}
-                    </div>
+                   
                   </div>
                 </div>
        
