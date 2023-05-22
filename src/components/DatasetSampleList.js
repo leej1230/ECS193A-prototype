@@ -27,7 +27,7 @@ function DatasetSampleList(props) {
           {dataset_data &&
             dataset_data.map((dataset_val) => (
               <div id="dataset_display_result_single">
-                  <p id="search_dataset_result_name_display">{dataset_val.name} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={"/dataset/" + dataset_val.name + "/" + dataset_val.id}>Link to Dataset Page</a> </p>
+                  <p id="search_dataset_result_name_display">{dataset_val.name} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={"/dataset/" + dataset_val.id}>Link to Dataset Page</a> </p>
                   <p id="search_dataset_result_info_display">Dataset ID: {dataset_val.id} &nbsp; &nbsp; &nbsp; Description: ghghg hghgh ghgh </p>
                   <hr id="line_div_category_search_content" />
               </div>
