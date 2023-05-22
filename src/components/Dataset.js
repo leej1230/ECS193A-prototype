@@ -16,14 +16,17 @@ function Dataset(props) {
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title">{props.dataset ? props.dataset.name : ""}</h5>
-          <LimitedText numLines='2' text={props.dataset ? props.dataset.description : ""} />
+          <h5 class="card-title"><a href={props.dataset ? "/dataset/" + props.dataset.id : "#"} onClick={() => {
+            
+          }} > {props.dataset ? props.dataset.name : ""} </a></h5>
+          <p id="dataset_card_bookmark_display">Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'}</p>
+          <LimitedText numLines='2' text={`Description: ${props.dataset ? props.dataset.description : ""}`} />
           
           {/*<p >{props.dataset.description}</p>*/}
-          <br />
+          {/*<br />
           <a href={props.dataset ? "/dataset/" + props.dataset.id : "#"} class="btn btn-primary btn-sm" id="button_dataset_card" onClick={() => {
             
-          }} > Learn more </a>
+          }} > Learn more </a>*/}
         </div>
       </div>
 
