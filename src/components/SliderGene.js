@@ -136,13 +136,13 @@ export default function SliderGene() {
       return groups_list;
     }
 
-    /*axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
       // Data to be sent to the server
       genes_request_list: clone(bookmarkedGenes)
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
       console.log(response);
-    });*/
+    });
     /*.then(async (result) => {
         setGenesList(result.data);
       })
