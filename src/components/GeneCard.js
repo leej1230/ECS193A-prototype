@@ -17,7 +17,7 @@ function GeneCard(props) {
         <div class="card-body">
           <h5 class="card-title"><a href={props.gene ? "/gene/" + props.gene.name + "/" + props.gene.id : "#"} onClick={() => {
             }} >{props.gene ? props.gene.name : ""}</a></h5>
-          <p className="gene_content_card">Gene ID: 1  Dataset ID: 1 </p>
+          <p className="gene_content_card">Gene ID: {props.gene && props.gene.id ? props.gene.id : "1"}  Dataset ID: {props.gene && props.gene.dataset_id ? props.gene.dataset_id : "1"} </p>
           <p className="gene_content_card">Gene Type: Protein Coding</p>
           <p className="gene_content_card">Other Name: ANKR1</p>
           <p className="gene_content_card">Dataset Name: SOME_DATASET</p>

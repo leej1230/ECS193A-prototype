@@ -105,6 +105,20 @@ export default function SliderGene() {
   }, []);
 
   useEffect(() => {
+
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
+      // Data to be sent to the server
+      genes_request_list: clone(bookmarkedGenes)
+    }, { 'content-type': 'application/json' }).then((response) => {
+      console.log("post has been sent");
+      console.log(response.data);
+      setGenesList(response.data);
+    });
+
+  }, [bookmarkedGenes]);
+
+  useEffect(() => {
+
     function createGeneListGroups() {
       var num_genes = genes_list.length;
       var num_groups = Math.floor(num_genes / 6);
@@ -135,19 +149,9 @@ export default function SliderGene() {
 
       return groups_list;
     }
-
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
-      // Data to be sent to the server
-      genes_request_list: clone(bookmarkedGenes)
-    }, { 'content-type': 'application/json' }).then((response) => {
-      console.log("post has been sent");
-      console.log(response.data);
-      setGenesList(response.data);
-    }).then(() => {
-        setGroupings(createGeneListGroups());
-      });
-
-  }, [bookmarkedGenes]);
+    
+    setGroupings(createGeneListGroups());
+  }, [genes_list]);
 
   return (
     <div>
