@@ -126,12 +126,12 @@ function GeneSearchPage() {
                                 <a href="/search_genes_page" style={{textDecoration: 'None'}}>Gene Search</a>
                             </NavText>
                         </NavItem>
-                        <NavItem eventKey="search_dataset" href="/search_datasets_page">
+                        <NavItem eventKey="search_dataset" >
                             <NavIcon >
                                 <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
                             </NavIcon>
                             <NavText style={{ color: 'white' }}>
-                                Dataset Search
+                              <a href="/search_datasets_page" style={{textDecoration: 'None'}}>Dataset Search</a>
                             </NavText>
                         </NavItem>
                     </SideNav.Nav>
@@ -164,13 +164,13 @@ function GeneSearchPage() {
                     
                         <SampleList resultList={searchResult} />
                         {!hasSearched && (
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
                             Start Searching!
                           </div>
                         )}
                         {hasSearched && searchResult.length === 0 && (
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
                               No results
                             </div>
                             { listPage > 1 ? <div className="float-left">
