@@ -979,6 +979,22 @@ class Database:
             )
             serial = DatasetSerializer(dataset, many=False)
             return serial.data
+        
+        def get_dataset_name_for_id(request):
+            """Get the dataset name given dataset ID.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                dict: Just the dataset name
+            """
+
+            dataset = Database.dataset_collection.find_one(
+                {'id': int(request['dataset_id'])}
+            )
+            name_info = dataset['name']
+            return loads(dumps(name_info))
 
         @staticmethod
         def get_dataset_all(request):
