@@ -156,7 +156,7 @@ function DatasetSearchPage() {
                 </div>
 
                 <div id="title_box">
-                  <h3 class="h3 mb-5 text-gray-800">Dataset Search</h3>
+                  <h3 class="h3 text-gray-800">Dataset Search</h3>
                 </div>
 
                 <div className="search" id="dataset_search_input">
@@ -175,17 +175,17 @@ function DatasetSearchPage() {
 
                 <div id="dataset_search_results_display_container">
                   <div class="card shadow" id="dataset_search_results_display">
-                    <div class="card-header py-3">
+                
                       <div>
                         <SampleList resultList={searchResult} />
                         {!hasSearched && (
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' , minWidth: '100%', maxWidth: '100%' }}>
                             Start Searching!
                           </div>
                         )}
                         {hasSearched && searchResult.length === 0 && (
                           <div>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' , minWidth: '100%', maxWidth: '100%' }}>
                               No results
                             </div>
                             { listPage > 1 ? <div className="float-left">
@@ -193,18 +193,19 @@ function DatasetSearchPage() {
                             </div> : <div></div> }
                           </div>
                         )}
-                      </div>
-                      {searchResult.length > 0 && (
-                        <div>
-                          { listPage > 1 ? <div className="float-left">
-                              <button onClick={handleDecrementPage}>Prev Page</button>
-                            </div> : <div></div> }
-                          <div className="float-right">
-                            <button onClick={handleIncrementPage}>Next Page</button>
+                        {searchResult.length > 0 && (
+                          <div>
+                            { listPage > 1 ? <div className="float-left">
+                                <button onClick={handleDecrementPage}>Prev Page</button>
+                              </div> : <div></div> }
+                            <div className="float-right">
+                              <button onClick={handleIncrementPage}>Next Page</button>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                      
+                 
                   </div>
                 </div>
        

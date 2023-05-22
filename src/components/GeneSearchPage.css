@@ -43,9 +43,9 @@ html, body{
     justify-content: center;
     min-width: 100%;
     margin-left: 0px;
-    padding-left: 0;
-    margin-right: 0;
-    padding-right: 0;
+    padding-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
 
     margin-top: 90px;
 
@@ -126,9 +126,9 @@ html, body{
     min-width: 100%;
     justify-content: center;
     margin-left: auto;
-    padding-left: 0;
+    padding-left: 0px;
     margin-right: auto;
-    padding-right: 0;
+    padding-right: 0px;
 
     padding: 10px;
     
