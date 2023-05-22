@@ -36,7 +36,7 @@ function GeneSearchPage() {
     if (isMounted) {
       handleSearch();
     } else {
-      handleUserSubmit();
+      //handleUserSubmit();
       setIsMounted(true);
     }
   }, [listPage]);

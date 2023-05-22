@@ -6,8 +6,17 @@ import GeneList from "./GeneList"
 import axios from 'axios';
 import ScrollBars from "react-custom-scrollbars";
 
+import { useAuth0 } from '@auth0/auth0-react';
+
+import {clone} from "ramda";
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+
+const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
+
+const is_admin = true;
+const is_member = true;
 
 function debounce(fn, ms) {
   let timer
@@ -19,6 +28,7 @@ function debounce(fn, ms) {
     }, ms)
   };
 }
+
 
 function SliderGeneItemsContainer(props) {
   const [index, setIndex] = useState(0);
@@ -72,6 +82,28 @@ export default function SliderGene() {
   const [genes_list, setGenesList] = useState([]);
   const [groupings, setGroupings] = useState([]);
 
+  const { user, isLoading } = useAuth0();
+  const [userInfo, setUserInfo] = useState();
+  const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
+
+  const handleFetchUser = async () => {
+    const userSub = user.sub.split("|")[1];
+    try {
+        const res = await axios.get(`${user_get_url}/${userSub}`);
+        console.log(res.data);
+        setUserInfo(res.data)
+        setBookmarkedGenes(res.data.bookmarked_genes);
+        console.log("fetched and saved user and bookmark information")
+
+    } catch (e) {
+        console.log("Failed to fetch user Info.", e);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchUser();
+  }, []);
+
   useEffect(() => {
     function createGeneListGroups() {
       var num_genes = genes_list.length;
@@ -104,15 +136,21 @@ export default function SliderGene() {
       return groups_list;
     }
 
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/gene/all/`)
-      .then(async (result) => {
-        await setGenesList(result.data);
+    /*axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
+      // Data to be sent to the server
+      genes_request_list: clone(bookmarkedGenes)
+    }, { 'content-type': 'application/json' }).then((response) => {
+      console.log("post has been sent");
+      console.log(response);
+    });*/
+    /*.then(async (result) => {
+        setGenesList(result.data);
       })
       .then(() => {
         setGroupings(createGeneListGroups());
-      });
-  }, [genes_list]);
+      });*/
+    console.log("nothing to worry about")
+  }, [bookmarkedGenes]);
 
   return (
     <div>
@@ -132,3 +170,7 @@ export default function SliderGene() {
     );
 
 }
+
+/*
+axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/gene/all/`)
+*/

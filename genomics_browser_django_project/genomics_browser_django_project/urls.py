@@ -30,6 +30,11 @@ urlpatterns = [
         {"inner": "Genes", "callback": "get_gene_one"},
     ),
     path(
+        'api/genes_some',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_some"},
+    ),
+    path(
         'api/dataset/<slug:dataset_id>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_dataset_one"},

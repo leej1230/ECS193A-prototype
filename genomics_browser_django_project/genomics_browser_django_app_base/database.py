@@ -808,6 +808,24 @@ class Database:
             )
             json_data = loads(dumps(genes))
             return json_data
+        
+        def get_gene_some(request):
+            """Retrieves genes with the specified name and ID in the gene collection in the database.
+
+            Args:
+                request: contains the name and id of the genes to be returned
+
+            Returns:
+                dict: A dictionary containing the full gene information
+            """
+            data_request = json.loads(request['ctx'].body)
+
+            genes_dict = data_request['genes_request_list']
+
+            print(" get some genes: ")
+            print( genes_dict )
+
+            return {'response': "ok"}
 
         def get_search_gene(request):
             """Retrieves the name and ID of particular number of genes in the gene collection in the database based on the keyword user input.
