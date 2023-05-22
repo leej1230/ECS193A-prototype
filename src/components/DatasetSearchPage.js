@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import { IconButton, Select, MenuItem } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import "./DatasetSearchPage.css";
-import SampleList from "./SampleList";
+import DatasetSampleList from "./DatasetSampleList";
 import Slider from "./Slider";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -177,7 +177,7 @@ function DatasetSearchPage() {
                   <div class="card shadow" id="dataset_search_results_display">
                 
                       <div>
-                        <SampleList resultList={searchResult} />
+                        <DatasetSampleList resultList={searchResult} />
                         {!hasSearched && (
                           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' , minWidth: '100%', maxWidth: '100%' }}>
                             Start Searching!
