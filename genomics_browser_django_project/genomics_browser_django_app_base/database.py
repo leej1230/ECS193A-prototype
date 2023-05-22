@@ -820,12 +820,31 @@ class Database:
             """
             data_request = json.loads(request['ctx'].body)
 
-            genes_dict = data_request['genes_request_list']
+            genes_list = data_request['genes_request_list']
 
             print(" get some genes: ")
-            print( genes_dict )
+            print( genes_list )
 
-            return {'response': "ok"}
+            gene_objs_list = [{}]
+
+            for i in range( len(genes_list) ):
+                cur_gene_name_id = genes_list[i].split('/')
+                cur_name = cur_gene_name_id[0]
+                cur_id = int(cur_gene_name_id[1])
+                
+                one_gene = Database.gene_collection.find_one(
+                        {'name': cur_name, 'id': cur_id},
+                        {'_id': 0}
+                )
+                
+
+                gene_objs_list.append(one_gene)
+
+            gene_objs_list = gene_objs_list[1:]
+
+            json_data = loads(dumps(gene_objs_list))
+
+            return json_data
 
         def get_search_gene(request):
             """Retrieves the name and ID of particular number of genes in the gene collection in the database based on the keyword user input.

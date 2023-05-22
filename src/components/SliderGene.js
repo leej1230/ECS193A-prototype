@@ -141,15 +141,12 @@ export default function SliderGene() {
       genes_request_list: clone(bookmarkedGenes)
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
-      console.log(response);
-    });
-    /*.then(async (result) => {
-        setGenesList(result.data);
-      })
-      .then(() => {
+      console.log(response.data);
+      setGenesList(response.data);
+    }).then(() => {
         setGroupings(createGeneListGroups());
-      });*/
-    console.log("nothing to worry about")
+      });
+
   }, [bookmarkedGenes]);
 
   return (
