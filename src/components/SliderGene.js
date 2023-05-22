@@ -15,9 +15,6 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
-const is_admin = true;
-const is_member = true;
-
 function debounce(fn, ms) {
   let timer
   return _ => {
