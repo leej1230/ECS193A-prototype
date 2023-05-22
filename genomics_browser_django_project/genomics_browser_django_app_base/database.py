@@ -867,7 +867,7 @@ class Database:
                 doc_count = Database.gene_collection.count_documents({})
                 genes = (
                     Database.gene_collection.find(
-                        {}, {'_id': 0, 'name': 1, 'id': 1}
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)

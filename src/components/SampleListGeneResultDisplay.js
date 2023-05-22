@@ -1,5 +1,8 @@
 
 import React, { useEffect, useState } from "react";
+
+import axios from "axios";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import "./SampleListGeneResultDisplay.css";
 
@@ -11,14 +14,52 @@ const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`;
 // const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
 
 function SampleListGeneResultDisplay(props) {
+
+    const [extended_gene_information, set_extended_gene_information] = useState(undefined);
+    const [dataset_name, set_dataset_name] = useState("---");
   
+  useEffect(() => {
+    if(props.gene){
+      axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset_name_from_dataset_id/${props.gene.dataset_id}`)
+        .then(async (result) => {
+          console.log(result.data)
+          set_dataset_name(String(result.data))
+        })
+    }
+  }, [props]);
+
+  useEffect(() => {
+
+    if(props.gene){
+
+      let temp_gene_name = props.gene.name
+      let end_index = temp_gene_name.indexOf( "." )
+      if( end_index >= 0 -1 ){
+        // present
+        temp_gene_name = temp_gene_name.substring(0, end_index )
+      }
+
+      const external_url = `https://rest.ensembl.org/lookup/id/${temp_gene_name}?expand=1;content-type=application/json`;
+
+      axios.get(external_url)
+        .then(async (result) => {
+          set_extended_gene_information({ display_name: result.data["display_name"] , biotype: result.data["biotype"] , description: result.data["description"], assembly_name: result.data["assembly_name"] })
+        }).catch(
+          function (error) {
+            console.log('failed external info fetch!')
+            
+          }
+        )
+      
+    }
+  }, [props]);
 
   return (
     <div>
         <div id="gene_display_result_single">
             <p id="search_gene_result_name_display">{props.gene && props.gene.name ? props.gene.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={props.gene && props.gene.name && props.gene.id ? "/gene/" + props.gene.name + "/" + props.gene.id : "#"}>Link to Gene Page</a> </p>
-            <p id="search_gene_result_info_display">Gene ID: {props.gene && props.gene.id ? props.gene.id : '-'} &nbsp; &nbsp; &nbsp; Dataset Name: SOME_DATASET &nbsp; &nbsp; &nbsp; Dataset ID: 1 &nbsp; &nbsp; &nbsp; Gene Type: Protein Coding &nbsp; &nbsp; &nbsp; Other Name: ANKR1 &nbsp; &nbsp; &nbsp; </p>
-            <p id="search_gene_result_info_display">Description: ghghg hghgh ghgh &nbsp; &nbsp; &nbsp;</p>
+            <p id="search_gene_result_info_display">Gene ID: {props.gene && props.gene.id ? props.gene.id : '-'} &nbsp; &nbsp; &nbsp; Dataset Name: {dataset_name} &nbsp; &nbsp; &nbsp; Dataset ID: {props.gene && props.gene.dataset_id ? props.gene.dataset_id : '-'} &nbsp; &nbsp; &nbsp; Gene Type: {extended_gene_information && extended_gene_information.biotype ? extended_gene_information.biotype : "-"} &nbsp; &nbsp; &nbsp; Other Name: { extended_gene_information && extended_gene_information.display_name ? extended_gene_information.display_name : "-"} &nbsp; &nbsp; &nbsp; </p>
             <hr id="line_div_category_search_content" />
         </div>
       
