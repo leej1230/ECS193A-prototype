@@ -60,6 +60,10 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
+import { useAuth0 } from '@auth0/auth0-react';
+
+const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
+
 const tableIcons = {
   Add: AddBox,
   Check: Check,
@@ -167,10 +171,33 @@ function DatasetPage() {
     { title: "Value", field: "value" }
   ];
 
+  const [userInfo, setUserInfo] = useState();
+
   const gene_list_node = useRef(null);
   const dataset_matrix_node = useRef(null);
 
+  const { user } = useAuth0();
+
   var bookmarkStyle = `${bookmarked ? "solid" : "regular"}`;
+
+  const handleFetchUser = async () => {
+    console.log("fetch user: ")
+    const userSub = user.sub.split("|")[1];
+    axios
+      .get(`${user_get_url}/${userSub}`)
+      .then((res) => {
+        console.log(res.data);
+        setUserInfo(res.data);
+
+        if( res.data && res.data.bookmarked_datasets ){
+          setBookmarked(res.data.bookmarked_datasets.includes(`${dataset.name}/${DATASET_ID}`))
+        }
+
+      })
+      .catch((e) => {
+        console.log("Failed to fetch user Info.", e)
+      });
+  };
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -185,8 +212,9 @@ function DatasetPage() {
     // patient_information
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
-      
-    })
+    });
+    console.log("got patient data line 215")
+    handleFetchUser();
   }, [dataset])
 
   useEffect(() => {
@@ -1024,10 +1052,18 @@ function DatasetPage() {
                       type="button"
                       className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
                       onClick={ async () => {
-                        if(bookmarked == true){
-                            await setBookmarked( false )
+                        if (bookmarked == true) {
+                          await setBookmarked(false);
+                          const formData = new FormData();
+                          formData.append("user_id", user.sub.split("|")[1]);
+                          formData.append("dataset_url", `${dataset.name}/${DATASET_ID}`);
+                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
                         } else {
-                            await setBookmarked( true )
+                          const formData = new FormData();
+                          formData.append("user_id", user.sub.split("|")[1]);
+                          formData.append("dataset_url", `${dataset.name}/${DATASET_ID}`);
+                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
+                          await setBookmarked(true);
                         }
                       }}
                     >

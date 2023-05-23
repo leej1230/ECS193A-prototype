@@ -138,6 +138,31 @@ class Database:
             update = {"$pull": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+        
+        def post_bookmarked_datasets(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_id']}
+            )
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+            query = {'auth0_uid': request_data['user_id']}
+            update = {"$addToSet": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
+
+            Database.user_collection.update_one(query, update)
+
+        def delete_bookmarked_datasets(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_id']}
+            )
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+
+            query = {'auth0_uid': request_data['user_id']}
+            update = {"$pull": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
+
+            Database.user_collection.update_one(query, update)
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
