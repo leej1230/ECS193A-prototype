@@ -57,7 +57,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-
 import LoadingSpinner from "./spinner/spinner";
 
 const tableIcons = {
@@ -1206,430 +1205,443 @@ function DatasetPage() {
         await set_together_data_columns(copy_together_cols);
     };
 
-    return !dataset["name"] ? (
-        <div>
-            <LoadingSpinner />
-        </div>
-    ) : (
+    return (
         <body id="page-top">
             <div id="wrapper">
                 <div id="content-wrapper" class="d-flex flex-column">
-                    <div id="content">
-                        <div class="container-fluid" id="dataset_full_page">
-                            <div id="control_buttons_dataset">
-                                <div>
-                                    <a
-                                        href="/update/dataset"
-                                        class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"
-                                    >
-                                        <i class="fas fa-sm text-white-50"></i>
-                                        Update
-                                    </a>
-                                    <a
-                                        href="#"
-                                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"
-                                    >
-                                        <i class="fas fa-download fa-sm text-white-50"></i>
-                                        Generate
-                                    </a>
-                                    <button
-                                        class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"
-                                        onClick={() => {
-                                            axios.get(
-                                                `${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`
-                                            );
-
-                                            navigate("/");
-                                        }}
-                                    >
-                                        <i class="fas fa-sm text-white-50"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="dataset_name_holder">
-                                <h5 class="h5 text-gray-800">
-                                    <div id="text_title">
-                                        <div
-                                            class="d-sm-inline-block"
-                                            id="title_tage"
+                    {!dataset["name"] ? (
+                        <div style={{ marginTop: "40vh" }}>
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
+                        <div id="content">
+                            <div class="container-fluid" id="dataset_full_page">
+                                <div id="control_buttons_dataset">
+                                    <div>
+                                        <a
+                                            href="/update/dataset"
+                                            class="d-none d-sm-inline-block btn btn-sm btn btn-info shadow-sm mr-1"
                                         >
-                                            Dataset:
-                                        </div>
-                                        &nbsp;
-                                        <div
-                                            class="d-sm-inline-block"
-                                            id="title_content"
+                                            <i class="fas fa-sm text-white-50"></i>
+                                            Update
+                                        </a>
+                                        <a
+                                            href="#"
+                                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"
                                         >
-                                            {dataset["name"]}
-                                        </div>
-                                        &nbsp; &nbsp;
+                                            <i class="fas fa-download fa-sm text-white-50"></i>
+                                            Generate
+                                        </a>
                                         <button
-                                            type="button"
-                                            className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
-                                            onClick={async () => {
-                                                if (bookmarked == true) {
-                                                    await setBookmarked(false);
-                                                } else {
-                                                    await setBookmarked(true);
-                                                }
+                                            class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1"
+                                            onClick={() => {
+                                                axios.get(
+                                                    `${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`
+                                                );
+
+                                                navigate("/");
                                             }}
                                         >
-                                            {bookmarked ? (
-                                                <FontAwesomeIcon
-                                                    icon={icon({
-                                                        name: "bookmark",
-                                                        style: "solid",
-                                                    })}
-                                                />
-                                            ) : (
-                                                <FontAwesomeIcon
-                                                    icon={icon({
-                                                        name: "bookmark",
-                                                        style: "regular",
-                                                    })}
-                                                />
-                                            )}
+                                            <i class="fas fa-sm text-white-50"></i>
+                                            Delete
                                         </button>
                                     </div>
-                                    <div>
-                                        <p class="d-sm-inline-block subtitle_tag">
-                                            Dataset ID:
-                                        </p>
-                                        &nbsp;
-                                        <p class="d-sm-inline-block subtitle_content">
-                                            {DATASET_ID}
-                                        </p>
-                                    </div>
-                                </h5>
-                            </div>
+                                </div>
 
-                            <div class="container-fluid" id="tabs_container">
-                                <Tabs
-                                    defaultActiveKey="basic_info"
-                                    id="uncontrolled-tab-example"
-                                    className="mb-3"
+                                <div id="dataset_name_holder">
+                                    <h5 class="h5 text-gray-800">
+                                        <div id="text_title">
+                                            <div
+                                                class="d-sm-inline-block"
+                                                id="title_tage"
+                                            >
+                                                Dataset:
+                                            </div>
+                                            &nbsp;
+                                            <div
+                                                class="d-sm-inline-block"
+                                                id="title_content"
+                                            >
+                                                {dataset["name"]}
+                                            </div>
+                                            &nbsp; &nbsp;
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
+                                                onClick={async () => {
+                                                    if (bookmarked == true) {
+                                                        await setBookmarked(
+                                                            false
+                                                        );
+                                                    } else {
+                                                        await setBookmarked(
+                                                            true
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                {bookmarked ? (
+                                                    <FontAwesomeIcon
+                                                        icon={icon({
+                                                            name: "bookmark",
+                                                            style: "solid",
+                                                        })}
+                                                    />
+                                                ) : (
+                                                    <FontAwesomeIcon
+                                                        icon={icon({
+                                                            name: "bookmark",
+                                                            style: "regular",
+                                                        })}
+                                                    />
+                                                )}
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <p class="d-sm-inline-block subtitle_tag">
+                                                Dataset ID:
+                                            </p>
+                                            &nbsp;
+                                            <p class="d-sm-inline-block subtitle_content">
+                                                {DATASET_ID}
+                                            </p>
+                                        </div>
+                                    </h5>
+                                </div>
+
+                                <div
+                                    class="container-fluid"
+                                    id="tabs_container"
                                 >
-                                    <Tab
-                                        eventKey="basic_info"
-                                        title="Basic Info"
+                                    <Tabs
+                                        defaultActiveKey="basic_info"
+                                        id="uncontrolled-tab-example"
+                                        className="mb-3"
                                     >
-                                        <div id="dataset_basics">
-                                            <div class="card shadow dataset_info_block">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h5 class="dataset_subheader">
-                                                            Description{" "}
-                                                        </h5>
-                                                        <hr class="line_div_category_header_content" />
-                                                        <p class="dataset_subcontent">
-                                                            {
-                                                                dataset[
-                                                                    "description"
-                                                                ]
-                                                            }
-                                                        </p>
-                                                    </div>
-
-                                                    {datasetTableInputFormat.length >
-                                                    3 ? (
+                                        <Tab
+                                            eventKey="basic_info"
+                                            title="Basic Info"
+                                        >
+                                            <div id="dataset_basics">
+                                                <div class="card shadow dataset_info_block">
+                                                    <div class="card-body">
                                                         <div>
-                                                            {datasetTableInputFormat.map(
-                                                                (
-                                                                    table_property
-                                                                ) => {
-                                                                    if (
-                                                                        table_property.field_name !=
-                                                                            "id" &&
-                                                                        table_property.field_name !=
-                                                                            "name" &&
-                                                                        table_property.field_name !=
-                                                                            "description"
-                                                                    ) {
-                                                                        console.log(
-                                                                            "info dataset table objs: !!!: "
-                                                                        );
-                                                                        console.log(
-                                                                            table_property
-                                                                        );
-                                                                        return (
-                                                                            <div>
-                                                                                <h5 class="dataset_subheader">
-                                                                                    {
-                                                                                        table_property.field_name
-                                                                                    }{" "}
-                                                                                </h5>
-                                                                                <hr class="line_div_category_header_content" />
-                                                                                <p class="dataset_subcontent">
-                                                                                    {
-                                                                                        table_property.value
-                                                                                    }
-                                                                                </p>
-                                                                            </div>
-                                                                        );
-                                                                    }
+                                                            <h5 class="dataset_subheader">
+                                                                Description{" "}
+                                                            </h5>
+                                                            <hr class="line_div_category_header_content" />
+                                                            <p class="dataset_subcontent">
+                                                                {
+                                                                    dataset[
+                                                                        "description"
+                                                                    ]
                                                                 }
-                                                            )}
+                                                            </p>
                                                         </div>
-                                                    ) : (
-                                                        <div>
-                                                            <CircularProgress />
-                                                        </div>
-                                                    )}
+
+                                                        {datasetTableInputFormat.length >
+                                                        3 ? (
+                                                            <div>
+                                                                {datasetTableInputFormat.map(
+                                                                    (
+                                                                        table_property
+                                                                    ) => {
+                                                                        if (
+                                                                            table_property.field_name !=
+                                                                                "id" &&
+                                                                            table_property.field_name !=
+                                                                                "name" &&
+                                                                            table_property.field_name !=
+                                                                                "description"
+                                                                        ) {
+                                                                            console.log(
+                                                                                "info dataset table objs: !!!: "
+                                                                            );
+                                                                            console.log(
+                                                                                table_property
+                                                                            );
+                                                                            return (
+                                                                                <div>
+                                                                                    <h5 class="dataset_subheader">
+                                                                                        {
+                                                                                            table_property.field_name
+                                                                                        }{" "}
+                                                                                    </h5>
+                                                                                    <hr class="line_div_category_header_content" />
+                                                                                    <p class="dataset_subcontent">
+                                                                                        {
+                                                                                            table_property.value
+                                                                                        }
+                                                                                    </p>
+                                                                                </div>
+                                                                            );
+                                                                        }
+                                                                    }
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div>
+                                                                <CircularProgress />
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab
-                                        eventKey="genes_list"
-                                        title="Genes List"
-                                    >
-                                        <div
-                                            class="row"
-                                            id="dataset_table_and_stats_row"
+                                        </Tab>
+                                        <Tab
+                                            eventKey="genes_list"
+                                            title="Genes List"
                                         >
                                             <div
-                                                class="card shadow"
-                                                id="dataset_genes_list"
+                                                class="row"
+                                                id="dataset_table_and_stats_row"
                                             >
-                                                <div class="card-header py-3">
-                                                    <h6 class="m-0 font-weight-bold text-primary">
-                                                        Gene Ids
-                                                    </h6>
+                                                <div
+                                                    class="card shadow"
+                                                    id="dataset_genes_list"
+                                                >
+                                                    <div class="card-header py-3">
+                                                        <h6 class="m-0 font-weight-bold text-primary">
+                                                            Gene Ids
+                                                        </h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div
+                                                            class="row"
+                                                            id="table_options_outer"
+                                                        >
+                                                            <div id="gene_table_area">
+                                                                <BootstrapTable
+                                                                    keyField="id"
+                                                                    ref={(n) =>
+                                                                        (gene_list_node.current =
+                                                                            n)
+                                                                    }
+                                                                    remote={{
+                                                                        filter: true,
+                                                                        pagination: false,
+                                                                        sort: false,
+                                                                        cellEdit: false,
+                                                                    }}
+                                                                    data={
+                                                                        gene_list_filtered
+                                                                    }
+                                                                    columns={
+                                                                        gene_columns
+                                                                    }
+                                                                    filter={filterFactory()}
+                                                                    pagination={paginationFactory()}
+                                                                    filterPosition="top"
+                                                                    onTableChange={(
+                                                                        type,
+                                                                        newState
+                                                                    ) => {
+                                                                        geneListFilter(
+                                                                            gene_list_node
+                                                                                .current
+                                                                                .filterContext
+                                                                                .currFilters
+                                                                        );
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="card-body">
-                                                    <div
-                                                        class="row"
-                                                        id="table_options_outer"
-                                                    >
-                                                        <div id="gene_table_area">
+                                            </div>
+                                        </Tab>
+                                        <Tab
+                                            eventKey="edit_dataset"
+                                            title="Edit Dataset"
+                                        >
+                                            <div id="dataset_view_table"></div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="card shadow">
+                                                        <div class="card-header py-3">
+                                                            <div id="table_edit_header">
+                                                                <h5
+                                                                    class="m-0 font-weight-bold text-primary"
+                                                                    id="table_edit_title"
+                                                                >
+                                                                    Dataset
+                                                                    Matrix
+                                                                </h5>
+                                                                <button
+                                                                    class="btn btn-primary table_btn_content"
+                                                                    onClick={async () => {
+                                                                        let new_val =
+                                                                            !displayHistoryTable;
+                                                                        await setDisplayHistoryTable(
+                                                                            new_val
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Toggle Show
+                                                                    History and
+                                                                    Undo
+                                                                </button>
+                                                                <button
+                                                                    class="btn btn-primary table_btn_content"
+                                                                    onClick={async () => {
+                                                                        console.log(
+                                                                            "can click button for saving edit changes from table"
+                                                                        );
+                                                                        console.log(
+                                                                            modified_patients_list_to_update_back
+                                                                        );
+
+                                                                        axios
+                                                                            .post(
+                                                                                `${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`,
+                                                                                {
+                                                                                    // Data to be sent to the server
+                                                                                    patient_modify_list:
+                                                                                        clone(
+                                                                                            modified_patients_list_to_update_back
+                                                                                        ),
+                                                                                },
+                                                                                {
+                                                                                    "content-type":
+                                                                                        "application/json",
+                                                                                }
+                                                                            )
+                                                                            .then(
+                                                                                (
+                                                                                    response
+                                                                                ) => {
+                                                                                    console.log(
+                                                                                        "post has been sent"
+                                                                                    );
+                                                                                    console.log(
+                                                                                        response
+                                                                                    );
+                                                                                    alert(
+                                                                                        "Data Updated"
+                                                                                    );
+                                                                                }
+                                                                            );
+                                                                    }}
+                                                                >
+                                                                    Save Changes
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="card-body"
+                                                            id="full_matrix_table"
+                                                        >
                                                             <BootstrapTable
-                                                                keyField="id"
+                                                                keyField="patient_id"
+                                                                data={
+                                                                    table_matrix_filtered
+                                                                }
+                                                                columns={
+                                                                    together_data_columns
+                                                                }
+                                                                filter={filterFactory()}
+                                                                pagination={paginationFactory()}
                                                                 ref={(n) =>
-                                                                    (gene_list_node.current =
+                                                                    (dataset_matrix_node.current =
                                                                         n)
                                                                 }
                                                                 remote={{
                                                                     filter: true,
                                                                     pagination: false,
                                                                     sort: false,
-                                                                    cellEdit: false,
+                                                                    cellEdit: true,
                                                                 }}
-                                                                data={
-                                                                    gene_list_filtered
-                                                                }
-                                                                columns={
-                                                                    gene_columns
-                                                                }
-                                                                filter={filterFactory()}
-                                                                pagination={paginationFactory()}
+                                                                cellEdit={cellEditFactory(
+                                                                    {
+                                                                        mode: "click",
+                                                                    }
+                                                                )}
                                                                 filterPosition="top"
                                                                 onTableChange={(
                                                                     type,
                                                                     newState
                                                                 ) => {
-                                                                    geneListFilter(
-                                                                        gene_list_node
-                                                                            .current
-                                                                            .filterContext
-                                                                            .currFilters
-                                                                    );
+                                                                    if (
+                                                                        "cellEdit" in
+                                                                        newState
+                                                                    ) {
+                                                                        updateCellEditMatrix(
+                                                                            newState
+                                                                        );
+                                                                    } else {
+                                                                        matrixFilter(
+                                                                            dataset_matrix_node
+                                                                                .current
+                                                                                .filterContext
+                                                                                .currFilters
+                                                                        );
+                                                                    }
                                                                 }}
                                                             />
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab
-                                        eventKey="edit_dataset"
-                                        title="Edit Dataset"
-                                    >
-                                        <div id="dataset_view_table"></div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="card shadow">
-                                                    <div class="card-header py-3">
-                                                        <div id="table_edit_header">
-                                                            <h5
-                                                                class="m-0 font-weight-bold text-primary"
-                                                                id="table_edit_title"
-                                                            >
-                                                                Dataset Matrix
-                                                            </h5>
-                                                            <button
-                                                                class="btn btn-primary table_btn_content"
-                                                                onClick={async () => {
-                                                                    let new_val =
-                                                                        !displayHistoryTable;
-                                                                    await setDisplayHistoryTable(
-                                                                        new_val
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Toggle Show
-                                                                History and Undo
-                                                            </button>
-                                                            <button
-                                                                class="btn btn-primary table_btn_content"
-                                                                onClick={async () => {
-                                                                    console.log(
-                                                                        "can click button for saving edit changes from table"
-                                                                    );
-                                                                    console.log(
-                                                                        modified_patients_list_to_update_back
-                                                                    );
+                                        </Tab>
+                                    </Tabs>
+                                </div>
 
-                                                                    axios
-                                                                        .post(
-                                                                            `${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`,
-                                                                            {
-                                                                                // Data to be sent to the server
-                                                                                patient_modify_list:
-                                                                                    clone(
-                                                                                        modified_patients_list_to_update_back
-                                                                                    ),
-                                                                            },
-                                                                            {
-                                                                                "content-type":
-                                                                                    "application/json",
-                                                                            }
-                                                                        )
-                                                                        .then(
-                                                                            (
-                                                                                response
-                                                                            ) => {
-                                                                                console.log(
-                                                                                    "post has been sent"
-                                                                                );
-                                                                                console.log(
-                                                                                    response
-                                                                                );
-                                                                                alert(
-                                                                                    "Data Updated"
-                                                                                );
-                                                                            }
-                                                                        );
-                                                                }}
-                                                            >
-                                                                Save Changes
-                                                            </button>
+                                <div id="history_display_container">
+                                    {displayHistoryTable ? (
+                                        <div>
+                                            <p>Edit History</p>
+                                            <ul id="history_results_list">
+                                                <li>
+                                                    <div class="card shadow edit_single_display">
+                                                        <div class="card-body">
+                                                            <p class="card-title">
+                                                                Edit 1
+                                                            </p>
+                                                            <p class="card-text">
+                                                                Edit Date
+                                                            </p>
                                                         </div>
                                                     </div>
-                                                    <div
-                                                        class="card-body"
-                                                        id="full_matrix_table"
-                                                    >
-                                                        <BootstrapTable
-                                                            keyField="patient_id"
-                                                            data={
-                                                                table_matrix_filtered
-                                                            }
-                                                            columns={
-                                                                together_data_columns
-                                                            }
-                                                            filter={filterFactory()}
-                                                            pagination={paginationFactory()}
-                                                            ref={(n) =>
-                                                                (dataset_matrix_node.current =
-                                                                    n)
-                                                            }
-                                                            remote={{
-                                                                filter: true,
-                                                                pagination: false,
-                                                                sort: false,
-                                                                cellEdit: true,
-                                                            }}
-                                                            cellEdit={cellEditFactory(
-                                                                {
-                                                                    mode: "click",
-                                                                }
-                                                            )}
-                                                            filterPosition="top"
-                                                            onTableChange={(
-                                                                type,
-                                                                newState
-                                                            ) => {
-                                                                if (
-                                                                    "cellEdit" in
-                                                                    newState
-                                                                ) {
-                                                                    updateCellEditMatrix(
-                                                                        newState
-                                                                    );
-                                                                } else {
-                                                                    matrixFilter(
-                                                                        dataset_matrix_node
-                                                                            .current
-                                                                            .filterContext
-                                                                            .currFilters
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
+                                                </li>
+
+                                                <li>
+                                                    <div class="card shadow edit_single_display">
+                                                        <div class="card-body">
+                                                            <p class="card-title">
+                                                                Edit 2
+                                                            </p>
+                                                            <p class="card-text">
+                                                                Edit Date
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                </li>
+
+                                                <li>
+                                                    <div class="card shadow edit_single_display">
+                                                        <div class="card-body">
+                                                            <p class="card-title">
+                                                                Edit 3
+                                                            </p>
+                                                            <p class="card-text">
+                                                                Edit Date
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
-                                    </Tab>
-                                </Tabs>
-                            </div>
-
-                            <div id="history_display_container">
-                                {displayHistoryTable ? (
-                                    <div>
-                                        <p>Edit History</p>
-                                        <ul id="history_results_list">
-                                            <li>
-                                                <div class="card shadow edit_single_display">
-                                                    <div class="card-body">
-                                                        <p class="card-title">
-                                                            Edit 1
-                                                        </p>
-                                                        <p class="card-text">
-                                                            Edit Date
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </li>
-
-                                            <li>
-                                                <div class="card shadow edit_single_display">
-                                                    <div class="card-body">
-                                                        <p class="card-title">
-                                                            Edit 2
-                                                        </p>
-                                                        <p class="card-text">
-                                                            Edit Date
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </li>
-
-                                            <li>
-                                                <div class="card shadow edit_single_display">
-                                                    <div class="card-body">
-                                                        <p class="card-title">
-                                                            Edit 3
-                                                        </p>
-                                                        <p class="card-text">
-                                                            Edit Date
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                ) : (
-                                    <div id="no_history_display_content">
-                                        <p>----- Edit History Hidden -----</p>
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div id="no_history_display_content">
+                                            <p>
+                                                ----- Edit History Hidden -----
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
 

@@ -852,429 +852,446 @@ function GenePage() {
         }
     };
 
-    return !gene_data["name"] ? (
-        <div>
-            <LoadingSpinner />
-        </div>
-    ) : (
+    return (
         <body id="page-top" class="gene_body">
             <div id="wrapper">
-                <div id="content-wrapper" class="d-flex flex-column">
-                    <div id="content">
-                        <div class="container-fluid" id="gene_page_full">
-                            <div id="control_buttons_gene_page">
-                                <a
-                                    href="#"
-                                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"
-                                >
-                                    <i class="fas fa-download fa-sm text-white-50"></i>
-                                    Generate Report
-                                </a>
-                            </div>
+                {!gene_data["name"] ? (
+                    <div style={{ marginTop: "40vh" }}>
+                        <LoadingSpinner />
+                    </div>
+                ) : (
+                    <div id="content-wrapper" class="d-flex flex-column">
+                        <div id="content">
+                            <div class="container-fluid" id="gene_page_full">
+                                <div id="control_buttons_gene_page">
+                                    <a
+                                        href="#"
+                                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"
+                                    >
+                                        <i class="fas fa-download fa-sm text-white-50"></i>
+                                        Generate Report
+                                    </a>
+                                </div>
 
-                            <div id="gene_name_box">
-                                <h5 class="h5 text-gray-800">
-                                    {gene_data ? (
-                                        <div>
+                                <div id="gene_name_box">
+                                    <h5 class="h5 text-gray-800">
+                                        {gene_data ? (
                                             <div>
-                                                <p className="d-sm-inline-block title_tag">
-                                                    Gene Name:
-                                                </p>
-                                                &nbsp;
-                                                <p className="d-sm-inline-block gene_name">
-                                                    {gene_data.name}
-                                                </p>
-                                                &nbsp;
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
-                                                    onClick={async () => {
-                                                        if (
-                                                            bookmarked == true
-                                                        ) {
-                                                            await setBookmarked(
-                                                                false
-                                                            );
-                                                            const formData =
-                                                                new FormData();
-                                                            formData.append(
-                                                                "user_id",
-                                                                user.sub.split(
-                                                                    "|"
-                                                                )[1]
-                                                            );
-                                                            formData.append(
-                                                                "gene_url",
-                                                                `${SAMPLE_NAME}/${SAMPLE_ID}`
-                                                            );
-                                                            axios.post(
-                                                                `${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`,
-                                                                formData
-                                                            );
-                                                        } else {
-                                                            const formData =
-                                                                new FormData();
-                                                            formData.append(
-                                                                "user_id",
-                                                                user.sub.split(
-                                                                    "|"
-                                                                )[1]
-                                                            );
-                                                            formData.append(
-                                                                "gene_url",
-                                                                `${SAMPLE_NAME}/${SAMPLE_ID}`
-                                                            );
-                                                            axios.post(
-                                                                `${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`,
-                                                                formData
-                                                            );
-                                                            await setBookmarked(
+                                                <div>
+                                                    <p className="d-sm-inline-block title_tag">
+                                                        Gene Name:
+                                                    </p>
+                                                    &nbsp;
+                                                    <p className="d-sm-inline-block gene_name">
+                                                        {gene_data.name}
+                                                    </p>
+                                                    &nbsp;
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
+                                                        onClick={async () => {
+                                                            if (
+                                                                bookmarked ==
                                                                 true
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    {bookmarked ? (
-                                                        <FontAwesomeIcon
-                                                            icon={icon({
-                                                                name: "bookmark",
-                                                                style: "solid",
-                                                            })}
-                                                        />
-                                                    ) : (
-                                                        <FontAwesomeIcon
-                                                            icon={icon({
-                                                                name: "bookmark",
-                                                                style: "regular",
-                                                            })}
-                                                        />
-                                                    )}
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <p class="d-sm-inline-block subtitle_tag">
-                                                    Gene ID:
-                                                </p>
-                                                &nbsp;
-                                                <p class="d-sm-inline-block subtitle_content">
-                                                    {gene_data.id}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <CircularProgress />
-                                        </div>
-                                    )}
-                                </h5>
-                            </div>
-
-                            <div
-                                class="container-fluid"
-                                id="gene_tabs_container_content"
-                            >
-                                <Tabs
-                                    defaultActiveKey="basic_info"
-                                    id="uncontrolled-tab-example"
-                                    className="mb-3"
-                                >
-                                    <Tab
-                                        eventKey="basic_info"
-                                        title="Basic Info"
-                                    >
-                                        <div class="row" id="gene_info_box">
-                                            <div class="card shadow">
-                                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                    <h6 class="m-0 font-weight-bold text-primary">
-                                                        Gene Information
-                                                    </h6>
-                                                </div>
-
-                                                <div class="card-body">
-                                                    {gene_data ? (
-                                                        <div>
-                                                            <p>
-                                                                Description:{" "}
-                                                                {
-                                                                    gene_external_data.description
-                                                                }
-                                                            </p>
-                                                            <br />
-                                                            <p>
-                                                                Dataset ID:{" "}
-                                                                {
-                                                                    gene_data.dataset_id
-                                                                }
-                                                            </p>
-                                                            <br />
-                                                            <a
-                                                                href={
-                                                                    "/dataset/" +
-                                                                    gene_data.dataset_id
-                                                                }
-                                                            >
-                                                                Link to Dataset
-                                                            </a>
-                                                        </div>
-                                                    ) : (
-                                                        <div>
-                                                            <CircularProgress />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="gene_graph" title="Graph">
-                                        <div id="graph_gene_box">
-                                            <div class="card shadow mb-4">
-                                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                    <h6 class="m-0 font-weight-bold text-primary">
-                                                        Data Graph
-                                                    </h6>
-                                                </div>
-                                                <div class="card-body">
-                                                    {graph_table_filter_data ? (
-                                                        <div>
-                                                            <SampleGraph
-                                                                categories={
-                                                                    graph_table_filter_data
-                                                                        .patient_ids[
-                                                                        "arr"
-                                                                    ]
-                                                                }
-                                                                data={
-                                                                    graph_table_filter_data
-                                                                        .gene_values[
-                                                                        "arr"
-                                                                    ]
-                                                                }
-                                                                type={graphType}
-                                                            />
-                                                            <div className="GraphType">
-                                                                <FormControl
-                                                                    margin="dense"
-                                                                    fullWidth
-                                                                >
-                                                                    <InputLabel id="GraphTypeLabel">
-                                                                        Graph
-                                                                        Type
-                                                                    </InputLabel>
-                                                                    <Select
-                                                                        labelId="GraphTypeLabel"
-                                                                        id="GraphTypeSelect"
-                                                                        value={
-                                                                            graphType
-                                                                        }
-                                                                        label="GraphType"
-                                                                        onChange={(
-                                                                            e
-                                                                        ) => {
-                                                                            setGraphType(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <MenuItem
-                                                                            value={
-                                                                                "bar"
-                                                                            }
-                                                                        >
-                                                                            Bar
-                                                                        </MenuItem>
-                                                                        <MenuItem
-                                                                            value={
-                                                                                "line"
-                                                                            }
-                                                                        >
-                                                                            Basic
-                                                                            Line
-                                                                        </MenuItem>
-                                                                        <MenuItem
-                                                                            value={
-                                                                                "pie"
-                                                                            }
-                                                                        >
-                                                                            Pie
-                                                                        </MenuItem>
-                                                                    </Select>
-                                                                </FormControl>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div>
-                                                            <CircularProgress />
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div id="graph_filter">
-                                                    <BootstrapTable
-                                                        keyField="id"
-                                                        ref={(n) =>
-                                                            (graph_table_node.current =
-                                                                n)
-                                                        }
-                                                        remote={{
-                                                            filter: true,
-                                                            pagination: false,
-                                                            sort: false,
-                                                            cellEdit: false,
-                                                        }}
-                                                        data={[]}
-                                                        columns={
-                                                            patient_columns
-                                                        }
-                                                        filter={filterFactory()}
-                                                        filterPosition="top"
-                                                        onTableChange={(
-                                                            type,
-                                                            newState
-                                                        ) => {
-                                                            graphDataFilter(
-                                                                graph_table_node
-                                                                    .current
-                                                                    .filterContext
-                                                                    .currFilters
-                                                            );
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab
-                                        eventKey="patients_list"
-                                        title="Patient List"
-                                    >
-                                        <div
-                                            class="card shadow mb-4"
-                                            id="display_filter_patients_gene"
-                                        >
-                                            <div class="card-header py-3">
-                                                <h6 class="m-0 font-weight-bold text-primary">
-                                                    Patient List
-                                                </h6>
-                                            </div>
-
-                                            <div
-                                                class="row"
-                                                id="table_options_outer"
-                                            >
-                                                <div id="patient_table_area">
-                                                    <BootstrapTable
-                                                        keyField="id"
-                                                        ref={(n) =>
-                                                            (patients_table_node.current =
-                                                                n)
-                                                        }
-                                                        remote={{
-                                                            filter: true,
-                                                            pagination: false,
-                                                            sort: false,
-                                                            cellEdit: false,
-                                                        }}
-                                                        data={
-                                                            patient_data_table_filtered
-                                                        }
-                                                        columns={
-                                                            patient_columns
-                                                        }
-                                                        filter={filterFactory()}
-                                                        pagination={paginationFactory()}
-                                                        filterPosition="top"
-                                                        onTableChange={(
-                                                            type,
-                                                            newState
-                                                        ) => {
-                                                            patientDataFilter(
-                                                                patients_table_node
-                                                                    .current
-                                                                    .filterContext
-                                                                    .currFilters
-                                                            );
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="animation" title="Animation">
-                                        <div class="col-xl" id="gene_animation">
-                                            <TableContainer
-                                                style={{
-                                                    width: "100%",
-                                                    height: "500px",
-                                                    overflow: "scroll",
-                                                }}
-                                            >
-                                                <Table
-                                                    style={{ minWidth: 650 }}
-                                                    aria-label="simple table"
-                                                >
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>
-                                                                Code
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {gene_code_info.code.map(
-                                                            function (
-                                                                item,
-                                                                row_i
                                                             ) {
-                                                                return (
-                                                                    <TableRow
-                                                                        key={
-                                                                            row_i
-                                                                        }
-                                                                    >
-                                                                        <TableCell>
-                                                                            <div className="codeRow">
-                                                                                {breakUpCode(
-                                                                                    item
-                                                                                ).map(
-                                                                                    function (
-                                                                                        code_str,
-                                                                                        i
-                                                                                    ) {
-                                                                                        return (
-                                                                                            <div
-                                                                                                className="codeCard"
-                                                                                                style={{
-                                                                                                    backgroundColor:
-                                                                                                        getColor(
-                                                                                                            i
-                                                                                                        ),
-                                                                                                }}
-                                                                                            >
-                                                                                                {
-                                                                                                    code_str
-                                                                                                }
-                                                                                            </div>
-                                                                                        );
-                                                                                    }
-                                                                                )}
-                                                                            </div>
-                                                                        </TableCell>
-                                                                    </TableRow>
+                                                                await setBookmarked(
+                                                                    false
+                                                                );
+                                                                const formData =
+                                                                    new FormData();
+                                                                formData.append(
+                                                                    "user_id",
+                                                                    user.sub.split(
+                                                                        "|"
+                                                                    )[1]
+                                                                );
+                                                                formData.append(
+                                                                    "gene_url",
+                                                                    `${SAMPLE_NAME}/${SAMPLE_ID}`
+                                                                );
+                                                                axios.post(
+                                                                    `${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`,
+                                                                    formData
+                                                                );
+                                                            } else {
+                                                                const formData =
+                                                                    new FormData();
+                                                                formData.append(
+                                                                    "user_id",
+                                                                    user.sub.split(
+                                                                        "|"
+                                                                    )[1]
+                                                                );
+                                                                formData.append(
+                                                                    "gene_url",
+                                                                    `${SAMPLE_NAME}/${SAMPLE_ID}`
+                                                                );
+                                                                axios.post(
+                                                                    `${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`,
+                                                                    formData
+                                                                );
+                                                                await setBookmarked(
+                                                                    true
                                                                 );
                                                             }
+                                                        }}
+                                                    >
+                                                        {bookmarked ? (
+                                                            <FontAwesomeIcon
+                                                                icon={icon({
+                                                                    name: "bookmark",
+                                                                    style: "solid",
+                                                                })}
+                                                            />
+                                                        ) : (
+                                                            <FontAwesomeIcon
+                                                                icon={icon({
+                                                                    name: "bookmark",
+                                                                    style: "regular",
+                                                                })}
+                                                            />
                                                         )}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </div>
-                                    </Tab>
-                                </Tabs>
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <p class="d-sm-inline-block subtitle_tag">
+                                                        Gene ID:
+                                                    </p>
+                                                    &nbsp;
+                                                    <p class="d-sm-inline-block subtitle_content">
+                                                        {gene_data.id}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <CircularProgress />
+                                            </div>
+                                        )}
+                                    </h5>
+                                </div>
+
+                                <div
+                                    class="container-fluid"
+                                    id="gene_tabs_container_content"
+                                >
+                                    <Tabs
+                                        defaultActiveKey="basic_info"
+                                        id="uncontrolled-tab-example"
+                                        className="mb-3"
+                                    >
+                                        <Tab
+                                            eventKey="basic_info"
+                                            title="Basic Info"
+                                        >
+                                            <div class="row" id="gene_info_box">
+                                                <div class="card shadow">
+                                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                                        <h6 class="m-0 font-weight-bold text-primary">
+                                                            Gene Information
+                                                        </h6>
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        {gene_data ? (
+                                                            <div>
+                                                                <p>
+                                                                    Description:{" "}
+                                                                    {
+                                                                        gene_external_data.description
+                                                                    }
+                                                                </p>
+                                                                <br />
+                                                                <p>
+                                                                    Dataset ID:{" "}
+                                                                    {
+                                                                        gene_data.dataset_id
+                                                                    }
+                                                                </p>
+                                                                <br />
+                                                                <a
+                                                                    href={
+                                                                        "/dataset/" +
+                                                                        gene_data.dataset_id
+                                                                    }
+                                                                >
+                                                                    Link to
+                                                                    Dataset
+                                                                </a>
+                                                            </div>
+                                                        ) : (
+                                                            <div>
+                                                                <CircularProgress />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Tab>
+                                        <Tab
+                                            eventKey="gene_graph"
+                                            title="Graph"
+                                        >
+                                            <div id="graph_gene_box">
+                                                <div class="card shadow mb-4">
+                                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                                        <h6 class="m-0 font-weight-bold text-primary">
+                                                            Data Graph
+                                                        </h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {graph_table_filter_data ? (
+                                                            <div>
+                                                                <SampleGraph
+                                                                    categories={
+                                                                        graph_table_filter_data
+                                                                            .patient_ids[
+                                                                            "arr"
+                                                                        ]
+                                                                    }
+                                                                    data={
+                                                                        graph_table_filter_data
+                                                                            .gene_values[
+                                                                            "arr"
+                                                                        ]
+                                                                    }
+                                                                    type={
+                                                                        graphType
+                                                                    }
+                                                                />
+                                                                <div className="GraphType">
+                                                                    <FormControl
+                                                                        margin="dense"
+                                                                        fullWidth
+                                                                    >
+                                                                        <InputLabel id="GraphTypeLabel">
+                                                                            Graph
+                                                                            Type
+                                                                        </InputLabel>
+                                                                        <Select
+                                                                            labelId="GraphTypeLabel"
+                                                                            id="GraphTypeSelect"
+                                                                            value={
+                                                                                graphType
+                                                                            }
+                                                                            label="GraphType"
+                                                                            onChange={(
+                                                                                e
+                                                                            ) => {
+                                                                                setGraphType(
+                                                                                    e
+                                                                                        .target
+                                                                                        .value
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <MenuItem
+                                                                                value={
+                                                                                    "bar"
+                                                                                }
+                                                                            >
+                                                                                Bar
+                                                                            </MenuItem>
+                                                                            <MenuItem
+                                                                                value={
+                                                                                    "line"
+                                                                                }
+                                                                            >
+                                                                                Basic
+                                                                                Line
+                                                                            </MenuItem>
+                                                                            <MenuItem
+                                                                                value={
+                                                                                    "pie"
+                                                                                }
+                                                                            >
+                                                                                Pie
+                                                                            </MenuItem>
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div>
+                                                                <CircularProgress />
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div id="graph_filter">
+                                                        <BootstrapTable
+                                                            keyField="id"
+                                                            ref={(n) =>
+                                                                (graph_table_node.current =
+                                                                    n)
+                                                            }
+                                                            remote={{
+                                                                filter: true,
+                                                                pagination: false,
+                                                                sort: false,
+                                                                cellEdit: false,
+                                                            }}
+                                                            data={[]}
+                                                            columns={
+                                                                patient_columns
+                                                            }
+                                                            filter={filterFactory()}
+                                                            filterPosition="top"
+                                                            onTableChange={(
+                                                                type,
+                                                                newState
+                                                            ) => {
+                                                                graphDataFilter(
+                                                                    graph_table_node
+                                                                        .current
+                                                                        .filterContext
+                                                                        .currFilters
+                                                                );
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Tab>
+                                        <Tab
+                                            eventKey="patients_list"
+                                            title="Patient List"
+                                        >
+                                            <div
+                                                class="card shadow mb-4"
+                                                id="display_filter_patients_gene"
+                                            >
+                                                <div class="card-header py-3">
+                                                    <h6 class="m-0 font-weight-bold text-primary">
+                                                        Patient List
+                                                    </h6>
+                                                </div>
+
+                                                <div
+                                                    class="row"
+                                                    id="table_options_outer"
+                                                >
+                                                    <div id="patient_table_area">
+                                                        <BootstrapTable
+                                                            keyField="id"
+                                                            ref={(n) =>
+                                                                (patients_table_node.current =
+                                                                    n)
+                                                            }
+                                                            remote={{
+                                                                filter: true,
+                                                                pagination: false,
+                                                                sort: false,
+                                                                cellEdit: false,
+                                                            }}
+                                                            data={
+                                                                patient_data_table_filtered
+                                                            }
+                                                            columns={
+                                                                patient_columns
+                                                            }
+                                                            filter={filterFactory()}
+                                                            pagination={paginationFactory()}
+                                                            filterPosition="top"
+                                                            onTableChange={(
+                                                                type,
+                                                                newState
+                                                            ) => {
+                                                                patientDataFilter(
+                                                                    patients_table_node
+                                                                        .current
+                                                                        .filterContext
+                                                                        .currFilters
+                                                                );
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Tab>
+                                        <Tab
+                                            eventKey="animation"
+                                            title="Animation"
+                                        >
+                                            <div
+                                                class="col-xl"
+                                                id="gene_animation"
+                                            >
+                                                <TableContainer
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "500px",
+                                                        overflow: "scroll",
+                                                    }}
+                                                >
+                                                    <Table
+                                                        style={{
+                                                            minWidth: 650,
+                                                        }}
+                                                        aria-label="simple table"
+                                                    >
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell>
+                                                                    Code
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {gene_code_info.code.map(
+                                                                function (
+                                                                    item,
+                                                                    row_i
+                                                                ) {
+                                                                    return (
+                                                                        <TableRow
+                                                                            key={
+                                                                                row_i
+                                                                            }
+                                                                        >
+                                                                            <TableCell>
+                                                                                <div className="codeRow">
+                                                                                    {breakUpCode(
+                                                                                        item
+                                                                                    ).map(
+                                                                                        function (
+                                                                                            code_str,
+                                                                                            i
+                                                                                        ) {
+                                                                                            return (
+                                                                                                <div
+                                                                                                    className="codeCard"
+                                                                                                    style={{
+                                                                                                        backgroundColor:
+                                                                                                            getColor(
+                                                                                                                i
+                                                                                                            ),
+                                                                                                    }}
+                                                                                                >
+                                                                                                    {
+                                                                                                        code_str
+                                                                                                    }
+                                                                                                </div>
+                                                                                            );
+                                                                                        }
+                                                                                    )}
+                                                                                </div>
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </div>
+                                        </Tab>
+                                    </Tabs>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
 
             <footer class="sticky-footer bg-white">
