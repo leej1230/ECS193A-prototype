@@ -16,6 +16,7 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+import { ParseInt } from "react-lodash";
 const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
 
@@ -28,8 +29,25 @@ function Home() {
   const [dataset_count, set_dataset_count] = useState(0);
   const [height_link_cards, set_height_link_cards] = useState('300px');
 
-  useEffect(() => {
+
+  const getCountInfo = async () => {
     console.log("count information: ")
+    const gene_count_url = `${process.env.REACT_APP_BACKEND_URL}/api/gene_count`
+    const dataset_count_url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset_count`
+
+    let res = await axios.get(gene_count_url);
+    set_gene_count(parseInt(res.data.count))
+    console.log("line 39 gene count total: ", parseInt(res.data.count))
+
+    res = await axios.get(dataset_count_url)
+    set_dataset_count(parseInt(res.data.count))
+    console.log("line 44 dataset count total: ", parseInt(res.data.count) )
+
+  }
+
+  useEffect(() => {
+    getCountInfo();
+    
   }, []);
 
   return (

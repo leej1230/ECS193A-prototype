@@ -819,6 +819,24 @@ class Database:
             json_data = serial.data
             return json_data
 
+        def get_gene_count(request):
+            """Retrieves the count of all genes in the gene collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: The gene count
+            """
+            genes_count = Database.gene_collection.count_documents(
+                {}
+            )
+
+            print("gene count total: ", genes_count)
+
+            json_data = loads(dumps( { 'count': genes_count } ))
+            return json_data
+
         def get_gene_all(request):
             """Retrieves the name and ID of all genes in the gene collection in the database.
 
@@ -846,9 +864,6 @@ class Database:
             data_request = json.loads(request['ctx'].body)
 
             genes_list = data_request['genes_request_list']
-
-            print(" get some genes: ")
-            print( genes_list )
 
             gene_objs_list = [{}]
 
@@ -1008,6 +1023,24 @@ class Database:
             serial = DatasetSerializer(dataset, many=False)
             return serial.data
         
+        def get_dataset_count(request):
+            """Retrieves the count of all datasets in the dataset collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: The dataset count
+            """
+            datasets_count = Database.dataset_collection.count_documents(
+                {}
+            )
+
+            print("datasets count total: ", datasets_count)
+
+            json_data = loads(dumps({'count': datasets_count}))
+            return json_data
+        
         def get_search_dataset(request):
             """Retrieves the name and ID of particular number of datasets in the dataset collection in the database based on the keyword user input.
 
@@ -1085,8 +1118,6 @@ class Database:
 
             datasets_list = data_request['datasets_request_list']
 
-            print(" get some datasets: ")
-            print( datasets_list )
 
             dataset_objs_list = [{}]
 

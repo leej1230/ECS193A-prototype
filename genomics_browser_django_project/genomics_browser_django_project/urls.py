@@ -60,6 +60,16 @@ urlpatterns = [
         {"inner": "Patients", "callback": "get_patient_all"},
     ),
     re_path(
+        r'^api/gene_count',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_count"},
+    ),
+    re_path(
+        r'^api/dataset_count',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_count"},
+    ),
+    re_path(
         r'^api/gene/all',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_gene_all"},
