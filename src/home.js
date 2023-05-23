@@ -18,6 +18,164 @@ import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/rea
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
+
+function Home() {
+
+  const { user } = useAuth0();
+  const userMetadata = user?.['https://unique.app.com/user_metadata'];
+
+  const [gene_count, set_gene_count] = useState(0);
+  const [dataset_count, set_dataset_count] = useState(0);
+
+  useEffect(() => {
+    console.log("count information: ")
+  }, []);
+
+  return (
+    <body id="page-top">
+      <div id="wrapper">
+
+        <div id="content-wrapper" class="d-flex flex-column">
+          <div id="content">
+
+            <div class="container-fluid" id="home_page_full">
+                <SideNav id="side_navigation_menu"
+                  onSelect={(selected) => {
+                      // Add your code here
+                  }}>
+                  <SideNav.Toggle />
+                    <SideNav.Nav defaultSelected="home">
+                        <NavItem eventKey="home">
+                            <NavIcon>
+                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                              <a href="/console" style={{textDecoration: 'None'}}>Home</a>
+                            </NavText>
+                        </NavItem>
+                        <NavItem eventKey="search_gene">
+                            <NavIcon >
+                                <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                              <a href="/search_genes_page" style={{textDecoration: 'None'}}>Gene Search</a>
+                            </NavText>
+                        </NavItem>
+                        <NavItem eventKey="search_dataset">
+                            <NavIcon >
+                                <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
+                            </NavIcon>
+                            <NavText style={{ color: 'white' }}>
+                                <a href="/search_datasets_page" style={{textDecoration: 'None'}}>Dataset Search</a>
+                            </NavText>
+                        </NavItem>
+                    </SideNav.Nav>
+                  </SideNav>
+              <div class="row justify-content-end">
+                <div class="col-md-12 bg-light text-right mr-5 mt-5">
+                  <a
+                    href="/upload"
+                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                  >
+                    <i class="fas fa-upload fa-sm text-white-50"></i>Upload
+                  </a>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <h3 class="h3 mb-5 text-gray-800">Human Genomics Search</h3>
+              </div>
+
+              <div class="row justify-content-center">
+                <h3 class="h5 mb-4 text-gray-800">Welcome! You can search genes or datasets. </h3>
+              </div>
+
+              <div class="row mb-4 justify-content-center">
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card border-left-success shadow">
+                      <div class="card-body">
+                          <div class="row align-items-center">
+                              <div class="col">
+                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                      Total Genes Count</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{gene_count}</div>
+                              </div>
+                              <div class="col-auto">
+                                <FontAwesomeIcon  icon={icon({name: 'dna', style: 'solid' })} />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card border-left-success shadow">
+                      <div class="card-body">
+                          <div class="row align-items-center">
+                              <div class="col">
+                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                      Total Datasets Count</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{dataset_count}</div>
+                              </div>
+                              <div class="col-auto">
+                                <FontAwesomeIcon icon={icon({name: 'file', style: 'solid' })} />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div style={{minWidth: '100%', left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%'}}>
+                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex'}}>
+
+                      <div class="col" style={{display: 'inline'}}>
+                        <div class="card shadow">
+                          <div class="card-body">
+                              <a href="/search_genes_page">Genes Search</a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col" style={{display: 'inline'}}>
+                        <div class="card shadow">
+                          <div class="card-body">
+                              <a href="/search_datasets_page">Datasets Search</a>
+                          </div>
+                        </div>
+                      </div>
+                      
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+      <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+      <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+      <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+      <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+    </body>
+  );
+}
+
+export default Home;
+
+/*
 function Home() {
   const [searchResult, setSearchResult] = useState([]);
   //   Space so that user can run "blank" search
@@ -240,9 +398,7 @@ function Home() {
       <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
     </body>
   );
-}
-
-export default Home;
+}*/
 
 {/*
 <ul

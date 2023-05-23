@@ -102,7 +102,6 @@ function HomePage() {
 
         return _ => {
             window.removeEventListener('resize', debouncedHandleResize)
-
         }
     })
     return (
