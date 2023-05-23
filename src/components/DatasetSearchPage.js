@@ -53,6 +53,7 @@ function DatasetSearchPage() {
       );
       setSearchResult(response.data);
       setHasSearched(true);
+      console.log("dataset search line 56");
       console.log(response.data);
     } catch (error) {
       console.error(error);

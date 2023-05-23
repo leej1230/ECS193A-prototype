@@ -1031,7 +1031,7 @@ class Database:
                 doc_count = Database.dataset_collection.count_documents({})
                 datasets = (
                     Database.dataset_collection.find(
-                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1}
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1}
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
@@ -1043,7 +1043,7 @@ class Database:
                 datasets = (
                     Database.dataset_collection.find(
                         {'name': {'$regex': search_word, '$options': 'i'}},
-                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1},
+                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1},
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import "./DatasetSampleList.css";
 
+import SampleListDatasetResultDisplay from "./SampleListDatasetResultDisplay";
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -26,11 +28,7 @@ function DatasetSampleList(props) {
         <div>
           {dataset_data &&
             dataset_data.map((dataset_val) => (
-              <div id="dataset_display_result_single">
-                  <p id="search_dataset_result_name_display">{dataset_val.name} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={"/dataset/" + dataset_val.id}>Link to Dataset Page</a> </p>
-                  <p id="search_dataset_result_info_display">Dataset ID: {dataset_val.id} &nbsp; &nbsp; &nbsp; Description: ghghg hghgh ghgh </p>
-                  <hr id="line_div_category_search_content" />
-              </div>
+              <SampleListDatasetResultDisplay dataset={dataset_val} />
             ))}
         </div>
       ) : (
@@ -62,4 +60,12 @@ export default DatasetSampleList;
       Gene Name: {gene_val.name} ID: {gene_val.id}
     </a>
   </li>
+*/
+
+/*
+<div id="dataset_display_result_single">
+    <p id="search_dataset_result_name_display">{dataset_val.name} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={"/dataset/" + dataset_val.id}>Link to Dataset Page</a> </p>
+    <p id="search_dataset_result_info_display">Dataset ID: {dataset_val.id} &nbsp; &nbsp; &nbsp; Description: ghghg hghgh ghgh </p>
+    <hr id="line_div_category_search_content" />
+</div>
 */

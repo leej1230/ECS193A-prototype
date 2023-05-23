@@ -9,45 +9,20 @@ import "./SampleListDatasetResultDisplay.css";
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
+import LimitedText from './LimitedText.js'
+
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
 const DATASET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/all`;
 // const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
 
 function SampleListDatasetResultDisplay(props) {
 
-    const [extended_dataset_information, set_extended_dataset_information] = useState(undefined);
-
-  useEffect(() => {
-
-    if(props.dataset){
-
-      let temp_dataset_name = props.dataset.name
-      let temp_dataset_id = props.dataset.id
-
-      const external_url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${temp_dataset_id}`;
-
-      axios.get(external_url)
-        .then(async (result) => {
-
-          set_extended_dataset_information(result.data)
-
-          console.log("dataset extended sample list info: ")
-          console.log( result.data )
-        }).catch(
-          function (error) {
-            console.log('failed external info fetch!')
-            
-          }
-        )
-      
-    }
-  }, [props]);
-
   return (
     <div>
         <div id="dataset_display_result_single">
             <p id="search_dataset_result_name_display">{props.dataset && props.dataset.name ? props.dataset.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={props.dataset && props.dataset.id ? "/dataset/" + props.dataset.id : "#"}>Link to Dataset Page</a> </p>
-            <p id="search_dataset_result_info_display">Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'} &nbsp; &nbsp; &nbsp; Dataset Name: {props.dataset && props.dataset.name ? props.dataset.name : '-'} </p>
+            <p id="search_dataset_result_info_display">Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'}, &nbsp; &nbsp; &nbsp; Date Last Modified: {props.dataset && props.dataset.date_created ? props.dataset.date_created : '-'} </p>
+            <LimitedText numLines='1' text={`Description: ${props.dataset && props.dataset.description ? props.dataset.description : '-'}`} />
             <hr id="line_div_category_search_content" />
         </div>
       
