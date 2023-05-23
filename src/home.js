@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import { IconButton, Select, MenuItem } from "@mui/material";
+import { IconButton, Select, MenuItem, Hidden } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import "./home.css";
 import SampleList from "./components/SampleList";
@@ -26,6 +26,7 @@ function Home() {
 
   const [gene_count, set_gene_count] = useState(0);
   const [dataset_count, set_dataset_count] = useState(0);
+  const [height_link_cards, set_height_link_cards] = useState('300px');
 
   useEffect(() => {
     console.log("count information: ")
@@ -132,22 +133,32 @@ function Home() {
                 </div>
               </div>
 
-              <div style={{minWidth: '100%', left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%'}}>
-                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex'}}>
+              <div style={{minWidth: '100%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}` , left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center' }}>
+                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}`}}>
+                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}`}}>
 
-                      <div class="col" style={{display: 'inline'}}>
-                        <div class="card shadow">
+                      <div class="col" style={{display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%'}}>
+                        <div class="card shadow" style={{maxHeight: '100%', minHeight: '100%', overflow: 'hidden'}}>
                           <div class="card-body">
-                              <a href="/search_genes_page">Genes Search</a>
+                              <a href="/search_genes_page">
+                                Genes Search
+                                <img src="https://www.ukri.org/wp-content/uploads/2022/02/MRC-180222-DNASequencingDataGenomicAnalysis-GettyImages-1293619871-735x490.jpg"
+                                      style={{maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%'}}>
+                                   </img>
+                              </a>
                           </div>
                         </div>
                       </div>
 
-                      <div class="col" style={{display: 'inline'}}>
-                        <div class="card shadow">
+                      <div class="col" style={{display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%'}}>
+                        <div class="card shadow" style={{maxHeight: '100%', minHeight: '100%', overflow: 'hidden'}}>
                           <div class="card-body">
-                              <a href="/search_datasets_page">Datasets Search</a>
+                              <a href="/search_datasets_page">
+                                Datasets Search
+                                <img src="https://www.shutterstock.com/image-vector/abstract-business-chart-uptrend-line-260nw-593939270.jpg"
+                                      style={{maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%'}}>
+                                </img>
+                              </a>
                           </div>
                         </div>
                       </div>
@@ -178,6 +189,10 @@ function Home() {
 }
 
 export default Home;
+
+/*
+https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chart_line.png
+*/
 
 /*
 function Home() {
