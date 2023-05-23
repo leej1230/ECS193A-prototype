@@ -35,7 +35,7 @@ function SampleListGeneResultDisplay(props) {
 
       let temp_gene_name = props.gene.name
       let end_index = temp_gene_name.indexOf( "." )
-      if( end_index >= 0 -1 ){
+      if( end_index >= 0 ){
         // present
         temp_gene_name = temp_gene_name.substring(0, end_index )
       }

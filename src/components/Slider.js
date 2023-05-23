@@ -85,7 +85,7 @@ export default function Slider() {
             const res = await axios.get(`${user_get_url}/${userSub}`);
             console.log(res.data);
             setUserInfo(res.data);
-            setBookmarkedDatasets(res.data.bookmarked_genes);
+            setBookmarkedDatasets(res.data.bookmarked_datasets);
             console.log("fetched and saved user and bookmark information for dataset")
 
         } catch (e) {
@@ -154,7 +154,7 @@ export default function Slider() {
 
     return (
         <div>
-            <SliderItemsContainer dataset_groups_list={groupings} />
+            {datasets_list.length > 0 ? <SliderItemsContainer dataset_groups_list={groupings} /> : <></>}
             <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
             <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
