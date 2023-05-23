@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import LoadingSpinner from './components/spinner/spinner';
-import axios from 'axios';
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import LoadingSpinner from "./components/spinner/spinner";
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 const url = process.env.REACT_APP_FRONTEND_URL;
@@ -23,7 +23,7 @@ function Profile() {
     const [userInfo, setUserInfo] = useState();
     const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
 
-    const userMetadata = user?.['https://unique.app.com/user_metadata'];
+    const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
     const handleFetchUser = async () => {
         const userSub = user.sub.split("|")[1];
@@ -41,54 +41,65 @@ function Profile() {
         handleFetchUser();
     }, []);
 
-    return isLoading || !userInfo ? (
-        <div>
-            <LoadingSpinner />
-        </div>
-    ) : (
+    return (
         <div>
             {/* Move down to avoid overlap with navbar */}
-            <div className="container" style={{ height: "70px", border: "1px solid black" }}></div>
+            <div
+                className="container"
+                style={{ height: "70px", border: "1px solid black" }}
+            ></div>
             {userMetadata && (
                 <div className="container mx-2 my-2">
-                    <h1>User Page</h1>
-                    <div className='mx-3 my-2'>
-                        <h2>{userMetadata.given_name} {userMetadata.family_name}</h2>
-                    </div>
-                    <h2>Roles</h2>
-                    <div className='mx-3 my-2'>
-                        {is_admin ? (
-                            <h4>Admin</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {is_member ? (
-                            <h4>Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {!is_admin && !is_member ? (
-                            <h4>Not Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                    </div>
-                    <div>
-                        <h2>Bookmarked Genes</h2>
-                        {bookmarkedGenes.length !== 0 ? (
-                            bookmarkedGenes.map((geneUrl) => (
-                                <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
-                                    {geneUrl}
-                                </a>
-                            ))
-                        ) : (
-                            <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                        )}
-                    </div>
-
-                    {is_admin && (
+                    {isLoading || !userInfo ? (
+                        <div style={{ marginTop: "40vh" }}>
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
                         <div>
-                            <a href={`${url}/manage`}>Manage Users</a>
+                            <h1>User Page</h1>
+                            <div className="mx-3 my-2">
+                                <h2>
+                                    {userMetadata.given_name}{" "}
+                                    {userMetadata.family_name}
+                                </h2>
+                            </div>
+                            <h2>Roles</h2>
+                            <div className="mx-3 my-2">
+                                {is_admin ? <h4>Admin</h4> : <></>}
+                                {is_member ? <h4>Verified</h4> : <></>}
+                                {!is_admin && !is_member ? (
+                                    <h4>Not Verified</h4>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
+                            <div>
+                                <h2>Bookmarked Genes</h2>
+                                {bookmarkedGenes.length !== 0 ? (
+                                    bookmarkedGenes.map((geneUrl) => (
+                                        <a
+                                            href={`${url}/gene/${geneUrl}`}
+                                            className="mx-3"
+                                            style={{
+                                                display: "block",
+                                                marginBottom: "10px",
+                                            }}
+                                        >
+                                            {geneUrl}
+                                        </a>
+                                    ))
+                                ) : (
+                                    <h4 className="mx-3 my-2">
+                                        No Bookmarks Yet!
+                                    </h4>
+                                )}
+                            </div>
+
+                            {is_admin && (
+                                <div>
+                                    <a href={`${url}/manage`}>Manage Users</a>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
