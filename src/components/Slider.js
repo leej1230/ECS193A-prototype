@@ -6,6 +6,7 @@ import "./Slider.css";
 
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
+import LoadingSpinner from "./spinner/spinner";
 
 function debounce(fn, ms) {
     let timer;
@@ -110,7 +111,9 @@ export default function Slider() {
             });
     }, [datasets_list.length]);
 
-    return (
+    return !datasets_list.length ? (
+        <LoadingSpinner />
+    ) : (
         <div>
             <SliderItemsContainer dataset_groups_list={groupings} />
             <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
