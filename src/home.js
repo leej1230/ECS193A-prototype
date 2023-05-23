@@ -90,42 +90,46 @@ function Home() {
                 <h3 class="h5 mb-4 text-gray-800">Welcome! You can search genes or datasets. </h3>
               </div>
 
-              <div class="row mb-4 justify-content-center">
+              <div style={{minWidth: '100%', left: 0, marginLeft: '40px', marginBottom: '40px', justifyContent: 'center', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%'}}>
+                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex'}}>
 
-                <div class="col-xl-3 col-md-6">
-                  <div class="card border-left-success shadow">
-                      <div class="card-body">
-                          <div class="row align-items-center">
-                              <div class="col">
-                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                      Total Genes Count</div>
-                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{gene_count}</div>
-                              </div>
-                              <div class="col-auto">
-                                <FontAwesomeIcon  icon={icon({name: 'dna', style: 'solid' })} />
+                    <div class="col" style={{display: 'inline'}}>
+                      <div class="card border-left-success shadow">
+                          <div class="card-body">
+                              <div class="row align-items-center">
+                                  <div class="col">
+                                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                          Total Genes Count</div>
+                                      <div class="h5 mb-0 font-weight-bold text-gray-800">{gene_count}</div>
+                                  </div>
+                                  <div class="col-auto">
+                                    <FontAwesomeIcon  icon={icon({name: 'dna', style: 'solid' })} />
+                                  </div>
                               </div>
                           </div>
                       </div>
-                  </div>
-                </div>
+                    </div>
 
-                <div class="col-xl-3 col-md-6">
-                  <div class="card border-left-success shadow">
-                      <div class="card-body">
-                          <div class="row align-items-center">
-                              <div class="col">
-                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                      Total Datasets Count</div>
-                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{dataset_count}</div>
-                              </div>
-                              <div class="col-auto">
-                                <FontAwesomeIcon icon={icon({name: 'file', style: 'solid' })} />
+                    <div class="col" style={{display: 'inline'}}>
+                      <div class="card border-left-success shadow">
+                          <div class="card-body">
+                              <div class="row align-items-center">
+                                  <div class="col">
+                                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                          Total Datasets Count</div>
+                                      <div class="h5 mb-0 font-weight-bold text-gray-800">{dataset_count}</div>
+                                  </div>
+                                  <div class="col-auto">
+                                    <FontAwesomeIcon icon={icon({name: 'file', style: 'solid' })} />
+                                  </div>
                               </div>
                           </div>
                       </div>
+                    </div>
+
                   </div>
                 </div>
-
               </div>
 
               <div style={{minWidth: '100%', left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center'}}>
