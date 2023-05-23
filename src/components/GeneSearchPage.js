@@ -24,7 +24,6 @@ function GeneSearchPage() {
   const [searchResult, setSearchResult] = useState([]);
   //   Space so that user can run "blank" search
   const [searchInput, setSearchInput] = useState(" ");
-  const [searchFilter, setSearchFilter] = useState("gene");
   const [listPage, setListPage] = useState(1);
   const [isMounted, setIsMounted] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -50,7 +49,7 @@ function GeneSearchPage() {
       }
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URL
-        }/api/${searchFilter}/search/${search_input_for_url}/${listPage.toString()}`
+        }/api/gene/search/${search_input_for_url}/${listPage.toString()}`
       );
       setSearchResult(response.data);
       setHasSearched(true);

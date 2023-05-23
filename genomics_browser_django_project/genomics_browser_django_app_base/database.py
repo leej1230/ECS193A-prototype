@@ -1008,6 +1008,54 @@ class Database:
             serial = DatasetSerializer(dataset, many=False)
             return serial.data
         
+        def get_search_dataset(request):
+            """Retrieves the name and ID of particular number of datasets in the dataset collection in the database based on the keyword user input.
+
+            Args:
+                request: Contains the keyword user searched.
+
+            Returns:
+                dict: A dictionary containing the dataset info
+            """
+
+            search_word = request['search_word']
+            page = int(request['page_id']) - 1
+
+            numberofList = 5
+
+            doc_count = 0
+
+            datasets = []
+
+            if search_word == " ":
+                doc_count = Database.dataset_collection.count_documents({})
+                datasets = (
+                    Database.dataset_collection.find(
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1}
+                    )
+                    .skip(numberofList * page)
+                    .limit(numberofList)
+                )
+            else:
+                doc_count = Database.dataset_collection.count_documents(
+                    {'name': {'$regex': search_word, '$options': 'i'}}
+                )
+                datasets = (
+                    Database.dataset_collection.find(
+                        {'name': {'$regex': search_word, '$options': 'i'}},
+                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1},
+                    )
+                    .skip(numberofList * page)
+                    .limit(numberofList)
+                )
+
+            json_data = loads(dumps(datasets))
+
+            totalPages = math.ceil(doc_count / numberofList)
+
+            print(totalPages)
+            return json_data
+        
         def get_dataset_name_for_id(request):
             """Get the dataset name given dataset ID.
 

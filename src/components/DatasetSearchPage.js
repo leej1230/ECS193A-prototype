@@ -24,7 +24,6 @@ function DatasetSearchPage() {
   const [searchResult, setSearchResult] = useState([]);
   //   Space so that user can run "blank" search
   const [searchInput, setSearchInput] = useState(" ");
-  const [searchFilter, setSearchFilter] = useState("gene");
   const [listPage, setListPage] = useState(1);
   const [isMounted, setIsMounted] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -41,7 +40,7 @@ function DatasetSearchPage() {
     }
   }, [listPage]);
 
-  //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
+  //   Url to search dataset by keywords: 'api/dataset_search/<str:search_word>/<str:page_id>'
   const handleSearch = async () => {
     try {
       let search_input_for_url = clone(searchInput)
@@ -50,7 +49,7 @@ function DatasetSearchPage() {
       }
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URL
-        }/api/${searchFilter}/search/${search_input_for_url}/${listPage.toString()}`
+        }/api/dataset_search/${search_input_for_url}/${listPage.toString()}`
       );
       setSearchResult(response.data);
       setHasSearched(true);
@@ -62,7 +61,7 @@ function DatasetSearchPage() {
   };
 
   const handleIncrementPage = async () => {
-    console.log(user)
+    //console.log(user)
     setListPage(listPage + 1);
     // handleSearch();
     // console.log(listPage)
@@ -165,7 +164,7 @@ function DatasetSearchPage() {
                     onChange={(e) => setSearchInput(e.target.value)}
                     variant="outlined"
                     fullWidth
-                    label="Search by gene names or dataset name"
+                    label="Search by dataset name"
                   />
 
                   <button type="submit" onClick={handleSearch} class="btn btn-primary" id="search_dataset_button" aria-label="search">
