@@ -109,7 +109,12 @@ export default function SliderGene() {
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
       console.log(response.data);
-      setGenesList(response.data);
+      if(response.data && response.data.length == 1 && response.data[0] == null){
+        setGenesList([]);
+      }else{
+        setGenesList(response.data);
+      }
+      
     });
 
   }, [bookmarkedGenes]);

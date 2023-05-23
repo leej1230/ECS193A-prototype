@@ -110,6 +110,11 @@ urlpatterns = [
         {"inner": "Users", "callback": "delete_user_one"},
     ),
     path(
+        'api/datasets_some',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_some"}
+    ),
+    path(
         'api/update-role',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "update_role"},

@@ -4,8 +4,14 @@ import ScrollBars from "react-custom-scrollbars";
 import DatasetList from "./DatasetList";
 import "./Slider.css";
 
+import { useAuth0 } from '@auth0/auth0-react';
+
+import {clone} from "ramda";
+
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
+
+const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
 function debounce(fn, ms) {
     let timer;
@@ -69,6 +75,46 @@ export default function Slider() {
     const [datasets_list, setDatasetsList] = useState([]);
     const [groupings, setGroupings] = useState([]);
 
+    const { user, isLoading } = useAuth0();
+    const [userInfo, setUserInfo] = useState();
+    const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
+
+    const handleFetchUser = async () => {
+        const userSub = user.sub.split("|")[1];
+        try {
+            const res = await axios.get(`${user_get_url}/${userSub}`);
+            console.log(res.data);
+            setUserInfo(res.data);
+            setBookmarkedDatasets(res.data.bookmarked_genes);
+            console.log("fetched and saved user and bookmark information for dataset")
+
+        } catch (e) {
+            console.log("Failed to fetch user Info.", e);
+        }
+    };
+
+    useEffect(() => {
+        handleFetchUser();
+      }, []);
+
+    useEffect(() => {
+
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/datasets_some`, {
+        // Data to be sent to the server
+        datasets_request_list: clone(bookmarkedDatasets)
+    }, { 'content-type': 'application/json' }).then((response) => {
+        console.log("post has been sent");
+        console.log(response.data);
+        if(response.data && response.data.length == 1 && response.data[0] == null){
+            setDatasetsList([]);
+        } else {
+            setDatasetsList(response.data);
+        }
+        
+    });
+
+    }, [bookmarkedDatasets]);
+
   useEffect(() => {
     function createDatasetListGroups() {
       var num_datasets = datasets_list.length;
@@ -101,14 +147,9 @@ export default function Slider() {
       return groups_list;
     }
 
-    axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/all/`)
-      .then(async (result) => {
-        await setDatasetsList(result.data);
-      })
-      .then(() => {
-        setGroupings(createDatasetListGroups());
-      });
+    
+    setGroupings(createDatasetListGroups());
+
   }, [datasets_list.length]);
 
     return (

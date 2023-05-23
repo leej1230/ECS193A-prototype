@@ -852,6 +852,9 @@ class Database:
 
             gene_objs_list = [{}]
 
+            if( len(genes_list) == 0):
+                return loads(dumps([]))
+
             for i in range( len(genes_list) ):
                 cur_gene_name_id = genes_list[i].split('/')
                 cur_name = cur_gene_name_id[0]
@@ -859,7 +862,7 @@ class Database:
                 
                 one_gene = Database.gene_collection.find_one(
                         {'name': cur_name, 'id': cur_id},
-                        {'_id': 0}
+                        {'_id': 0, 'patient_ids': 0, 'gene_values': 0}
                 )
                 
 
@@ -1020,6 +1023,46 @@ class Database:
             )
             name_info = dataset['name']
             return loads(dumps(name_info))
+
+        def get_dataset_some(request):
+            """Retrieves datasets with the specified name and ID in the dataset collection in the database.
+
+            Args:
+                request: contains the name and id of the datasets to be returned
+
+            Returns:
+                dict: A dictionary containing the full dataset information
+            """
+            data_request = json.loads(request['ctx'].body)
+
+            datasets_list = data_request['datasets_request_list']
+
+            print(" get some datasets: ")
+            print( datasets_list )
+
+            dataset_objs_list = [{}]
+
+            if( len(datasets_list) == 0):
+                return loads(dumps([]))
+
+            for i in range( len(datasets_list) ):
+                cur_dataset_name_id = datasets_list[i].split('/')
+                cur_name = cur_dataset_name_id[0]
+                cur_id = int(cur_dataset_name_id[1])
+                
+                one_dataset = Database.dataset_collection.find_one(
+                        {'name': cur_name, 'id': cur_id},
+                        {'_id': 0, 'patient_ids': 0, 'gene_ids': 0}
+                )
+                
+
+                dataset_objs_list.append(one_dataset)
+
+            dataset_objs_list = dataset_objs_list[1:]
+
+            json_data = loads(dumps(dataset_objs_list))
+
+            return json_data
 
         @staticmethod
         def get_dataset_all(request):
