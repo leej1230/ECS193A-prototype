@@ -29,13 +29,13 @@ function Navbar() {
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul id="navbar_element_link_top" class="navbar-nav">
             <li class="nav-item active">
-              <a id="navbar_element_link_home" class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+              <a id="navbar_element_link_home" class="nav-link" href="/console">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a id="navbar_element_link_about" class="nav-link" href="#">About</a>
+              <a id="navbar_element_link_about" class="nav-link" href="/about">About</a>
             </li>
             <li class="nav-item">
-              <a id="navbar_element_link_contact_us" class="nav-link" href="#">Contact Us</a>
+              <a id="navbar_element_link_contact_us" class="nav-link" href="/contact">Contact Us</a>
             </li>
           </ul>
         </div>
@@ -118,7 +118,7 @@ function Navbar() {
                 Profile
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item d-flex align-items-center" data-toggle="modal" data-target="#logoutModal" onClick={() => logout()} id="user_dropdown_item_body_logout">
+              <a class="dropdown-item d-flex align-items-center" data-toggle="modal" data-target="#logoutModal" onClick={() => logout({ returnTo: process.env.REACT_APP_FRONTEND_URL })} id="user_dropdown_item_body_logout">
                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                 Logout
               </a>

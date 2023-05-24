@@ -16,6 +16,7 @@ import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import './HomePage.css'
+import { useAuth0 } from '@auth0/auth0-react';
 
 function debounce(fn, ms) {
     let timer
@@ -29,6 +30,7 @@ function debounce(fn, ms) {
 }
 
 function HomePage() {
+    const { loginWithRedirect } = useAuth0();
 
     // orig window dimensions: 1536 x 754 (width x height)
     const [dimensions, setDimensions] = React.useState({
@@ -146,7 +148,7 @@ function HomePage() {
                 <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
                 <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
                 <div className="d-flex align-items-center justify-content-center">
-                    <a class="btn btn-primary" type="submit" href="/console">Start</a>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+                    <a class="btn btn-primary" onClick={() => loginWithRedirect()}>Start</a>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
                     {/* <button class="btn btn-primary" type="submit">Signup</button>
                     <LoginButton /> */}
                 </div>
