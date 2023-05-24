@@ -57,21 +57,11 @@ function Home() {
     };
 
     const handleIncrementPage = async () => {
-        console.log(listPage);
-        console.log(totalPages);
-        if (listPage < totalPages) {
-            setListPage(listPage + 1);
-        }
-        // handleSearch();
-        // console.log(listPage)
+        setListPage(listPage + 1);
     };
 
     const handleDecrementPage = () => {
-        if (listPage > 1) {
-            setListPage(listPage - 1);
-            // handleSearch();
-        }
-        // console.log(listPage)
+        setListPage(listPage - 1);
     };
 
     const handleUserSubmit = async () => {
@@ -272,22 +262,26 @@ function Home() {
                                         {searchResult.length > 0 && (
                                             <div>
                                                 <div className="float-left">
-                                                    <button
-                                                        onClick={
-                                                            handleDecrementPage
-                                                        }
-                                                    >
-                                                        Prev Page
-                                                    </button>
+                                                    {listPage > 1 && (
+                                                        <button
+                                                            onClick={
+                                                                handleDecrementPage
+                                                            }
+                                                        >
+                                                            Prev Page
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="float-right">
-                                                    <button
-                                                        onClick={
-                                                            handleIncrementPage
-                                                        }
-                                                    >
-                                                        Next Page
-                                                    </button>
+                                                    {listPage < totalPages && (
+                                                        <button
+                                                            onClick={
+                                                                handleIncrementPage
+                                                            }
+                                                        >
+                                                            Next Page
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
