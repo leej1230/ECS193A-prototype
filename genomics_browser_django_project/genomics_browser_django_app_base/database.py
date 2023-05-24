@@ -86,6 +86,7 @@ class Database:
                 return status.HTTP_409_CONFLICT
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
+            user.update({'bookmarked_datasets': []})
             # Temporary
             user.update({'is_admin': True})
             user.update({'is_staff': True})
@@ -1153,12 +1154,14 @@ class Database:
             """
             data_request = json.loads(request['ctx'].body)
 
-            datasets_list = data_request['datasets_request_list']
+            datasets_list = request['ctx'].POST.get('datasets_request_list')
+
+            print(datasets_list)
 
 
             dataset_objs_list = [{}]
 
-            if( len(datasets_list) == 0):
+            if( not datasets_list or len(datasets_list) == 0):
                 return loads(dumps([]))
 
             for i in range( len(datasets_list) ):

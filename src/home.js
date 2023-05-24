@@ -41,13 +41,39 @@ function Home() {
 
     res = await axios.get(dataset_count_url)
     set_dataset_count(parseInt(res.data.count))
-    console.log("line 44 dataset count total: ", parseInt(res.data.count) )
+    console.log("line 44 dataset count total: ", parseInt(res.data.count))
 
   }
 
+  const handleUserSubmit = async () => {
+
+    const email = user.email
+    const first_name = userMetadata.given_name
+    const last_name = userMetadata.family_name
+    // ONLY STORE USER UID part
+    const auth0_uid = user.sub.split("|")[1];
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("first_name", first_name);
+    formData.append("last_name", last_name);
+    formData.append("auth0_uid", auth0_uid);
+
+    axios
+      .post(user_post_url, formData)
+      .then(() => {
+        console.log("Account information successfully submitted on backend.");
+      })
+      .catch((error) => {
+        if (error.response.status === 409) {
+          console.log("Account informaiton already registered in DB. No update needed.")
+        }
+      });
+  };
+
   useEffect(() => {
     getCountInfo();
-    
+    handleUserSubmit();
   }, []);
 
   return (
@@ -58,38 +84,38 @@ function Home() {
           <div id="content">
 
             <div class="container-fluid" id="home_page_full">
-                <SideNav id="side_navigation_menu"
-                  onSelect={(selected) => {
-                      // Add your code here
-                  }}>
-                  <SideNav.Toggle />
-                    <SideNav.Nav defaultSelected="home">
-                        <NavItem eventKey="home">
-                            <NavIcon>
-                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                              <a href="/console" style={{textDecoration: 'None'}}>Home</a>
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_gene">
-                            <NavIcon >
-                                <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                              <a href="/search_genes_page" style={{textDecoration: 'None'}}>Gene Search</a>
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_dataset">
-                            <NavIcon >
-                                <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                <a href="/search_datasets_page" style={{textDecoration: 'None'}}>Dataset Search</a>
-                            </NavText>
-                        </NavItem>
-                    </SideNav.Nav>
-                  </SideNav>
+              <SideNav id="side_navigation_menu"
+                onSelect={(selected) => {
+                  // Add your code here
+                }}>
+                <SideNav.Toggle />
+                <SideNav.Nav defaultSelected="home">
+                  <NavItem eventKey="home">
+                    <NavIcon>
+                      <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      <a href="/console" style={{ textDecoration: 'None' }}>Home</a>
+                    </NavText>
+                  </NavItem>
+                  <NavItem eventKey="search_gene">
+                    <NavIcon >
+                      <FontAwesomeIcon id="gene_icon" icon={icon({ name: 'dna', style: 'solid' })} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      <a href="/search_genes_page" style={{ textDecoration: 'None' }}>Gene Search</a>
+                    </NavText>
+                  </NavItem>
+                  <NavItem eventKey="search_dataset">
+                    <NavIcon >
+                      <FontAwesomeIcon id="dataset_search_icon" icon={icon({ name: 'file', style: 'solid' })} />
+                    </NavIcon>
+                    <NavText style={{ color: 'white' }}>
+                      <a href="/search_datasets_page" style={{ textDecoration: 'None' }}>Dataset Search</a>
+                    </NavText>
+                  </NavItem>
+                </SideNav.Nav>
+              </SideNav>
               <div class="row justify-content-end">
                 <div class="col-md-12 bg-light text-right mr-5 mt-5">
                   <a
@@ -109,41 +135,41 @@ function Home() {
                 <h3 class="h5 mb-4 text-gray-800">Welcome! You can search genes or datasets. </h3>
               </div>
 
-              <div style={{minWidth: '100%', left: 0, marginLeft: '40px', marginBottom: '40px', justifyContent: 'center', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%'}}>
-                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex'}}>
+              <div style={{ minWidth: '100%', left: 0, marginLeft: '40px', marginBottom: '40px', justifyContent: 'center', textAlign: 'center' }}>
+                <div style={{ display: 'inline-block', minWidth: '70%', maxWidth: '70%' }}>
+                  <div class="justify-content-center" style={{ minWidth: '100%', maxWidth: '100%', display: 'flex' }}>
 
-                    <div class="col" style={{display: 'inline'}}>
+                    <div class="col" style={{ display: 'inline' }}>
                       <div class="card border-left-success shadow">
-                          <div class="card-body">
-                              <div class="row align-items-center">
-                                  <div class="col">
-                                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                          Total Genes Count</div>
-                                      <div class="h5 mb-0 font-weight-bold text-gray-800">{gene_count}</div>
-                                  </div>
-                                  <div class="col-auto">
-                                    <FontAwesomeIcon  icon={icon({name: 'dna', style: 'solid' })} />
-                                  </div>
-                              </div>
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col">
+                              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Genes Count</div>
+                              <div class="h5 mb-0 font-weight-bold text-gray-800">{gene_count}</div>
+                            </div>
+                            <div class="col-auto">
+                              <FontAwesomeIcon icon={icon({ name: 'dna', style: 'solid' })} />
+                            </div>
                           </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div class="col" style={{display: 'inline'}}>
+                    <div class="col" style={{ display: 'inline' }}>
                       <div class="card border-left-success shadow">
-                          <div class="card-body">
-                              <div class="row align-items-center">
-                                  <div class="col">
-                                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                          Total Datasets Count</div>
-                                      <div class="h5 mb-0 font-weight-bold text-gray-800">{dataset_count}</div>
-                                  </div>
-                                  <div class="col-auto">
-                                    <FontAwesomeIcon icon={icon({name: 'file', style: 'solid' })} />
-                                  </div>
-                              </div>
+                        <div class="card-body">
+                          <div class="row align-items-center">
+                            <div class="col">
+                              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Datasets Count</div>
+                              <div class="h5 mb-0 font-weight-bold text-gray-800">{dataset_count}</div>
+                            </div>
+                            <div class="col-auto">
+                              <FontAwesomeIcon icon={icon({ name: 'file', style: 'solid' })} />
+                            </div>
                           </div>
+                        </div>
                       </div>
                     </div>
 
@@ -151,36 +177,36 @@ function Home() {
                 </div>
               </div>
 
-              <div style={{minWidth: '100%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}` , left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center' }}>
-                <div style={{display: 'inline-block', minWidth: '70%', maxWidth: '70%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}`}}>
-                  <div class="justify-content-center" style={{minWidth: '100%', maxWidth: '100%', display: 'flex', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}`}}>
+              <div style={{ minWidth: '100%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}`, left: 0, marginLeft: '40px', justifyContent: 'center', textAlign: 'center' }}>
+                <div style={{ display: 'inline-block', minWidth: '70%', maxWidth: '70%', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}` }}>
+                  <div class="justify-content-center" style={{ minWidth: '100%', maxWidth: '100%', display: 'flex', minHeight: `${height_link_cards}`, maxHeight: `${height_link_cards}` }}>
 
-                      <div class="col" style={{display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%'}}>
-                        <div class="card shadow" style={{maxHeight: '100%', minHeight: '100%', overflow: 'hidden'}}>
-                          <div class="card-body">
-                              <a href="/search_genes_page">
-                                Genes Search
-                                <img src="https://www.ukri.org/wp-content/uploads/2022/02/MRC-180222-DNASequencingDataGenomicAnalysis-GettyImages-1293619871-735x490.jpg"
-                                      style={{maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%'}}>
-                                   </img>
-                              </a>
-                          </div>
+                    <div class="col" style={{ display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%' }}>
+                      <div class="card shadow" style={{ maxHeight: '100%', minHeight: '100%', overflow: 'hidden' }}>
+                        <div class="card-body">
+                          <a href="/search_genes_page">
+                            Genes Search
+                            <img src="https://www.ukri.org/wp-content/uploads/2022/02/MRC-180222-DNASequencingDataGenomicAnalysis-GettyImages-1293619871-735x490.jpg"
+                              style={{ maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%' }}>
+                            </img>
+                          </a>
                         </div>
                       </div>
+                    </div>
 
-                      <div class="col" style={{display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%'}}>
-                        <div class="card shadow" style={{maxHeight: '100%', minHeight: '100%', overflow: 'hidden'}}>
-                          <div class="card-body">
-                              <a href="/search_datasets_page">
-                                Datasets Search
-                                <img src="https://www.shutterstock.com/image-vector/abstract-business-chart-uptrend-line-260nw-593939270.jpg"
-                                      style={{maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%'}}>
-                                </img>
-                              </a>
-                          </div>
+                    <div class="col" style={{ display: 'inline', maxWidth: '50%', minWidth: '50%', minHeight: '100%', maxHeight: '100%' }}>
+                      <div class="card shadow" style={{ maxHeight: '100%', minHeight: '100%', overflow: 'hidden' }}>
+                        <div class="card-body">
+                          <a href="/search_datasets_page">
+                            Datasets Search
+                            <img src="https://www.shutterstock.com/image-vector/abstract-business-chart-uptrend-line-260nw-593939270.jpg"
+                              style={{ maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%' }}>
+                            </img>
+                          </a>
                         </div>
                       </div>
-                      
+                    </div>
+
                   </div>
                 </div>
               </div>
