@@ -214,14 +214,11 @@ class Database:
                             user_updated['edits'] = edits_structure
 
                             #do not update edits count because that would mess up new id generation
-                            '''if 'edits_count' in user_updated and user_updated['edits_count'] > 0:
+                            # only update if last id removed
+                            if 'edits_count' in user_updated and user_updated['edits_count'] > 0 and user_updated['edits_count'] == edit_rec_id:
                                 user_updated['edits_count'] = user_updated['edits_count'] - 1
-                            else:
-                                user_updated['edits_count'] = 0'''
-                            
-                            
 
-                            Database.user_collection.update_one({'auth0_uid': user_updated_id}, {"$set": {  'edits' : edits_structure } })
+                            Database.user_collection.update_one({'auth0_uid': user_updated_id}, {"$set": { 'edits_count': user_updated['edits_count'], 'edits' : edits_structure } })
             
                 return loads(dumps(status.HTTP_200_OK))
             except:

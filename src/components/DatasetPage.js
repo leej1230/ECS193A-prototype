@@ -10,6 +10,8 @@ import ScrollBars from "react-custom-scrollbars";
 
 import { json } from 'react-router-dom';
 
+import {default as TableBootstrap} from 'react-bootstrap/Table';
+
 import Multiselect from "multiselect-react-dropdown";
 import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator} from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
@@ -1285,23 +1287,48 @@ function DatasetPage() {
                                             <FontAwesomeIcon icon={icon({name: 'caret-down', style: 'solid' })} />
                                           </button>
                                         </div>
+                                        
                                         { collapse_array && collapse_array.length > index && collapse_array[index] == true ? 
-                                            <div>
-                                              { single_edit_record && single_edit_record.edit_info && Object.keys(single_edit_record.edit_info).length > 0 ? 
-                                                Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
-                                                  // each patient modified
-                                                  
-                                                  return <div>
-                                                    <p>Patient: {patient_key}</p>
-                                                    {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
-                                                      // info for that particular patient
-                                                      return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
+                                          <div>
+                                            { (single_edit_record && single_edit_record.edit_info && Object.keys(single_edit_record.edit_info).length > 0) ?
+                                                <TableBootstrap striped bordered hover>
+                                                  <thead>
+                                                    <tr>
+                                                      <th>Patient</th>
+                                                      <th>Column Key</th>
+                                                      <th>Old Value</th>
+                                                      <th>Editted New Value</th>
+                                                    </tr>
+                                                  </thead>
+                                                   
+                                                  {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
+                                                    // each patient modified
+
+                                                      return <tbody>
+                                                            <tr >
+                                                              <td style={{fontWeight: 'bold'}}>Patient: {patient_key}</td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                            </tr>
+                                                        
+                                                            {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
+                                                                // info for that particular patient
+                                                                return <tr>
+                                                                        <td></td>
+                                                                        <td>{editted_patient_info_key}</td>
+                                                                        <td>{single_edit_record["old_values"][patient_key][editted_patient_info_key]}</td>
+                                                                        <td>{single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</td>
+                                                                      </tr>
+                                                              })}
+                                                          
+                                                      </tbody>
                                                     })}
-                                                  </div>
-                                                })
-                                                : <p>No Edits</p>}
-                                            </div> 
-                                            : <></>}
+                                                   
+                                                </TableBootstrap> 
+                                            : <p>No Edits</p>}
+                                          </div>
+                                          : <></>}
                                         <hr id="line_div_category_search_content" />
                                       </div>
                               
@@ -1309,7 +1336,7 @@ function DatasetPage() {
                           })}
                         </ul> 
                         : 
-                        <p>empty list</p>}
+                        <p>Empty History</p>}
                   </div>
                   :
                   <div id="no_history_display_content">
@@ -1440,4 +1467,14 @@ export default DatasetPage;
     </div>
   </div>
 </li>
+*/
+
+/*
+<div>
+  <p>Patient: {patient_key}</p>
+  {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
+    // info for that particular patient
+    return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
+  })}
+</div>
 */
