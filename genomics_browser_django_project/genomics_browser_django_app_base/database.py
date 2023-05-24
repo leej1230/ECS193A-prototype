@@ -775,7 +775,7 @@ class Database:
                 request: Contains the keyword user searched.
 
             Returns:
-                dict: A dictionary containing the gene names and IDs.
+                dict: A dictionary containing the gene names, IDs, current page, and total pages.
             """
 
             search_word = request['search_word']
@@ -814,8 +814,13 @@ class Database:
             json_data = loads(dumps(genes))
             totalPages = math.ceil(doc_count / numberofList)
 
-            print(totalPages)
-            return json_data
+            response_data = {
+                'genes': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
+
+            return response_data
 
         def post_gene_one(request):
             """Adds a single gene to the gene collection in the database.
