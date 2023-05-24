@@ -272,12 +272,12 @@ function DatasetPage() {
 
   useEffect(() => {
 
-    const update_edit_collapse = async () => {
+    const update_edit_collapse = () => {
       let new_collapse_array = []
       for(let i = 0; i < edit_records_list.length; i++ ){
         new_collapse_array.push(false);
       }
-      await set_collapse_array(clone(new_collapse_array));
+      set_collapse_array(clone(new_collapse_array));
     }
 
     update_edit_collapse();
@@ -863,7 +863,7 @@ function DatasetPage() {
       if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
         
         let data_field_key = stateChangeInfo["cellEdit"]["dataField"]
-        let new_patient_update = {'dataset_id': parseInt(DATASET_ID)  };
+        let new_patient_update = {  };
         
         if(type_str == "int"){
           new_patient_update[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
@@ -876,7 +876,7 @@ function DatasetPage() {
         copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
 
         // store old value
-        let new_patient_save_old_info = {'dataset_id': parseInt(DATASET_ID)  };
+        let new_patient_save_old_info = {  };
         if(type_str == "int"){
           new_patient_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
         } else if(type_str == "float") {
@@ -1021,6 +1021,13 @@ function DatasetPage() {
 
 
 
+  }
+
+  const handleCollapseClick = (input_index) => {
+    let cur_collapse_arr = collapse_array;
+    cur_collapse_arr[input_index] = !(cur_collapse_arr[input_index])
+
+    set_collapse_array(clone(cur_collapse_arr));
   }
 
   return (
@@ -1178,7 +1185,9 @@ function DatasetPage() {
                                         axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                           // Data to be sent to the server
                                           patient_modify_list: clone(modified_patients_list_to_update_back),
-                                          patient_save_undo_list: clone(prev_patients_list_to_undo)
+                                          patient_save_undo_list: clone(prev_patients_list_to_undo),
+                                          dataset_id: parseInt(DATASET_ID),
+                                          user_id: user.sub.split("|")[1]
                                         }, { 'content-type': 'application/json' }).then((response) => {
                                           //console.log("post has been sent");
                                           //console.log(response);
@@ -1226,7 +1235,9 @@ function DatasetPage() {
 
                                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                               // Data to be sent to the server
-                                              patient_modify_list: clone(single_edit_record["old_values"])
+                                              patient_modify_list: clone(single_edit_record["old_values"]),
+                                              dataset_id: parseInt(DATASET_ID),
+                                              user_id: user.sub.split("|")[1]
                                             }, { 'content-type': 'application/json' }).then((response) => {
                                               //console.log("post has been sent");
                                               //console.log(response);
@@ -1242,14 +1253,30 @@ function DatasetPage() {
                                         <div id="last_row_box">
                                           <p id="edit_date_display">Edit Date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
                                           <button className="btn btn-primary down_btn" onClick={() => {
-                                              let cur_collapse_arr = collapse_array;
-                                              cur_collapse_arr[index] = !(cur_collapse_arr[index])
-                                              set_collapse_array(cur_collapse_arr);
-                                              console.log("collapse arr after button press: ", cur_collapse_arr)
+                                            handleCollapseClick(index)
+                                            console.log("edit record info: ")
+                                            console.log(single_edit_record)
                                           }}>
                                             <FontAwesomeIcon icon={icon({name: 'caret-down', style: 'solid' })} />
                                           </button>
                                         </div>
+                                        { collapse_array && collapse_array.length > index && collapse_array[index] == true ? 
+                                            <div>
+                                              { single_edit_record && single_edit_record.edit_info && Object.keys(single_edit_record.edit_info).length > 0 ? 
+                                                Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
+                                                  // each patient modified
+                                                  
+                                                  return <div>
+                                                    <p>Patient: {patient_key}</p>
+                                                    {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
+                                                      // info for that particular patient
+                                                      return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
+                                                    })}
+                                                  </div>
+                                                })
+                                                : <p>No Edits</p>}
+                                            </div> 
+                                            : <></>}
                                         <hr id="line_div_category_search_content" />
                                       </div>
                               
@@ -1382,18 +1409,9 @@ export default DatasetPage;
   <div class="card shadow edit_single_display">
     <div class="card-body">
       
-      {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
-        // each patient modified
-        
-        return <div >
-          <p>Patient: {patient_key}</p>
-          {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
-            // info for that particular patient
-            return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
-          })}
-        </div>
+      
           
-      })}
+
     </div>
   </div>
 </li>

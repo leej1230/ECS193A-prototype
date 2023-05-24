@@ -727,24 +727,37 @@ class Database:
             data_request = json.loads(request['ctx'].body)
 
             patients_update_dict = data_request['patient_modify_list']
+            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            user_updating_id = data_request['user_id']
 
             patients_list = list(patients_update_dict.keys())
 
             print("update information line 638: ")
             print( patients_update_dict )
 
-            print("count: ")
-            current_num_edits_saved = Database.edit_collection.count_documents({})
-
-            if 'patient_save_undo_list' in data_request :
+            if 'patient_save_undo_list' in data_request and len(data_request['patient_save_undo_list'].keys()) > 0:
                 patients_old_values_saved = data_request['patient_save_undo_list']
-                Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                #Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                user_that_is_updating = Database.user_collection.find_one({'auth0_uid': user_updating_id})
+                if 'edits' in user_that_is_updating:
+                    # update existing edits
+                    edits_structure = user_that_is_updating['edits']
+                    if patients_update_dataset_id in edits_structure:
+                        # dataset already has some edits
+                        edits_list_for_dataset = edits_structure[patients_update_dataset_id]
+                        edits_list_for_dataset.append({'id': 1, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                        edits_structure[patients_update_dataset_id] = edits_list_for_dataset
+                    else:
+                        # first time this user is editing this dataset
+                        edits_structure[patients_update_dataset_id] = [{'id': 1, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]
+                    user_that_is_updating['edits'] = edits_structure
+                else:
+                    # user editing first time
+                    user_that_is_updating['edits'] = {patients_update_dataset_id : [{'id': 1, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]}
+                Database.user_collection.update_one({'auth0_uid': user_updating_id}, {"$set": {'edits' : user_that_is_updating['edits']} })
 
-            patients_dataset_id = 0
-            if len(patients_list) > 0:
-                patients_dataset_id = patients_update_dict[patients_list[0]][
-                    'dataset_id'
-                ]
+            patients_dataset_id = int(data_request['dataset_id'])
+            
 
             # for updating patients
             for i in range(0, len(patients_list)):
