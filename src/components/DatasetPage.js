@@ -1276,9 +1276,9 @@ function DatasetPage() {
                                             //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
 
                                           }}>Undo Change</button>
-                                        <p>Edit Record Id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
+                                        <p style={{fontWeight: 'bold'}}>Edit Record Id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
                                         <div id="last_row_box">
-                                          <p id="edit_date_display">Edit Date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
+                                          { ("edit_date" in single_edit_record) ? <p id="edit_date_display">Edit Date: {single_edit_record.edit_date.substring(0,single_edit_record.edit_date.indexOf('T'))} &nbsp; &nbsp; &nbsp; Edit Time: {single_edit_record.edit_date.substring(single_edit_record.edit_date.indexOf('T') + 1, single_edit_record.edit_date.indexOf('.'))}</p> : <p id="edit_date_display">"N/A"</p>}
                                           <button className="btn btn-primary down_btn" onClick={() => {
                                             handleCollapseClick(index)
                                             //console.log("edit record info: ")
