@@ -173,6 +173,8 @@ function DatasetPage() {
 
   const [userInfo, setUserInfo] = useState();
 
+  const [collapse_array, set_collapse_array] = useState([])
+
   const gene_list_node = useRef(null);
   const dataset_matrix_node = useRef(null);
 
@@ -181,12 +183,12 @@ function DatasetPage() {
   var bookmarkStyle = `${bookmarked ? "solid" : "regular"}`;
 
   const handleFetchUser = async () => {
-    console.log("fetch user: ")
+    //console.log("fetch user: ")
     const userSub = user.sub.split("|")[1];
     axios
       .get(`${user_get_url}/${userSub}`)
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         setUserInfo(res.data);
 
         if( res.data && res.data.bookmarked_datasets ){
@@ -213,7 +215,7 @@ function DatasetPage() {
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
     });
-    console.log("got patient data line 215")
+    
     handleFetchUser();
   }, [dataset])
 
@@ -268,6 +270,20 @@ function DatasetPage() {
     })
   }, [DATASET_ID])
 
+  useEffect(() => {
+
+    const update_edit_collapse = async () => {
+      let new_collapse_array = []
+      for(let i = 0; i < edit_records_list.length; i++ ){
+        new_collapse_array.push(false);
+      }
+      await set_collapse_array(clone(new_collapse_array));
+    }
+
+    update_edit_collapse();
+
+  }, [edit_records_list])
+
   const createDatasetFormatted = () => {
     // return dataset formatted for table
     const initArr = [];
@@ -304,9 +320,9 @@ function DatasetPage() {
       ]
     }
 
-    console.log("combined information: ");
-    console.log(patient_information);
-    console.log(gene_with_value_information);
+    //console.log("combined information: ");
+    //console.log(patient_information);
+    //console.log(gene_with_value_information);
     
     for (let i = 0; i < patient_information.length; i++){
       let existing_patient_info = clone(patient_information[i]);
@@ -323,7 +339,7 @@ function DatasetPage() {
     }
 
     
-    console.log( combined_dataset_full_information );
+    //console.log( combined_dataset_full_information );
 
     return combined_dataset_full_information;
       
@@ -546,8 +562,8 @@ function DatasetPage() {
   }
 
   const geneListFilter = (gene_list_filter_value) => {
-    console.log("node method");
-    console.log(gene_list_filter_value)
+    //console.log("node method");
+    //console.log(gene_list_filter_value)
 
     let text_search = gene_list_filter_value.gene_id.filterVal.input_string_value ;
     let column_search = gene_list_filter_value.gene_id.filterVal.colName;
@@ -568,7 +584,7 @@ function DatasetPage() {
       return [{'id':0,'gene_id': "ENT"}];
     }
 
-    console.log(gene_ids_info)
+    //console.log(gene_ids_info)
 
     let gene_objs = []
 
@@ -576,8 +592,8 @@ function DatasetPage() {
       gene_objs.push({'id': i+1, 'gene_id': gene_ids_info[i]})
     }
 
-    console.log("gene obj:")
-    console.log(gene_objs)
+    //console.log("gene obj:")
+    //console.log(gene_objs)
 
     return gene_objs;
   }
@@ -668,9 +684,9 @@ function DatasetPage() {
       }
       gene_columns_list.push(col_obj)
     }
-    console.log("gene info:");
-    console.log(gene_columns_list);
-    console.log(gene_information_expanded);
+    //console.log("gene info:");
+    //console.log(gene_columns_list);
+    //console.log(gene_information_expanded);
     return gene_columns_list;
   }
 
@@ -751,8 +767,8 @@ function DatasetPage() {
         }
       }
     }
-    console.log("together column info:");
-    console.log(columns_list);
+    //console.log("together column info:");
+    //console.log(columns_list);
     return columns_list;
   }
 
@@ -790,14 +806,14 @@ function DatasetPage() {
         }
 
       } else if (current_filter.filterType == "TEXT"){
-        console.log("text")
-        console.log(current_filter.filterVal)
+        //console.log("text")
+        //console.log(current_filter.filterVal)
 
         isFiltered = true
         matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
       } else if(current_filter.filterType == "MULTISELECT"){
-        console.log("multis")
-        console.log(current_filter.filterVal)
+        //console.log("multis")
+        //console.log(current_filter.filterVal)
 
         // need to or through the filters selected for a column
         let mutliselect_filter_list = []
@@ -825,7 +841,7 @@ function DatasetPage() {
 
   const updateCellEditMatrix = async (stateChangeInfo) => {
     
-      console.log("update matrix: ")
+      //console.log("update matrix: ")
 
       let copy_matrix_filtered = table_matrix_filtered;
       let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
@@ -948,7 +964,7 @@ function DatasetPage() {
         
       }
 
-      console.log(col_unique)
+      //console.log(col_unique)
 
       if( col_unique.length < 3 ){
 
@@ -1105,8 +1121,8 @@ function DatasetPage() {
                                   {datasetTableInputFormat.map((table_property) => {
 
                                     if(table_property.field_name != 'id' && table_property.field_name != 'name' && table_property.field_name != 'description'){
-                                      console.log("info dataset table objs: !!!: ")
-                                      console.log(table_property)
+                                      //console.log("info dataset table objs: !!!: ")
+                                      //console.log(table_property)
                                       return(<div >
                                         <h5 class="dataset_subheader">{table_property.field_name} </h5>
                                         <hr class="line_div_category_header_content" />
@@ -1155,17 +1171,17 @@ function DatasetPage() {
                                         await setDisplayHistoryTable(new_val);
                                       }}>Toggle Show History and Undo</button>
                                       <button class="btn btn-primary table_btn_content"  onClick={async () => {
-                                        console.log("can click button for saving edit changes from table");
-                                        console.log(modified_patients_list_to_update_back);
-                                        console.log("old info: ", prev_patients_list_to_undo);
+                                        //console.log("can click button for saving edit changes from table");
+                                        //console.log(modified_patients_list_to_update_back);
+                                        //console.log("old info: ", prev_patients_list_to_undo);
 
                                         axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                           // Data to be sent to the server
                                           patient_modify_list: clone(modified_patients_list_to_update_back),
                                           patient_save_undo_list: clone(prev_patients_list_to_undo)
                                         }, { 'content-type': 'application/json' }).then((response) => {
-                                          console.log("post has been sent");
-                                          console.log(response);
+                                          //console.log("post has been sent");
+                                          //console.log(response);
 
                                           alert("Data Updated");
                                           
@@ -1203,44 +1219,40 @@ function DatasetPage() {
                         <ul id="history_results_list">
                           {edit_records_list.map((single_edit_record, index) => {
                             
-                              return <li>
-                                  <div class="card shadow edit_single_display">
-                                    <div class="card-body">
-                                      <button class="btn btn-primary undo_btn"
-                                        onClick={async () => {
-                                          console.log("undo button clicked");
+                              return <div id="edit_display_result_single">
+                                        <button class="btn btn-danger undo_btn"
+                                          onClick={async () => {
+                                            //console.log("undo button clicked");
 
-                                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
-                                            // Data to be sent to the server
-                                            patient_modify_list: clone(single_edit_record["old_values"])
-                                          }, { 'content-type': 'application/json' }).then((response) => {
-                                            console.log("post has been sent");
-                                            console.log(response);
-  
-                                            alert("Data Changes Undone");
-                                            
-                                          });
+                                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                              // Data to be sent to the server
+                                              patient_modify_list: clone(single_edit_record["old_values"])
+                                            }, { 'content-type': 'application/json' }).then((response) => {
+                                              //console.log("post has been sent");
+                                              //console.log(response);
 
-                                          axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
+                                              alert("Data Changes Undone");
+                                              
+                                            });
 
-                                        }} >Undo Change</button>
-                                      <p>id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
-                                      <p>edit date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
-                                      {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
-                                        // each patient modified
-                                        
-                                        return <div >
-                                          <p>Patient: {patient_key}</p>
-                                          {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
-                                            // info for that particular patient
-                                            return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
-                                          })}
+                                            axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
+
+                                          }}>Undo Change</button>
+                                        <p>Edit Record Id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>
+                                        <div id="last_row_box">
+                                          <p id="edit_date_display">Edit Date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
+                                          <button className="btn btn-primary down_btn" onClick={() => {
+                                              let cur_collapse_arr = collapse_array;
+                                              cur_collapse_arr[index] = !(cur_collapse_arr[index])
+                                              set_collapse_array(cur_collapse_arr);
+                                              console.log("collapse arr after button press: ", cur_collapse_arr)
+                                          }}>
+                                            <FontAwesomeIcon icon={icon({name: 'caret-down', style: 'solid' })} />
+                                          </button>
                                         </div>
-                                          
-                                      })}
-                                    </div>
-                                  </div>
-                                </li>
+                                        <hr id="line_div_category_search_content" />
+                                      </div>
+                              
                             
                           })}
                         </ul> 
@@ -1364,3 +1376,25 @@ export default DatasetPage;
     onClick={() => {reset_list()}}
   >Reset</button>
       */
+
+/*
+<li>
+  <div class="card shadow edit_single_display">
+    <div class="card-body">
+      
+      {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
+        // each patient modified
+        
+        return <div >
+          <p>Patient: {patient_key}</p>
+          {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
+            // info for that particular patient
+            return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
+          })}
+        </div>
+          
+      })}
+    </div>
+  </div>
+</li>
+*/

@@ -235,6 +235,35 @@ body{
     float: right;
 }
 
+#last_row_box{
+    min-width: 100%;
+    max-width: 100%;
+}
+
+.down_btn{
+    display: inline-block;
+    float: right;
+}
+
+#edit_date_display{
+    display: inline-block;
+}
+
+#edit_display_result_single{
+    min-width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin: 0px;
+
+    background-color: white;
+}
+
+#line_div_category_search_content{
+    margin: 0px;
+    padding: 0px;
+    margin-top: 10px;
+}
+
 /* buttons top right:  */
 /*
 position: absolute;
