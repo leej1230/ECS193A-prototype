@@ -36,6 +36,7 @@ class Database:
     counter_collection = client['counters']
     user_collection = client['users']
     superuser_collection = client['superusers']
+    role_history_collection = client['role_histories']
 
     class Users:
         def get_user_one(request):
@@ -84,6 +85,7 @@ class Database:
                 return status.HTTP_409_CONFLICT
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
+            user.update({'bookmarked_datasets': []})
             # Temporary
             user.update({'is_admin': True})
             user.update({'is_staff': True})
@@ -137,6 +139,10 @@ class Database:
             update = {"$pull": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_genes']
         
         def post_bookmarked_datasets(request):
             request_data = request['ctx'].POST.copy()
@@ -223,6 +229,10 @@ class Database:
                 return loads(dumps(status.HTTP_200_OK))
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_datasets']
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
@@ -615,6 +625,41 @@ class Database:
                 )
             return request['new_counter_value']
 
+    class Role_Histories:
+        @staticmethod
+        def get_log_all(request):
+            """
+            Get all hisotry for changing logs
+            """
+            all_logs = Database.role_history_collection.find({}, {'_id': 0}).sort('time', -1)
+            
+            json_data = list(loads(dumps(all_logs)))
+            return json_data
+
+        @staticmethod
+        def post_log(request):
+            """
+            Add log to history
+            """
+            try:
+                new_log ={
+                    'asked': request['ctx'].POST.get('request_user'),
+                    request['ctx'].POST.get('role_title'): request['ctx'].POST.get('changed'),
+                    'target': request['ctx'].POST.get('changed_user'),
+                    'time': datetime.datetime.now()
+                }
+                Database.role_history_collection.insert_one(new_log)
+
+                max_documents = 50
+                current_count = Database.role_history_collection.count_documents({})
+                if current_count > max_documents:
+                    oldest_documents = Database.role_history_collection.find().sort('time', 1).limit(current_count - max_documents)
+                    for document in oldest_documents:
+                        Database.role_history_collection.delete_one({'_id': document['_id']})
+
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
 
     class Patients:
         @staticmethod
@@ -1167,12 +1212,14 @@ class Database:
             """
             data_request = json.loads(request['ctx'].body)
 
-            datasets_list = data_request['datasets_request_list']
+            datasets_list = request['ctx'].POST.get('datasets_request_list')
+
+            print(datasets_list)
 
 
             dataset_objs_list = [{}]
 
-            if( len(datasets_list) == 0):
+            if( not datasets_list or len(datasets_list) == 0):
                 return loads(dumps([]))
 
             for i in range( len(datasets_list) ):

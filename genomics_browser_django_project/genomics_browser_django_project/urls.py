@@ -135,6 +135,16 @@ urlpatterns = [
         {"inner": "Users", "callback": "update_role"},
     ),
     path(
+        'api/add-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "post_log"},
+    ),
+    path(
+        'api/get-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "get_log_all"},
+    ),
+    path(
         'api/upload_dataset',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "post_dataset_one"},
@@ -148,11 +158,6 @@ urlpatterns = [
         r'^api/seq/names',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_seq_names"},
-    ),
-    path(
-        'api/delete_dataset/<slug:dataset_id>',
-        views.BackendServer.as_view(),
-        {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),
     path(
         'api/delete_dataset/<slug:dataset_id>',
