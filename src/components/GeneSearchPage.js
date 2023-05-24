@@ -18,6 +18,7 @@ import {clone} from "ramda";
 
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+
 const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
 function GeneSearchPage() {
@@ -49,9 +50,13 @@ function GeneSearchPage() {
       }
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_URL
-        }/api/gene/search/${search_input_for_url}/${listPage.toString()}`
+        }/api/gene_search/${search_input_for_url}/${listPage.toString()}`
       );
       setSearchResult(response.data);
+
+      console.log("search gene results: ")
+      console.log(response.data)
+
       setHasSearched(true);
     } catch (error) {
       console.error(error);

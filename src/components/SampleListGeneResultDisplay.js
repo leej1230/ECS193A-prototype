@@ -20,6 +20,10 @@ function SampleListGeneResultDisplay(props) {
   
   useEffect(() => {
     if(props.gene){
+
+      console.log("gene info: ")
+      console.log(props.gene)
+
       axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset_name_from_dataset_id/${props.gene.dataset_id}`)
         .then(async (result) => {

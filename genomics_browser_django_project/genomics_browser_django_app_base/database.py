@@ -973,7 +973,7 @@ class Database:
                 genes = (
                     Database.gene_collection.find(
                         {'name': {'$regex': search_word, '$options': 'i'}},
-                        {'_id': 0, 'name': 1, 'id': 1},
+                        {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1},
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
