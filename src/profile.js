@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from './components/spinner/spinner';
 import axios from 'axios';
+import { Garage } from '@mui/icons-material';
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 const url = process.env.REACT_APP_FRONTEND_URL;
@@ -22,6 +23,7 @@ function Profile() {
     const { user, isLoading } = useAuth0();
     const [userInfo, setUserInfo] = useState();
     const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
+    const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
 
     const userMetadata = user?.['https://unique.app.com/user_metadata'];
 
@@ -32,6 +34,7 @@ function Profile() {
             console.log(res.data);
             setUserInfo(res.data);
             setBookmarkedGenes(res.data.bookmarked_genes);
+            setBookmarkedDatasets(res.data.bookmarked_datasets);
         } catch (e) {
             console.log("Failed to fetch user Info.", e);
         }
@@ -79,6 +82,19 @@ function Profile() {
                             bookmarkedGenes.map((geneUrl) => (
                                 <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
                                     {geneUrl}
+                                </a>
+                            ))
+                        ) : (
+                            <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
+                        )}
+                    </div>
+
+                    <div>
+                        <h2>Bookmarked Datasets</h2>
+                        {bookmarkedDatasets.length !== 0 ? (
+                            bookmarkedDatasets.map((datasetsUrl) => (
+                                <a href={`${url}/dataset/${datasetsUrl.split('/')[1]}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
+                                    {datasetsUrl.split('/')[0]}
                                 </a>
                             ))
                         ) : (
