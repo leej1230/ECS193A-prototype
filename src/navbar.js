@@ -29,7 +29,10 @@ function Navbar() {
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul id="navbar_element_link_top" class="navbar-nav">
             <li class="nav-item active">
-              <a id="navbar_element_link_home" class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+              <a id="navbar_element_link_front" class="nav-link" href="/"><img style={{ maxWidth: '100%', minWidth: '100%', minHeight: '100%', maxHeight: '100%' }} src="https://www.creativefabrica.com/wp-content/uploads/2021/09/22/Genetics-research-DNA-test-icon-Graphics-17677481-1.jpg"></img><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+              <a id="navbar_element_link_home" class="nav-link" href="/console">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
               <a id="navbar_element_link_about" class="nav-link" href="/about">About</a>

@@ -112,7 +112,7 @@ function HomePage() {
 
                 <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#"> <div id="landing_page_nav_text">Home</div> <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/"> <div id="landing_page_nav_text">Home</div> <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/about"> <div id="landing_page_nav_text">About</div> </a>

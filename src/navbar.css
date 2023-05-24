@@ -15,6 +15,13 @@
     background: rgb(235, 235, 235);
 }
 
+#navbar_element_link_front{
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+}
+
 #navigation_bar_top{
     position: fixed;
     height: 70px;
