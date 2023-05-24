@@ -3,6 +3,7 @@ import copy
 import datetime
 import json
 import math
+import operator
 import os
 import re
 import urllib.request
@@ -802,14 +803,20 @@ class Database:
                 )
                 for gene in all_genes:
                     ratio = fuzz.ratio(search_word, gene['name'])
-                    if (
-                        ratio >= 10
-                    ):  # Adjust the threshold (0-100) based on desired fuzzy matching tolerance
-                        fuzzy_results.append(gene)
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (gene, ratio)
+                        )  # Store gene and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
                 doc_count = len(fuzzy_results)
-                genes = fuzzy_results[
-                    page * numberofList : (page + 1) * numberofList
-                ]
+                genes = [
+                    gene[0] for gene in fuzzy_results
+                ]  # Extract the genes from the sorted list
+
+            genes = genes[page * numberofList : (page + 1) * numberofList]
 
             json_data = loads(dumps(genes))
             totalPages = math.ceil(doc_count / numberofList)
