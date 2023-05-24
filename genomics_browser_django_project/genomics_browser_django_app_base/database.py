@@ -140,6 +140,10 @@ class Database:
             update = {"$pull": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_genes']
         
         def post_bookmarked_datasets(request):
             request_data = request['ctx'].POST.copy()
@@ -165,6 +169,10 @@ class Database:
             update = {"$pull": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_datasets']
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
