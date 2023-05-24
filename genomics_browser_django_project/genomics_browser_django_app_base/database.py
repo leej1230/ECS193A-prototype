@@ -594,9 +594,9 @@ class Database:
             """
             Get all hisotry for changing logs
             """
-            all_logs = Database.role_history_collection.find().sort('time', 1)
+            all_logs = Database.role_history_collection.find({}, {'_id': 0}).sort('time', -1)
             
-            json_data = loads(dumps(all_logs))
+            json_data = list(loads(dumps(all_logs)))
             return json_data
 
         @staticmethod
@@ -611,7 +611,15 @@ class Database:
                     'target': request['ctx'].POST.get('changed_user'),
                     'time': datetime.datetime.now()
                 }
-                Database.role_history_collection.update_one({}, {'$push': {'queue': {'$each': [new_log], '$slice': -50}}}, upsert=True)
+                Database.role_history_collection.insert_one(new_log)
+
+                max_documents = 50
+                current_count = Database.role_history_collection.count_documents({})
+                if current_count > max_documents:
+                    oldest_documents = Database.role_history_collection.find().sort('time', 1).limit(current_count - max_documents)
+                    for document in oldest_documents:
+                        Database.role_history_collection.delete_one({'_id': document['_id']})
+
                 return loads(dumps(status.HTTP_200_OK))
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))
