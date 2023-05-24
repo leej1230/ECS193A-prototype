@@ -1,100 +1,140 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import LoadingSpinner from './components/spinner/spinner';
 import axios from 'axios';
+import LoadingSpinner from './components/spinner/spinner';
+
+import './profile.css';
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 const url = process.env.REACT_APP_FRONTEND_URL;
 
-// Assume list of bookmarked genes has provided by api
-// const bookmarkedGenes = [
-//     "ENSG00000000003.14/1",
-//     "ENSG00000000003.15/1",
-//     "ENSG00000000003.16/1",
-//     "ENSG00000000003.17/1",
-// ]
-
-// Assume Permission is provided by api
 const is_admin = true;
 const is_member = true;
 
 function Profile() {
-    const { user, isLoading } = useAuth0();
-    const [userInfo, setUserInfo] = useState();
-    const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
+  const { user, isLoading } = useAuth0();
+  const [userInfo, setUserInfo] = useState();
+  const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(true); // New state to control the visibility of the spinner
 
-    const userMetadata = user?.['https://unique.app.com/user_metadata'];
+  const userMetadata = user?.['https://unique.app.com/user_metadata'];
 
-    const handleFetchUser = async () => {
-        const userSub = user.sub.split("|")[1];
-        try {
-            const res = await axios.get(`${user_get_url}/${userSub}`);
-            console.log(res.data);
-            setUserInfo(res.data);
-            setBookmarkedGenes(res.data.bookmarked_genes);
-        } catch (e) {
-            console.log("Failed to fetch user Info.", e);
-        }
+  const handleFetchUser = async () => {
+    if (user && user.sub) {
+      const userSub = user.sub.split("|")[1];
+      try {
+        const res = await axios.get(`${user_get_url}/${userSub}`);
+        console.log(res.data);
+        setUserInfo(res.data);
+        setBookmarkedGenes(res.data.bookmarked_genes);
+      } catch (e) {
+        console.log("Failed to fetch user Info.", e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+
+    if (!isLoading) {
+      handleFetchUser();
+    }
+
+    return () => {
+      clearTimeout(timer);
     };
+  }, [isLoading]);
 
-    useEffect(() => {
-        handleFetchUser();
-    }, []);
-
-    return isLoading || !userInfo ? (
-        <div>
-            <LoadingSpinner />
-        </div>
-    ) : (
-        <div>
-            {/* Move down to avoid overlap with navbar */}
-            <div className="container" style={{ height: "70px", border: "1px solid black" }}></div>
-            {userMetadata && (
-                <div className="container mx-2 my-2">
-                    <h1>User Page</h1>
-                    <div className='mx-3 my-2'>
-                        <h2>{userMetadata.given_name} {userMetadata.family_name}</h2>
-                    </div>
-                    <h2>Roles</h2>
-                    <div className='mx-3 my-2'>
-                        {is_admin ? (
-                            <h4>Admin</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {is_member ? (
-                            <h4>Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {!is_admin && !is_member ? (
-                            <h4>Not Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                    </div>
-                    <div>
-                        <h2>Bookmarked Genes</h2>
-                        {bookmarkedGenes.length !== 0 ? (
-                            bookmarkedGenes.map((geneUrl) => (
-                                <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
-                                    {geneUrl}
-                                </a>
-                            ))
-                        ) : (
-                            <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                        )}
-                    </div>
-
-                    {is_admin && (
-                        <div>
-                            <a href={`${url}/manage`}>Manage Users</a>
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+  if (showSpinner) {
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
     );
+  }
+
+  if (!userInfo || isLoading) {
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  return (
+    <body id="page-top" class="gene_body">
+      <div className="profile">
+        <div className="profile-card">
+          <h2 className="card-title1">User Page</h2>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title2">User Information</h2>
+          <div className="card-content">
+            <div className="user-info">
+              {userMetadata && (
+                <h4>
+                  User full name: {userMetadata.given_name} {userMetadata.family_name}
+                </h4>
+              )}
+              <ul className="role-list">
+                {is_admin && is_member ? (
+                  <h4>User Role: Admin and Verified</h4>
+                ) : !is_admin && is_member ? (
+                  <h4>User Role: Verified</h4>
+                ) : (
+                  <h4>User Role: Not Verified</h4>
+                )}
+                {is_admin && (
+                  <div>
+                  <a href={`${url}/manage`} style={{ fontSize: '22px' }}>Manage Users</a>
+                </div>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title2">Gene Bookmarks</h2>
+          {bookmarkedGenes.length !== 0 ? (
+            bookmarkedGenes.map((geneUrl) => (
+              <a
+                href={`${url}/gene/${geneUrl}`}
+                className="mx-3"
+                style={{ display: 'block', marginBottom: '10px' }}
+                key={geneUrl}
+              >
+                {geneUrl}
+              </a>
+            ))
+          ) : (
+            <div className="no-bookmarks">
+              <h4>No gene bookmarks Found!</h4>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title2">Record Bookmarks</h2>
+          {(
+            <div className="no-bookmarks">
+              <h4>No record bookmarks Found!</h4>
+            </div>
+          )}
+        </div>
+      </div>
+
+    </body>
+  );
 }
 
 export default Profile;
