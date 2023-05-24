@@ -100,7 +100,7 @@ function Profile() {
                     </div>
                     <div>
                         <h2>Bookmarked Genes</h2>
-                        {bookmarkedGenes.length !== 0 ? (
+                        {bookmarkedGenes && bookmarkedGenes.length !== 0 ? (
                             bookmarkedGenes.map((geneUrl) => (
                                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                                     <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
@@ -116,7 +116,7 @@ function Profile() {
 
                     <div>
                         <h2>Bookmarked Datasets</h2>
-                        {bookmarkedDatasets.length !== 0 ? (
+                        {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
                             bookmarkedDatasets.map((datasetsUrl) => (
                                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                                     <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
