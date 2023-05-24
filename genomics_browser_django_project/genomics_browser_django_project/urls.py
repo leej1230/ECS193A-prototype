@@ -183,9 +183,9 @@ urlpatterns = [
         {"inner": "Patients", "callback": "update_patients_many_list"},
     ),
     re_path(
-        r'^api/edits/all',
+        r'^api/edits_dataset_user/all',
         views.BackendServer.as_view(),
-        {"inner": "Edits", "callback": "get_edits_all"},
+        {"inner": "Users", "callback": "get_edits_for_dataset"},
     ),
     path(
         'api/delete_edit_record/<slug:edit_record_id>',

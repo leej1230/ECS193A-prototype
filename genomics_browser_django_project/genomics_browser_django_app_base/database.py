@@ -163,6 +163,26 @@ class Database:
             update = {"$pull": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+        
+        def get_edits_for_dataset(request):
+            """Get all edits for display"""
+
+            data_request = json.loads(request['ctx'].body)
+
+            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            user_updated_id = data_request['user_id']
+
+            edits_for_dataset_by_user_result = []
+
+            user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
+            if 'edits' in user_updated:
+                    edits_structure = user_updated['edits']
+                    if patients_update_dataset_id in edits_structure:
+                        # dataset already has some edits
+                        edits_for_dataset_by_user_result = edits_structure[patients_update_dataset_id]
+            
+            json_data = loads(dumps(edits_for_dataset_by_user_result))
+            return json_data
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
@@ -556,21 +576,6 @@ class Database:
             return request['new_counter_value']
 
     class Edits:
-        @staticmethod
-        def get_edits_all(request):
-            """Get all edits for display"""
-            edit_records = Database.edit_collection.find(
-                {}, {'_id': 0}
-            )
-
-            records_found_list = [{}]
-            for doc in edit_records:
-                records_found_list.append(doc)
-
-            records_found_list = records_found_list[1:]
-            
-            json_data = loads(dumps(records_found_list))
-            return json_data
 
         @staticmethod
         def delete_one_edit(request):

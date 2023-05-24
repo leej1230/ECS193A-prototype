@@ -263,11 +263,24 @@ function DatasetPage() {
   }, [gene_information_expanded]);
 
   useEffect(() => {
-    const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits/all`;
-    
-    axios.get(edit_recs_url).then( async (result) => {
-      await set_edit_records_list(result.data);
-    })
+    const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits_dataset_user/all`;
+
+    axios.post(edit_recs_url, {
+      // Data to be sent to the server
+      dataset_id: parseInt(DATASET_ID),
+      user_id: user.sub.split("|")[1]
+    }, { 'content-type': 'application/json' }).then((result) => {
+      //console.log("post has been sent");
+      //console.log(response);
+
+      //console.log("get edits all: ")
+
+      //console.log(result.data)
+
+      set_edit_records_list(result.data)
+      
+    });
+
   }, [DATASET_ID])
 
   useEffect(() => {
@@ -1254,8 +1267,8 @@ function DatasetPage() {
                                           <p id="edit_date_display">Edit Date: { ("edit_date" in single_edit_record) ? single_edit_record.edit_date : "NA"}</p>
                                           <button className="btn btn-primary down_btn" onClick={() => {
                                             handleCollapseClick(index)
-                                            console.log("edit record info: ")
-                                            console.log(single_edit_record)
+                                            //console.log("edit record info: ")
+                                            //console.log(single_edit_record)
                                           }}>
                                             <FontAwesomeIcon icon={icon({name: 'caret-down', style: 'solid' })} />
                                           </button>
