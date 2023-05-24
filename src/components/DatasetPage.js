@@ -273,9 +273,9 @@ function DatasetPage() {
       //console.log("post has been sent");
       //console.log(response);
 
-      //console.log("get edits all: ")
+      console.log("get edits all: ")
 
-      //console.log(result.data)
+      console.log(result.data)
 
       set_edit_records_list(result.data)
       
@@ -1246,7 +1246,7 @@ function DatasetPage() {
                                           onClick={async () => {
                                             //console.log("undo button clicked");
 
-                                            axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                               // Data to be sent to the server
                                               patient_modify_list: clone(single_edit_record["old_values"]),
                                               dataset_id: parseInt(DATASET_ID),
@@ -1259,7 +1259,19 @@ function DatasetPage() {
                                               
                                             });
 
-                                            axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
+                                            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record`, {
+                                              // Data to be sent to the server
+                                              edit_record_id: parseInt(single_edit_record.id),
+                                              dataset_id: parseInt(DATASET_ID),
+                                              user_id: user.sub.split("|")[1]
+                                            }, { 'content-type': 'application/json' }).then((response) => {
+                                             
+
+                                              alert("Edit Record Deleted");
+                                              
+                                            });
+
+                                            //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
 
                                           }}>Undo Change</button>
                                         <p>Edit Record Id: { ("id" in single_edit_record) ? single_edit_record.id : "NA"}</p>

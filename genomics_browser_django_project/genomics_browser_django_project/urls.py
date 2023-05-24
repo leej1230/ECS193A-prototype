@@ -188,9 +188,9 @@ urlpatterns = [
         {"inner": "Users", "callback": "get_edits_for_dataset"},
     ),
     path(
-        'api/delete_edit_record/<slug:edit_record_id>',
+        'api/delete_edit_record',
         views.BackendServer.as_view(),
-        {"inner": "Edits", "callback": "delete_one_edit"},
+        {"inner": "Users", "callback": "delete_one_edit"},
     ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]

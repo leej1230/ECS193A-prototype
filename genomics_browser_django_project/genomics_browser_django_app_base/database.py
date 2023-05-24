@@ -36,7 +36,6 @@ class Database:
     counter_collection = client['counters']
     user_collection = client['users']
     superuser_collection = client['superusers']
-    edit_collection = client['edits']
 
     class Users:
         def get_user_one(request):
@@ -183,6 +182,50 @@ class Database:
             
             json_data = loads(dumps(edits_for_dataset_by_user_result))
             return json_data
+        
+        def delete_one_edit(request):
+            """Delete an edit record since undone likely"""
+            try:
+                data_request = json.loads(request['ctx'].body)
+
+                edit_rec_id = int(data_request['edit_record_id'])
+                patients_update_dataset_id = str(int(data_request['dataset_id']))
+                user_updated_id = data_request['user_id']
+
+                user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
+                if 'edits' in user_updated:
+                        edits_structure = user_updated['edits']
+                        if patients_update_dataset_id in edits_structure:
+                            # dataset already has some edits
+                            edits_list = edits_structure[patients_update_dataset_id]
+                            edit_rec_index = -1
+                            for i in range(0, len(edits_list)):
+                                if int(edits_list[i]['id']) == edit_rec_id:
+                                    edit_rec_index = i
+                                    break
+                            if edit_rec_index != -1:
+                                edits_list.pop(edit_rec_index)
+                            else:
+                                print("Delete record not complete")
+                            
+                            edits_structure[patients_update_dataset_id] = edits_list
+
+
+                            user_updated['edits'] = edits_structure
+
+                            #do not update edits count because that would mess up new id generation
+                            '''if 'edits_count' in user_updated and user_updated['edits_count'] > 0:
+                                user_updated['edits_count'] = user_updated['edits_count'] - 1
+                            else:
+                                user_updated['edits_count'] = 0'''
+                            
+                            
+
+                            Database.user_collection.update_one({'auth0_uid': user_updated_id}, {"$set": {  'edits' : edits_structure } })
+            
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
@@ -574,25 +617,6 @@ class Database:
                     upsert=False,
                 )
             return request['new_counter_value']
-
-    class Edits:
-
-        @staticmethod
-        def delete_one_edit(request):
-            """Delete an edit record since undone likely"""
-            try:
-                edits_deleted = Database.edit_collection.delete_one(
-                        {'id': int(request['edit_record_id'])}
-                    )
-              
-                if edits_deleted.deleted_count != 1:
-                    print("Delete record not complete")
-            
-                return loads(dumps(status.HTTP_200_OK))
-            except:
-                return loads(dumps({status.HTTP_404_NOT_FOUND}))
-
-
 
 
     class Patients:
