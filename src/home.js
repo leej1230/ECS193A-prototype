@@ -264,6 +264,7 @@ function Home() {
                                                 <div className="float-left">
                                                     {listPage > 1 && (
                                                         <button
+                                                            className="btn btn-primary btn-sm"
                                                             onClick={
                                                                 handleDecrementPage
                                                             }
@@ -275,6 +276,7 @@ function Home() {
                                                 <div className="float-right">
                                                     {listPage < totalPages && (
                                                         <button
+                                                            className="btn btn-primary btn-sm"
                                                             onClick={
                                                                 handleIncrementPage
                                                             }
