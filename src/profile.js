@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from './components/spinner/spinner';
 import axios from 'axios';
-import { Garage } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
+const remove_gene_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`;
+const remove_dataset_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`;
 const url = process.env.REACT_APP_FRONTEND_URL;
 
 // Assume list of bookmarked genes has provided by api
@@ -39,6 +41,26 @@ function Profile() {
             console.log("Failed to fetch user Info.", e);
         }
     };
+
+    const handleRemoveBookmark = async (type, val) => {
+        if (type == "dataset") {
+            const formData = new FormData();
+            formData.append("user_id", user.sub.split("|")[1]);
+            formData.append("dataset_url", val);
+            axios.post(remove_dataset_bookmark_url, formData).then((res) => {
+                console.log(res.data)
+                setBookmarkedDatasets(res.data)
+            })
+        } else {
+            const formData = new FormData();
+            formData.append("user_id", user.sub.split("|")[1]);
+            formData.append("gene_url", val);
+            axios.post(remove_gene_bookmark_url, formData).then((res) => {
+                console.log(res.data)
+                setBookmarkedGenes(res.data)
+            })
+        }
+    }
 
     useEffect(() => {
         handleFetchUser();
@@ -80,9 +102,12 @@ function Profile() {
                         <h2>Bookmarked Genes</h2>
                         {bookmarkedGenes.length !== 0 ? (
                             bookmarkedGenes.map((geneUrl) => (
-                                <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
-                                    {geneUrl}
-                                </a>
+                                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                    <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
+                                    <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ marginLeft: '5px' }}>
+                                        {geneUrl}
+                                    </a>
+                                </div>
                             ))
                         ) : (
                             <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
@@ -93,9 +118,16 @@ function Profile() {
                         <h2>Bookmarked Datasets</h2>
                         {bookmarkedDatasets.length !== 0 ? (
                             bookmarkedDatasets.map((datasetsUrl) => (
-                                <a href={`${url}/dataset/${datasetsUrl.split('/')[1]}`} className="mx-3" style={{ display: 'block', marginBottom: '10px' }}>
-                                    {datasetsUrl.split('/')[0]}
-                                </a>
+                                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                    <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
+                                    <a
+                                        href={`${url}/dataset/${datasetsUrl.split('/')[1]}`}
+                                        className="mx-3"
+                                        style={{ marginLeft: '5px' }}
+                                    >
+                                        {datasetsUrl.split('/')[0]}
+                                    </a>
+                                </div>
                             ))
                         ) : (
                             <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
