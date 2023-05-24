@@ -37,6 +37,7 @@ class Database:
     user_collection = client['users']
     superuser_collection = client['superusers']
     edit_collection = client['edits']
+    role_history_collection = client['role_histories']
 
     class Users:
         def get_user_one(request):
@@ -583,6 +584,34 @@ class Database:
                 if edits_deleted.deleted_count != 1:
                     print("Delete record not complete")
             
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
+
+    class Role_Histories:
+        @staticmethod
+        def get_log_all(request):
+            """
+            Get all hisotry for changing logs
+            """
+            all_logs = Database.role_history_collection.find().sort('time', 1)
+            
+            json_data = loads(dumps(all_logs))
+            return json_data
+
+        @staticmethod
+        def post_log(request):
+            """
+            Add log to history
+            """
+            try:
+                new_log ={
+                    'asked': request['ctx'].POST.get('request_user'),
+                    request['ctx'].POST.get('role_title'): request['ctx'].POST.get('changed'),
+                    'target': request['ctx'].POST.get('changed_user'),
+                    'time': datetime.datetime.now()
+                }
+                Database.role_history_collection.update_one({}, {'$push': {'queue': {'$each': [new_log], '$slice': -50}}}, upsert=True)
                 return loads(dumps(status.HTTP_200_OK))
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))

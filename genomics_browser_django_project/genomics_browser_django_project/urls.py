@@ -135,6 +135,16 @@ urlpatterns = [
         {"inner": "Users", "callback": "update_role"},
     ),
     path(
+        'api/add-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "post_log"},
+    ),
+    path(
+        'api/get-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "get_log_all"},
+    ),
+    path(
         'api/upload_dataset',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "post_dataset_one"},
