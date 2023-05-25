@@ -119,7 +119,10 @@ function UpdateDataset(){
                 </div>
 
               </div>
+
           </div>
+
+          
 
           <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
           <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

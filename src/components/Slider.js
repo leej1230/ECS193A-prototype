@@ -104,6 +104,7 @@ export default function Slider() {
         datasets_request_list: clone(bookmarkedDatasets)
     }, { 'content-type': 'application/json' }).then((response) => {
         console.log("post has been sent");
+        console.log("bookmarked datasets: ", bookmarkedDatasets)
         console.log(response.data);
         if(response.data && response.data.length == 1 && response.data[0] == null){
             setDatasetsList([]);

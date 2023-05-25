@@ -1212,8 +1212,9 @@ class Database:
             """
             data_request = json.loads(request['ctx'].body)
 
-            datasets_list = request['ctx'].POST.get('datasets_request_list')
+            datasets_list = data_request['datasets_request_list']
 
+            print("dataset list in database.py: ")
             print(datasets_list)
 
 
