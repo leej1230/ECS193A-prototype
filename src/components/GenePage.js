@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Box, Card, CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
 import "./GenePage.css";
 
+import NameHeaderHolder from './NameHeaderHolder'
+
 import SampleGraph from './echartdemo';
 
 //import { useTable } from "react-table";
@@ -52,13 +54,6 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-
-import { useAuth0 } from '@auth0/auth0-react';
-
-const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
 const tableIcons = {
   Add: AddBox,
@@ -120,28 +115,8 @@ const selectOptions = [
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 
-const columns = [
-  { title: "Field Name", field: "field_name" },
-  { title: "Value", field: "value" }
-]
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
-
-const options = [{ 'title': "Animals", "cont_arr": ["fish", "horse", "turtle"] }, { 'title': "Colors", "cont_arr": ["Red", "Blue", "Green", "Yellow"] }, { 'title': "Places", "cont_arr": ["US", "Burma", "Latvia", "US", "Burma", "Latvia"] }]
-
-function createGeneFormatted(input_patient_data_arr) {
-  // return formatted for table
-  var init_arr = [];
-  var data_input = input_patient_data_arr;
-  data_input.forEach(function (key) {
-    var val_input = "empty"
-    init_arr.push({ field_name: key, value: val_input })
-  });
-
-  //console.log( init_arr )
-
-  return init_arr;
-}
 
 function breakUpCode(code_str) {
   var list_str_code = []
@@ -179,7 +154,6 @@ function GenePage() {
   // state = {samples: []}
   const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "ENSG", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
-  const [gene_table_input_format, set_gene_table_input_format] = useState([{ field_name: "", value: "" }]);
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" },
     { age: 0 },
@@ -204,9 +178,9 @@ function GenePage() {
   ]);
   const [dataset_info, set_dataset_info] = useState({ name: "", patient_ids: { 'arr': null } });
   const [gene_code_info, set_gene_code_info] = useState({ code: ["mrna"] });
-  const [userInfo, setUserInfo] = useState();
+
   const [graphType, setGraphType] = useState('bar');
-  const [bookmarked, setBookmarked] = useState();
+  
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
@@ -256,8 +230,6 @@ function GenePage() {
     dataField: 'race',
     text: 'Race'
   }]);
-
-  const { user } = useAuth0();
 
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
@@ -430,20 +402,6 @@ function GenePage() {
     return patients_info;
   }
 
-  const handleFetchUser = async () => {
-    const userSub = user.sub.split("|")[1];
-    axios
-      .get(`${user_get_url}/${userSub}`)
-      .then((res) => {
-        console.log(res.data);
-        setUserInfo(res.data);
-        setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_ID}`))
-      })
-      .catch((e) => {
-        console.log("Failed to fetch user Info.", e)
-      });
-  };
-
   // componentDidMount() {
   useEffect(() => {
     async function fetchGeneData() {
@@ -467,7 +425,7 @@ function GenePage() {
 
     fetchGeneData();
 
-    handleFetchUser();
+    //handleFetchUser();
 
 
   }, []);
@@ -501,12 +459,7 @@ function GenePage() {
       const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`);
       if (dataset_data.data['id'] != null) {
         set_dataset_info(dataset_data.data);
-        if (dataset_data.data.patient_ids['arr'] != null) {
-          set_gene_table_input_format(createGeneFormatted([dataset_info.patient_ids['arr']]));
-        }
       }
-
-
 
     }
     fetchDatasetInfo()
@@ -708,52 +661,7 @@ function GenePage() {
                   class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
               </div>
 
-              <div id="gene_name_box">
-                <h5 class="h5 text-gray-800">
-                  {gene_data ? (
-                    <div>
-                      <div>
-                        <p className='d-sm-inline-block title_tag'>Gene Name:</p>
-                        &nbsp;
-                        <p className='d-sm-inline-block gene_name'>{gene_data.name}</p>
-                        &nbsp;
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
-                          onClick={async () => {
-                            if (bookmarked == true) {
-                              await setBookmarked(false);
-                              const formData = new FormData();
-                              formData.append("user_id", user.sub.split("|")[1]);
-                              formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
-                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`, formData)
-                            } else {
-                              const formData = new FormData();
-                              formData.append("user_id", user.sub.split("|")[1]);
-                              formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
-                              axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`, formData)
-                              await setBookmarked(true);
-                            }
-                          }}
-                        >
-                          {bookmarked ? <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'regular' })} />}
-
-                        </button>
-
-                      </div>
-                      <div>
-                        <p class="d-sm-inline-block subtitle_tag" >Gene ID:</p>
-                        &nbsp;
-                        <p class="d-sm-inline-block subtitle_content" >{gene_data.id}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <CircularProgress />
-                    </div>
-                  )}
-                </h5>
-              </div>
+              <NameHeaderHolder input_object_data={gene_data} />
 
               <div class="container-fluid" id="gene_tabs_container_content" >
                 <Tabs

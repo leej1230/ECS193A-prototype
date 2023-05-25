@@ -18,7 +18,7 @@ function UploadDataset(){
     const [dateCreated, setDateCreated] = useState();
     const [progress, setProgress] = useState(0)
     const [isFilePicked, setIsFilePicked] = useState(false);
-    const [columns_input_list, set_columns_input_list] = useState([{str_content: "", column_type: ""}])
+    //const [columns_input_list, set_columns_input_list] = useState([{str_content: "", column_type: ""}])
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
 
@@ -124,14 +124,14 @@ function UploadDataset(){
               </div>
           </div>
 
-          <div>
+          {/*<div>
             {columns_input_list.map(() => {
               return <div>
                 <input class="form-control" type="text"  onChange={(e)=>{}} />
                 <input class="form-control" type="text"  onChange={(e)=>{}} />
               </div>
             })}
-          </div>
+          </div>*/}
 
           <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
           <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

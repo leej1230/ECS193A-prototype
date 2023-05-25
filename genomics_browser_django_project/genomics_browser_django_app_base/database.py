@@ -1214,9 +1214,6 @@ class Database:
 
             datasets_list = data_request['datasets_request_list']
 
-            print("dataset list in database.py: ")
-            print(datasets_list)
-
 
             dataset_objs_list = [{}]
 
