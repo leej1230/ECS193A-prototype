@@ -6,6 +6,7 @@ import "./GenePage.css";
 import NameHeaderHolder from './NameHeaderHolder'
 import BasicInfo from './BasicInfo'
 import NumberFilter from './NumberFilter';
+import GeneSequenceAnimation from './GeneSequenceAnimation';
 
 import SampleGraph from './echartdemo';
 
@@ -19,13 +20,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -110,37 +104,6 @@ const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
 
-function breakUpCode(code_str) {
-  var list_str_code = []
-  for (var i = 0; i < code_str.length; i += 5) {
-    var temp_str = "";
-    if (i + 5 < code_str.length) {
-      temp_str = code_str.substring(i, i + 5);
-    } else {
-      temp_str = code_str.substring(i, code_str.length);
-    }
-    list_str_code.push(temp_str);
-  }
-
-  return list_str_code;
-}
-
-function getColor(index_group) {
-  if (index_group % 4 == 0) {
-    // purple shade
-    return '#f2a2f5'
-  } else if (index_group % 4 == 1) {
-    // red shade
-    return '#f56464';
-  } else if (index_group % 4 == 2) {
-    // green shade
-    return '#9ff595';
-  } else {
-    // blue shade
-    return '#84a8f0';
-  }
-}
-
 
 function GenePage() {
   // state = {samples: []}
@@ -169,7 +132,6 @@ function GenePage() {
     { id: 0 }
   ]);
   const [dataset_info, set_dataset_info] = useState({ name: "", patient_ids: { 'arr': null } });
-  const [gene_code_info, set_gene_code_info] = useState({ code: ["mrna"] });
 
   const [graphType, setGraphType] = useState('bar');
   
@@ -383,12 +345,6 @@ function GenePage() {
       if (res.data.length > 0) {
         set_patient_information_expanded(generatePatientTable(res.data));
       }
-
-      //set_patient_table_data(generatePatientTable(res.data));
-      //set_patient_table_input_format( createPatientFormatted(patient_data) );
-      // .then(res => {
-      // })
-      //console.log( patient_data['patient_id'] );
     }
 
     fetchPatientsData()
@@ -405,27 +361,6 @@ function GenePage() {
     }
     fetchDatasetInfo()
   }, [gene_data]);
-
-  useEffect(() => {
-    async function fetchSeqName() {
-
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names`);
-      console.log(resp);
-      console.log("seq names");
-      var data_code = resp.data;
-      if (data_code.code.length > 1) {
-        // remove 'mrna' initial
-        data_code.code = data_code.code.slice(1, data_code.code.length);
-        // remove blanks at end
-        while (data_code.code.length > 1 && data_code.code[data_code.code.length - 1] == "") {
-          data_code.code.pop();
-        }
-      }
-      set_gene_code_info(data_code);
-      console.log(data_code);
-    }
-    fetchSeqName()
-  }, []);
 
   const graphDataFilter = (cur_filters) => {
     // filterType: "TEXT"
@@ -672,36 +607,7 @@ function GenePage() {
                     </div>
                   </Tab>
                   <Tab eventKey="animation" title="Animation">
-                    <div class="col-xl" id="gene_animation">
-                      <TableContainer style={{ width: '100%', height: '500px', overflow: 'scroll' }}>
-
-                        <Table style={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Code</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {
-                              gene_code_info.code.map(function (item, row_i) {
-                                return <TableRow key={row_i}>
-                                  <TableCell>
-                                    <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
-                                      return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
-                                        {code_str}
-                                      </div>
-                                    })}</div>
-                                  </TableCell>
-                                </TableRow>
-
-                              })
-                            }
-                          </TableBody>
-                        </Table>
-
-                      </TableContainer>
-
-                    </div>
+                    <GeneSequenceAnimation />
                   </Tab>
                 </Tabs>
               </div>
