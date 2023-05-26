@@ -102,7 +102,7 @@ function About() {
       <nav id="landing_page_navbar" class="navbar navbar-expand bg-transparent shadow">
 
 
-        <ul class="navbar-nav">
+      <ul class="navbar-nav">
           <li class="nav-item active">
             <a class="nav-link" href="/"> <div id="landing_page_nav_text">Home</div> <span class="sr-only">(current)</span></a>
           </li>
