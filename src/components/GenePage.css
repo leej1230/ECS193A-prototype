@@ -73,15 +73,6 @@
     margin-top: 40px;
 }
 
-#gene_info_box{
-    left: 0;
-    top: 0;
-    float: left;
-    margin-top: 0px;
-    min-width: 100%;
-    justify-content: center;
-}
-
 #graph_gene_box{
     justify-content: center;
     margin-left: 0px;

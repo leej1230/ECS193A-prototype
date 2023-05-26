@@ -4,6 +4,7 @@ import { Box, Card, CardContent, CardActions, Typography, CircularProgress, Butt
 import "./GenePage.css";
 
 import NameHeaderHolder from './NameHeaderHolder'
+import BasicInfo from './BasicInfo'
 
 import SampleGraph from './echartdemo';
 
@@ -670,31 +671,8 @@ function GenePage() {
                   className="mb-3"
                 >
                   <Tab eventKey="basic_info" title="Basic Info">
-                    <div class="row" id="gene_info_box">
-                      <div class="card shadow" >
-                        <div
-                          class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                          <h6 class="m-0 font-weight-bold text-primary">Gene Information</h6>
-                        </div>
-
-                        <div class="card-body" >
-                          {gene_data ? (
-                            <div>
-                              <p>Description: {gene_external_data.description}</p>
-                              <br />
-                              <p>Dataset ID: {gene_data.dataset_id}</p>
-                              <br />
-                              <a href={"/dataset/" + gene_data.dataset_id} >Link to Dataset</a>
-                            </div>
-                          ) : (
-                            <div>
-                              <CircularProgress />
-                            </div>
-                          )}
-
-                        </div>
-                      </div>
-                    </div>
+                    <BasicInfo title_info_box = "Gene Information" inner_content_elements={[<p>Description: {gene_external_data.description}</p>, <p>Dataset ID: {gene_data.dataset_id}</p>,
+                      <a href={"/dataset/" + gene_data.dataset_id}>Link to Dataset</a>]} />
                   </Tab>
                   <Tab eventKey="gene_graph" title="Graph">
                     <div id="graph_gene_box">
