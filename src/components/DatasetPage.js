@@ -1,118 +1,41 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "./DatasetPage.css";
-import { Box, Card , CardContent, CircularProgress, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper, cardActionAreaClasses } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Dataset from "./Dataset"
-
-import ScrollBars from "react-custom-scrollbars";
-
-import { json } from 'react-router-dom';
 
 import {default as TableBootstrap} from 'react-bootstrap/Table';
 
-import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter , numberFilter, Comparator} from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter , Comparator} from 'react-bootstrap-table2-filter';
 import { PropTypes } from 'prop-types'; 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
 import {default as ReactSelectDropDown} from 'react-select';
 
-//import { useTable } from "react-table";
-import MaterialTable from 'material-table';
-
 import { useNavigate } from 'react-router-dom';
-
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import {clone} from "ramda";
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-//import FontAwesomeIcon from 'react-fontawesome'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-
-//import { Tab, Tabs, TabList, TabPanel,  ReactTabsFunctionComponent, TabProps } from 'react-tabs';
-//import 'react-tabs/style/react-tabs.css';
 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+import ProductFilter from './ProductFilter';
+import NumberFilter from './NumberFilter';
+import DatasetNameHolder from './DatasetNameHolder';
+
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
-
-const tableIcons = {
-  Add: AddBox,
-  Check: Check,
-  Clear: Clear,
-  Delete: DeleteOutline,
-  DetailPanel: ChevronRight,
-  Edit: Edit,
-  Export: SaveAlt,
-  Filter: FilterList,
-  FirstPage: FirstPage,
-  LastPage: LastPage,
-  NextPage: ChevronRight,
-  PreviousPage: ChevronLeft,
-  ResetSearch: Clear,
-  Search: Search,
-  SortArrow: ArrowUpward,
-  ThirdStateCheck: Remove,
-  ViewColumn: ViewColumn
-};
-
-function clickMe() {
-  alert("You clicked me!");
-}
-
-function ProductFilter(props) {
-  const propTypes = {
-    column: PropTypes.object.isRequired,
-    onFilter: PropTypes.func.isRequired,
-    optionsInput: PropTypes.object.isRequired
-  }
-  
-  const filter = (selectedList, selectedItem) => {
-    props.onFilter(
-      selectedList.map(x => [x.value])
-    );
-  }
-
-    return (
-          <Multiselect options={props.optionsInput} 
-            displayValue="label" 
-            showCheckbox 
-            closeOnSelect={false}
-            onSelect={filter} 
-            onRemove={filter}/>
-        )
-
-}
 
 const selectCompare = [
   {value: 0, label: 'None'},
@@ -122,16 +45,8 @@ const selectCompare = [
   {value: 4, label: 'between'}
 ];
 
-const selectOptions = [
-  {value: "Yes", label: 'yes'},
-  {value: "No", label: 'no'},
-  {value: "unknown", label: 'Unknown'}
-];
-
-
 function DatasetPage() {
   const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
-  const [bookmarked, setBookmarked] = useState(false);
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
   const [edit_records_list, set_edit_records_list] = useState([]);
@@ -168,12 +83,6 @@ function DatasetPage() {
     dataField: 'gene_id',
     text: 'gene_id'
   }]);
-  const columns = [
-    { title: "Field Name", field: "field_name" },
-    { title: "Value", field: "value" }
-  ];
-
-  const [userInfo, setUserInfo] = useState();
 
   const [collapse_array, set_collapse_array] = useState([])
 
@@ -181,27 +90,6 @@ function DatasetPage() {
   const dataset_matrix_node = useRef(null);
 
   const { user } = useAuth0();
-
-  var bookmarkStyle = `${bookmarked ? "solid" : "regular"}`;
-
-  const handleFetchUser = async () => {
-    //console.log("fetch user: ")
-    const userSub = user.sub.split("|")[1];
-    axios
-      .get(`${user_get_url}/${userSub}`)
-      .then((res) => {
-        //console.log(res.data);
-        setUserInfo(res.data);
-
-        if( res.data && res.data.bookmarked_datasets ){
-          setBookmarked(res.data.bookmarked_datasets.includes(`${dataset.name}/${DATASET_ID}`))
-        }
-
-      })
-      .catch((e) => {
-        console.log("Failed to fetch user Info.", e)
-      });
-  };
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -217,8 +105,6 @@ function DatasetPage() {
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
     });
-    
-    handleFetchUser();
   }, [dataset])
 
   useEffect(() => {
@@ -334,10 +220,6 @@ function DatasetPage() {
         {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
       ]
     }
-
-    //console.log("combined information: ");
-    //console.log(patient_information);
-    //console.log(gene_with_value_information);
     
     for (let i = 0; i < patient_information.length; i++){
       let existing_patient_info = clone(patient_information[i]);
@@ -352,9 +234,6 @@ function DatasetPage() {
       }
       combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
     }
-
-    
-    //console.log( combined_dataset_full_information );
 
     return combined_dataset_full_information;
       
@@ -498,56 +377,6 @@ function DatasetPage() {
       return filtered_list_genes;
       
     }
-
-  const NumberFilter = (props) => {
-    const [compCode, setCompCode] =  useState(0);
-    const [input1, setInput1] =  useState(0);
-    const [input2, setInput2] =  useState(0);
-
-    const propTypes = {
-      column: PropTypes.object.isRequired,
-      onFilter: PropTypes.func.isRequired
-    }
-
-    useEffect(() => {
-      async function changedNumberComparison() {
-        filter();
-      }
-  
-      changedNumberComparison()
-    }, [compCode , input1 , input2 ])
-    
-    const filter = () => {
-      props.onFilter(
-        {compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: props.column.dataField}, gene_information_expanded
-      );
-    }
-  
-      return (
-            <div>
-              <ReactSelectDropDown options={selectCompare} 
-                displayValue="label" 
-                showCheckbox 
-                onChange={(e) => {setCompCode( e.value) } }
-                closeOnSelect={false}
-                />
-  
-              <input
-                key="input"
-                type="text"
-                placeholder="Value (or Min if between)"
-                onChange={(e) => { setInput1( e.target.value)}}
-              />
-              <input
-                key="input"
-                type="text"
-                placeholder="(Max if between selected or not used)"
-                onChange={(e) => { setInput2( e.target.value)}}
-              />
-            </div>
-          )
-  
-      }
 
   const filterNumber = (filterVals, data) => {
     let compareValCode = filterVals['compareValCode']
@@ -1077,46 +906,7 @@ function DatasetPage() {
 
               </div>
 
-
-              <div id="dataset_name_holder">
-                <h5  class="h5 text-gray-800">
-                  <div id="text_title">
-                    <div class="d-sm-inline-block" id="title_tage">Dataset:</div>
-                    &nbsp;
-                    <div class="d-sm-inline-block" id="title_content">{dataset["name"]}</div>
-                    &nbsp;
-                    &nbsp;
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
-                      onClick={ async () => {
-                        if (bookmarked == true) {
-                          await setBookmarked(false);
-                          const formData = new FormData();
-                          formData.append("user_id", user.sub.split("|")[1]);
-                          formData.append("dataset_url", `${dataset.name}/${DATASET_ID}`);
-                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
-                        } else {
-                          const formData = new FormData();
-                          formData.append("user_id", user.sub.split("|")[1]);
-                          formData.append("dataset_url", `${dataset.name}/${DATASET_ID}`);
-                          axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
-                          await setBookmarked(true);
-                        }
-                      }}
-                    >
-                      {bookmarked ? <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({name: 'bookmark', style: 'regular' })} /> }
-                    
-                    </button>
-                    
-                  </div>
-                  <div>
-                    <p class="d-sm-inline-block subtitle_tag" >Dataset ID:</p>
-                    &nbsp;
-                    <p class="d-sm-inline-block subtitle_content" >{DATASET_ID}</p>
-                  </div>
-                </h5>
-              </div>
+              <DatasetNameHolder input_dataset_id={DATASET_ID} input_dataset={dataset}/>
 
               <div class="container-fluid" id="tabs_container" >
                   <Tabs
@@ -1352,14 +1142,6 @@ function DatasetPage() {
 
   </div>
 
-  {/*<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2021</span>
-        </div>
-    </div>
-  </footer>*/}
-
   <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
   <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -1378,103 +1160,3 @@ function DatasetPage() {
 }
 
 export default DatasetPage;
-
-/*
-<div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Dataset Stats</h6>
-                        </div>
-                        <div class="card-body">
-                          <p>Number of Genes: </p>
-                          <p>Number of Patients: </p>
-                          <p>Number of Missing Cells: </p>
-                        </div>
-                    </div> 
-*/
-
-/*
-
-<div class="col-lg-3" id="dataset_statistics">
-       
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Related Datasets</h6>
-                        </div>
-                        <div class="card-body">
-                            <p>Dataset 1</p>
-                            <p>Dataset 2</p>
-                            <p>Dataset 3</p>
-                        </div>
-                    </div>
-                  </div>
-
-                  */
-/*
-<div class="card shadow" >
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
-    </div>
-    <div class="card-body">
-    {datasetTableInputFormat.length>3 ? (
-      <div>
-        {
-          <MaterialTable columns={columns} 
-          data={datasetTableInputFormat}
-          icons={tableIcons}
-          options={{
-            paging: false,
-            showTitle: false
-          }}
-          />
-        }
-      </div>
-      ):(
-        <div>
-          <CircularProgress />
-        </div>
-      )
-    }
-    </div>
-  </div>
-*/
-
-/*
-<input
-    key="input"
-    type="text"
-    placeholder="text"
-    data-cy="genelistinputbox"
-    onChange={(e) => { setInputStr( e.target.value ) }}
-  />
-  <button
-    id="gene_list_search"
-    onClick={() => {filter()}}
-  >Search</button>
-  <button
-    id="gene_list_reset"
-    onClick={() => {reset_list()}}
-  >Reset</button>
-      */
-
-/*
-<li>
-  <div class="card shadow edit_single_display">
-    <div class="card-body">
-      
-      
-          
-
-    </div>
-  </div>
-</li>
-*/
-
-/*
-<div>
-  <p>Patient: {patient_key}</p>
-  {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
-    // info for that particular patient
-    return <p class="patient_editted_display">{editted_patient_info_key} : OLD VAL : {single_edit_record["old_values"][patient_key][editted_patient_info_key]} NEW VAL: {single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</p>
-  })}
-</div>
-*/

@@ -140,3 +140,50 @@ const handleUserSubmit = async () => {
       });
   };
 */
+
+/*
+<input
+    key="input"
+    type="text"
+    placeholder="text"
+    data-cy="genelistinputbox"
+    onChange={(e) => { setInputStr( e.target.value ) }}
+  />
+  <button
+    id="gene_list_search"
+    onClick={() => {filter()}}
+  >Search</button>
+  <button
+    id="gene_list_reset"
+    onClick={() => {reset_list()}}
+  >Reset</button>
+*/
+
+/*
+<div class="card shadow" >
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Basic Dataset Information</h6>
+    </div>
+    <div class="card-body">
+    {datasetTableInputFormat.length>3 ? (
+      <div>
+        {
+          <MaterialTable columns={columns} 
+          data={datasetTableInputFormat}
+          icons={tableIcons}
+          options={{
+            paging: false,
+            showTitle: false
+          }}
+          />
+        }
+      </div>
+      ):(
+        <div>
+          <CircularProgress />
+        </div>
+      )
+    }
+    </div>
+  </div>
+*/

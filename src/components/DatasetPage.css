@@ -75,24 +75,6 @@ body{
     padding-right: 0;
 }
 
-#dataset_name_holder{
-    /*position: absolute;
-    margin-top: 170px;
-    left: 0;
-    float: left;
-    margin-left: 25px;*/
-    position: relative;
-    margin-top: 0px;
-    left: 0;
-    top: 0;
-    float: left;
-    min-width: 100%;
-    margin-left: 0px;
-    padding-left: 0;
-    margin-right: 0;
-    padding-right: 0;
-}
-
 #dataset_table_and_stats_row {
     margin-top: 2%;
     margin-left: 1px;
@@ -107,21 +89,6 @@ body{
 
 #dataset_view_table {
     margin-top: 2%;
-}
-
-#title_tage{
-    color: gray;
-}
-
-#text_title{
-    margin: 0;
-}
-
-.subtitle_tag, .subtitle_content{
-    color: gray;
-    font-size:medium;
-    margin: 0;
-    padding: 0;
 }
 
 #tabs_container{

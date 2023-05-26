@@ -3,16 +3,13 @@ import axios from 'axios';
 import {  CircularProgress } from '@mui/material';
 import "./GenePage.css";
 
-import NameHeaderHolder from './NameHeaderHolder'
+import GeneNameHeaderHolder from './GeneNameHeaderHolder'
 import BasicInfo from './BasicInfo'
 import NumberFilter from './NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
 import ProductFilter from './ProductFilter';
 
 import SampleGraph from './echartdemo';
-
-//import { useTable } from "react-table";
-//import MaterialTable from 'material-table';
 
 import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -417,7 +414,7 @@ function GenePage() {
                   class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
               </div>
 
-              <NameHeaderHolder input_object_data={gene_data} />
+              <GeneNameHeaderHolder input_object_data={gene_data} />
 
               <div class="container-fluid" id="gene_tabs_container_content" >
                 <Tabs

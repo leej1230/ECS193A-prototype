@@ -6,7 +6,7 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import { CircularProgress } from '@mui/material';
 
-import './NameHeaderHolder.css'
+import './GeneNameHeaderHolder.css'
 
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "./bootstrap_gene_page/css/sb-admin-2.min.css"
