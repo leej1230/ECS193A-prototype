@@ -9,10 +9,15 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css"
+
+import './GeneSequenceAnimation.css'
+
 function breakUpCode(code_str) {
     let list_str_code = []
     for (var i = 0; i < code_str.length; i += 5) {
-      var temp_str = "";
+      let temp_str = "";
       if (i + 5 < code_str.length) {
         temp_str = code_str.substring(i, i + 5);
       } else {
@@ -80,12 +85,15 @@ function GeneSequenceAnimation(props){
                     gene_code_info.code.map(function (item, row_i) {
                     return <TableRow key={row_i}>
                         <TableCell>
+                        
                         <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
                             return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
                             {code_str}
                             </div>
                         })}</div>
+
                         </TableCell>
+                        
                     </TableRow>
 
                     })
