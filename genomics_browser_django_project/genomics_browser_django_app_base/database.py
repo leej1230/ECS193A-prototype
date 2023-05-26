@@ -3,6 +3,7 @@ import copy
 import datetime
 import json
 import math
+import operator
 import os
 import re
 import urllib.request
@@ -17,6 +18,8 @@ from django.conf import settings
 #from django.http.response import JsonResponse
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.decorators import api_view, renderer_classes
+from django.http.response import JsonResponse
+from fuzzywuzzy import fuzz
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
 from genomics_browser_django_app_base.pymongo_get_database import get_connection
 from genomics_browser_django_app_base.serializers import (
@@ -123,7 +126,9 @@ class Database:
             #     },
             # )
             query = {'auth0_uid': request_data['user_id']}
-            update = {"$addToSet": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$addToSet": {'bookmarked_genes': request_data['gene_url']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
 
@@ -136,7 +141,9 @@ class Database:
                 return status.HTTP_404_NOT_FOUND
 
             query = {'auth0_uid': request_data['user_id']}
-            update = {"$pull": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$pull": {'bookmarked_genes': request_data['gene_url']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
 
@@ -243,7 +250,9 @@ class Database:
                 return status.HTTP_404_NOT_FOUND
 
             query = {'auth0_uid': request_data['user_uid']}
-            update = {"$set": {request_data['role_label']: request_data['value']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$set": {request_data['role_label']: request_data['value']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
 
@@ -986,13 +995,13 @@ class Database:
             return json_data
 
         def get_search_gene(request):
-            """Retrieves the name and ID of particular number of genes in the gene collection in the database based on the keyword user input.
+            """Retrieves the name and ID of a particular number of genes in the gene collection in the database based on the keyword user input.
 
             Args:
                 request: Contains the keyword user searched.
 
             Returns:
-                dict: A dictionary containing the gene names and IDs.
+                dict: A dictionary containing the gene names, IDs, current page, and total pages.
             """
 
             search_word = request['search_word']
@@ -1002,7 +1011,7 @@ class Database:
 
             doc_count = 0
 
-            if search_word == " ":
+            if search_word.strip() == '':
                 doc_count = Database.gene_collection.count_documents({})
                 genes = (
                     Database.gene_collection.find(
@@ -1012,24 +1021,38 @@ class Database:
                     .limit(numberofList)
                 )
             else:
-                doc_count = Database.gene_collection.count_documents(
-                    {'name': {'$regex': search_word, '$options': 'i'}}
+                # Perform fuzzy matching using the search_word
+                fuzzy_results = []
+                all_genes = Database.gene_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'id': 1}
                 )
-                genes = (
-                    Database.gene_collection.find(
-                        {'name': {'$regex': search_word, '$options': 'i'}},
-                        {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1},
-                    )
-                    .skip(numberofList * page)
-                    .limit(numberofList)
-                )
+                for gene in all_genes:
+                    ratio = fuzz.ratio(search_word, gene['name'])
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (gene, ratio)
+                        )  # Store gene and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
+                doc_count = len(fuzzy_results)
+                genes = [
+                    gene[0] for gene in fuzzy_results
+                ]  # Extract the genes from the sorted list
+
+            genes = genes[page * numberofList : (page + 1) * numberofList]
 
             json_data = loads(dumps(genes))
-
             totalPages = math.ceil(doc_count / numberofList)
 
-            print(totalPages)
-            return json_data
+            response_data = {
+                'genes': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
+
+            return response_data
 
         def post_gene_one(request):
             """Adds a single gene to the gene collection in the database.

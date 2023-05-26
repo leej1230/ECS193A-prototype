@@ -11,3 +11,11 @@
 .text-area {
     margin: 1rem;
 }
+
+.progress-bar {
+background-color: #00000000;
+}
+
+/* .CircularProgressbar-text{
+
+} */

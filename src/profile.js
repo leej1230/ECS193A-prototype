@@ -27,7 +27,7 @@ function Profile() {
     const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
     const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
 
-    const userMetadata = user?.['https://unique.app.com/user_metadata'];
+    const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
     const handleFetchUser = async () => {
         const userSub = user.sub.split("|")[1];
@@ -66,77 +66,77 @@ function Profile() {
         handleFetchUser();
     }, []);
 
-    return isLoading || !userInfo ? (
-        <div>
-            <LoadingSpinner />
-        </div>
-    ) : (
+    return (
         <div>
             {/* Move down to avoid overlap with navbar */}
             <div className="container" style={{ height: "70px", border: "1px solid black" }}></div>
             {userMetadata && (
                 <div className="container mx-2 my-2">
-                    <h1>User Page</h1>
-                    <div className='mx-3 my-2'>
-                        <h2>{userMetadata.given_name} {userMetadata.family_name}</h2>
-                    </div>
-                    <h2>Roles</h2>
-                    <div className='mx-3 my-2'>
-                        {is_admin ? (
-                            <h4>Admin</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {is_member ? (
-                            <h4>Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                        {!is_admin && !is_member ? (
-                            <h4>Not Verified</h4>
-                        ) : (
-                            <></>
-                        )}
-                    </div>
-                    <div>
-                        <h2>Bookmarked Genes</h2>
-                        {bookmarkedGenes && bookmarkedGenes.length !== 0 ? (
-                            bookmarkedGenes.map((geneUrl) => (
-                                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                    <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
-                                    <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ marginLeft: '5px' }}>
-                                        {geneUrl}
-                                    </a>
-                                </div>
-                            ))
-                        ) : (
-                            <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                        )}
-                    </div>
-
-                    <div>
-                        <h2>Bookmarked Datasets</h2>
-                        {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
-                            bookmarkedDatasets.map((datasetsUrl) => (
-                                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                    <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
-                                    <a
-                                        href={`${url}/dataset/${datasetsUrl.split('/')[1]}`}
-                                        className="mx-3"
-                                        style={{ marginLeft: '5px' }}
-                                    >
-                                        {datasetsUrl.split('/')[0]}
-                                    </a>
-                                </div>
-                            ))
-                        ) : (
-                            <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                        )}
-                    </div>
-
-                    {is_admin && (
+                    {isLoading || !userInfo ? (
+                        <div style={{ marginTop: "40vh" }}>
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
                         <div>
-                            <a href={`${url}/manage`}>Manage Users</a>
+                            <h1>User Page</h1>
+                            <div className='mx-3 my-2'>
+                                <h2>{userMetadata.given_name} {userMetadata.family_name}</h2>
+                            </div>
+                            <h2>Roles</h2>
+                            <div className='mx-3 my-2'>
+                                {is_admin ? (
+                                    <h4>Admin</h4>
+                                ) : (
+                                    <></>
+                                )}
+                                {is_member ? (
+                                    <h4>Verified</h4>
+                                ) : (
+                                    <></>
+                                )}
+                                {!is_admin && !is_member ? (
+                                    <h4>Not Verified</h4>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
+                            <div>
+                                <h2>Bookmarked Genes</h2>
+                                {bookmarkedGenes && bookmarkedGenes.length !== 0 ? (
+                                    bookmarkedGenes.map((geneUrl) => (
+                                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                            <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
+                                            <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ marginLeft: '5px' }}>
+                                                {geneUrl}
+                                            </a>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
+                                )}
+                            </div>
+
+                            <div>
+                                <h2>Bookmarked Datasets</h2>
+                                {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
+                                    bookmarkedDatasets.map((datasetsUrl) => (
+                                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                            <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
+                                            <a href={`${url}/dataset/${datasetsUrl.split('/')[1]}`} className="mx-3" style={{ marginLeft: '5px' }}>
+                                                {datasetsUrl.split('/')[0]}
+                                            </a>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
+                                )}
+                            </div>
+
+                            {is_admin && (
+                                <div>
+                                    <a href={`${url}/manage`}>Manage Users</a>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
