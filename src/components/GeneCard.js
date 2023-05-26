@@ -2,8 +2,6 @@ import React from 'react';
 import "./GeneCard.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
-import {Button} from "@mui/material";
 
 import LimitedText from './LimitedText.js'
 

@@ -7,13 +7,13 @@ import NameHeaderHolder from './NameHeaderHolder'
 import BasicInfo from './BasicInfo'
 import NumberFilter from './NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
+import ProductFilter from './ProductFilter';
 
 import SampleGraph from './echartdemo';
 
 //import { useTable } from "react-table";
 //import MaterialTable from 'material-table';
 
-import Multiselect from "multiselect-react-dropdown";
 import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -31,26 +31,6 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-
-function ProductFilter(props) {
-
-  const filter = (selectedList, selectedItem) => {
-    props.onFilter(
-      selectedList.map(x => [x.value])
-    );
-  }
-
-  return (
-    <Multiselect options={props.optionsInput}
-      displayValue="label"
-      showCheckbox
-      closeOnSelect={false}
-      onSelect={filter}
-      onRemove={filter} />
-  )
-
-}
-
 const selectOptions = [
   { value: "Yes", label: 'yes' },
   { value: "No", label: 'no' },
@@ -61,7 +41,6 @@ const SAMPLE_ID = window.location.pathname.split("/").at(-1)
 
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
-
 
 function GenePage() {
   // state = {samples: []}
