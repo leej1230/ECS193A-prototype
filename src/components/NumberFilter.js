@@ -1,7 +1,5 @@
 
-import { PropTypes } from 'prop-types';
-
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { default as ReactSelectDropDown } from 'react-select';
 
@@ -13,17 +11,18 @@ const selectCompare = [
     { value: 4, label: 'between' }
   ];
 
-const NumberFilter = (props) => {
+const NumberFilter = ({onFilter, column, input_patient_information_expanded}) => {
     const [compCode, setCompCode] = useState(0);
     const [input1, setInput1] = useState(0);
     const [input2, setInput2] = useState(0);
 
-    const propTypes = {
-      column: PropTypes.object.isRequired,
-      onFilter: PropTypes.func.isRequired
-    }
-
     useEffect(() => {
+      const filter = () => {
+        onFilter(
+          { compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: column.dataField }, input_patient_information_expanded
+        );
+      }
+
       async function changedNumberComparison() {
 
         filter();
@@ -31,12 +30,6 @@ const NumberFilter = (props) => {
 
       changedNumberComparison()
     }, [compCode, input1, input2])
-
-    const filter = () => {
-      props.onFilter(
-        { compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: props.column.dataField }, props.input_patient_information_expanded
-      );
-    }
 
 
     return (

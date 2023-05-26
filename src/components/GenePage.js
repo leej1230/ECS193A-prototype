@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Box, Card, CardContent, CardActions, Typography, CircularProgress, Button, Paper } from '@mui/material';
+import {  CircularProgress } from '@mui/material';
 import "./GenePage.css";
 
 import NameHeaderHolder from './NameHeaderHolder'
@@ -14,30 +14,12 @@ import SampleGraph from './echartdemo';
 //import MaterialTable from 'material-table';
 
 import Multiselect from "multiselect-react-dropdown";
-import filterFactory, { FILTER_TYPES, customFilter, textFilter, numberFilter, Comparator, multiSelectFilter } from 'react-bootstrap-table2-filter';
-import { PropTypes } from 'prop-types';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-
-import { color } from 'echarts';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -49,32 +31,8 @@ import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-const tableIcons = {
-  Add: AddBox,
-  Check: Check,
-  Clear: Clear,
-  Delete: DeleteOutline,
-  DetailPanel: ChevronRight,
-  Edit: Edit,
-  Export: SaveAlt,
-  Filter: FilterList,
-  FirstPage: FirstPage,
-  LastPage: LastPage,
-  NextPage: ChevronRight,
-  PreviousPage: ChevronLeft,
-  ResetSearch: Clear,
-  Search: Search,
-  SortArrow: ArrowUpward,
-  ThirdStateCheck: Remove,
-  ViewColumn: ViewColumn
-};
 
 function ProductFilter(props) {
-  const propTypes = {
-    column: PropTypes.object.isRequired,
-    onFilter: PropTypes.func.isRequired,
-    optionsInput: PropTypes.object.isRequired
-  }
 
   const filter = (selectedList, selectedItem) => {
     props.onFilter(
@@ -131,7 +89,6 @@ function GenePage() {
     { race: "" },
     { id: 0 }
   ]);
-  const [dataset_info, set_dataset_info] = useState({ name: "", patient_ids: { 'arr': null } });
 
   const [graphType, setGraphType] = useState('bar');
   
@@ -195,26 +152,22 @@ function GenePage() {
     let inputVal2 = filterVals['inputVal2']
     let colName = filterVals['colName']
 
-    if (compareValCode == 0) {
+    if (compareValCode === 0) {
       // no filter
       return data;
     }
-    else if (compareValCode == 1) {
+    else if (compareValCode === 1) {
       // <
 
-      console.log(data.filter(patient_one => patient_one[colName] < inputVal1));
       return data.filter(patient_one => patient_one[colName] < inputVal1);
-    } else if (compareValCode == 2) {
+    } else if (compareValCode === 2) {
       // >
-      console.log(data.filter(patient_one => patient_one[colName] > inputVal1));
       return data.filter(patient_one => patient_one[colName] > inputVal1);
-    } else if (compareValCode == 3) {
+    } else if (compareValCode === 3) {
       // =
-      console.log(data.filter(patient_one => patient_one[colName] == inputVal1));
-      return data.filter(patient_one => patient_one[colName] == inputVal1);
-    } else if (compareValCode == 4) {
+      return data.filter(patient_one => patient_one[colName] === inputVal1);
+    } else if (compareValCode === 4) {
       // Between
-      console.log(data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2));
       return data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2);
     }
 
@@ -222,7 +175,7 @@ function GenePage() {
   }
 
   const generatePatientTable = (patients_info) => {
-    if (patients_info == null) {
+    if (patients_info === null) {
       return;
     }
 
@@ -231,7 +184,7 @@ function GenePage() {
       // patient has no id, so this is fine
       cur_patient['id'] = i + 1
       let patient_index = gene_data.patient_ids.arr.indexOf(cur_patient['patient_id'])
-      if (patient_index != -1) {
+      if (patient_index !== -1) {
         cur_patient['gene_val'] = gene_data.gene_values.arr[patient_index]
       }
     }
@@ -299,7 +252,6 @@ function GenePage() {
       patient_columns_list.push(col_obj)
     }
 
-    console.log(patient_columns_list);
     set_patient_columns(patient_columns_list);
 
     return patients_info;
@@ -308,20 +260,11 @@ function GenePage() {
   // componentDidMount() {
   useEffect(() => {
     async function fetchGeneData() {
-      //await console.log(URL);
       const res = await axios.get(URL);
       const gene_ext = await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
       setGeneExternalData(gene_ext.data);
       setGene_data(res.data);
       set_graph_table_filter_data(res.data);
-
-      console.log("fetch gene function: ")
-      console.log(gene_data);
-
-      //set_patient_table_input_format( createPatientFormatted(patient_data) );
-      // .then(res => {
-      // })
-      //console.log( patient_data['patient_id'] );
     }
 
 
@@ -338,10 +281,7 @@ function GenePage() {
     async function fetchPatientsData() {
 
       const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
-      console.log(patientsDataAPIURL)
       const res = await axios.get(patientsDataAPIURL);
-      console.log("line 172")
-      console.log(res.data)
       if (res.data.length > 0) {
         set_patient_information_expanded(generatePatientTable(res.data));
       }
@@ -349,18 +289,6 @@ function GenePage() {
 
     fetchPatientsData()
   }, [gene_data])
-
-  useEffect(() => {
-    // this side effect runs if gene data changes, so that dataset info for the gene can be updated
-    async function fetchDatasetInfo() {
-      const dataset_data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset/${gene_data.dataset_id}`);
-      if (dataset_data.data['id'] != null) {
-        set_dataset_info(dataset_data.data);
-      }
-
-    }
-    fetchDatasetInfo()
-  }, [gene_data]);
 
   const graphDataFilter = (cur_filters) => {
     // filterType: "TEXT"
@@ -374,43 +302,34 @@ function GenePage() {
 
     for (let i = 0; i < filter_columns.length; i++) {
       let current_filter = cur_filters[filter_columns[i]];
-      if (current_filter.filterType == "NUMBER") {
-        console.log("num");
-        console.log(current_filter.filterVal);
+      if (current_filter.filterType === "NUMBER") {
 
         let first_num = current_filter.filterVal.inputVal1
         let second_num = current_filter.filterVal.inputVal2
 
-        if (current_filter.filterVal.compareValCode == 1) {
+        if (current_filter.filterVal.compareValCode === 1) {
           // <
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
-        } else if (current_filter.filterVal.compareValCode == 2) {
+        } else if (current_filter.filterVal.compareValCode === 2) {
           // >
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
-        } else if (current_filter.filterVal.compareValCode == 3) {
+        } else if (current_filter.filterVal.compareValCode === 3) {
           // =
           isFiltered = true
-          patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
-        } else if (current_filter.filterVal.compareValCode == 4) {
+          patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === first_num)
+        } else if (current_filter.filterVal.compareValCode === 4) {
           // between
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num)
         }
 
-      } else if (current_filter.filterType == "TEXT") {
-        console.log("text")
-        console.log(current_filter.filterVal)
-
-        console.log("patients filtered in text: ")
-        console.log(patients_filtered)
+      } else if (current_filter.filterType === "TEXT") {
 
         isFiltered = true
-        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
-      } else if (current_filter.filterType == "MULTISELECT") {
-        console.log("multis")
-        console.log(current_filter.filterVal)
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal)
+      } else if (current_filter.filterType === "MULTISELECT") {
 
         // need to or through the filters selected for a column
         let mutliselect_filter_list = []
@@ -418,8 +337,7 @@ function GenePage() {
 
         for (let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++) {
           // each column: one value so will not overlap
-          console.log("iteration ", current_filter_index);
-          mutliselect_filter_list = mutliselect_filter_list.concat(patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]))
+          mutliselect_filter_list = mutliselect_filter_list.concat(patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal[current_filter_index][0]))
         }
 
         // or the multiselect options and set to the patients filter
@@ -427,9 +345,7 @@ function GenePage() {
       }
     }
 
-    console.log("patients filtered:")
-    console.log(patients_filtered)
-    if (isFiltered == true) {
+    if (isFiltered === true) {
       let new_patient_ids = []
       let new_gene_vals = []
 
@@ -439,8 +355,6 @@ function GenePage() {
       }
 
       let new_obj = { patient_ids: { arr: new_patient_ids }, gene_values: { arr: new_gene_vals } }
-
-      console.log(new_obj)
 
 
       set_graph_table_filter_data(new_obj)
@@ -457,43 +371,34 @@ function GenePage() {
 
     for (let i = 0; i < filter_columns.length; i++) {
       let current_filter = cur_filters[filter_columns[i]];
-      if (current_filter.filterType == "NUMBER") {
-        console.log("num");
-        console.log(current_filter.filterVal);
+      if (current_filter.filterType === "NUMBER") {
 
         let first_num = current_filter.filterVal.inputVal1
         let second_num = current_filter.filterVal.inputVal2
 
-        if (current_filter.filterVal.compareValCode == 1) {
+        if (current_filter.filterVal.compareValCode === 1) {
           // <
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
-        } else if (current_filter.filterVal.compareValCode == 2) {
+        } else if (current_filter.filterVal.compareValCode === 2) {
           // >
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
-        } else if (current_filter.filterVal.compareValCode == 3) {
+        } else if (current_filter.filterVal.compareValCode === 3) {
           // =
           isFiltered = true
-          patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
-        } else if (current_filter.filterVal.compareValCode == 4) {
+          patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === first_num)
+        } else if (current_filter.filterVal.compareValCode === 4) {
           // between
           isFiltered = true
           patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num)
         }
 
-      } else if (current_filter.filterType == "TEXT") {
-        console.log("text")
-        console.log(current_filter.filterVal)
-
-        console.log("patients filtered in text: ")
-        console.log(patients_filtered)
+      } else if (current_filter.filterType === "TEXT") {
 
         isFiltered = true
-        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
-      } else if (current_filter.filterType == "MULTISELECT") {
-        console.log("multis")
-        console.log(current_filter.filterVal)
+        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal)
+      } else if (current_filter.filterType === "MULTISELECT") {
 
         // need to or through the filters selected for a column
         let mutliselect_filter_list = []
@@ -501,8 +406,7 @@ function GenePage() {
 
         for (let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++) {
           // each column: one value so will not overlap
-          console.log("iteration ", current_filter_index);
-          mutliselect_filter_list = mutliselect_filter_list.concat(patients_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]))
+          mutliselect_filter_list = mutliselect_filter_list.concat(patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal[current_filter_index][0]))
         }
 
         // or the multiselect options and set to the patients filter
@@ -510,10 +414,7 @@ function GenePage() {
       }
     }
 
-    console.log("patients filtered:")
-    console.log(patients_filtered)
-
-    if (isFiltered == true) {
+    if (isFiltered === true) {
       set_patient_data_table_filtered(patients_filtered)
     } else {
       set_patient_data_table_filtered(patient_information_expanded)
@@ -533,7 +434,7 @@ function GenePage() {
             <div class="container-fluid" id="gene_page_full">
 
               <div id="control_buttons_gene_page">
-                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
+                <a href={"/gene/" + gene_data.name + "/" + gene_data.id} class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                   class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
               </div>
 

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import Table from "@material-ui/core/Table";
@@ -30,13 +30,13 @@ function breakUpCode(code_str) {
   }
   
   function getColor(index_group) {
-    if (index_group % 4 == 0) {
+    if (index_group % 4 === 0) {
       // purple shade
       return '#f2a2f5'
-    } else if (index_group % 4 == 1) {
+    } else if (index_group % 4 === 1) {
       // red shade
       return '#f56464';
-    } else if (index_group % 4 == 2) {
+    } else if (index_group % 4 === 2) {
       // green shade
       return '#9ff595';
     } else {
@@ -60,7 +60,7 @@ function GeneSequenceAnimation(props){
             // remove 'mrna' initial
             data_code.code = data_code.code.slice(1, data_code.code.length);
             // remove blanks at end
-            while (data_code.code.length > 1 && data_code.code[data_code.code.length - 1] == "") {
+            while (data_code.code.length > 1 && data_code.code[data_code.code.length - 1] === "") {
               data_code.code.pop();
             }
           }

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import { IconButton, Select, MenuItem } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import "./GeneSearchPage.css";
 import SampleList from "./SampleList";
 import SliderGene from "./SliderGene";
@@ -16,10 +14,8 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import {clone} from "ramda";
 
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-
-const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
 
 function GeneSearchPage() {
   const [searchResult, setSearchResult] = useState([]);
@@ -30,13 +26,11 @@ function GeneSearchPage() {
   const [hasSearched, setHasSearched] = useState(false);
 
   const { user } = useAuth0();
-  const userMetadata = user?.['https://unique.app.com/user_metadata'];
 
   useEffect(() => {
     if (isMounted) {
       handleSearch();
     } else {
-      //handleUserSubmit();
       setIsMounted(true);
     }
   }, [listPage]);
@@ -45,7 +39,7 @@ function GeneSearchPage() {
   const handleSearch = async () => {
     try {
       let search_input_for_url = clone(searchInput)
-      if( search_input_for_url == "" ){
+      if( search_input_for_url === "" ){
         search_input_for_url = " ";
       }
       const response = await axios.get(
@@ -78,31 +72,6 @@ function GeneSearchPage() {
     }
     // console.log(listPage)
   }
-
-  const handleUserSubmit = async () => {
-
-    const email = user.email
-    const first_name = userMetadata.given_name
-    const last_name = userMetadata.family_name
-    const auth0_uid = user.sub
-
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("first_name", first_name);
-    formData.append("last_name", last_name);
-    formData.append("auth0_uid", auth0_uid);
-
-    axios
-      .post(user_post_url, formData)
-      .then(() => {
-        console.log("Account information successfully submitted on backend.");
-      })
-      .catch((error) => {
-        if (error.response.status === 409) {
-          console.log("Account informaiton already registered in DB. No update needed.")
-        }
-      });
-  };
 
   return (
     <body id="page-top">
