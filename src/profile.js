@@ -64,93 +64,86 @@ function Profile() {
       <div className="profile">
         <div className="profile-card">
           <h2 className="card-title1">User Page</h2>
+        </div>
 
-
-          {userMetadata && (
-            <div className="container mx-2 my-2">
-              {isLoading || !userInfo ? (
-                <div style={{ marginTop: "40vh" }}>
-                  <LoadingSpinner />
-                </div>
-              ) : (
-                <div>
-                  <h1>User Page</h1>
-                  <div className="card">
-                    <div className="card-body">
-                      <h2 className="card-title2">User Information</h2>
-                      <div className="card-content">
-                        <div className="user-info">
-                          {userMetadata && (
-                            <h4>
-                              User full name: {userMetadata.given_name} {userMetadata.family_name}
-                            </h4>
+        {userMetadata && (
+          <div className="container mx-2 my-2">
+            {isLoading || !userInfo ? (
+              <div style={{ marginTop: "40vh" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <div>
+                <div className="card">
+                  <div className="card-body">
+                    <h2 className="card-title2">User Information</h2>
+                    <div className="card-content">
+                      <div className="user-info">
+                        {userMetadata && (
+                          <h4>
+                            User full name: {userMetadata.given_name} {userMetadata.family_name}
+                          </h4>
+                        )}
+                        <ul className="role-list">
+                          {is_admin && is_member ? (
+                            <h4>User Role: Admin and Verified</h4>
+                          ) : !is_admin && is_member ? (
+                            <h4>User Role: Verified</h4>
+                          ) : (
+                            <h4>User Role: Not Verified</h4>
                           )}
-                          <ul className="role-list">
-                            {is_admin && is_member ? (
-                              <h4>User Role: Admin and Verified</h4>
-                            ) : !is_admin && is_member ? (
-                              <h4>User Role: Verified</h4>
-                            ) : (
-                              <h4>User Role: Not Verified</h4>
-                            )}
-                            {is_admin && (
-                              <div>
-                                <a href={`${url}/manage`} style={{ fontSize: '22px' }}>Manage Users</a>
-                              </div>
-                            )}
-                          </ul>
-                        </div>
+                          {is_admin && (
+                            <div>
+                              <a href={`${url}/manage`} style={{ fontSize: '22px' }}>Manage Users</a>
+                            </div>
+                          )}
+                        </ul>
                       </div>
                     </div>
                   </div>
-
-
-                  <div className="card">
-                    <div className="card-body">
-                      <h2 className="card-title2">Gene Bookmarks</h2>
-                      {bookmarkedGenes && bookmarkedGenes.length !== 0 ? (
-                        bookmarkedGenes.map((geneUrl) => (
-                          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                            <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
-                            <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ marginLeft: '5px' }}>
-                              {geneUrl}
-                            </a>
-                          </div>
-                        ))
-                      ) : (
-                        <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="card">
-                    <div className="card-body">
-                      <h2 className="card-title2">Datasets Bookmarks</h2>
-                      {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
-                        bookmarkedDatasets.map((datasetsUrl) => (
-                          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                            <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
-                            <a href={`${url}/dataset/${datasetsUrl.split('/')[1]}`} className="mx-3" style={{ marginLeft: '5px' }}>
-                              {datasetsUrl.split('/')[0]}
-                            </a>
-                          </div>
-                        ))
-                      ) : (
-                        <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
-                      )}
-                    </div>
-                  </div>
-
-                  {is_admin && (
-                    <div>
-                      <a href={`${url}/manage`}>Manage Users</a>
-                    </div>
-                  )}
                 </div>
-              )}
-            </div>
-          )};
-        </div>
+
+
+                <div className="card">
+                  <div className="card-body">
+                    <h2 className="card-title2">Gene Bookmarks</h2>
+                    {bookmarkedGenes && bookmarkedGenes.length !== 0 ? (
+                      bookmarkedGenes.map((geneUrl) => (
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("gene", geneUrl)} />
+                          <a href={`${url}/gene/${geneUrl}`} className="mx-3" style={{ marginLeft: '5px' }}>
+                            {geneUrl}
+                          </a>
+                        </div>
+                      ))
+                    ) : (
+                      <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
+                    )}
+                  </div>
+                </div>
+
+                <div className="card">
+                  <div className="card-body">
+                    <h2 className="card-title2">Datasets Bookmarks</h2>
+                    {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
+                      bookmarkedDatasets.map((datasetsUrl) => (
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
+                          <a href={`${url}/dataset/${datasetsUrl.split('/')[1]}`} className="mx-3" style={{ marginLeft: '5px' }}>
+                            {datasetsUrl.split('/')[0]}
+                          </a>
+                        </div>
+                      ))
+                    ) : (
+                      <h4 className='mx-3 my-2'>No Bookmarks Yet!</h4>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </body>)
 }
