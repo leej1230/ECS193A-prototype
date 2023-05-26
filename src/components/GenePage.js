@@ -5,6 +5,7 @@ import "./GenePage.css";
 
 import NameHeaderHolder from './NameHeaderHolder'
 import BasicInfo from './BasicInfo'
+import NumberFilter from './NumberFilter';
 
 import SampleGraph from './echartdemo';
 
@@ -18,8 +19,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-
-import { default as ReactSelectDropDown } from 'react-select';
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -99,14 +98,6 @@ function ProductFilter(props) {
   )
 
 }
-
-const selectCompare = [
-  { value: 0, label: 'None' },
-  { value: 1, label: '<' },
-  { value: 2, label: '>' },
-  { value: 3, label: '=' },
-  { value: 4, label: 'between' }
-];
 
 const selectOptions = [
   { value: "Yes", label: 'yes' },
@@ -235,57 +226,6 @@ function GenePage() {
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
 
-  const NumberFilter = (props) => {
-    const [compCode, setCompCode] = useState(0);
-    const [input1, setInput1] = useState(0);
-    const [input2, setInput2] = useState(0);
-
-    const propTypes = {
-      column: PropTypes.object.isRequired,
-      onFilter: PropTypes.func.isRequired
-    }
-
-    useEffect(() => {
-      async function changedNumberComparison() {
-
-        filter();
-      }
-
-      changedNumberComparison()
-    }, [compCode, input1, input2])
-
-    const filter = () => {
-      props.onFilter(
-        { compareValCode: compCode, inputVal1: input1, inputVal2: input2, colName: props.column.dataField }, patient_information_expanded
-      );
-    }
-
-
-    return (
-      <div>
-        <ReactSelectDropDown options={selectCompare}
-          displayValue="label"
-          showCheckbox
-          onChange={(e) => { setCompCode(e.value) }}
-          closeOnSelect={false}
-        />
-
-        <input
-          key="input"
-          type="text"
-          placeholder="Value (or Min if between)"
-          onChange={(e) => { setInput1(e.target.value) }}
-        />
-        <input
-          key="input"
-          type="text"
-          placeholder="(Max if between selected or not used)"
-          onChange={(e) => { setInput2(e.target.value) }}
-        />
-      </div>
-    )
-
-  }
 
   const filterNumber = (filterVals, data) => {
     let compareValCode = filterVals['compareValCode']
@@ -363,7 +303,7 @@ function GenePage() {
           }),
           filterRenderer: (onFilter, column) => {
             return (
-              <NumberFilter onFilter={onFilter} column={column} />
+              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patient_information_expanded} />
             )
           }
         }
@@ -801,139 +741,4 @@ function GenePage() {
 
 export default GenePage
 
-{/*
-const columns = [ 
-    {title: "Patient ID" , field: "patient_id"},
-    {title: "Age" , field: "age"},
-    {title: "Diabete" , field: "diabete"},
-    {title: "Final Diagnosis" , field: "final_diagnosis"},
-    {title: "Gender" , field: "gender"},
-    {title: "Hypercholesterolemia" , field: "hypercholesterolemia"},
-    {title: "Hypertension" , field: "hypertension"},
-    {title: "Race" , field: "race"},
-  ]
-*/}
 
-{/*
-const [ patient_table_data, set_patient_table_data ] = useState([
-    {patient_id: ""},
-    {age: ""},
-    {diabete: ""},
-    {final_diagnosis: ""},
-    {gender: ""},
-    {hypercholesterolemia: ""},
-    {hypertension: ""},
-    {race: ""}
-  ]);
-*/}
-
-{/*<div class="col" id="table_content">
-    <MaterialTable columns={columns}
-    
-      data={patient_table_data}
-      icons={tableIcons}
-      options={{
-        pageSize: 5,
-        pageSizeOptions: [5, 10, 15, 25, 50, 100],
-        showTitle: false,
-        search: false
-      }}
-      />
-    </div>*/}
-
-{/*<div class="col" id="checkbox_filter">
-
-<div class="card shadow mb-4" >
-      <div class="card-header py-3">
-          <h6 class="m-0">Options</h6>
-      </div>
-      <div class="card-body">
-        {options.map((options_category_list,j) => {
-
-            return(
-              <div>
-                <h6 class="font-weight-bold">{options_category_list['title']}</h6>
-                {options_category_list['cont_arr'].map((option, i) => {
-                return (
-                
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                        id={option}
-                        name={option}
-                        value={option}
-                        onChange={(e) => {
-                          //setFilter(setFilteredParams(filterValue, e.target.value));
-                        }}
-                      ></input>
-                      <label
-                        htmlFor={option}
-                        className="ml-1.5 font-medium text-gray-700"
-                      >
-                        {option}
-                      </label>
-                    </div>
-                
-                );
-              })}
-              </div>
-            );
-        })}
-      </div>
-  </div>
-
-</div>*/}
-
-{/*
-const products = [{
-  'id': 1,
-  'name':"Spinach",
-  'quality': "good"
-},{
-  'id': 2,
-  'name':"Juice",
-  'quality': "good"
-},{
-  'id': 3,
-  'name':"Biscuits",
-  'quality': "bad"
-}
-]
-*/}
-
-/*
-                    <div class="col-xl mb-4" id="">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Number of Patients: </p>
-                                <p>Avg Age of Patients: </p>
-                                <p>Number of Missing Cells: </p>
-                                <p>Patient Conditions: </p>
-                            </div>
-                        </div>
-                  
-                    </div>
-                   
-*/
-
-/* card header */
-/*
-<div class="dropdown no-arrow">
-    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-    </a>
-    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-        aria-labelledby="dropdownMenuLink">
-        <div class="dropdown-header">Dropdown Header:</div>
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">Something else here</a>
-    </div>
-</div>
-*/

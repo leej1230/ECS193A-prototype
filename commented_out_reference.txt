@@ -1,0 +1,59 @@
+Gene Page:
+
+{/*<div class="col" id="table_content">
+    <MaterialTable columns={columns}
+    
+      data={patient_table_data}
+      icons={tableIcons}
+      options={{
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 15, 25, 50, 100],
+        showTitle: false,
+        search: false
+      }}
+      />
+    </div>*/}
+
+{/*<div class="col" id="checkbox_filter">
+
+<div class="card shadow mb-4" >
+      <div class="card-header py-3">
+          <h6 class="m-0">Options</h6>
+      </div>
+      <div class="card-body">
+        {options.map((options_category_list,j) => {
+
+            return(
+              <div>
+                <h6 class="font-weight-bold">{options_category_list['title']}</h6>
+                {options_category_list['cont_arr'].map((option, i) => {
+                return (
+                
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        id={option}
+                        name={option}
+                        value={option}
+                        onChange={(e) => {
+                          //setFilter(setFilteredParams(filterValue, e.target.value));
+                        }}
+                      ></input>
+                      <label
+                        htmlFor={option}
+                        className="ml-1.5 font-medium text-gray-700"
+                      >
+                        {option}
+                      </label>
+                    </div>
+                
+                );
+              })}
+              </div>
+            );
+        })}
+      </div>
+  </div>
+
+</div>*/}
