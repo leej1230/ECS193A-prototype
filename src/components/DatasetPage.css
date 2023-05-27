@@ -123,45 +123,11 @@ body{
     justify-content: center;
 }
 
-.dataset_info_block{
-    margin-top: 2%;
-}
-.dataset_subheader{
-    font-weight: bold;
-}
-
-.line_div_category_header_content{
-    margin-top: 0px;
-}
-
-.dataset_subcontent{
-    color: black;
-    margin-bottom: 3%;
-}
-
-#gene_list_search{
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-#gene_list_reset{
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 #gene_table_area{
     width: 100%;
     text-align: center;
     margin-left: 50px;
     margin-right: 50px;
-}
-
-#column_gene_search_input{
-    display: inline-block;    
-}
-
-.gene_input_txt, .gene_search_btn, #gene_list_reset{
-    display: inline;
 }
 
 #history_display_container{
