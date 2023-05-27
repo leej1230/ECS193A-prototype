@@ -79,7 +79,7 @@ function GeneSearchPage() {
             
             <div class="container-fluid" id="full_gene_search_page">
               
-                <DashboardSidebar />
+                <DashboardSidebar input_cur_active={"search_gene"} />
               
               <div id="gene_search_page_content">
 

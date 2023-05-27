@@ -15,7 +15,7 @@ function DashboardSidebar(props) {
                 // Add your code here
             }}>
             <SideNav.Toggle />
-            <SideNav.Nav defaultSelected="search_gene">
+            <SideNav.Nav defaultSelected={props.input_cur_active}>
                 <NavItem eventKey="home">
                     <NavIcon>
                         <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />

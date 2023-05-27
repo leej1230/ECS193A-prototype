@@ -88,7 +88,7 @@ function Home() {
           <div id="content">
 
             <div class="container-fluid" id="home_page_full">
-              <DashboardSidebar />
+              <DashboardSidebar input_cur_active={"home"} />
 
               <div class="row justify-content-end">
                 <div class="col-md-12 bg-light text-right mr-5 mt-5">

@@ -114,7 +114,7 @@ function DatasetSearchPage() {
             <div class="container-fluid" id="full_dataset_search_page">
                 
                 
-              <DashboardSidebar />
+              <DashboardSidebar input_cur_active={"search_dataset"} />
               
               <div id="dataset_search_page_content">
 
