@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
-import { IconButton, Select, MenuItem, Hidden } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import "./home.css";
-import SampleList from "./components/SampleList";
-import Slider from "./components/Slider";
-import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import "./home.css";
 
-import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./components/bootstrap_gene_page/css/sb-admin-2.min.css";
+import "./components/bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-import { ParseInt } from "react-lodash";
 
 import DashboardSidebar from "./components/dashboardSidebar";
 
@@ -207,4 +200,3 @@ function Home() {
 }
 
 export default Home;
-

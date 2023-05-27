@@ -9,6 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 import {clone} from "ramda";
 
+import { CircularProgress } from '@mui/material';
+
+import LoadingSpinner from "./spinner/spinner";
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -17,6 +21,7 @@ import Tabs from 'react-bootstrap/Tabs';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+
 import DatasetNameHolder from './DatasetNameHolder';
 import DatasetBasicInfo from './DatasetBasicInfo';
 import DatasetGenesListTable from './DatasetGenesListTable';
@@ -24,7 +29,7 @@ import DatasetEditTable from './DatasetEditTable'
 import DatasetChangeUndo from './DatasetChangeUndo';
 
 function DatasetPage() {
-  const [dataset, setDataset] = useState({ "name": "None", "gene_ids": "0", "patient_ids": "0" });
+  const [dataset, setDataset] = useState({ name: "", gene_ids: "0", patient_ids: "0" });
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
@@ -42,7 +47,7 @@ function DatasetPage() {
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
 
-  const { user } = useAuth0();
+    const { user } = useAuth0();
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${DATASET_ID}`;
@@ -83,76 +88,79 @@ function DatasetPage() {
 
   }, [gene_with_value_information]);
 
-
-  useEffect(() => {
-    setDatasetTableInputFormat(createDatasetFormatted());
-    setGeneIds(saveGeneIdArray());
-    setPatientIds(savePatientIdArray());
-  }, [dataset]);
+    useEffect(() => {
+        setDatasetTableInputFormat(createDatasetFormatted());
+        setGeneIds(saveGeneIdArray());
+        setPatientIds(savePatientIdArray());
+    }, [dataset]);
 
   useEffect(() => {
     let object_information = generateGeneObjs(geneIds);
     setGene_information_expanded(object_information);
   }, [geneIds])
 
-  const createDatasetFormatted = () => {
-    // return dataset formatted for table
-    const initArr = [];
-    const dataInput = dataset;
-    Object.keys(dataInput).forEach((key) => {
-      if (key !== "gene_ids" && key !== "patient_ids") {
-        const valInput = dataInput[key];
-        if (key === "url") {
-          initArr.push({
-            field_name: key,
-            value: (
-              <a href={valInput} target="_blank" rel="noopener noreferrer">
-                {" "}
-                {valInput}{" "}
-              </a>
-            ),
-          });
-        } else {
-          initArr.push({ field_name: key, value: valInput });
+    const createDatasetFormatted = () => {
+        // return dataset formatted for table
+        const initArr = [];
+        const dataInput = dataset;
+        Object.keys(dataInput).forEach((key) => {
+            if (key !== "gene_ids" && key !== "patient_ids") {
+                const valInput = dataInput[key];
+                if (key === "url") {
+                    initArr.push({
+                        field_name: key,
+                        value: (
+                            <a href={valInput} target="_blank" rel="noopener noreferrer">
+                                {" "}
+                                {valInput}{" "}
+                            </a>
+                        ),
+                    });
+                } else {
+                    initArr.push({ field_name: key, value: valInput });
+                }
+            }
+        });
+
+        return initArr;
+    };
+
+    const get_combined_patients_genes_data = () => {
+        let combined_dataset_full_information = []
+
+        if (patient_information.length == 1 && patient_information[0]["patient_id"] == "") {
+            // not set yet
+            return [
+                { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
+            ]
         }
-      }
-    });
 
-    return initArr;
-  };
+        for (let i = 0; i < patient_information.length; i++) {
+            let existing_patient_info = clone(patient_information[i]);
 
-  const get_combined_patients_genes_data = () => {
-    let combined_dataset_full_information = []
+            let gene_patient_subset_values = {};
 
-    if(patient_information.length == 1 && patient_information[0]["patient_id"] == ""){
-      // not set yet
-      return [
-        {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
-      ]
-    }
-    
-    for (let i = 0; i < patient_information.length; i++){
-      let existing_patient_info = clone(patient_information[i]);
+            for (let j = 0; j < gene_with_value_information.length; j++) {
 
-      let gene_patient_subset_values = {};
+                let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
 
-      for(let j = 0; j < gene_with_value_information.length; j++){
+                gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
+            }
+            combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+        }
 
-        let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
-        
-        gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat( gene_with_value_information[j]["gene_values"]["arr"][patient_index] );
-      }
-      combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+
+        //console.log( combined_dataset_full_information );
+
+        return combined_dataset_full_information;
+
     }
 
-    return combined_dataset_full_information;
-      
-  }
+    const saveGeneIdArray = () => {
+        const dataInput = dataset;
+        return dataInput["gene_ids"]["arr"];
+    };
 
-  const saveGeneIdArray = () => {
-    const dataInput = dataset;
-    return dataInput["gene_ids"]["arr"];
-  };
 
   const savePatientIdArray = () => {
     const dataInput = dataset;
@@ -181,7 +189,23 @@ function DatasetPage() {
     return gene_objs;
   }
 
-  return (
+  return !dataset["name"] ? (
+    <body id="page-top" >
+
+        <div id="wrapper">
+
+            <div id="content-wrapper" class="d-flex flex-column">
+
+
+                <div id="content">
+                            <div>
+                                <LoadingSpinner />
+                            </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    ) : (
 
     <body id="page-top" >
 
@@ -234,30 +258,27 @@ function DatasetPage() {
               </div>
 
               <DatasetChangeUndo input_dataset_id={DATASET_ID} input_displayHistoryTable={displayHistoryTable} />
+            </div>
+           </div>
+          </div>
+         </div>
 
-          </div> 
+            <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-      </div>
 
-    </div>
+            <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  </div>
+            <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
 
-  <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-  <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
 
-  <script src="./bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+            <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+            <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
 
-  <script src="./bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+        </body>
 
-  <script src="./bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
-
-  <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-  <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-
-  </body>
-
-  )
+    )
 }
 
 export default DatasetPage;
