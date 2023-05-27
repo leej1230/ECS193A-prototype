@@ -10,6 +10,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
+import './DatasetChangeUndo.css'
+
 import {clone} from "ramda";
 
 function DatasetChangeUndo(props){

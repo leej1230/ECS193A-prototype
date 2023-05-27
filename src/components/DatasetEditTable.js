@@ -11,6 +11,8 @@ import ProductFilter from './ProductFilter';
 import NumberFilter from './NumberFilter';
 import filterNumber from './filterNumber';
 
+import './DatasetEditTable.css'
+
 function DatasetEditTable(props){
     const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState({});
     const [prev_patients_list_to_undo, set_prev_patients_list_to_undo] = useState({});
