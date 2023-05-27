@@ -30,12 +30,27 @@ urlpatterns = [
         {"inner": "Genes", "callback": "get_gene_one"},
     ),
     path(
+        'api/genes_some',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_some"},
+    ),
+    path(
+        'api/dataset_search/<str:search_word>/<str:page_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_search_dataset"},
+    ),
+    path(
+        'api/dataset_name_from_dataset_id/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_name_for_id"},
+    ),
+    path(
         'api/dataset/<slug:dataset_id>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_dataset_one"},
     ),
     path(
-        'api/gene/search/<str:search_word>/<str:page_id>',
+        'api/gene_search/<str:search_word>/<str:page_id>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_search_gene"},
     ),
@@ -43,6 +58,16 @@ urlpatterns = [
         r'^api/patient/all',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "get_patient_all"},
+    ),
+    re_path(
+        r'^api/gene_count',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_gene_count"},
+    ),
+    re_path(
+        r'^api/dataset_count',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_count"},
     ),
     re_path(
         r'^api/gene/all',
@@ -85,14 +110,39 @@ urlpatterns = [
         {"inner": "Users", "callback": "delete_bookmarked_genes"},
     ),
     path(
+        'api/add-dataset-bookmark',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "post_bookmarked_datasets"},
+    ),
+    path(
+        'api/remove-dataset-bookmark',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "delete_bookmarked_datasets"},
+    ),
+    path(
         'api/delete-user/<slug:user_id>/',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "delete_user_one"},
     ),
     path(
+        'api/datasets_some',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_some"}
+    ),
+    path(
         'api/update-role',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "update_role"},
+    ),
+    path(
+        'api/add-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "post_log"},
+    ),
+    path(
+        'api/get-role-log',
+        views.BackendServer.as_view(),
+        {"inner": "Role_Histories", "callback": "get_log_all"},
     ),
     path(
         'api/upload_dataset',
@@ -108,11 +158,6 @@ urlpatterns = [
         r'^api/seq/names',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_seq_names"},
-    ),
-    path(
-        'api/delete_dataset/<slug:dataset_id>',
-        views.BackendServer.as_view(),
-        {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),
     path(
         'api/delete_dataset/<slug:dataset_id>',
@@ -141,6 +186,16 @@ urlpatterns = [
         'api/update_many_patients',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "update_patients_many_list"},
+    ),
+    re_path(
+        r'^api/edits_dataset_user/all',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "get_edits_for_dataset"},
+    ),
+    path(
+        'api/delete_edit_record',
+        views.BackendServer.as_view(),
+        {"inner": "Users", "callback": "delete_one_edit"},
     ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]

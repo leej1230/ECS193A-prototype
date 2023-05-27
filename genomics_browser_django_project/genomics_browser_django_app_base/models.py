@@ -11,6 +11,7 @@ class BaseUserModel(models.Model):
     auth0_uid = models.CharField(max_length=200, null=False)
     date_created = models.DateTimeField(default=datetime.date.today, null=False)
     bookmarked_genes = models.JSONField(blank=True, null=True)
+    bookmarked_datasets = models.JSONField(blank=True, null=True)
 
 
 class UserModel(BaseUserModel):

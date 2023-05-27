@@ -1,24 +1,20 @@
-import React from "react";
-import Dataset from "./Dataset";
-import "./DatasetList.css";
+import React from 'react';
+import "./GeneList.css";
+import { Box, Card , CardContent, CardActions, Typography } from '@mui/material';
+import {Button} from "@mui/material";
+import GeneCard from "./GeneCard"
 
-import "./bootstrap_gene_page/css/sb-admin-2.min.css";
-import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
+import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
+import "./bootstrap_gene_page/css/sb-admin-2.min.css"
 
-function DatasetList(props) {
-
-  if (props.datasets_arr[0] === undefined) {
-      return;
-  }
-
+function GeneList(props) {
   return (
     <div class="card" style={{margin: '0px', padding: '0px'}}>
       <div class="card-body">
         <div className="outer_grid">
-          {props.datasets_arr.map((data_set_single, index) => (
-            <Dataset curOuterWindowWidth={props.curWindowWidth} curOuterWindowHeight={props.curWindowHeight} dataset={props.datasets_arr[index]} />
+          {props.genes_arr.map((data_set_single, index) => (
+            <GeneCard curOuterWindowWidth={props.curWindowWidth} curOuterWindowHeight={props.curWindowHeight} gene={props.genes_arr[index]} />
           ))}
-
         </div>
       </div>
 
@@ -33,9 +29,8 @@ function DatasetList(props) {
 
       <script src="./bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
       <script src="./bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-
     </div>
   );
 }
 
-export default DatasetList;
+export default GeneList;

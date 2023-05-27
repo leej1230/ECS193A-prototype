@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             'auth0_uid',
             'date_created',
             'bookmarked_genes',
+            'bookmarked_datasets',
             'is_staff',
             'is_admin',
         )

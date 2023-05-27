@@ -1,12 +1,11 @@
-.patient-display {
-    list-style-type: none;
-}
-
+/*
 .gene-display {
     list-style-type: none;
 }
 
-.GraphType {
-    margin: auto;
-    width: 16rem;
-}
+#search_gene_result_link_display{
+    font-size: medium;
+    margin: 0px;
+    padding: 0px;
+}*/
+

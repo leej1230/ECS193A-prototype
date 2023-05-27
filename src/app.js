@@ -16,6 +16,8 @@ import Registration from "./registration";
 import Login from "./login";
 import Profile from "./profile";
 import Management from "./management";
+import DatasetSearchPage from "./components/DatasetSearchPage";
+import GeneSearchPage from "./components/GeneSearchPage";
 import About from "./about";
 import Contact from "./contact";
 
@@ -41,6 +43,27 @@ const privateRoutes = [
         <Navbar />
         <div>
           <GenePage />
+        </div>
+      </>
+    ),
+  },{
+    path: "/search_datasets_page",
+    element: (
+      <>
+        <Navbar />
+        <div>
+          <DatasetSearchPage />
+        </div>
+      </>
+    ),
+  },
+  {
+    path: "/search_genes_page",
+    element: (
+      <>
+        <Navbar />
+        <div>
+          <GeneSearchPage />
         </div>
       </>
     ),

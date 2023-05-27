@@ -1,0 +1,220 @@
+
+html, body{
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+
+/*.home_page_body{
+    position: relative;
+    min-width: 100vw; 
+    min-height: 100vh; 
+    overflow: hidden;
+    background-color: black;
+    top: 0;
+    left: 0;
+}*/
+
+#full_dataset_search_page{
+    position: relative;
+    min-width: 100vw; 
+    min-height: 100vh; 
+    top: 0;
+    left: 0;
+}
+
+#dataset_search_page_content{
+    width:78vw;
+    justify-content: center;
+    min-height: 100%;
+    top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 70px;
+    position: relative;
+}
+
+#title_box{
+    display: inline-block;
+    left: 0;
+    top: 0;
+    text-align: center;
+    justify-content: center;
+    min-width: 100%;
+    margin-left: 0px;
+    padding-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
+
+    margin-top: 20px;
+
+    margin-bottom: 0px;
+}
+
+#control_buttons_dataset_search{
+    right: 0;
+    top: 0;
+    float: right;
+    margin-top: 60px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#dataset_search_input{
+    
+    left: 0;
+    top: 0;
+    justify-content: left;
+    float: left;
+    /*text-align: center;
+    justify-content: center;*/
+    max-width: 100%;
+    min-width: 100%;
+    margin-left: auto;
+    padding-left: 0px;
+    margin-right: auto;
+    padding-right: 0px;
+
+    margin-top: 30px;
+
+    margin-bottom: 10px;
+
+    min-height: 35px;
+}
+
+#input_text_box_dataset{
+    display: inline;
+    margin: 15px;
+    padding: 0px;
+    min-height: 100%;
+    max-height: 100%;
+}
+
+#search_dataset_button{
+    display: inline;
+    margin: 0px;
+    padding: 0px;
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 40px;
+    max-width: 40px;
+}
+
+#dataset_search_results_display_container{
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    margin-left: auto;
+    padding-left: 0px;
+    margin-right: auto;
+    padding-right: 0px;
+
+    margin-top: 30px;
+
+    margin-bottom: 0px;
+}
+
+#dataset_search_results_display{
+    
+    width: fit-content;
+    max-width: 100%;
+    min-width: 100%;
+    justify-content: center;
+    margin-left: auto;
+    padding-left: 0px;
+    margin-right: auto;
+    padding-right: 0px;
+
+    padding: 10px;
+    
+}
+
+#bookmarked_datasets_container{
+
+    min-width: 100%;
+    max-width: 100%;
+
+    justify-content: center;
+    align-items: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
+
+    margin-top: 30px;
+    
+}
+
+#bookmark_datasets_card_header{
+    justify-content: center;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    margin-left: 0px;
+    padding-left: 0px;
+
+    margin-right: 0px;
+    padding-right: 0px;
+}
+
+#bookmark_datasets_card_header_text{
+    justify-content: center;
+    text-align: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
+}
+
+#bookmark_datasets_card_body{
+    justify-content: center;
+
+    margin-left: auto;
+    padding-left: 0px;
+
+    margin-right: auto;
+    padding-right: 0px;
+}
+
+#side_navigation_menu{
+    z-index: 2;
+}
+
+/*#title_landing_info{
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    top: 0;
+    margin-top: 150px;
+}
+
+#title_website{
+    margin-top: 10%;
+}
+
+#landing_page_navbar{
+    background-color: transparent;
+    z-index: 1;
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    top: 0;
+}
+
+#landing_page_nav_text{
+    color: white;
+}
+
+#landing_page_link_from_home{
+    text-decoration: none;
+    color: white
+}*/

@@ -3,6 +3,7 @@ import copy
 import datetime
 import json
 import math
+import operator
 import os
 import re
 import urllib.request
@@ -14,7 +15,11 @@ from bson.json_util import dumps, loads
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from django.conf import settings
+#from django.http.response import JsonResponse
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.decorators import api_view, renderer_classes
 from django.http.response import JsonResponse
+from fuzzywuzzy import fuzz
 from genomics_browser_django_app_base.parsed_dataset import ParsedDataset
 from genomics_browser_django_app_base.pymongo_get_database import get_connection
 from genomics_browser_django_app_base.serializers import (
@@ -34,6 +39,7 @@ class Database:
     counter_collection = client['counters']
     user_collection = client['users']
     superuser_collection = client['superusers']
+    role_history_collection = client['role_histories']
 
     class Users:
         def get_user_one(request):
@@ -82,6 +88,7 @@ class Database:
                 return status.HTTP_409_CONFLICT
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
+            user.update({'bookmarked_datasets': []})
             # Temporary
             user.update({'is_admin': True})
             user.update({'is_staff': True})
@@ -119,7 +126,9 @@ class Database:
             #     },
             # )
             query = {'auth0_uid': request_data['user_id']}
-            update = {"$addToSet": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$addToSet": {'bookmarked_genes': request_data['gene_url']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
 
@@ -132,9 +141,105 @@ class Database:
                 return status.HTTP_404_NOT_FOUND
 
             query = {'auth0_uid': request_data['user_id']}
-            update = {"$pull": {'bookmarked_genes': request_data['gene_url']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$pull": {'bookmarked_genes': request_data['gene_url']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_genes']
+        
+        def post_bookmarked_datasets(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_id']}
+            )
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+            query = {'auth0_uid': request_data['user_id']}
+            update = {"$addToSet": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
+
+            Database.user_collection.update_one(query, update)
+
+        def delete_bookmarked_datasets(request):
+            request_data = request['ctx'].POST.copy()
+            user = Database.user_collection.find_one(
+                {'auth0_uid': request_data['user_id']}
+            )
+            if not user:
+                return status.HTTP_404_NOT_FOUND
+
+            query = {'auth0_uid': request_data['user_id']}
+            update = {"$pull": {'bookmarked_datasets': request_data['dataset_url']}}  # Replace 'myArray' with the actual array field name
+
+            Database.user_collection.update_one(query, update)
+        
+        def get_edits_for_dataset(request):
+            """Get all edits for display"""
+
+            data_request = json.loads(request['ctx'].body)
+
+            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            user_updated_id = data_request['user_id']
+
+            edits_for_dataset_by_user_result = []
+
+            user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
+            if 'edits' in user_updated:
+                    edits_structure = user_updated['edits']
+                    if patients_update_dataset_id in edits_structure:
+                        # dataset already has some edits
+                        edits_for_dataset_by_user_result = edits_structure[patients_update_dataset_id]
+            
+            json_data = loads(dumps(edits_for_dataset_by_user_result))
+            return json_data
+        
+        def delete_one_edit(request):
+            """Delete an edit record since undone likely"""
+            try:
+                data_request = json.loads(request['ctx'].body)
+
+                edit_rec_id = int(data_request['edit_record_id'])
+                patients_update_dataset_id = str(int(data_request['dataset_id']))
+                user_updated_id = data_request['user_id']
+
+                user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
+                if 'edits' in user_updated:
+                        edits_structure = user_updated['edits']
+                        if patients_update_dataset_id in edits_structure:
+                            # dataset already has some edits
+                            edits_list = edits_structure[patients_update_dataset_id]
+                            edit_rec_index = -1
+                            for i in range(0, len(edits_list)):
+                                if int(edits_list[i]['id']) == edit_rec_id:
+                                    edit_rec_index = i
+                                    break
+                            if edit_rec_index != -1:
+                                edits_list.pop(edit_rec_index)
+                            else:
+                                print("Delete record not complete")
+                            
+                            edits_structure[patients_update_dataset_id] = edits_list
+
+
+                            user_updated['edits'] = edits_structure
+
+                            #do not update edits count because that would mess up new id generation
+                            # only update if last id removed
+                            if 'edits_count' in user_updated and user_updated['edits_count'] > 0 and user_updated['edits_count'] == edit_rec_id:
+                                user_updated['edits_count'] = user_updated['edits_count'] - 1
+
+                            Database.user_collection.update_one({'auth0_uid': user_updated_id}, {"$set": { 'edits_count': user_updated['edits_count'], 'edits' : edits_structure } })
+            
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
+
+            updated_user = Database.user_collection.find_one(query)
+
+            return updated_user['bookmarked_datasets']
 
         def update_role(request):
             request_data = request['ctx'].POST.copy()
@@ -145,7 +250,9 @@ class Database:
                 return status.HTTP_404_NOT_FOUND
 
             query = {'auth0_uid': request_data['user_uid']}
-            update = {"$set": {request_data['role_label']: request_data['value']}}  # Replace 'myArray' with the actual array field name
+            update = {
+                "$set": {request_data['role_label']: request_data['value']}
+            }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
 
@@ -527,6 +634,42 @@ class Database:
                 )
             return request['new_counter_value']
 
+    class Role_Histories:
+        @staticmethod
+        def get_log_all(request):
+            """
+            Get all hisotry for changing logs
+            """
+            all_logs = Database.role_history_collection.find({}, {'_id': 0}).sort('time', -1)
+            
+            json_data = list(loads(dumps(all_logs)))
+            return json_data
+
+        @staticmethod
+        def post_log(request):
+            """
+            Add log to history
+            """
+            try:
+                new_log ={
+                    'asked': request['ctx'].POST.get('request_user'),
+                    request['ctx'].POST.get('role_title'): request['ctx'].POST.get('changed'),
+                    'target': request['ctx'].POST.get('changed_user'),
+                    'time': datetime.datetime.now()
+                }
+                Database.role_history_collection.insert_one(new_log)
+
+                max_documents = 50
+                current_count = Database.role_history_collection.count_documents({})
+                if current_count > max_documents:
+                    oldest_documents = Database.role_history_collection.find().sort('time', 1).limit(current_count - max_documents)
+                    for document in oldest_documents:
+                        Database.role_history_collection.delete_one({'_id': document['_id']})
+
+                return loads(dumps(status.HTTP_200_OK))
+            except:
+                return loads(dumps({status.HTTP_404_NOT_FOUND}))
+
     class Patients:
         @staticmethod
         def get_patients_with_gene_from_dataset(request):
@@ -664,16 +807,51 @@ class Database:
             data_request = json.loads(request['ctx'].body)
 
             patients_update_dict = data_request['patient_modify_list']
+            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            user_updating_id = data_request['user_id']
 
             patients_list = list(patients_update_dict.keys())
 
-            patients_dataset_id = 0
-            if len(patients_list) > 0:
-                patients_dataset_id = patients_update_dict[patients_list[0]][
-                    'dataset_id'
-                ]
+            print("update information line 638: ")
+            print( patients_update_dict )
 
-            # for updating patients: need to only focus on patient info
+            if 'patient_save_undo_list' in data_request and len(data_request['patient_save_undo_list'].keys()) > 0:
+                patients_old_values_saved = data_request['patient_save_undo_list']
+                #Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                user_that_is_updating = Database.user_collection.find_one({'auth0_uid': user_updating_id})
+
+                new_edit_id = 1
+
+                # need to update counts
+                if 'edits_count' in user_that_is_updating:
+                    current_edits_count = user_that_is_updating['edits_count']
+                    user_that_is_updating['edits_count'] = current_edits_count + 1
+                    new_edit_id = current_edits_count + 1
+                else:
+                    user_that_is_updating['edits_count'] = 1
+                
+
+                if 'edits' in user_that_is_updating:
+                    # update existing edits
+                    edits_structure = user_that_is_updating['edits']
+                    if patients_update_dataset_id in edits_structure:
+                        # dataset already has some edits
+                        edits_list_for_dataset = edits_structure[patients_update_dataset_id]
+                        edits_list_for_dataset.append({'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                        edits_structure[patients_update_dataset_id] = edits_list_for_dataset
+                    else:
+                        # first time this user is editing this dataset
+                        edits_structure[patients_update_dataset_id] = [{'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]
+                    user_that_is_updating['edits'] = edits_structure
+                else:
+                    # user editing first time
+                    user_that_is_updating['edits'] = {patients_update_dataset_id : [{'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]}
+                Database.user_collection.update_one({'auth0_uid': user_updating_id}, {"$set": { 'edits_count': user_that_is_updating['edits_count'], 'edits' : user_that_is_updating['edits']} })
+
+            patients_dataset_id = int(data_request['dataset_id'])
+            
+
+            # for updating patients
             for i in range(0, len(patients_list)):
                 cur_patient_obj = patients_update_dict[patients_list[i]]
 
@@ -746,6 +924,24 @@ class Database:
             json_data = serial.data
             return json_data
 
+        def get_gene_count(request):
+            """Retrieves the count of all genes in the gene collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: The gene count
+            """
+            genes_count = Database.gene_collection.count_documents(
+                {}
+            )
+
+            print("gene count total: ", genes_count)
+
+            json_data = loads(dumps( { 'count': genes_count } ))
+            return json_data
+
         def get_gene_all(request):
             """Retrieves the name and ID of all genes in the gene collection in the database.
 
@@ -760,15 +956,52 @@ class Database:
             )
             json_data = loads(dumps(genes))
             return json_data
+        
+        def get_gene_some(request):
+            """Retrieves genes with the specified name and ID in the gene collection in the database.
+
+            Args:
+                request: contains the name and id of the genes to be returned
+
+            Returns:
+                dict: A dictionary containing the full gene information
+            """
+            data_request = json.loads(request['ctx'].body)
+
+            genes_list = data_request['genes_request_list']
+
+            gene_objs_list = [{}]
+
+            if( len(genes_list) == 0):
+                return loads(dumps([]))
+
+            for i in range( len(genes_list) ):
+                cur_gene_name_id = genes_list[i].split('/')
+                cur_name = cur_gene_name_id[0]
+                cur_id = int(cur_gene_name_id[1])
+                
+                one_gene = Database.gene_collection.find_one(
+                        {'name': cur_name, 'id': cur_id},
+                        {'_id': 0, 'patient_ids': 0, 'gene_values': 0}
+                )
+                
+
+                gene_objs_list.append(one_gene)
+
+            gene_objs_list = gene_objs_list[1:]
+
+            json_data = loads(dumps(gene_objs_list))
+
+            return json_data
 
         def get_search_gene(request):
-            """Retrieves the name and ID of particular number of genes in the gene collection in the database based on the keyword user input.
+            """Retrieves the name and ID of a particular number of genes in the gene collection in the database based on the keyword user input.
 
             Args:
                 request: Contains the keyword user searched.
 
             Returns:
-                dict: A dictionary containing the gene names and IDs.
+                dict: A dictionary containing the gene names, IDs, current page, and total pages.
             """
 
             search_word = request['search_word']
@@ -778,34 +1011,48 @@ class Database:
 
             doc_count = 0
 
-            if search_word == ' ':
+            if search_word.strip() == '':
                 doc_count = Database.gene_collection.count_documents({})
                 genes = (
                     Database.gene_collection.find(
-                        {}, {'_id': 0, 'name': 1, 'id': 1}
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
                 )
             else:
-                doc_count = Database.gene_collection.count_documents(
-                    {'name': {'$regex': search_word, '$options': 'i'}}
+                # Perform fuzzy matching using the search_word
+                fuzzy_results = []
+                all_genes = Database.gene_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'id': 1}
                 )
-                genes = (
-                    Database.gene_collection.find(
-                        {'name': {'$regex': search_word, '$options': 'i'}},
-                        {'_id': 0, 'name': 1, 'id': 1},
-                    )
-                    .skip(numberofList * page)
-                    .limit(numberofList)
-                )
+                for gene in all_genes:
+                    ratio = fuzz.ratio(search_word, gene['name'])
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (gene, ratio)
+                        )  # Store gene and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
+                doc_count = len(fuzzy_results)
+                genes = [
+                    gene[0] for gene in fuzzy_results
+                ]  # Extract the genes from the sorted list
+
+            genes = genes[page * numberofList : (page + 1) * numberofList]
 
             json_data = loads(dumps(genes))
-
             totalPages = math.ceil(doc_count / numberofList)
 
-            print(totalPages)
-            return json_data
+            response_data = {
+                'genes': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
+
+            return response_data
 
         def post_gene_one(request):
             """Adds a single gene to the gene collection in the database.
@@ -894,6 +1141,128 @@ class Database:
             )
             serial = DatasetSerializer(dataset, many=False)
             return serial.data
+        
+        def get_dataset_count(request):
+            """Retrieves the count of all datasets in the dataset collection in the database.
+
+            Args:
+                request: Not used.
+
+            Returns:
+                dict: The dataset count
+            """
+            datasets_count = Database.dataset_collection.count_documents(
+                {}
+            )
+
+            print("datasets count total: ", datasets_count)
+
+            json_data = loads(dumps({'count': datasets_count}))
+            return json_data
+        
+        def get_search_dataset(request):
+            """Retrieves the name and ID of particular number of datasets in the dataset collection in the database based on the keyword user input.
+
+            Args:
+                request: Contains the keyword user searched.
+
+            Returns:
+                dict: A dictionary containing the dataset info
+            """
+
+            search_word = request['search_word']
+            page = int(request['page_id']) - 1
+
+            numberofList = 5
+
+            doc_count = 0
+
+            datasets = []
+
+            if search_word == " ":
+                doc_count = Database.dataset_collection.count_documents({})
+                datasets = (
+                    Database.dataset_collection.find(
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1}
+                    )
+                    .skip(numberofList * page)
+                    .limit(numberofList)
+                )
+            else:
+                doc_count = Database.dataset_collection.count_documents(
+                    {'name': {'$regex': search_word, '$options': 'i'}}
+                )
+                datasets = (
+                    Database.dataset_collection.find(
+                        {'name': {'$regex': search_word, '$options': 'i'}},
+                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1},
+                    )
+                    .skip(numberofList * page)
+                    .limit(numberofList)
+                )
+
+            json_data = loads(dumps(datasets))
+
+            totalPages = math.ceil(doc_count / numberofList)
+
+            print(totalPages)
+            return json_data
+        
+        def get_dataset_name_for_id(request):
+            """Get the dataset name given dataset ID.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_id' key.
+
+            Returns:
+                dict: Just the dataset name
+            """
+
+            dataset = Database.dataset_collection.find_one(
+                {'id': int(request['dataset_id'])}
+            )
+            name_info = dataset['name']
+            return loads(dumps(name_info))
+
+        def get_dataset_some(request):
+            """Retrieves datasets with the specified name and ID in the dataset collection in the database.
+
+            Args:
+                request: contains the name and id of the datasets to be returned
+
+            Returns:
+                dict: A dictionary containing the full dataset information
+            """
+            data_request = json.loads(request['ctx'].body)
+
+            datasets_list = request['ctx'].POST.get('datasets_request_list')
+
+            print(datasets_list)
+
+
+            dataset_objs_list = [{}]
+
+            if( not datasets_list or len(datasets_list) == 0):
+                return loads(dumps([]))
+
+            for i in range( len(datasets_list) ):
+                cur_dataset_name_id = datasets_list[i].split('/')
+                cur_name = cur_dataset_name_id[0]
+                cur_id = int(cur_dataset_name_id[1])
+                
+                one_dataset = Database.dataset_collection.find_one(
+                        {'name': cur_name, 'id': cur_id},
+                        {'_id': 0, 'patient_ids': 0, 'gene_ids': 0}
+                )
+                
+
+                dataset_objs_list.append(one_dataset)
+
+            dataset_objs_list = dataset_objs_list[1:]
+
+            json_data = loads(dumps(dataset_objs_list))
+
+            return json_data
 
         @staticmethod
         def get_dataset_all(request):
