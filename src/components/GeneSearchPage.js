@@ -6,16 +6,12 @@ import SliderGene from "./SliderGene";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
+import DashboardSidebar from "./dashboardSidebar";
+
 import "./bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "./bootstrap_gene_page/css/sb-admin-2.min.css";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-
 import {clone} from "ramda";
-
-import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
-import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
 function GeneSearchPage() {
   const [searchResult, setSearchResult] = useState([]);
@@ -82,39 +78,8 @@ function GeneSearchPage() {
           <div id="content">
             
             <div class="container-fluid" id="full_gene_search_page">
-                <SideNav id="side_navigation_menu"
-                  onSelect={(selected) => {
-                      // Add your code here
-                  }}>
-                  <SideNav.Toggle />
-                    <SideNav.Nav defaultSelected="search_gene">
-                        <NavItem eventKey="home">
-                            <NavIcon>
-                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                <a href="/console" style={{textDecoration: 'None'}}>Home</a>
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_gene">
-                            <NavIcon >
-                                <FontAwesomeIcon id="gene_icon" icon={icon({name: 'dna', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                                <a href="/search_genes_page" style={{textDecoration: 'None'}}>Gene Search</a>
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="search_dataset" >
-                            <NavIcon >
-                                <FontAwesomeIcon id="dataset_search_icon" icon={icon({name: 'file', style: 'solid' })} />
-                            </NavIcon>
-                            <NavText style={{ color: 'white' }}>
-                              <a href="/search_datasets_page" style={{textDecoration: 'None'}}>Dataset Search</a>
-                            </NavText>
-                        </NavItem>
-                    </SideNav.Nav>
-                  </SideNav>
-                  
+              
+                <DashboardSidebar />
               
               <div id="gene_search_page_content">
 

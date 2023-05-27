@@ -185,10 +185,6 @@ html, body{
     padding-right: 0px;
 }
 
-#side_navigation_menu{
-    z-index: 2;
-}
-
 /*#title_landing_info{
     position: absolute;
     margin: auto;
