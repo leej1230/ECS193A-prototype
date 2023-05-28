@@ -9,7 +9,6 @@ import BasicInfo from './BasicInfo'
 import NumberFilter from '../filters/NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
 import ProductFilter from '../filters/ProductFilter';
-
 import SampleGraph from './echartdemo';
 
 import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
