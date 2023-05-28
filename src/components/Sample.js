@@ -2,8 +2,8 @@ import React, {useEffect,useState} from 'react';
 import axios from 'axios';
 import { Box, Card , CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
 import "./Sample.css";
-import "../data.css";
-import SampleGraph from './echartdemo';
+
+import SampleGraph from './gene_folder/echartdemo';
 
 //import { useTable } from "react-table";
 import MaterialTable from 'material-table';
