@@ -1024,7 +1024,7 @@ class Database:
                 # Perform fuzzy matching using the search_word
                 fuzzy_results = []
                 all_genes = Database.gene_collection.find(
-                    {}, {'_id': 0, 'name': 1, 'id': 1}
+                    {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
                 )
                 for gene in all_genes:
                     ratio = fuzz.ratio(search_word, gene['name'])
