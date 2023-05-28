@@ -29,7 +29,7 @@ import DatasetEditTable from './DatasetEditTable'
 import DatasetChangeUndo from './DatasetChangeUndo';
 
 function DatasetPage() {
-  const [dataset, setDataset] = useState({ name: "", gene_ids: "0", patient_ids: "0" });
+  const [dataset, setDataset] = useState({  gene_ids: "0", patient_ids: "0" });
   const [DATASET_ID, setDATASET_ID] = useState(window.location.pathname.split("/").at(-1));
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
   const [geneIds, setGeneIds] = useState([]);
@@ -198,14 +198,15 @@ function DatasetPage() {
 
 
                 <div id="content">
-                            <div>
+                            <div id="loading_element">
                                 <LoadingSpinner />
                             </div>
+             
                 </div>
             </div>
         </div>
     </body>
-    ) : (
+  ) : (
 
     <body id="page-top" >
 
@@ -278,7 +279,7 @@ function DatasetPage() {
 
         </body>
 
-    )
+      )
 }
 
 export default DatasetPage;

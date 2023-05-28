@@ -123,6 +123,12 @@ body{
     margin-left: 10px;
 }
 
+#loading_element{
+    position: absolute;
+    margin: 0;
+    top: 50%;
+}
+
 /* buttons top right:  */
 /*
 position: absolute;

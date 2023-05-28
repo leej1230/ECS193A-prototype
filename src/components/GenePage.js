@@ -45,7 +45,7 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMP
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "ENSG", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
+  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" },
@@ -509,19 +509,19 @@ function GenePage() {
                         </div>
 
                     </div>
+
+                    <footer class="sticky-footer bg-white">
+                      <div class="container my-auto">
+                          <div class="copyright text-center my-auto">
+                              <span>Copyright &copy; Your Website 2021</span>
+                          </div>
+                      </div>
+                    </footer>
                 
                 </div>
                 )}
             </div>
             
-
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
-                    </div>
-                </div>
-            </footer>
 
             <script src="./bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
             <script src="./bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
