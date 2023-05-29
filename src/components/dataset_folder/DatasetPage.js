@@ -44,7 +44,7 @@ function DatasetPage() {
     {id: 1 , name: "", dataset_id: 0, patient_ids: {arr: []}, gene_values: {arr: []}}
   ]);
 
-  const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "ENT"}]);
+  const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "NONE"}]);
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
 
     const { user } = useAuth0();
@@ -182,7 +182,7 @@ function DatasetPage() {
 
   const generateGeneObjs = (gene_ids_info) => {
     if(gene_ids_info == null || gene_ids_info.length == 0){
-      return [{'id':0,'gene_id': "ENT"}];
+      return [{'id':0,'gene_id': "NONE"}];
     }
 
     //console.log(gene_ids_info)
@@ -264,11 +264,10 @@ function DatasetPage() {
                       </Tab>
                       <Tab eventKey="edit_dataset" title="Edit Dataset">
                           <DatasetEditTable input_dataset_id={DATASET_ID} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
+                          <DatasetChangeUndo input_dataset_id={DATASET_ID} input_displayHistoryTable={displayHistoryTable} />
                       </Tab>
                     </Tabs>
               </div>
-
-              <DatasetChangeUndo input_dataset_id={DATASET_ID} input_displayHistoryTable={displayHistoryTable} />
             </div>
            </div>
           </div>

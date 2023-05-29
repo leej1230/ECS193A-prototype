@@ -76,6 +76,8 @@ export default function Slider() {
     const [datasets_list, setDatasetsList] = useState([]);
     const [groupings, setGroupings] = useState([]);
 
+    const [gotInfo, set_gotInfo] = useState(false);
+
     const { user, isLoading } = useAuth0();
     const [userInfo, setUserInfo] = useState();
     const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
@@ -112,6 +114,8 @@ export default function Slider() {
         } else {
             setDatasetsList(response.data);
         }
+
+        set_gotInfo(true);
         
     });
 
@@ -156,7 +160,7 @@ export default function Slider() {
 
     return (
         <>
-            {!datasets_list.length ? (
+            {!gotInfo ? (
                 <LoadingSpinner />
             ) : (
                 <>
