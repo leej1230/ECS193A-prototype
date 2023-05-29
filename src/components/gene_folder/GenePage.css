@@ -1,0 +1,90 @@
+
+body{
+    min-height: 100vh;
+}
+
+#gene_page_full{
+    width:74vw;
+    justify-content: center;
+    min-height: 100vh;
+    top: 0;
+}
+
+#control_buttons_gene_page{
+    position: relative;
+    right: 0;
+    top: 0;
+    float: right;
+    margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#table_options_outer{
+    display: flex;
+    justify-content: center;
+}
+
+#checkbox_filter{
+    position: absolute;
+    overflow: auto;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    width: 25%;
+    float: left;
+}
+
+#table_content{
+    max-width: 75%;
+    right: 0%;
+    overflow-x: auto;
+    left: 25%;
+}
+
+#patient_table_area{
+    padding: 2%;
+    width: 95;
+    max-width: 95%;
+    overflow: auto;
+}
+
+#graph_filter{
+    overflow: auto;
+    padding: 1%;
+}
+
+#gene_tabs_container_content{
+    min-width: 100%;
+    max-width: 100%;
+    left: 0;
+    float: left;
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#graph_gene_box{
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
+}
+
+#display_filter_patients_gene{
+    justify-content: center;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
+}
+
+

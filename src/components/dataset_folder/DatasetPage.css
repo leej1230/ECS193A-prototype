@@ -1,0 +1,138 @@
+
+body{
+    min-height: 100vh;
+}
+
+#dataset_full_page{
+    width:74vw;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    top: 0;
+}
+
+/*.headerGroup {
+    display: flex;
+    align-items: center;
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+.cardLayout {
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px #ccc;
+    margin: 1% 10%;
+}
+
+.cardTitle{
+    font-size: large;
+}
+
+.cardContent{
+    padding-left: 1%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.bottomInfo{
+    display: flex;
+    align-items: center;
+    margin-left: 10%;
+}
+
+.bottomCard {
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px #ccc;
+    margin: 1%;
+    width: 42%;
+}*/
+
+
+#control_buttons_dataset{
+    position: relative;
+    right: 0;
+    top: 0;
+    float: right;
+    margin-top: 130px;
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#dataset_table_and_stats_row {
+    margin-top: 2%;
+    margin-left: 1px;
+    display: flex;
+    margin-right: 1px;
+}
+
+/* flex help stretch, equal columns, here 1 col */
+#dataset_genes_list{
+    flex: 1;
+}
+
+#tabs_container{
+    min-width: 100%;
+    max-width: 100%;
+    /*margin-top: 280px;*/
+    left: 0;
+    float: left;
+    justify-content: center;
+
+    margin-left: 0px;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    margin-top: 40px;
+}
+
+#tab_info{
+    margin-top: 3%;
+    margin-left: 0;
+    min-width: 72vw;
+    width: 72vw;
+    max-width: 74vw;
+    left: 0;
+    justify-content: center;
+}
+
+#tabs_row{
+    width: 100%;
+    left: 0;
+    right: 0;
+    justify-content: center;
+}
+
+#gene_table_area{
+    width: 100%;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+
+.edit_single_display{
+    margin-bottom: 5px;
+    /*max-height: 100px;*/
+    overflow: hidden;
+}
+
+.patient_editted_display{
+    font-size: small;
+    margin-left: 10px;
+}
+
+#loading_element{
+    position: absolute;
+    margin: 0;
+    top: 50%;
+}
+
+/* buttons top right:  */
+/*
+position: absolute;
+right: 0;
+float: right;
+margin-top: 130px;
+*/

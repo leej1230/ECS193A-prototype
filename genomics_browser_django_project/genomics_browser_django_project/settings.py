@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'genomics_browser_django_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'genomics_browser_database',
@@ -86,7 +86,7 @@ DATABASES = {
             'host': 'mongodb+srv://jaewoo1230:foreveryone1230@test.dq6btwc.mongodb.net/?retryWrites=true&w=majority'
         },
     }
-}
+}'''
 
 
 # Password validation

@@ -1,0 +1,12 @@
+
+.codeRow{
+    display: flex;
+}
+
+.codeCard{
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px #ccc;
+    padding: 5px;
+    display: inline-block;
+    max-width: fit-content;
+}

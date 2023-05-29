@@ -1,0 +1,18 @@
+#dataset_view_table {
+    margin-top: 2%;
+}
+
+#table_edit_title{
+    display: inline-block;
+    float: left;
+}
+
+.table_btn_content{
+    display: inline-block;
+    float: right;
+    margin-right: 2px;
+}
+
+#full_matrix_table{
+    overflow: auto;
+}

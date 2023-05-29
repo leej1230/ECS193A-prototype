@@ -1,0 +1,27 @@
+#column_gene_search_input{
+    display: inline-block; 
+    justify-content: center;  
+}
+
+#input_cluster{
+    justify-content: center;
+    text-align: center;
+}
+
+.gene_input_txt, .gene_search_btn, #gene_list_reset{
+    display: inline-block;
+}
+
+#gene_list_search{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#gene_list_reset{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#input_cluster{
+
+}
