@@ -10,8 +10,7 @@ class ParsedDataset :
         # self.output_csv = out_csv_path
         # self.df = pd.read_csv(self.input_txt, sep="\t")
         self.df = pd.read_csv(self.in_txt)
-        self.remove_duplicate_samples()
-        self.remove_duplicate_columns()
+        
 
         """
         print(self.description)
@@ -70,17 +69,23 @@ class ParsedDataset :
 
     def get_dataset_info(self):
         if self.rowType == "gene":
-            gene_ids = [gene_id for gene_id in self.df.columns.to_list() if self.geneCode in gene_id]
+            gene_ids = self.get_all_genes_data()
             gene_ids_count = len(gene_ids)
+            patient_ids = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
+            patient_ids_count = len(patient_ids)
             temp_dataset = {
-                'id': int(self.dataset_id),
-                'name': str(self.name).lower(),
-                'description': str(self.description).lower(),
+                #'id': int(self.dataset_id),
+                #'name': str(self.name).lower(),
+                #'description': str(self.description).lower(),
                 'gene_ids': json.dumps({'arr': gene_ids}),
+                'patient_ids': json.dumps({'arr': patient_ids}),
                 'gene_id_count': int(gene_ids_count),
-                'date_created': self.date_created,
-                'url': self.url,
+                'patient_id_count': int(patient_ids_count),
+                #'date_created': self.date_created,
+                #'url': self.url,
             }
+            if type(temp_dataset['patient_ids']) == str:
+                temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
             if type(temp_dataset['gene_ids']) == str:
                 temp_dataset['gene_ids'] = json.loads(temp_dataset['gene_ids'])
         else:
@@ -89,15 +94,15 @@ class ParsedDataset :
             patient_ids = [patient_id for patient_id in self.df[self.get_column_starting_with(self.patientCode)].values]
             patient_ids_count = len(patient_ids)
             temp_dataset = {
-                'id': int(self.dataset_id),
-                'name': str(self.name).lower(),
-                'description': str(self.description).lower(),
+                #'id': int(self.dataset_id),
+                #'name': str(self.name).lower(),
+                #'description': str(self.description).lower(),
                 'gene_ids': json.dumps({'arr': gene_ids}),
                 'patient_ids': json.dumps({'arr': patient_ids}),
                 'gene_id_count': int(gene_ids_count),
                 'patient_id_count': int(patient_ids_count),
-                'date_created': self.date_created,
-                'url': self.url,
+                #'date_created': self.date_created,
+                #'url': self.url,
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -120,10 +125,13 @@ class ParsedDataset :
         else:
             gene_names = self.get_all_genes_data()
             gene_values = self.df.loc[:, self.df.columns != self.get_column_starting_with(self.geneCode)]
+            patient_ids = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
+
             return [{
                 "id": 1,
                 "name": str(gene_names[i]).upper(),
                 #"dataset_id": int(self.dataset_id),
+                "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
                 "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()}))
             } for i in range(len(gene_names))]
 
@@ -147,7 +155,8 @@ class ParsedDataset :
                 #'dataset_id': int(dataset_id)
             } for i in range(self.df.shape[0])]
         else:
-            return None
+            patient_ids = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
+            return patient_ids
         
         # print(a)
         # import os
