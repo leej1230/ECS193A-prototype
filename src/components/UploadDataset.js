@@ -19,6 +19,9 @@ function UploadDataset() {
     const [progress, setProgress] = useState(0);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [state, setState] = useState(false);
+    const [geneCode, setgeneCode] = useState("");
+    const [patientCode, setpatientCode] = useState("");
+    const [rowType, setrowType] = useState("");
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
 
@@ -35,6 +38,9 @@ function UploadDataset() {
         console.log(urltoFile);
         console.log(dateCreated);
         console.log(isFilePicked);
+        console.log(geneCode);
+        console.log(patientCode);
+        console.log(rowType);
 
         if (isFilePicked == false) {
             return;
@@ -44,6 +50,10 @@ function UploadDataset() {
         formData.append("description", description);
         formData.append("urltoFile", urltoFile);
         formData.append("dateCreated", dateCreated);
+        formData.append('geneCode', geneCode);
+        formData.append('patientCode', patientCode);
+        formData.append('rowType', rowType);
+        
         const config = {
             headers: {
                 "content-type": "multipart/form-data",
@@ -110,6 +120,22 @@ function UploadDataset() {
                                 onChange={(e) => setUrltoFile(e.target.value)}
                             />
                         </div>
+                        <div className="form-group">
+              <label htmlFor="dataOption">Dataset Row Type</label>
+              <select className="form-control" id="dataOption" onChange={(e) => setrowType(e.target.value)}>
+                <option value="">Choose row type</option>
+                <option value="gene">Gene</option>
+                <option value="patient">Patient</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="geneCode">Gene Code</label>
+              <input type="text" className="form-control" id="geneCode" onChange={(e) => setgeneCode(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="patientCode">Patient Code</label>
+              <input type="text" className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
+            </div>
                         <button
                             type="button"
                             class="btn btn-primary"

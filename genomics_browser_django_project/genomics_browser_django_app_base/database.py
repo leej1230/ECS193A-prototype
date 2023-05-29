@@ -1306,6 +1306,9 @@ class Database:
                 name=list(request['ctx']['FILES'].values())[0].name,
                 description=request['ctx']['POST'].get('description'),
                 url=request['ctx']['POST'].get('urltoFile'),
+                geneCode = request['ctx']['POST'].get('geneCode'),
+                patientCode = request['ctx']['POST'].get('patientCode'),
+                rowType = request['ctx']['POST'].get('rowType'),
                 date_created=date_created,
                 dataset_id=Database.Counters.get_new_dataset_counter(),
             )
@@ -1391,6 +1394,9 @@ class Database:
 
             date_created = request['ctx']['POST'].get('dateCreated')
             description = request['ctx']['POST'].get('description')
+            geneCode = request['ctx']['POST'].get('geneCode'),
+            patientCode = request['ctx']['POST'].get('patientCode'),
+            rowType = request['ctx']['POST'].get('rowType'),
             url = request['ctx']['POST'].get('urltoFile')
             dataset_id = int(request['ctx']['POST'].get('datasetID'))
 
@@ -1553,6 +1559,9 @@ class Database:
                         name=stuff_to_add_name,
                         description="",
                         url="",
+                        geneCode = "",
+                        patientCode = "",
+                        rowType = "",
                         date_created=date_created,
                         dataset_id=dataset_id,
                     )
@@ -1569,6 +1578,7 @@ class Database:
                         name=stuff_to_add_name,
                         description="",
                         url="",
+                        
                         date_created=date_created,
                         dataset_id=dataset_id,
                     )

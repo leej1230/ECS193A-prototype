@@ -165,48 +165,49 @@ const Management = () => {
     };
   }, []);
 
-  return isLoading || !data || !userData || historyLog === [] ? (
-    <div>
-      <LoadingSpinner />
-    </div>
-  ) : (
-    userData.is_admin ? (
-      <body id="page-top" className="gene_body">
-
-        <div className="profile">
-          <div className="profile-card">
-            <h2 className="card-title1">Management Page</h2>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-body">
-            <h2 className="card-title2">User List</h2>
-            <BootstrapTable
-              keyField='auth0_uid'
-              data={data}
-              columns={columns}
-              pagination={paginationFactory()}
-            />
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-body">
-            <h2 className="card-title2">History Log</h2>
-
-            {historyLog.map((data, index) => {
-              return <p className='text-right pr-2' key={index}>
-                {data.asked} has {data.hasOwnProperty("is_admin") ? (data.is_admin === "false" ? "Removed" : "Added") : (data.is_staff === "false" ? "Removed" : "Added")} {data.hasOwnProperty("is_admin") ? 'Admin' : 'Staff'} role {data.is_admin === "false" || data.is_staff === "false" ? "from" : "to"} {data.target} at {moment.parseZone(data.time).format("YYYY/MM/DD HH:mm")}
-              </p>;
-            })}
-          </div>
-        </div>
-      </body>
-    ) : (
-      <div className="container my-3">
-        <h2 className='text-center my-3'>You have NO authority</h2>
+  if (isLoading || showSpinner || !data || !userData || historyLog === []) {
+    return (
+      <div>
+        <LoadingSpinner />
       </div>
-    )
+    );
+  }
+
+  return userData.is_admin ? (
+    <body id="page-top" className="gene_body">
+      <div className="profile">
+        <div className="profile-card">
+          <h2 className="card-title1">Management Page</h2>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title2">User List</h2>
+          <BootstrapTable
+            keyField='auth0_uid'
+            data={data}
+            columns={columns}
+            pagination={paginationFactory()}
+          />
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title2">History Log</h2>
+
+          {historyLog.map((data, index) => {
+            return <p className='text-right pr-2' key={index}>
+              {data.asked} has {data.hasOwnProperty("is_admin") ? (data.is_admin === "false" ? "Removed" : "Added") : (data.is_staff === "false" ? "Removed" : "Added")} {data.hasOwnProperty("is_admin") ? 'Admin' : 'Staff'} role {data.is_admin === "false" || data.is_staff === "false" ? "from" : "to"} {data.target} at {moment.parseZone(data.time).format("YYYY/MM/DD HH:mm")}
+            </p>;
+          })}
+        </div>
+      </div>
+    </body>
+  ) : (
+    <div className="container my-3">
+      <h2 className='text-center my-3'>You have NO authority</h2>
+    </div>
   );
 }
 

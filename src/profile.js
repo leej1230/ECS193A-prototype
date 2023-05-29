@@ -19,6 +19,7 @@ function Profile() {
   const [userInfo, setUserInfo] = useState();
   const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
   const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(true); // New state to control the visibility of the spinner
 
   const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
@@ -56,8 +57,34 @@ function Profile() {
   }
 
   useEffect(() => {
-    handleFetchUser();
-  }, []);
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+
+    if (!isLoading) {
+      handleFetchUser();
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isLoading]);
+
+  if (showSpinner) {
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!userInfo || isLoading) {
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <body id="page-top" class="gene_body">
@@ -67,12 +94,9 @@ function Profile() {
         </div>
 
         {userMetadata && (
-          <div className="container mx-2 my-2">
-            {isLoading || !userInfo ? (
-              <div style={{ marginTop: "40vh" }}>
-                <LoadingSpinner />
-              </div>
-            ) : (
+          <div className="flex justify-center">
+            {
+              (
               <div>
                 <div className="card">
                   <div className="card-body">
@@ -125,7 +149,7 @@ function Profile() {
                 <div className="card">
                   <div className="card-body">
                     <h2 className="card-title2">Datasets Bookmarks</h2>
-                    {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
+                    {bookmarkedDatasets && bookmarkedDatasets.length !== 0 ? (
                       bookmarkedDatasets.map((datasetsUrl) => (
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                           <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
