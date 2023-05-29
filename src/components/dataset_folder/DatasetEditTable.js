@@ -14,8 +14,8 @@ import filterNumber from '../filters/filterNumber';
 import './DatasetEditTable.css'
 
 function DatasetEditTable(props){
-    const [modified_patients_list_to_update_back, set_modified_patients_list_to_update_back] = useState({});
-    const [prev_patients_list_to_undo, set_prev_patients_list_to_undo] = useState({});
+    const [modified_objects_list_to_update_back, set_modified_objects_list_to_update_back] = useState({});
+    const [prev_objects_list_to_undo, set_prev_objects_list_to_undo] = useState({});
     const [table_matrix_filtered, set_table_matrix_filtered] = useState([
         {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
       ]);
@@ -36,7 +36,7 @@ function DatasetEditTable(props){
         }
 
         setup_table_filtered_initial();
-    }, [props.input_together_patient_gene_information])
+    }, [props.input_together_patient_gene_information[0]["name"]])
 
     useEffect(() => {
         const init_columns = async () => {
@@ -45,12 +45,12 @@ function DatasetEditTable(props){
         }
 
         init_columns();
-    }, [props.input_together_patient_gene_information])
+    }, [table_matrix_filtered])
 
     const generateDatasetMatrixTable = () => {
         let columns_list = [];
     
-        if(props.input_together_patient_gene_information.length < 1){
+        if(props.input_together_patient_gene_information.length == 0){
           return [
             {patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2}
           ]
@@ -145,19 +145,19 @@ function DatasetEditTable(props){
             if(current_filter.filterVal.compareValCode == 1){
               // <
               isFiltered = true
-              matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] < first_num)
+              matrix_filtered = matrix_filtered.filter(object_one => object_one[filter_columns[i]] < first_num)
             } else if(current_filter.filterVal.compareValCode == 2){
               // >
               isFiltered = true
-              matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num)
+              matrix_filtered = matrix_filtered.filter(object_one => object_one[filter_columns[i]] > first_num)
             } else if(current_filter.filterVal.compareValCode == 3){
               // =
               isFiltered = true
-              matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == first_num)
+              matrix_filtered = matrix_filtered.filter(object_one => object_one[filter_columns[i]] == first_num)
             } else if(current_filter.filterVal.compareValCode == 4){
               // between
               isFiltered = true
-              matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] > first_num && patient_one[filter_columns[i]] < second_num )
+              matrix_filtered = matrix_filtered.filter(object_one => object_one[filter_columns[i]] > first_num && object_one[filter_columns[i]] < second_num )
             }
     
           } else if (current_filter.filterType == "TEXT"){
@@ -165,7 +165,7 @@ function DatasetEditTable(props){
             //console.log(current_filter.filterVal)
     
             isFiltered = true
-            matrix_filtered = matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal)
+            matrix_filtered = matrix_filtered.filter(object_one => object_one[filter_columns[i]] == current_filter.filterVal)
           } else if(current_filter.filterType == "MULTISELECT"){
             //console.log("multis")
             //console.log(current_filter.filterVal)
@@ -177,7 +177,7 @@ function DatasetEditTable(props){
             for(let current_filter_index = 0; current_filter_index < current_filter.filterVal.length; current_filter_index++){
               // each column: one value so will not overlap
     
-              mutliselect_filter_list = mutliselect_filter_list.concat( matrix_filtered.filter(patient_one => patient_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]) )
+              mutliselect_filter_list = mutliselect_filter_list.concat( matrix_filtered.filter(object_one => object_one[filter_columns[i]] == current_filter.filterVal[current_filter_index][0]) )
             }
     
             // or the multiselect options and set to the patients filter
@@ -195,15 +195,18 @@ function DatasetEditTable(props){
       }
 
     const updateCellEditMatrix = async (stateChangeInfo) => {
-    
-        console.log("update matrix: ")
   
         let copy_matrix_filtered = table_matrix_filtered;
-        let patient_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
+        let object_edited_index = -1
+        if(props.row_type === "gene_rows"){
+          object_edited_index = copy_matrix_filtered.findIndex(element => element["name"] == stateChangeInfo["cellEdit"]["rowId"]);
+        } else {
+          object_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
+        }
   
-        let copy_modified_patients_list = modified_patients_list_to_update_back;
+        let copy_modified_objects_list = modified_objects_list_to_update_back;
   
-        let copy_prev_patients_undo_list = prev_patients_list_to_undo;
+        let copy_prev_objects_undo_list = prev_objects_list_to_undo;
   
         let sample_val = props.input_together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
         let type_str = "str"
@@ -215,69 +218,69 @@ function DatasetEditTable(props){
           type_str = "float"
         }
   
-        if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_patients_list) ){
+        if( !(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_objects_list) ){
           
           let data_field_key = stateChangeInfo["cellEdit"]["dataField"]
-          let new_patient_update = {  };
+          let new_object_update = {  };
           
           if(type_str == "int"){
-            new_patient_update[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
+            new_object_update[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
           } else if(type_str == "float") {
-            new_patient_update[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
+            new_object_update[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
           } else {
-            new_patient_update[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
+            new_object_update[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
           }
   
-          copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_update;
+          copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]] = new_object_update;
   
           // store old value
-          let new_patient_save_old_info = {  };
+          let new_object_save_old_info = {  };
           if(type_str == "int"){
-            new_patient_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+            new_object_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
           } else if(type_str == "float") {
-            new_patient_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+            new_object_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
           } else {
-            new_patient_save_old_info[data_field_key] = String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
+            new_object_save_old_info[data_field_key] = String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
           }
-          copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = new_patient_save_old_info;
+          copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = new_object_save_old_info;
   
         }else{
-          let existing_patient_update_info = clone( copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] );
+          let existing_object_update_info = clone( copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]] );
           let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
   
           if(type_str == "int"){
-            existing_patient_update_info[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
+            existing_object_update_info[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
           }else if(type_str == "float"){
-            existing_patient_update_info[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
+            existing_object_update_info[data_field_key] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
           } else {
-            existing_patient_update_info[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
+            existing_object_update_info[data_field_key] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
           }
   
-          copy_modified_patients_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_update_info;
+          copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_update_info;
   
           // store old value
-          let existing_patient_save_old_info = clone( copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
+          let existing_object_save_old_info = clone( copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
           if(type_str == "int"){
-            existing_patient_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+            existing_object_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
           } else if(type_str == "float") {
-            existing_patient_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+            existing_object_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
           } else {
-            existing_patient_save_old_info[data_field_key] = String(table_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
+            existing_object_save_old_info[data_field_key] = String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
           }
-          copy_prev_patients_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_patient_save_old_info;
+          copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_save_old_info;
         }
   
         if(type_str == "int"){
-          copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
+          copy_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
         }else if(type_str == "float"){
-          copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
+          copy_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = parseFloat(String(stateChangeInfo["cellEdit"]["newValue"]));
         } else {
-          copy_matrix_filtered[patient_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
+          copy_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]] = String(stateChangeInfo["cellEdit"]["newValue"]).toLowerCase();
         }
   
-        await set_modified_patients_list_to_update_back(copy_modified_patients_list);
+        await set_modified_objects_list_to_update_back(copy_modified_objects_list);
   
-        await set_prev_patients_list_to_undo(copy_prev_patients_undo_list);
+        await set_prev_objects_list_to_undo(copy_prev_objects_undo_list);
   
         await set_table_matrix_filtered(copy_matrix_filtered);
         await props.input_set_together_patient_gene_information(copy_matrix_filtered);
@@ -289,7 +292,7 @@ function DatasetEditTable(props){
         // any type of the three -> see if can change: to or from multiselect to its own type
         // because of state -> possible to have or not updated by this time so consider rest of values and new one
         let map_col_values = props.input_together_patient_gene_information.flatMap(item => item[ column_obj_to_modify["dataField"] ] );
-        map_col_values = map_col_values.slice(0, patient_edited_index).concat(map_col_values.slice(patient_edited_index+1));
+        map_col_values = map_col_values.slice(0, object_edited_index).concat(map_col_values.slice(object_edited_index+1));
         let col_unique = [...new Set(map_col_values)];
   
         let copy_together_cols = clone(together_data_columns);
@@ -374,8 +377,6 @@ function DatasetEditTable(props){
   
         await set_together_data_columns(copy_together_cols);
   
-  
-  
     }
 
     return(
@@ -391,15 +392,16 @@ function DatasetEditTable(props){
                                 let new_val = !props.input_displayHistoryTable;
                                 await props.input_set_displayHistoryTable(new_val);
                                 }}>Toggle Show History and Undo</button>
-                                <button class="btn btn-primary table_btn_content"  onClick={async () => {
-                                //console.log("can click button for saving edit changes from table");
-                                //console.log(modified_patients_list_to_update_back);
-                                //console.log("old info: ", prev_patients_list_to_undo);
+                                <button class="btn btn-primary table_btn_content" onClick={async () => {
 
-                                axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                  console.log("can click button for saving edit changes from table");
+                                  console.log(modified_objects_list_to_update_back);
+                                  console.log("old info: ", prev_objects_list_to_undo);
+
+                                /*axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                     // Data to be sent to the server
-                                    patient_modify_list: clone(modified_patients_list_to_update_back),
-                                    patient_save_undo_list: clone(prev_patients_list_to_undo),
+                                    patient_modify_list: clone(modified_objects_list_to_update_back),
+                                    patient_save_undo_list: clone(prev_objects_list_to_undo),
                                     dataset_id: parseInt(props.input_dataset_id),
                                     user_id: user.sub.split("|")[1]
                                 }, { 'content-type': 'application/json' }).then((response) => {
@@ -408,17 +410,17 @@ function DatasetEditTable(props){
 
                                     alert("Data Updated");
                                     
-                                });
+                                });*/
 
                                 // each save is independent
-                                await set_prev_patients_list_to_undo({});
-                                await set_modified_patients_list_to_update_back({});
+                                await set_prev_objects_list_to_undo({});
+                                await set_modified_objects_list_to_update_back({});
                                 
                                 }}>Save Changes</button>
                             </div>
                             </div>
                             <div class="card-body" id="full_matrix_table">
-                            <BootstrapTable keyField='patient_id' data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                            <BootstrapTable keyField={props.row_type === "gene_rows" ? "name" : "patient_id"} data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
                                 
                                 if( 'cellEdit' in newState){
                                 updateCellEditMatrix(newState);

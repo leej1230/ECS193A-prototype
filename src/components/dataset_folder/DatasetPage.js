@@ -293,7 +293,7 @@ function DatasetPage() {
                         <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} />
                       </Tab>
                       <Tab eventKey="edit_dataset" title="Edit Dataset">
-                          <DatasetEditTable input_dataset_id={DATASET_ID} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
+                          <DatasetEditTable input_dataset_id={DATASET_ID} row_type={gotPatientInfo && gotGeneInfo && ( (patient_information.length == 1 && patient_information[0]["patient_id"] == "") || patient_information.length == 0 ) ? "gene_rows" : "patient_rows"} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
                           <DatasetChangeUndo input_dataset_id={DATASET_ID} input_displayHistoryTable={displayHistoryTable} />
                       </Tab>
                     </Tabs>
