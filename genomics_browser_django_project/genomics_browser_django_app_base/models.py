@@ -69,13 +69,13 @@ class DatasetModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
     id = models.PositiveBigIntegerField(blank=False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
-    description = models.TextField(blank=False, default="")
-    gene_ids = models.JSONField(blank=False)
-    patient_ids = models.JSONField(blank=False)
-    gene_id_count = models.CharField(max_length=50, blank=False, default="")
-    patient_id_count = models.CharField(max_length=50, blank=False, default="")
-    date_created = models.DateField(blank=False)
-    url = models.URLField(blank=False)
+    description = models.TextField(blank=True, default="", null=True)
+    gene_ids = models.JSONField(blank=True, null=True)
+    patient_ids = models.JSONField(blank=True, null=True)
+    gene_id_count = models.CharField(max_length=50, blank=True, default="", null=True)
+    patient_id_count = models.CharField(max_length=50, blank=True, default="", null=True)
+    date_created = models.DateField(blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
 
 
 class CounterModel(models.Model):

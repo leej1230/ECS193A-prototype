@@ -15,7 +15,7 @@ import TextFuzzyFilter from '../filters/TextFuzzyFilter';
 function DatasetGenesListTable(props){
 
     const gene_list_node = useRef(null);
-    const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "ENT"}]);
+    const [gene_list_filtered , set_gene_list_filtered] = useState([{'id':0,'gene_id': "None"}]);
 
     const [gene_columns, setGene_columns] = useState([{
         dataField: 'id',

@@ -103,6 +103,10 @@ function DatasetPage() {
         // return dataset formatted for table
         const initArr = [];
         const dataInput = dataset;
+
+        console.log("in the process of creating a formatted dataset")
+        console.log(dataset)
+
         Object.keys(dataInput).forEach((key) => {
             if (key !== "gene_ids" && key !== "patient_ids") {
                 const valInput = dataInput[key];
@@ -158,13 +162,19 @@ function DatasetPage() {
 
     const saveGeneIdArray = () => {
         const dataInput = dataset;
-        return dataInput["gene_ids"]["arr"];
+        if(dataInput && dataInput["gene_ids"]){
+          return dataInput["gene_ids"]["arr"];
+        }
+        return []
     };
 
 
   const savePatientIdArray = () => {
     const dataInput = dataset;
-    return dataInput["patient_ids"]["arr"];
+    if(dataInput && dataInput["patient_ids"]){
+      return dataInput["patient_ids"]["arr"];
+    }
+    return []
   };
 
   const navigate = useNavigate();

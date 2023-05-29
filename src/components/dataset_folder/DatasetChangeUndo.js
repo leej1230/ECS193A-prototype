@@ -46,10 +46,6 @@ function DatasetChangeUndo(props){
         //console.log("post has been sent");
         //console.log(response);
 
-        console.log("get edits all: ")
-
-        console.log(result.data)
-
         set_edit_records_list(result.data)
         
     });
