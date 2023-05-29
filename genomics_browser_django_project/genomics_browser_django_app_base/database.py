@@ -690,7 +690,7 @@ class Database:
                 }
             )
 
-            if gene is not None:
+            if gene is not None and 'patient_ids' in gene:
                 list_possible_patients = gene['patient_ids']['arr']
                 str_list_possible_patients = [
                     str(cur_patient) for cur_patient in list_possible_patients
