@@ -164,7 +164,7 @@ function GenePage() {
   }
 
   const generatePatientTable = (patients_info) => {
-    if (patients_info === null) {
+    if (patients_info === null || !('patient_ids' in gene_data) || !('gene_values' in gene_data) ) {
       return;
     }
 
@@ -453,7 +453,7 @@ function GenePage() {
                                         </div>
                                         <div class="card-body">
 
-                                            {graph_table_filter_data ? (
+                                            {graph_table_filter_data && graph_table_filter_data.patient_ids && graph_table_filter_data.gene_values ? (
                                             <div>
                                                 <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
                                                 <div className='GraphType'>
