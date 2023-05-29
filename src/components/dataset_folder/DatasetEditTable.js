@@ -398,11 +398,12 @@ function DatasetEditTable(props){
                                   console.log(modified_objects_list_to_update_back);
                                   console.log("old info: ", prev_objects_list_to_undo);
 
-                                /*axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                                axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                     // Data to be sent to the server
-                                    patient_modify_list: clone(modified_objects_list_to_update_back),
-                                    patient_save_undo_list: clone(prev_objects_list_to_undo),
+                                    modify_list: clone(modified_objects_list_to_update_back),
+                                    save_undo_list: clone(prev_objects_list_to_undo),
                                     dataset_id: parseInt(props.input_dataset_id),
+                                    row_type_for_dataset: props.row_type,
                                     user_id: user.sub.split("|")[1]
                                 }, { 'content-type': 'application/json' }).then((response) => {
                                     //console.log("post has been sent");
@@ -410,7 +411,7 @@ function DatasetEditTable(props){
 
                                     alert("Data Updated");
                                     
-                                });*/
+                                });
 
                                 // each save is independent
                                 await set_prev_objects_list_to_undo({});

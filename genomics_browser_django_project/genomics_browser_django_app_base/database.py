@@ -181,7 +181,7 @@ class Database:
 
             data_request = json.loads(request['ctx'].body)
 
-            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            update_dataset_id = str(int(data_request['dataset_id']))
             user_updated_id = data_request['user_id']
 
             edits_for_dataset_by_user_result = []
@@ -189,9 +189,9 @@ class Database:
             user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
             if 'edits' in user_updated:
                     edits_structure = user_updated['edits']
-                    if patients_update_dataset_id in edits_structure:
+                    if update_dataset_id in edits_structure:
                         # dataset already has some edits
-                        edits_for_dataset_by_user_result = edits_structure[patients_update_dataset_id]
+                        edits_for_dataset_by_user_result = edits_structure[update_dataset_id]
             
             json_data = loads(dumps(edits_for_dataset_by_user_result))
             return json_data
@@ -202,15 +202,15 @@ class Database:
                 data_request = json.loads(request['ctx'].body)
 
                 edit_rec_id = int(data_request['edit_record_id'])
-                patients_update_dataset_id = str(int(data_request['dataset_id']))
+                update_dataset_id = str(int(data_request['dataset_id']))
                 user_updated_id = data_request['user_id']
 
                 user_updated = Database.user_collection.find_one({'auth0_uid': user_updated_id})
                 if 'edits' in user_updated:
                         edits_structure = user_updated['edits']
-                        if patients_update_dataset_id in edits_structure:
+                        if update_dataset_id in edits_structure:
                             # dataset already has some edits
-                            edits_list = edits_structure[patients_update_dataset_id]
+                            edits_list = edits_structure[update_dataset_id]
                             edit_rec_index = -1
                             for i in range(0, len(edits_list)):
                                 if int(edits_list[i]['id']) == edit_rec_id:
@@ -221,7 +221,7 @@ class Database:
                             else:
                                 print("Delete record not complete")
                             
-                            edits_structure[patients_update_dataset_id] = edits_list
+                            edits_structure[update_dataset_id] = edits_list
 
 
                             user_updated['edits'] = edits_structure
@@ -806,18 +806,18 @@ class Database:
 
             data_request = json.loads(request['ctx'].body)
 
-            patients_update_dict = data_request['patient_modify_list']
-            patients_update_dataset_id = str(int(data_request['dataset_id']))
+            update_dict = data_request['modify_list']
+            update_dataset_id = str(int(data_request['dataset_id']))
             user_updating_id = data_request['user_id']
 
-            patients_list = list(patients_update_dict.keys())
+            objects_list = list(update_dict.keys())
 
             print("update information line 638: ")
-            print( patients_update_dict )
+            print( update_dict )
 
-            if 'patient_save_undo_list' in data_request and len(data_request['patient_save_undo_list'].keys()) > 0:
-                patients_old_values_saved = data_request['patient_save_undo_list']
-                #Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
+            if 'save_undo_list' in data_request and len(data_request['save_undo_list'].keys()) > 0:
+                objects_old_values_saved = data_request['save_undo_list']
+                #Database.edit_collection.insert_one({'id': int(current_num_edits_saved+1), 'edit_info':copy.deepcopy(update_dict), 'old_values':copy.deepcopy(objects_old_values_saved) , 'edit_date':datetime.datetime.now() })
                 user_that_is_updating = Database.user_collection.find_one({'auth0_uid': user_updating_id})
 
                 new_edit_id = 1
@@ -834,73 +834,123 @@ class Database:
                 if 'edits' in user_that_is_updating:
                     # update existing edits
                     edits_structure = user_that_is_updating['edits']
-                    if patients_update_dataset_id in edits_structure:
+                    if update_dataset_id in edits_structure:
                         # dataset already has some edits
-                        edits_list_for_dataset = edits_structure[patients_update_dataset_id]
-                        edits_list_for_dataset.append({'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() })
-                        edits_structure[patients_update_dataset_id] = edits_list_for_dataset
+                        edits_list_for_dataset = edits_structure[update_dataset_id]
+                        edits_list_for_dataset.append({'id': new_edit_id, 'edit_info':copy.deepcopy(update_dict), 'old_values':copy.deepcopy(objects_old_values_saved) , 'edit_date':datetime.datetime.now() })
+                        edits_structure[update_dataset_id] = edits_list_for_dataset
                     else:
                         # first time this user is editing this dataset
-                        edits_structure[patients_update_dataset_id] = [{'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]
+                        edits_structure[update_dataset_id] = [{'id': new_edit_id, 'edit_info':copy.deepcopy(update_dict), 'old_values':copy.deepcopy(objects_old_values_saved) , 'edit_date':datetime.datetime.now() }]
                     user_that_is_updating['edits'] = edits_structure
                 else:
                     # user editing first time
-                    user_that_is_updating['edits'] = {patients_update_dataset_id : [{'id': new_edit_id, 'edit_info':copy.deepcopy(patients_update_dict), 'old_values':copy.deepcopy(patients_old_values_saved) , 'edit_date':datetime.datetime.now() }]}
+                    user_that_is_updating['edits'] = {update_dataset_id : [{'id': new_edit_id, 'edit_info':copy.deepcopy(update_dict), 'old_values':copy.deepcopy(objects_old_values_saved) , 'edit_date':datetime.datetime.now() }]}
                 Database.user_collection.update_one({'auth0_uid': user_updating_id}, {"$set": { 'edits_count': user_that_is_updating['edits_count'], 'edits' : user_that_is_updating['edits']} })
 
-            patients_dataset_id = int(data_request['dataset_id'])
-            
+            objects_dataset_id = int(data_request['dataset_id'])
 
-            # for updating patients
-            for i in range(0, len(patients_list)):
-                cur_patient_obj = patients_update_dict[patients_list[i]]
+            if data_request['row_type_for_dataset'] == "gene_rows":
+                # genes are the rows, patient info not exist but just possibly gene values
+                for i in range(0, len(objects_list)):
+                    cur_gene_obj = update_dict[objects_list[i]]
 
-                keys_attributes_list = list(cur_patient_obj.keys())
-                update_patient_obj = copy.deepcopy(cur_patient_obj)
-                for j in range(0, len(keys_attributes_list)):
-                    if keys_attributes_list[j][0:4] == "ENSG":
-                        # gene modify so remove key from patient info to modify since gene modified separately
-                        update_patient_obj.pop(keys_attributes_list[j], None)
+                    keys_attributes_list = list(cur_gene_obj.keys())
+                    update_gene_obj = copy.deepcopy(cur_gene_obj)
 
-                        gene = Database.gene_collection.find_one(
-                            {
-                                'name': str(keys_attributes_list[j]),
-                                'dataset_id': int(patients_dataset_id),
-                            }
-                        )
-                        gene_patients_list = gene['patient_ids']['arr']
-                        gene_patient_index = gene_patients_list.index(
-                            patients_list[i]
-                        )
-                        gene_values_list = gene['gene_values']['arr']
-                        gene_values_list[gene_patient_index] = float(
-                            cur_patient_obj[keys_attributes_list[j]]
-                        )
-
-                        Database.gene_collection.update_one(
-                            {
-                                '$and': [
-                                    {'name': str(keys_attributes_list[j])},
-                                    {'dataset_id': int(patients_dataset_id)},
-                                ]
-                            },
-                            {
-                                "$set": {
-                                    'gene_values': {'arr': gene_values_list}
+                    gene = Database.gene_collection.find_one(
+                                {
+                                    'name': str(objects_list[i]),
+                                    'dataset_id': int(objects_dataset_id),
                                 }
-                            },
-                        )
+                            )
+                    
+                    patient_objects_list = None
+                    gene_values_list = None
+                    if 'patient_ids' in gene:
+                        patient_objects_list = gene['patient_ids']['arr']
+                    if 'gene_values' in gene:
+                        gene_values_list = gene['gene_values']['arr']
 
-                # patient modify: set to all new attributes, but removed gene names above
-                Database.patient_collection.update_one(
-                    {
-                        '$and': [
-                            {'patient_id': str(patients_list[i])},
-                            {'dataset_id': int(patients_dataset_id)},
-                        ]
-                    },
-                    {"$set": update_patient_obj},
-                )
+                    for j in range(0, len(keys_attributes_list)):
+                        if keys_attributes_list[j][0:5] == "UCDSS":
+                            update_gene_obj.pop(keys_attributes_list[j], None)
+
+                            gene_patient_index = patient_objects_list.index(
+                                keys_attributes_list[j]
+                            )
+                            
+                            gene_values_list[gene_patient_index] = float(
+                                cur_gene_obj[keys_attributes_list[j]]
+                            )
+
+                    # gene modify: set to all new attributes, remove patient keys since saving array of gene values
+                    if gene_values_list != None:
+                        update_gene_obj['gene_values']= {'arr': gene_values_list}
+                    
+                    Database.gene_collection.update_one(
+                                {
+                                    '$and': [
+                                        {'name': str(objects_list[i])},
+                                        {'dataset_id': int(objects_dataset_id)},
+                                    ]
+                                },
+                                {
+                                    "$set": update_gene_obj
+                                }
+                            )
+                    
+            else:
+                # patients are the rows
+                for i in range(0, len(objects_list)):
+                    cur_patient_obj = update_dict[objects_list[i]]
+
+                    keys_attributes_list = list(cur_patient_obj.keys())
+                    update_patient_obj = copy.deepcopy(cur_patient_obj)
+                    for j in range(0, len(keys_attributes_list)):
+                        if keys_attributes_list[j][0:4] == "ENSG":
+                            # gene modify so remove key from patient info to modify since gene modified separately
+                            update_patient_obj.pop(keys_attributes_list[j], None)
+
+                            gene = Database.gene_collection.find_one(
+                                {
+                                    'name': str(keys_attributes_list[j]),
+                                    'dataset_id': int(objects_dataset_id),
+                                }
+                            )
+                            gene_objects_list = gene['patient_ids']['arr']
+                            gene_patient_index = gene_objects_list.index(
+                                objects_list[i]
+                            )
+                            gene_values_list = gene['gene_values']['arr']
+                            gene_values_list[gene_patient_index] = float(
+                                cur_patient_obj[keys_attributes_list[j]]
+                            )
+
+                            Database.gene_collection.update_one(
+                                {
+                                    '$and': [
+                                        {'name': str(keys_attributes_list[j])},
+                                        {'dataset_id': int(objects_dataset_id)},
+                                    ]
+                                },
+                                {
+                                    "$set": {
+                                        'gene_values': {'arr': gene_values_list}
+                                    }
+                                },
+                            )
+
+                    # patient modify: set to all new attributes, but removed gene names above
+                    Database.patient_collection.update_one(
+                        {
+                            '$and': [
+                                {'patient_id': str(objects_list[i])},
+                                {'dataset_id': int(objects_dataset_id)},
+                            ]
+                        },
+                        {"$set": update_patient_obj},
+                    )
 
             return loads(dumps({'status': 'success'}))
 
