@@ -67,7 +67,7 @@ function DatasetPage() {
       set_patient_information(result.data);
       set_gotPatientInfo(true);
     });
-  }, [dataset])
+  }, [DATASET_ID])
 
   useEffect(() => {
     const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${DATASET_ID}`;
@@ -76,13 +76,13 @@ function DatasetPage() {
       set_gene_with_value_information(result.data);
       set_gotGeneInfo(true);
     })
-  },  [patient_information])
+  },  [DATASET_ID])
 
   useEffect(() => {
 
-    const setTogetherData = async () => {
+    const setTogetherData = () => {
       let combined_patients_gene_data = get_combined_patients_genes_data();
-      await set_together_patient_gene_information(combined_patients_gene_data);
+      set_together_patient_gene_information(combined_patients_gene_data);
       // need to use "let" to make copy or else same object in both states will lead change in one to affect other
       //let copy_obj =  clone(combined_patients_gene_data);
 
@@ -91,7 +91,7 @@ function DatasetPage() {
 
     setTogetherData();
 
-  }, [gotGeneInfo, gotPatientInfo]);
+  }, [gotGeneInfo, gotPatientInfo, gene_with_value_information, patient_information]);
 
     useEffect(() => {
         setDatasetTableInputFormat(createDatasetFormatted());
@@ -183,8 +183,9 @@ function DatasetPage() {
 
         }
 
-
-        //console.log( combined_dataset_full_information );
+        console.log("inside the combined info function")
+        console.log(gene_with_value_information)
+        console.log( combined_dataset_full_information );
 
         return combined_dataset_full_information;
 

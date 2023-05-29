@@ -31,17 +31,17 @@ function DatasetEditTable(props){
     const dataset_matrix_node = useRef(null);
 
     useEffect(() => {
-        const setup_table_filtered_initial = async () => {
-            await set_table_matrix_filtered(clone(props.input_together_patient_gene_information));
+        const setup_table_filtered_initial = () => {
+            set_table_matrix_filtered(clone(props.input_together_patient_gene_information));
         }
 
         setup_table_filtered_initial();
-    }, [props.input_together_patient_gene_information[0]["name"]])
+    }, [props.input_together_patient_gene_information[0]])
 
     useEffect(() => {
         const init_columns = async () => {
             let together_data_columns_temp = generateDatasetMatrixTable();
-            await set_together_data_columns(clone(together_data_columns_temp));
+            set_together_data_columns(clone(together_data_columns_temp));
         }
 
         init_columns();
@@ -393,10 +393,6 @@ function DatasetEditTable(props){
                                 await props.input_set_displayHistoryTable(new_val);
                                 }}>Toggle Show History and Undo</button>
                                 <button class="btn btn-primary table_btn_content" onClick={async () => {
-
-                                  console.log("can click button for saving edit changes from table");
-                                  console.log(modified_objects_list_to_update_back);
-                                  console.log("old info: ", prev_objects_list_to_undo);
 
                                 axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                     // Data to be sent to the server
