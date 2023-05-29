@@ -47,7 +47,7 @@ function DatasetNameHolder(props){
                   <div id="text_title">
                     <div class="d-sm-inline-block" id="title_tag">Dataset:</div>
                     &nbsp;
-                    <div class="d-sm-inline-block" >{props.input_dataset["name"]}</div>
+                    <div class="d-sm-inline-block" >{props.input_dataset && props.input_dataset["name"] ? props.input_dataset["name"] : "[No Name]"}</div>
                     &nbsp;
                     &nbsp;
                     <button

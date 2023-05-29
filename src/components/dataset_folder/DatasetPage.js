@@ -47,6 +47,9 @@ function DatasetPage() {
   const [gene_information_expanded, setGene_information_expanded] = useState([{'id':0,'gene_id': "NONE"}]);
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
 
+  const [gotPatientInfo, set_gotPatientInfo] = useState(false)
+  const [gotGeneInfo, set_gotGeneInfo] = useState(true);
+
     const { user } = useAuth0();
 
   useEffect(() => {
@@ -62,6 +65,7 @@ function DatasetPage() {
     // patient_information
     axios.get(patients_url).then((result) => {
       set_patient_information(result.data);
+      set_gotPatientInfo(true);
     });
   }, [dataset])
 
@@ -69,7 +73,8 @@ function DatasetPage() {
     const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${DATASET_ID}`;
     
     axios.get(gene_full_url).then((result) => {
-      set_gene_with_value_information(result.data)
+      set_gene_with_value_information(result.data);
+      set_gotGeneInfo(true);
     })
   },  [patient_information])
 
@@ -86,7 +91,7 @@ function DatasetPage() {
 
     setTogetherData();
 
-  }, [gene_with_value_information]);
+  }, [gotGeneInfo, gotPatientInfo]);
 
     useEffect(() => {
         setDatasetTableInputFormat(createDatasetFormatted());
@@ -132,25 +137,50 @@ function DatasetPage() {
     const get_combined_patients_genes_data = () => {
         let combined_dataset_full_information = []
 
-        if (patient_information.length == 1 && patient_information[0]["patient_id"] == "") {
-            // not set yet
-            return [
-                { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
-            ]
+        if(!(gotPatientInfo && gotGeneInfo)){
+          // not set yet
+          return [
+              { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
+          ]
         }
 
-        for (let i = 0; i < patient_information.length; i++) {
-            let existing_patient_info = clone(patient_information[i]);
+        // find if row is genes or row is patients
+        if( (patient_information.length == 1 && patient_information[0]["patient_id"] == "") || patient_information.length == 0 ){
+          // rows are genes
 
-            let gene_patient_subset_values = {};
+          for (let i = 0; i < gene_with_value_information.length; i++) {
+              let existing_gene_info = clone(gene_with_value_information[i]);
 
-            for (let j = 0; j < gene_with_value_information.length; j++) {
+              let gene_patient_subset_values = {};
 
-                let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+              if( gene_with_value_information[i]["patient_ids"] && gene_with_value_information[i]["patient_ids"]["arr"] ){
 
-                gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
-            }
-            combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+                let temp_patient_arr = gene_with_value_information[i]["patient_ids"]["arr"]
+
+                for (let j = 0; j < temp_patient_arr.length; j++) {
+
+                  gene_patient_subset_values[temp_patient_arr[j]] = parseFloat(gene_with_value_information[i]["gene_values"]["arr"][j]);
+                }
+              }
+              
+              combined_dataset_full_information.push({ ...existing_gene_info, ...gene_patient_subset_values })
+          }
+        } else {
+          // patients are rows
+          for (let i = 0; i < patient_information.length; i++) {
+              let existing_patient_info = clone(patient_information[i]);
+
+              let gene_patient_subset_values = {};
+
+              for (let j = 0; j < gene_with_value_information.length; j++) {
+
+                  let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+
+                  gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
+              }
+              combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+          }
+
         }
 
 
@@ -292,3 +322,36 @@ function DatasetPage() {
 }
 
 export default DatasetPage;
+
+/*
+const get_combined_patients_genes_data = () => {
+        let combined_dataset_full_information = []
+
+        if (patient_information.length == 1 && patient_information[0]["patient_id"] == "") {
+            // not set yet
+            return [
+                { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
+            ]
+        }
+
+        for (let i = 0; i < patient_information.length; i++) {
+            let existing_patient_info = clone(patient_information[i]);
+
+            let gene_patient_subset_values = {};
+
+            for (let j = 0; j < gene_with_value_information.length; j++) {
+
+                let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+
+                gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
+            }
+            combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
+        }
+
+
+        //console.log( combined_dataset_full_information );
+
+        return combined_dataset_full_information;
+
+    }
+*/
