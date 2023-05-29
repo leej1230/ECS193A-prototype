@@ -187,6 +187,7 @@ function DatasetGenesListTable(props){
 
           gene_columns_list.push(col_obj)
         }
+        
         return gene_columns_list;
       }
     
