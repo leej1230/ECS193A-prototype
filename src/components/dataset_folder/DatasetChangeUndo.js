@@ -76,9 +76,10 @@ function DatasetChangeUndo(props){
 
                                             await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                                               // Data to be sent to the server
-                                              patient_modify_list: clone(single_edit_record["old_values"]),
+                                              modify_list: clone(single_edit_record["old_values"]),
                                               dataset_id: parseInt(props.input_dataset_id),
-                                              user_id: user.sub.split("|")[1]
+                                              user_id: user.sub.split("|")[1],
+                                              row_type_for_dataset: props.row_type
                                             }, { 'content-type': 'application/json' }).then((response) => {
                                               //console.log("post has been sent");
                                               //console.log(response);
@@ -93,10 +94,7 @@ function DatasetChangeUndo(props){
                                               dataset_id: parseInt(props.input_dataset_id),
                                               user_id: user.sub.split("|")[1]
                                             }, { 'content-type': 'application/json' }).then((response) => {
-                                             
-
                                               alert("Edit Record Deleted");
-                                              
                                             });
 
                                             //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
@@ -120,31 +118,31 @@ function DatasetChangeUndo(props){
                                                 <TableBootstrap striped bordered hover>
                                                   <thead>
                                                     <tr>
-                                                      <th>Patient</th>
+                                                      <th>{props.row_type == "gene_rows" ? "Gene" : "Patient"}</th>
                                                       <th>Column Key</th>
                                                       <th>Old Value</th>
                                                       <th>Editted New Value</th>
                                                     </tr>
                                                   </thead>
                                                    
-                                                  {Object.keys(single_edit_record.edit_info).map((patient_key, patient_key_index) => {
-                                                    // each patient modified
+                                                  {Object.keys(single_edit_record.edit_info).map((object_key, object_key_index) => {
+                                                    // each patient/gene modified
 
                                                       return <tbody>
                                                             <tr >
-                                                              <td style={{fontWeight: 'bold'}}>Patient: {patient_key}</td>
+                                                              <td style={{fontWeight: 'bold'}}>{object_key}</td>
                                                               <td></td>
                                                               <td></td>
                                                               <td></td>
                                                             </tr>
                                                         
-                                                            {Object.keys(single_edit_record["edit_info"][patient_key]).map((editted_patient_info_key, info_index ) => {
-                                                                // info for that particular patient
+                                                            {Object.keys(single_edit_record["edit_info"][object_key]).map((editted_object_info_key, info_index ) => {
+                                                                // info for that particular object
                                                                 return <tr>
                                                                         <td></td>
-                                                                        <td>{editted_patient_info_key}</td>
-                                                                        <td>{single_edit_record["old_values"][patient_key][editted_patient_info_key]}</td>
-                                                                        <td>{single_edit_record["edit_info"][patient_key][editted_patient_info_key]}</td>
+                                                                        <td>{editted_object_info_key}</td>
+                                                                        <td>{single_edit_record["old_values"][object_key][editted_object_info_key]}</td>
+                                                                        <td>{single_edit_record["edit_info"][object_key][editted_object_info_key]}</td>
                                                                       </tr>
                                                               })}
                                                           
