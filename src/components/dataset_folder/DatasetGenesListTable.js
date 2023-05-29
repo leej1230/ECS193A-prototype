@@ -142,7 +142,7 @@ function DatasetGenesListTable(props){
 
     const generateGeneTable = (gene_objs_information) => {
 
-        // 'id' not need options
+        // 'id' not need options, always string/link interpret
         let gene_columns_list = []
     
         if(gene_objs_information == null || gene_objs_information.length == 0){
@@ -157,73 +157,34 @@ function DatasetGenesListTable(props){
     
         let column_possibilities = ['gene_id']
         for(let i = 0; i < column_possibilities.length; i++){
-          let unique = [...new Set(gene_objs_information.flatMap(item => item[ column_possibilities[i] ] ))];
+          
     
-          let select_options_col = []
-    
-          for(let j = 0; j < unique.length; j++){
-            select_options_col.push({value: unique[j], label: unique[j]})
-          }
-    
-          let col_obj = {dataField: column_possibilities[i],
-            text: column_possibilities[i]}
-          if(unique.length > 0 && Number.isInteger(unique[0])){
-            col_obj = {
-              dataField: column_possibilities[i],
-              text: column_possibilities[i],
-              headerStyle: { minWidth: '150px' },
-              filter: customFilter({
-                delay: 1000,
-                onFilter:filterNumber,
-                type: FILTER_TYPES.NUMBER
-              }),
-              filterRenderer: (onFilter, column) => {
-                return(
-                  <NumberFilter onFilter={ onFilter } column={column} />
-                  )
-              }
+        let col_obj = {dataField: column_possibilities[i],
+          text: column_possibilities[i]}
+
+          col_obj = {
+            dataField: column_possibilities[i],
+            text: column_possibilities[i],
+            headerStyle: { minWidth: '150px' },
+            formatter: (cell, row, rowIndex, extraData) => {
+              return(
+                <span>
+                  <a id="gene_list_single_link" href={"/gene/"+ cell +"/1"}>{cell}</a>
+                </span>
+              );
+            },
+            formatExtraData: gene_list_filtered,
+            filter: customFilter({
+              delay: 1000,
+              onFilter:filterFuzzyText
+            }),
+            filterRenderer: (onFilter, column) => {
+              return(
+                <TextFuzzyFilter onFilter={ onFilter } column={column} nested_input_gene_expanded_information={props.input_expanded_gene_info} />
+                )
             }
           }
-          else if(unique.length < 5){
-            col_obj = {
-              dataField: column_possibilities[i],
-              text: column_possibilities[i],
-              headerStyle: { minWidth: '150px' },
-              filter: customFilter({
-                delay: 1000,
-                type: FILTER_TYPES.MULTISELECT
-              }),
-            
-              filterRenderer: (onFilter, column) => {
-                return(
-                  <ProductFilter onFilter={onFilter} column={column} optionsInput={clone(select_options_col)}/>
-                  )
-              }
-            }
-          } else {
-            col_obj = {
-              dataField: column_possibilities[i],
-              text: column_possibilities[i],
-              headerStyle: { minWidth: '150px' },
-              formatter: (cell, row, rowIndex, extraData) => {
-                return(
-                  <span>
-                    <a id="gene_list_single_link" href={"/gene/"+ cell +"/1"}>{cell}</a>
-                  </span>
-                );
-              },
-              formatExtraData: gene_list_filtered,
-              filter: customFilter({
-                delay: 1000,
-                onFilter:filterFuzzyText
-              }),
-              filterRenderer: (onFilter, column) => {
-                return(
-                  <TextFuzzyFilter onFilter={ onFilter } column={column} nested_input_gene_expanded_information={props.input_expanded_gene_info} />
-                  )
-              }
-            }
-          }
+
           gene_columns_list.push(col_obj)
         }
         return gene_columns_list;
