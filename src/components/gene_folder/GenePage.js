@@ -48,30 +48,17 @@ function GenePage() {
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" },
-    { age: 0 },
-    { diabete: "" },
-    { final_diagnosis: "" },
-    { gender: "" },
-    { hypercholesterolemia: "" },
-    { hypertension: "" },
-    { race: "" },
     { id: 0 }
   ]);
   const [patient_information_expanded, set_patient_information_expanded] = useState([
     { patient_id: "" },
-    { age: 0 },
-    { diabete: "" },
-    { final_diagnosis: "" },
-    { gender: "" },
-    { hypercholesterolemia: "" },
-    { hypertension: "" },
-    { race: "" },
     { id: 0 }
   ]);
 
   const [graphType, setGraphType] = useState('bar');
   
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
+  const [loaded_gene_info, set_loaded_gene_info] = useState(false);
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -254,6 +241,7 @@ function GenePage() {
       setGeneExternalData(gene_ext.data);
       setGene_data(res.data);
       set_graph_table_filter_data(res.data);
+      set_loaded_gene_info(true);
     }
 
 
@@ -453,37 +441,45 @@ function GenePage() {
                                         </div>
                                         <div class="card-body">
 
-                                            {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ? (
-                                            <div>
-                                                <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
-                                                <div className='GraphType'>
-                                                <FormControl margin='dense' fullWidth>
-                                                    <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
-                                                    <Select
-                                                    labelId="GraphTypeLabel"
-                                                    id="GraphTypeSelect"
-                                                    value={graphType}
-                                                    label="GraphType"
-                                                    onChange={(e) => { setGraphType(e.target.value) }}
-                                                    >
-                                                    <MenuItem value={'bar'}>Bar</MenuItem>
-                                                    <MenuItem value={'line'}>Basic Line</MenuItem>
-                                                    <MenuItem value={'pie'}>Pie</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                </div>
-                                            </div>
-                                            ) : (
-                                            <div>
-                                                <CircularProgress />
-                                            </div>
-                                            )}
+                                            {loaded_gene_info ? 
+                                              <>
+                                                { graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ? 
+                                                  ( <div>
+                                                      <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
+                                                      <div className='GraphType'>
+                                                      <FormControl margin='dense' fullWidth>
+                                                          <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                                                          <Select
+                                                          labelId="GraphTypeLabel"
+                                                          id="GraphTypeSelect"
+                                                          value={graphType}
+                                                          label="GraphType"
+                                                          onChange={(e) => { setGraphType(e.target.value) }}
+                                                          >
+                                                          <MenuItem value={'bar'}>Bar</MenuItem>
+                                                          <MenuItem value={'line'}>Basic Line</MenuItem>
+                                                          <MenuItem value={'pie'}>Pie</MenuItem>
+                                                          </Select>
+                                                      </FormControl>
+                                                      </div>
+                                                  </div>
+                                                ) : (
+                                                  <div> No Graph of Gene Values Since No Patient Data </div>
+                                                )}
+                                              </>
+                                            :  (
+                                              <div>
+                                                      <CircularProgress />
+                                                  </div>
+                                              
+                                            ) }
 
                                         </div>
-
-                                        <div id='graph_filter'>
-                                            <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
-                                        </div>
+                                          { graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
+                                            <div id='graph_filter'>
+                                                <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
+                                            </div>
+                                          : <div></div> }
                                         </div>
                                     </div>
                                     </Tab>

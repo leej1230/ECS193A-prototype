@@ -566,3 +566,16 @@ function Home() {
 */}
 
 
+/*
+const [patient_information_expanded, set_patient_information_expanded] = useState([
+    { patient_id: "" },
+    { age: 0 },
+    { diabete: "" },
+    { final_diagnosis: "" },
+    { gender: "" },
+    { hypercholesterolemia: "" },
+    { hypertension: "" },
+    { race: "" },
+    { id: 0 }
+  ]);
+*/
