@@ -3,12 +3,12 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #b2ebf2; /* Light blue color */
+  background-color: #b3e5fc; /* Light blue color */
 }
 
 .rabbit {
-  width: 400px; /* Adjust the width and height as per your image size */
-  height: 400px;
+  width: 300px; /* Adjust the width and height as per your image size */
+  height: 300px;
   animation: dance 2s infinite;
 }
 
