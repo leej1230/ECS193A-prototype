@@ -712,9 +712,6 @@ class Database:
 
                 patients_found_list = patients_found_list[1:]
 
-                print("patients for gene in the specified dataset ")
-                print(patients_found_list)
-
                 json_data = loads(dumps(patients_found_list))
                 return json_data
 

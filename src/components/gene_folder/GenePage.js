@@ -140,8 +140,15 @@ function GenePage() {
     // 'id' not need options
     var patient_columns_list = []
 
-    var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+    //var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+    var column_possibilities = false;
+
+    if( patients_info.length > 0 ){
+      column_possibilities = Object.keys( patients_info[0] )
+    }
+
     for (let i = 0; i < column_possibilities.length; i++) {
+
       var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
 
       let select_options_col = []
@@ -232,10 +239,13 @@ function GenePage() {
       if(gene_data && 'dataset_id' in gene_data && gene_data.dataset_id != null){
 
         const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
-        const res = await axios.get(patientsDataAPIURL);
-        if (res.data.length > 0) {
-          set_patient_information_expanded(generatePatientTable(res.data));
-        }
+        await axios.get(patientsDataAPIURL).then((res) => {
+
+            if (res.data.length > 0) {
+              set_patient_information_expanded(generatePatientTable(res.data));
+            }
+        });
+
       }
     }
 
