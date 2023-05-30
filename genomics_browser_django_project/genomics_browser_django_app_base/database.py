@@ -692,21 +692,28 @@ class Database:
             )
 
             if gene is not None and 'patient_ids' in gene:
+
                 list_possible_patients = gene['patient_ids']['arr']
                 str_list_possible_patients = [
                     str(cur_patient) for cur_patient in list_possible_patients
                 ]
 
-                patients_found = Database.patient_collection.find(
-                    {'patient_id': {'$in': str_list_possible_patients}},
-                    {'_id': 0},
-                )
+                patients_found = Database.patient_collection.find({
+                        '$and': [
+                            {'patient_id': {'$in': str_list_possible_patients}},
+                            {'dataset_id': int(request['dataset_id'])}
+                        ]
+                    },
+                    {'_id': 0})
 
                 patients_found_list = [{}]
                 for doc in patients_found:
                     patients_found_list.append(doc)
 
                 patients_found_list = patients_found_list[1:]
+
+                print("patients for gene in the specified dataset ")
+                print(patients_found_list)
 
                 json_data = loads(dumps(patients_found_list))
                 return json_data

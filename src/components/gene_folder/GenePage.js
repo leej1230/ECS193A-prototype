@@ -9,6 +9,7 @@ import BasicInfo from './BasicInfo'
 import NumberFilter from '../filters/NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
 import ProductFilter from '../filters/ProductFilter';
+import filterNumber from '../filters/filterNumber'
 import SampleGraph from './echartdemo';
 
 import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
@@ -120,35 +121,6 @@ function GenePage() {
 
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
-
-
-  const filterNumber = (filterVals, data) => {
-    let compareValCode = filterVals['compareValCode']
-    let inputVal1 = filterVals['inputVal1']
-    let inputVal2 = filterVals['inputVal2']
-    let colName = filterVals['colName']
-
-    if (compareValCode === 0) {
-      // no filter
-      return data;
-    }
-    else if (compareValCode === 1) {
-      // <
-
-      return data.filter(patient_one => patient_one[colName] < inputVal1);
-    } else if (compareValCode === 2) {
-      // >
-      return data.filter(patient_one => patient_one[colName] > inputVal1);
-    } else if (compareValCode === 3) {
-      // =
-      return data.filter(patient_one => patient_one[colName] === inputVal1);
-    } else if (compareValCode === 4) {
-      // Between
-      return data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2);
-    }
-
-
-  }
 
   const generatePatientTable = (patients_info) => {
     if (patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null ) {
