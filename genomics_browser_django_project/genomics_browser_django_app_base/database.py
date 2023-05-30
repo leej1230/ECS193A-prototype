@@ -681,6 +681,7 @@ class Database:
             Returns:
                 list: A list of patient data objects matching the query.
             """
+
             gene = Database.gene_collection.find_one(
                 {
                     '$and': [
@@ -710,7 +711,7 @@ class Database:
                 json_data = loads(dumps(patients_found_list))
                 return json_data
 
-            return loads(dumps([{}]))
+            return loads(dumps([]))
 
         @staticmethod
         def get_patients_from_dataset(request):
@@ -1271,6 +1272,7 @@ class Database:
             dataset = Database.dataset_collection.find_one(
                 {'id': int(request['dataset_id'])}
             )
+
             name_info = dataset['name']
             return loads(dumps(name_info))
 

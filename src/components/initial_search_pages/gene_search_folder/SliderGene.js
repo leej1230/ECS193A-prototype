@@ -87,10 +87,10 @@ export default function SliderGene() {
     const userSub = user.sub.split("|")[1];
     try {
         const res = await axios.get(`${user_get_url}/${userSub}`);
-        console.log(res.data);
+        
         setUserInfo(res.data)
-        setBookmarkedGenes(res.data.bookmarked_genes);
-        console.log("fetched and saved user and bookmark information")
+        setBookmarkedGenes(clone(res.data.bookmarked_genes));
+        
 
     } catch (e) {
         console.log("Failed to fetch user Info.", e);
@@ -109,10 +109,19 @@ export default function SliderGene() {
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
       console.log(response.data);
-      if(response.data && response.data.length == 1 && response.data[0] == null){
+
+      let copy_resp_data = clone(response.data);
+      for(let i = 0; i < copy_resp_data.length; i++ ){
+        if(copy_resp_data[i] == null){
+          copy_resp_data = copy_resp_data.splice(i, 1);
+          i = i - 1;
+        }
+      }
+
+      if(copy_resp_data && copy_resp_data.length == 1 && copy_resp_data[0] == null){
         setGenesList([]);
       }else{
-        setGenesList(response.data);
+        setGenesList(copy_resp_data);
       }
       
     });

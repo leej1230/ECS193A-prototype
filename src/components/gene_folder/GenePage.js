@@ -257,10 +257,13 @@ function GenePage() {
   useEffect(() => {
     async function fetchPatientsData() {
 
-      const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
-      const res = await axios.get(patientsDataAPIURL);
-      if (res.data.length > 0) {
-        set_patient_information_expanded(generatePatientTable(res.data));
+      if(gene_data && 'dataset_id' in gene_data && gene_data.dataset_id != null){
+
+        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
+        const res = await axios.get(patientsDataAPIURL);
+        if (res.data.length > 0) {
+          set_patient_information_expanded(generatePatientTable(res.data));
+        }
       }
     }
 
