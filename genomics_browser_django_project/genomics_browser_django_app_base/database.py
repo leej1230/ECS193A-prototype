@@ -973,11 +973,14 @@ class Database:
                 {
                     'id': int(request['gene_id']),
                     'name': str(request['gene_name']),
-                }
+                },
+                {"_id": 0}
             )
-            serial = GeneSerializer(gene, many=False)
-            json_data = serial.data
-            return json_data
+
+            #serial = GeneSerializer(gene, many=False)
+            #json_data = serial.data
+
+            return loads(dumps(gene))
 
         def get_gene_count(request):
             """Retrieves the count of all genes in the gene collection in the database.

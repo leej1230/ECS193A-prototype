@@ -22,11 +22,20 @@ function BasicInfo(props){
                 {props ? (
                   <div>
                     {props.inner_content_elements.map((cur_display_element, cur_index) => 
-                      <div key={cur_index}>
-                        {cur_display_element}
+                      <>
                         <br />
-                      </div>
+                        {cur_display_element}
+                      </>
                     )}
+                    <br />
+                    {Object.keys(props.input_gene).map((single_attr, attr_index) => {
+                      if( single_attr != "description" && single_attr != "dataset_id" && single_attr != "name" && single_attr != "id"){
+                        return <>
+                                  <br />
+                                  <p>{single_attr}: &nbsp; {props.input_gene[single_attr]}</p>
+                              </>
+                      }
+                    })}
                   </div>
                 ) : (
                   <div>

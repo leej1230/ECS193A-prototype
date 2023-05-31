@@ -217,6 +217,10 @@ function GenePage() {
     async function fetchGeneData() {
       const res = await axios.get(URL);
       const gene_ext = await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
+      
+      console.log("gene data from backend: ")
+      console.log(gene_data)
+      
       setGeneExternalData(gene_ext.data);
       setGene_data(res.data);
       set_graph_table_filter_data(res.data);
@@ -413,7 +417,7 @@ function GenePage() {
                                     className="mb-3"
                                 >
                                     <Tab eventKey="basic_info" title="Basic Info">
-                                    <BasicInfo title_info_box = "Gene Information" inner_content_elements={[<p>Description: {gene_external_data.description}</p>, <p>Dataset ID: {gene_data.dataset_id}</p>,
+                                    <BasicInfo title_info_box = "Gene Information" input_gene={gene_data} inner_content_elements={[<p>Description: {gene_external_data.description}</p>, <p>Dataset ID: {gene_data.dataset_id}</p>,
                                         <a href={"/dataset/" + gene_data.dataset_id}>Link to Dataset</a>]} />
                                     </Tab>
                                     <Tab eventKey="gene_graph" title="Graph">
@@ -468,19 +472,26 @@ function GenePage() {
                                         </div>
                                     </div>
                                     </Tab>
-                                    <Tab eventKey="patients_list" title="Patient List">
-                                    <div class="card shadow mb-4" id="display_filter_patients_gene">
-                                        <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                                        </div>
+                                    {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ? 
+                                      <Tab eventKey="patients_list" title="Patient List">
+                                          <div class="card shadow mb-4" id="display_filter_patients_gene">
+                                              <div class="card-header py-3">
+                                              <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                                              </div>
 
-                                        <div class="row" id="table_options_outer">
-                                        <div id="patient_table_area">
-                                            <BootstrapTable keyField='id' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </Tab>
+                                              <div class="row" id="table_options_outer">
+                                              <div id="patient_table_area">
+                                                  <BootstrapTable keyField='id' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                              </div>
+                                              </div>
+                                          </div>
+                                          :
+                                          <></>
+                                     
+                                      </Tab>
+                                      :
+                                      <>No Patient Data</>
+                                    }
                                     <Tab eventKey="animation" title="Animation">
                                     <GeneSequenceAnimation />
                                     </Tab>
