@@ -105,7 +105,7 @@ export default function SliderGene() {
 
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/genes_some`, {
       // Data to be sent to the server
-      genes_request_list: clone(bookmarkedGenes)
+      genes_request_list: clone(bookmarkedGenes )
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
       console.log(response.data);

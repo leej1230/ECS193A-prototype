@@ -45,7 +45,7 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMP
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
+  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" },
@@ -215,16 +215,20 @@ function GenePage() {
   // componentDidMount() {
   useEffect(() => {
     async function fetchGeneData() {
-      const res = await axios.get(URL);
-      const gene_ext = await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
+      await axios.get(URL).then((res) => {
+        console.log("gene data from backend: ")
+        console.log(res.data)
+        console.log(URL)
+
+        setGene_data(res.data);
+        set_graph_table_filter_data(res.data);
+        set_loaded_gene_info(true);
+      });
+      await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
+        setGeneExternalData(gene_ext.data);
+      });
       
-      console.log("gene data from backend: ")
-      console.log(gene_data)
       
-      setGeneExternalData(gene_ext.data);
-      setGene_data(res.data);
-      set_graph_table_filter_data(res.data);
-      set_loaded_gene_info(true);
     }
 
 
@@ -390,7 +394,7 @@ function GenePage() {
   return (
     <body id="page-top" class="gene_body">
             <div id="wrapper">
-                {!gene_data["name"] ? (
+                {!( gene_data && ("name" in gene_data) && gene_data["name"] ) ? (
                     <div style={{ marginTop: "40vh" }}>
                         <LoadingSpinner />
                     </div>

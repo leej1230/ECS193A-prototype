@@ -1032,7 +1032,7 @@ class Database:
 
             gene_objs_list = [{}]
 
-            if( len(genes_list) == 0):
+            if( genes_list == None or len(genes_list) == 0):
                 return loads(dumps([]))
 
             for i in range( len(genes_list) ):
