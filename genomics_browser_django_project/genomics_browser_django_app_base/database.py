@@ -1416,6 +1416,16 @@ class Database:
                         cur_user['bookmarked_datasets'] = list(cur_user['bookmarked_datasets'])
                         cur_user['bookmarked_datasets'].remove(inner_code)
 
+                # clear edit records for this dataset
+                if int(cur_dataset['id']) in cur_user['edits']:
+                    cur_user['edits'].pop( int(cur_dataset['id']) , None)
+
+                # save updated values
+                Database.user_collection.update_one(
+                        {'auth0_uid': request_data['user_id']}, {"$set": {'bookmarked_genes': cur_user['bookmarked_genes'], 'bookmarked_datasets' : cur_user['bookmarked_datasets'],
+                                            'edits': cur_user['edits'] }}
+                    )
+
                 datasets_deleted = Database.dataset_collection.delete_one(
                     {'id': int(request_data['dataset_id'])}
                 )
@@ -1462,7 +1472,7 @@ class Database:
                 return loads(dumps(status.HTTP_200_OK))
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))
-            
+
         @staticmethod
         def update_dataset_one(request):
             # dataset id mandatory, date created will exist, so POST will always be there
