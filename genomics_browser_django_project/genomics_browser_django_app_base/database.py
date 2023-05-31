@@ -1244,7 +1244,7 @@ class Database:
                 doc_count = Database.dataset_collection.count_documents({})
                 datasets = (
                     Database.dataset_collection.find(
-                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1}
+                        {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1, 'rowType':1, 'geneCode':1, 'patientCode':1}
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
@@ -1256,7 +1256,7 @@ class Database:
                 datasets = (
                     Database.dataset_collection.find(
                         {'name': {'$regex': search_word, '$options': 'i'}},
-                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1},
+                        {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1, 'rowType':1, 'geneCode':1, 'patientCode':1},
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
@@ -1671,6 +1671,9 @@ class Database:
                         name=stuff_to_add_name,
                         description="",
                         url="",
+                        geneCode = "",
+                        patientCode = "",
+                        rowType = "",
                         
                         date_created=date_created,
                         dataset_id=dataset_id,
