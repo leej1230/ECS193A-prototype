@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -165,7 +166,7 @@ const Management = () => {
     };
   }, []);
 
-  return isLoading || !data || !userData || historyLog === [] ? (
+  return isLoading || showSpinner || !data || !userData || historyLog === [] ? (
     <div>
       <LoadingSpinner />
     </div>

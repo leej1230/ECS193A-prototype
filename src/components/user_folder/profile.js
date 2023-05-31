@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
@@ -19,6 +20,7 @@ function Profile() {
   const [userInfo, setUserInfo] = useState();
   const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
   const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(true);
 
   const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
@@ -59,6 +61,20 @@ function Profile() {
     handleFetchUser();
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+
+    if (!isLoading) {
+      handleFetchUser();
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isLoading]);
+
   return (
     <body id="page-top" class="gene_body">
       <div className="profile">
@@ -68,7 +84,7 @@ function Profile() {
 
         {userMetadata && (
           <div className="container mx-2 my-2">
-            {isLoading || !userInfo ? (
+            {isLoading || !userInfo || showSpinner ? (
               <div style={{ marginTop: "40vh" }}>
                 <LoadingSpinner />
               </div>
@@ -125,7 +141,7 @@ function Profile() {
                 <div className="card">
                   <div className="card-body">
                     <h2 className="card-title2">Datasets Bookmarks</h2>
-                    {bookmarkedGenes && bookmarkedDatasets.length !== 0 ? (
+                    {bookmarkedDatasets && bookmarkedDatasets.length !== 0 ? (
                       bookmarkedDatasets.map((datasetsUrl) => (
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                           <DeleteIcon sx={{ color: 'red' }} onClick={() => handleRemoveBookmark("dataset", datasetsUrl)} />
