@@ -30,7 +30,7 @@ function BasicInfo(props){
                     <br />
                     <br />
                     {Object.keys(props.input_gene).map((single_attr, attr_index) => {
-                      if( single_attr != "description" && single_attr != "dataset_id" && single_attr != "name" && single_attr != "id"){
+                      if( single_attr != "description" && single_attr != "dataset_id" && single_attr != "name" && single_attr != "id" && single_attr != "patient_ids" && single_attr != "gene_values"){
                         return <>
                                   <br />
                                   <p>{single_attr}: &nbsp; {props.input_gene[single_attr]}</p>

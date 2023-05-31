@@ -153,7 +153,7 @@ function DatasetPage() {
 
               let gene_patient_subset_values = {};
 
-              if( gene_with_value_information[i]["patient_ids"] && gene_with_value_information[i]["patient_ids"]["arr"] ){
+              if( ("patient_ids" in gene_with_value_information) && gene_with_value_information[i]["patient_ids"] != null && ("arr" in gene_with_value_information[i]["patient_ids"]) && gene_with_value_information[i]["patient_ids"]["arr"] != null ){
 
                 let temp_patient_arr = gene_with_value_information[i]["patient_ids"]["arr"]
 
@@ -174,9 +174,12 @@ function DatasetPage() {
 
               for (let j = 0; j < gene_with_value_information.length; j++) {
 
-                  let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+                  if( gene_with_value_information[j] != null && ("patient_ids" in gene_with_value_information[j]) && (gene_with_value_information[j]["patient_ids"] != null) && ("arr" in gene_with_value_information[j]["patient_ids"]) ){
 
-                  gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
+                    let patient_index = gene_with_value_information[j]["patient_ids"]["arr"].indexOf(existing_patient_info["patient_id"])
+
+                    gene_patient_subset_values[gene_with_value_information[j]["name"]] = parseFloat(gene_with_value_information[j]["gene_values"]["arr"][patient_index]);
+                  }
               }
               combined_dataset_full_information.push({ ...existing_patient_info, ...gene_patient_subset_values })
           }
