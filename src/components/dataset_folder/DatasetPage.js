@@ -265,9 +265,14 @@ function DatasetPage() {
                               class="fas fa-sm text-white-50"></i>Update</a>
                       <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
                               class="fas fa-download fa-sm text-white-50"></i>Generate</a>
-                        <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {() => {
+                        <button class="d-none d-sm-inline-block btn btn-sm btn btn-danger shadow-sm mr-1" onClick = {async () => {
                               
-                              axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`);
+                              //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset/${DATASET_ID}`);
+                              await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/delete_dataset`, {
+                                // Data to be sent to the server
+                                dataset_id: parseInt(DATASET_ID),
+                                user_id: user.sub.split("|")[1]
+                              }, { 'content-type': 'application/json' });
                         
                               navigate('/');
 

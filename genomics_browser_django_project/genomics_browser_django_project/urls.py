@@ -160,7 +160,7 @@ urlpatterns = [
         {"inner": "Genes", "callback": "get_seq_names"},
     ),
     path(
-        'api/delete_dataset/<slug:dataset_id>',
+        'api/delete_dataset',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),

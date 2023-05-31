@@ -131,6 +131,8 @@ class Database:
             }  # Replace 'myArray' with the actual array field name
 
             Database.user_collection.update_one(query, update)
+            
+
 
         def delete_bookmarked_genes(request):
             request_data = request['ctx'].POST.copy()
@@ -1136,6 +1138,7 @@ class Database:
             Database.gene_collection.insert_many(request)
             return loads(dumps(status.HTTP_201_CREATED))
 
+        @staticmethod
         def get_genes_from_dataset(request):
             """Get all genes from a specified dataset.
 
@@ -1391,15 +1394,38 @@ class Database:
                     json object: status of operation
                 """
 
+                request_data = json.loads(request['ctx'].body)
+
+                # need to delete bookmarks: genes and datasets
+                cur_user = Database.user_collection.find_one(
+                    {'auth0_uid': request_data['user_id']}
+                )
+                
+                genes_in_dataset = Database.Genes.get_genes_from_dataset({ 'dataset_id': int(request_data['dataset_id']) })
+                
+                cur_dataset = Database.Datasets.get_dataset_one({ 'dataset_id': int(request_data['dataset_id']) }) 
+
+                for gene_cur in genes_in_dataset:
+                    inner_code = str(gene_cur['name']) + '/' + str(gene_cur['id'])
+                    if 'bookmarked_genes' in cur_user and inner_code in cur_user['bookmarked_genes']:
+                        cur_user['bookmarked_genes'] = list(cur_user['bookmarked_genes'])
+                        cur_user['bookmarked_genes'].remove(inner_code)
+
+                inner_code = str(cur_dataset['name']) + '/' + str(cur_dataset['id'])
+                if 'bookmarked_datasets' in cur_user and inner_code in cur_user['bookmarked_datasets']:
+                        cur_user['bookmarked_datasets'] = list(cur_user['bookmarked_datasets'])
+                        cur_user['bookmarked_datasets'].remove(inner_code)
+
                 datasets_deleted = Database.dataset_collection.delete_one(
-                    {'id': int(request['dataset_id'])}
+                    {'id': int(request_data['dataset_id'])}
                 )
                 genes_deleted = Database.gene_collection.delete_many(
-                    {'dataset_id': int(request['dataset_id'])}
+                    {'dataset_id': int(request_data['dataset_id'])}
                 )
                 patients_deleted = Database.patient_collection.delete_many(
-                    {'dataset_id': int(request['dataset_id'])}
+                    {'dataset_id': int(request_data['dataset_id'])}
                 )
+
 
                 last_dataset_counter = (
                     Database.Counters.get_last_dataset_counter()
@@ -1436,7 +1462,7 @@ class Database:
                 return loads(dumps(status.HTTP_200_OK))
             except:
                 return loads(dumps({status.HTTP_404_NOT_FOUND}))
-
+            
         @staticmethod
         def update_dataset_one(request):
             # dataset id mandatory, date created will exist, so POST will always be there
