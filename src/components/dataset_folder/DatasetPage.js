@@ -145,7 +145,7 @@ function DatasetPage() {
         }
 
         // find if row is genes or row is patients
-        if( (patient_information.length == 1 && patient_information[0]["patient_id"] == "") || patient_information.length == 0 ){
+        if( dataset.rowType == "gene" ){
           // rows are genes
 
           for (let i = 0; i < gene_with_value_information.length; i++) {
@@ -302,8 +302,8 @@ function DatasetPage() {
                         <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} />
                       </Tab>
                       <Tab eventKey="edit_dataset" title="Edit Dataset">
-                          <DatasetEditTable input_dataset_id={DATASET_ID} row_type={gotPatientInfo && gotGeneInfo && ( (patient_information.length == 1 && patient_information[0]["patient_id"] == "") || patient_information.length == 0 ) ? "gene_rows" : "patient_rows"} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
-                          <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={gotPatientInfo && gotGeneInfo && ( (patient_information.length == 1 && patient_information[0]["patient_id"] == "") || patient_information.length == 0 ) ? "gene_rows" : "patient_rows"} input_displayHistoryTable={displayHistoryTable} />
+                          <DatasetEditTable input_dataset_id={DATASET_ID} row_type={ dataset.rowType } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
+                          <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_displayHistoryTable={displayHistoryTable} />
                       </Tab>
                     </Tabs>
               </div>

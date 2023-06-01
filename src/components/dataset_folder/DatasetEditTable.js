@@ -198,7 +198,7 @@ function DatasetEditTable(props){
   
         let copy_matrix_filtered = table_matrix_filtered;
         let object_edited_index = -1
-        if(props.row_type === "gene_rows"){
+        if(props.row_type === "gene"){
           object_edited_index = copy_matrix_filtered.findIndex(element => element["name"] == stateChangeInfo["cellEdit"]["rowId"]);
         } else {
           object_edited_index = copy_matrix_filtered.findIndex(element => element["patient_id"] == stateChangeInfo["cellEdit"]["rowId"]);
@@ -417,7 +417,7 @@ function DatasetEditTable(props){
                             </div>
                             </div>
                             <div class="card-body" id="full_matrix_table">
-                            <BootstrapTable keyField={props.row_type === "gene_rows" ? "name" : "patient_id"} data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
+                            <BootstrapTable keyField={props.row_type === "gene" ? "name" : "patient_id"} data={ table_matrix_filtered } columns={ together_data_columns } filter={ filterFactory() } pagination={ paginationFactory() } ref={ n => dataset_matrix_node.current = n  } remote={ { filter: true, pagination: false, sort: false, cellEdit: true } } cellEdit={ cellEditFactory({ mode: 'click' }) } filterPosition="top" onTableChange={ (type, newState) => { 
                                 
                                 if( 'cellEdit' in newState){
                                 updateCellEditMatrix(newState);

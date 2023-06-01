@@ -76,6 +76,7 @@ class DatasetModel(models.Model):
     patient_id_count = models.CharField(max_length=50, blank=True, default="", null=True)
     date_created = models.DateField(blank=True, null=True)
     url = models.URLField(blank=True, null=True)
+    rowType = models.TextField(blank=False, null=False)
 
 
 class CounterModel(models.Model):

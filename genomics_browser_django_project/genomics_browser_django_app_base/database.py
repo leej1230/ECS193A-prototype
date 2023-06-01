@@ -1412,27 +1412,46 @@ class Database:
                 
                 cur_dataset = Database.Datasets.get_dataset_one({ 'dataset_id': int(request_data['dataset_id']) }) 
 
+                need_to_update_bookmarks_gene = False
+                need_to_update_bookmarks_dataset = False
+                need_to_update_edits = False
+
                 for gene_cur in genes_in_dataset:
+
                     inner_code = str(gene_cur['name']) + '/' + str(gene_cur['id'])
                     if 'bookmarked_genes' in cur_user and inner_code in cur_user['bookmarked_genes']:
                         cur_user['bookmarked_genes'] = list(cur_user['bookmarked_genes'])
                         cur_user['bookmarked_genes'].remove(inner_code)
+                        need_to_update_bookmarks_gene = True
 
                 inner_code = str(cur_dataset['name']) + '/' + str(cur_dataset['id'])
                 if 'bookmarked_datasets' in cur_user and inner_code in cur_user['bookmarked_datasets']:
                         cur_user['bookmarked_datasets'] = list(cur_user['bookmarked_datasets'])
                         cur_user['bookmarked_datasets'].remove(inner_code)
+                        need_to_update_bookmarks_dataset = True
+
 
                 # clear edit records for this dataset
-                if int(cur_dataset['id']) in cur_user['edits']:
-                    cur_user['edits'].pop( int(cur_dataset['id']) , None)
+                if 'edits' in cur_user:
+                    if str(cur_dataset['id']) in cur_user['edits']:
+                        cur_user['edits'].pop( str(cur_dataset['id']) , None)
+                        need_to_update_edits = True
+                    
+                user_updated_obj = {}
 
-                # save updated values
-                Database.user_collection.update_one(
-                        {'auth0_uid': request_data['user_id']}, {"$set": {'bookmarked_genes': cur_user['bookmarked_genes'], 'bookmarked_datasets' : cur_user['bookmarked_datasets'],
-                                            'edits': cur_user['edits'] }}
-                    )
+                if 'bookmarked_genes' in cur_user and need_to_update_bookmarks_gene:
+                    user_updated_obj['bookmarked_genes'] = cur_user['bookmarked_genes']
+                if 'bookmarked_datasets' in cur_user and need_to_update_bookmarks_dataset:
+                    user_updated_obj['bookmarked_datasets'] = cur_user['bookmarked_datasets']
+                if 'edits' in cur_user and need_to_update_edits:
+                    user_updated_obj['edits'] = cur_user['edits']
 
+                if need_to_update_edits or need_to_update_bookmarks_gene or need_to_update_bookmarks_dataset:
+                    # save updated values
+                    Database.user_collection.update_one(
+                            {'auth0_uid': request_data['user_id']}, {"$set": user_updated_obj }
+                        )
+                    
                 datasets_deleted = Database.dataset_collection.delete_one(
                     {'id': int(request_data['dataset_id'])}
                 )
@@ -1704,3 +1723,8 @@ class Database:
             )
 
             return loads(dumps(status.HTTP_201_CREATED))
+
+'''
+{'bookmarked_genes': cur_user['bookmarked_genes'], 'bookmarked_datasets' : cur_user['bookmarked_datasets'],
+                                                'edits': cur_user['edits'] }
+'''

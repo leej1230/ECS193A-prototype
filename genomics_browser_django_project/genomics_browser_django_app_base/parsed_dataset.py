@@ -106,6 +106,7 @@ class ParsedDataset :
                 'patient_id_count': int(patient_ids_count),
                 'date_created': self.date_created,
                 'url': self.url,
+                'rowType': self.rowType
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -128,6 +129,7 @@ class ParsedDataset :
                 'patient_id_count': int(patient_ids_count),
                 'date_created': self.date_created,
                 'url': self.url,
+                'rowType': self.rowType
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
