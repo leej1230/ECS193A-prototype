@@ -157,21 +157,25 @@ class ParsedDataset :
             columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns
             gene_values = self.df[patient_columns].T 
 
-            '''**{
-                column: str(self.df[column].iloc[i]).lower()
-                for column in self.df.columns
-                if column not in columns_to_exclude
-                }'''
-
-            return [{
-                "id": 1,
-                "name": str(gene_names[i]).upper(),
-                "dataset_id": int(self.dataset_id),
-                "patient_ids": json.loads(json.dumps({"arr": patient_columns})),
-                "gene_values": self.get_gene_values_for_patient(i,gene_values) 
-                # traverse through all columes excepet the patient and gene columns
+            result = []
+            for i in range(len(gene_names)):
+                data = {
+                        "id": 1,
+                        "name": str(gene_names[i]).upper(),
+                        "dataset_id": int(self.dataset_id),
+                        "patient_ids": json.loads(json.dumps({"arr": patient_columns})),
+                        "gene_values": self.get_gene_values_for_patient(i,gene_values) 
+                        # traverse through all columes excepet the patient and gene columns
+                    }
                 
-            } for i in range(len(gene_names))]
+                # Traverse through all columns except the patient and gene columns
+                for column in self.df.columns.values:
+                    if column not in columns_to_exclude:
+                        data[column] = str(self.df[column].iloc[i]).lower()
+                
+                result.append(data)
+
+            return result
 
     def get_patients(self):
         col_list = self.df.columns.values
@@ -204,6 +208,8 @@ class ParsedDataset :
             patient_names = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             gene_ids = self.get_all_genes_data()
             gene_values = self.df[patient_names].T
+            
+            # if genes are columns, then patients not have any info related
             return [{
                 "id": 1,
                 "patient_id": str(patient_names[i]).upper(),
@@ -258,3 +264,9 @@ class ParsedDataset :
 # # What will the final size of the file be?
 # # Will all genes start with ENSG?
 # # What to do about duplicates, should only one be kept from each?
+
+'''**{
+                column: str(self.df[column].iloc[i]).lower()
+                for column in self.df.columns
+                if column not in columns_to_exclude
+                }'''
