@@ -1,7 +1,6 @@
 import React from 'react';
 import './spinner.css';
 
-
 import rabbitImage from './gene.png';
 
 const LoadingSpinner = () => {
