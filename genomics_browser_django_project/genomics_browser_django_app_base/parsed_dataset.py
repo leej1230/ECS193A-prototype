@@ -3,14 +3,16 @@
 import pandas as pd
 # import requests
 import json
+import numpy as np
 
 class ParsedDataset : 
     def __init__(self, *args, **kwargs) : 
         self.__dict__.update(kwargs)
         # self.output_csv = out_csv_path
         # self.df = pd.read_csv(self.input_txt, sep="\t")
-        self.df = pd.read_csv(self.in_txt, delimiter='\t')
-        
+        self.df = pd.read_csv(self.in_txt)
+        self.remove_duplicate_samples()
+        self.remove_duplicate_columns()
 
         """
         print(self.description)
@@ -30,7 +32,16 @@ class ParsedDataset :
         self.df.to_csv(self.output_csv)
 
     def remove_duplicate_samples(self) :
-        self.df = self.df.drop_duplicates(subset=["Sample name"])
+        col_list = self.df.columns.values
+        if self.rowType == "gene":
+            col_list = [cur_col_name for cur_col_name in col_list if str(self.df[cur_col_name].values[0])[0:len( self.geneCode )] == self.geneCode ]
+        else:
+            col_list = [cur_col_name for cur_col_name in col_list if str(self.df[cur_col_name].values[0])[0:len( self.patientCode )] == self.patientCode ]
+        
+        # take first column with the name/code info
+        # maybe possible multiple columns with that name/code, for a given row: all col names starting with that code will be the same
+        if len(col_list) > 0:
+            self.df = self.df.drop_duplicates(subset=[col_list[0]])
 
     def remove_duplicate_columns(self) : 
         self.df = self.df.loc[:,~self.df.columns.duplicated()]
@@ -42,9 +53,10 @@ class ParsedDataset :
         return self.df[columns].values.tolist()
     
     def get_column_starting_with(self, start_string):
-        for column in self.df.columns:
-            if str(self.df[column].iloc[0]).lower().startswith(start_string.lower()):
-                return column
+        cols_list = self.df.columns.values
+        for col_val in cols_list:
+            if str(col_val).lower().startswith(start_string.lower()):
+                return col_val
         return None
     
     def get_all_genes_data(self):
@@ -70,6 +82,8 @@ class ParsedDataset :
         pass
 
     def get_dataset_info(self):
+        col_list = self.df.columns.values
+
         if self.rowType == "gene":
             gene_ids = self.get_all_genes_data()
             gene_ids_count = len(gene_ids)
@@ -92,7 +106,7 @@ class ParsedDataset :
                 temp_dataset['gene_ids'] = json.loads(temp_dataset['gene_ids'])
             return temp_dataset
         else:
-            gene_ids = [gene_id for gene_id in self.df.columns.to_list() if self.geneCode in gene_id]
+            gene_ids = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
             gene_ids_count = len(gene_ids)
             patient_ids = [patient_id for patient_id in self.df[self.get_column_starting_with(self.patientCode)].values]
             patient_ids_count = len(patient_ids)

@@ -1376,15 +1376,21 @@ class Database:
             # Serialize dataset, insert records into database, and increment counters
             serial = DatasetSerializer(dataset.get_dataset_info())
 
-            Database.Patients.post_patient_many(dataset.get_patients())
+            print(" the upload results: \n")
 
-            Database.Genes.post_gene_many(dataset.get_genes())
+            print( dataset.get_column_starting_with("Isch") )
+
+            '''if len(dataset.get_patients()) > 0:
+                Database.Patients.post_patient_many(dataset.get_patients())
+
+            if len(dataset.get_genes()) > 0:
+                Database.Genes.post_gene_many(dataset.get_genes())
 
             Database.Counters.increment_gene_counter()
 
             Database.dataset_collection.insert_one(serial.data)
 
-            Database.Counters.increment_dataset_counter()
+            Database.Counters.increment_dataset_counter()'''
             return loads(dumps(status.HTTP_201_CREATED))
 
         def delete_dataset_one(request):
