@@ -1381,8 +1381,11 @@ class Database:
             if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())
 
-            if len(dataset.get_genes()) > 0:
-                Database.Genes.post_gene_many(dataset.get_genes())
+            cur_gene_cntr = Database.Counters.get_last_gene_counter()
+            list_new_genes = dataset.get_genes( cur_gene_cntr )
+            if len(list_new_genes) > 0:
+                Database.Genes.post_gene_many(list_new_genes)
+                Database.Counters.update_gene_counter({'new_counter_value': (cur_gene_cntr + len(list_new_genes)) })
 
             Database.Counters.increment_gene_counter()
 

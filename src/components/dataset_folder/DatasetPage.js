@@ -100,9 +100,17 @@ function DatasetPage() {
     }, [dataset]);
 
   useEffect(() => {
-    let object_information = generateGeneObjs(geneIds);
-    setGene_information_expanded(object_information);
-  }, [geneIds])
+      let simple_objs = []
+      if(gene_with_value_information == null || gene_with_value_information.length == 0){
+        simple_objs = [{'id':0, 'id_in_db':1 ,'gene_id': "NONE"}];
+      } else {
+        for(let i = 0; i < gene_with_value_information.length; i++){
+          simple_objs.push({ 'id':i+1, 'id_in_db' : gene_with_value_information[i].id , 'gene_id': gene_with_value_information[i].name })
+        }
+      }
+      setGene_information_expanded(simple_objs);
+      setGeneIds(simple_objs)
+  }, [gene_with_value_information])
 
     const createDatasetFormatted = () => {
         // return dataset formatted for table
@@ -214,24 +222,6 @@ function DatasetPage() {
   const navigate = useNavigate();
 
 
-  const generateGeneObjs = (gene_ids_info) => {
-    if(gene_ids_info == null || gene_ids_info.length == 0){
-      return [{'id':0,'gene_id': "NONE"}];
-    }
-
-    //console.log(gene_ids_info)
-
-    let gene_objs = []
-
-    for(let i = 0; i < gene_ids_info.length; i++){
-      gene_objs.push({'id': i+1, 'gene_id': gene_ids_info[i]})
-    }
-
-    //console.log("gene obj:")
-    //console.log(gene_objs)
-
-    return gene_objs;
-  }
 
   return !dataset["name"] ? (
     <body id="page-top" >

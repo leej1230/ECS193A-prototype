@@ -137,7 +137,7 @@ class ParsedDataset :
                 temp_dataset['gene_ids'] = json.loads(temp_dataset['gene_ids'])
             return temp_dataset
 
-    def get_genes(self):
+    def get_genes(self, starting_counter):
 
         col_list = self.df.columns.values
 
@@ -146,7 +146,7 @@ class ParsedDataset :
             gene_values = self.df[gene_names].T
             patient_ids = [pid for pid in self.df[self.get_column_starting_with(self.patientCode)]]
             return [{
-                "id": 1,
+                "id": int(starting_counter + i),
                 "name": str(gene_names[i]).upper(),
                 "dataset_id": int(self.dataset_id),
                 "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
@@ -162,7 +162,7 @@ class ParsedDataset :
             result = []
             for i in range(len(gene_names)):
                 data = {
-                        "id": 1,
+                        "id": int(starting_counter + i),
                         "name": str(gene_names[i]).upper(),
                         "dataset_id": int(self.dataset_id),
                         "patient_ids": json.loads(json.dumps({"arr": patient_columns})),

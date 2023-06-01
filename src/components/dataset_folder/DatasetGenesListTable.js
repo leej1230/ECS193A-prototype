@@ -154,6 +154,9 @@ function DatasetGenesListTable(props){
             text: 'gene_id'
           }];
         }
+
+        console.log("gene table generation")
+        console.log( gene_objs_information )
     
         let column_possibilities = ['gene_id']
         for(let i = 0; i < column_possibilities.length; i++){
@@ -167,9 +170,10 @@ function DatasetGenesListTable(props){
             text: column_possibilities[i],
             headerStyle: { minWidth: '150px' },
             formatter: (cell, row, rowIndex, extraData) => {
+              
               return(
                 <span>
-                  <a id="gene_list_single_link" href={"/gene/"+ cell +"/1"}>{cell}</a>
+                  <a id="gene_list_single_link" href={"/gene/"+ cell +"/" + row.id_in_db}>{cell}</a>
                 </span>
               );
             },
