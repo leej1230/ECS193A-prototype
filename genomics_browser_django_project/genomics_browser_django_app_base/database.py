@@ -819,8 +819,8 @@ class Database:
 
             objects_list = list(update_dict.keys())
 
-            print("update information line 638: ")
-            print( update_dict )
+            #print("update information line 638: ")
+            #print( update_dict )
 
             if 'save_undo_list' in data_request and len(data_request['save_undo_list'].keys()) > 0:
                 objects_old_values_saved = data_request['save_undo_list']
@@ -997,7 +997,7 @@ class Database:
                 {}
             )
 
-            print("gene count total: ", genes_count)
+            #print("gene count total: ", genes_count)
 
             json_data = loads(dumps( { 'count': genes_count } ))
             return json_data
@@ -1188,6 +1188,18 @@ class Database:
 
     class Datasets:
         @staticmethod
+        def get_row_type(request):
+        
+            dataset = Database.dataset_collection.find_one(
+                {'id': int(request['dataset_id'])}
+            )
+
+            if dataset == None or 'rowType' not in dataset:
+                return loads(dumps(""))
+
+            return loads(dumps(dataset['rowType']))
+
+        @staticmethod
         def get_dataset_one(request):
             """Get a single dataset with a given dataset ID.
 
@@ -1216,7 +1228,7 @@ class Database:
                 {}
             )
 
-            print("datasets count total: ", datasets_count)
+            #print("datasets count total: ", datasets_count)
 
             json_data = loads(dumps({'count': datasets_count}))
             return json_data
@@ -1266,7 +1278,7 @@ class Database:
 
             totalPages = math.ceil(doc_count / numberofList)
 
-            print(totalPages)
+            #print(totalPages)
             return json_data
         
         def get_dataset_name_for_id(request):
@@ -1376,7 +1388,7 @@ class Database:
             # Serialize dataset, insert records into database, and increment counters
             serial = DatasetSerializer(dataset.get_dataset_info())
 
-            print(" the upload results: \n")
+            #print(" the upload results: \n")
 
             if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())
@@ -1522,7 +1534,7 @@ class Database:
             dataset_to_modify = Database.Datasets.get_dataset_one(
                 {'dataset_id': dataset_id}
             )
-            print("existing record:   ", dataset_to_modify)
+            #print("existing record:   ", dataset_to_modify)
             atleast_one_modified = False
 
             new_dataset = {}
@@ -1619,7 +1631,7 @@ class Database:
                 patients_deleted = Database.patient_collection.delete_many(
                     {'patient_id': {'$in': delete_patient_ids}}
                 )
-                print(patients_deleted.deleted_count)
+                #print(patients_deleted.deleted_count)
 
                 # modify when there are less in dataset
                 for i in range(0, len(modify_gene_names)):

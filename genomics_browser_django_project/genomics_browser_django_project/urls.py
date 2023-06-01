@@ -85,6 +85,11 @@ urlpatterns = [
         {"inner": "Counters", "callback": "get_counter_all"},
     ),
     path(
+        'api/get_row_type/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_row_type"},
+    ),
+    path(
         'api/registration',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "post_user_one"},

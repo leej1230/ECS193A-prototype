@@ -30,6 +30,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 import LoadingSpinner from "../spinner/spinner";
+import {clone} from "ramda";
 
 
 const selectOptions = [
@@ -57,6 +58,10 @@ function GenePage() {
   ]);
 
   const [graphType, setGraphType] = useState('bar');
+
+  const [basic_gene_info,set_basic_gene_info] = useState({ id: 1, dataset_id: 0, name: "a"})
+
+  const [dataset_rowType, set_dataset_rowType] = useState("")
   
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
   const [loaded_gene_info, set_loaded_gene_info] = useState(false);
@@ -216,11 +221,9 @@ function GenePage() {
   useEffect(() => {
     async function fetchGeneData() {
       await axios.get(URL).then((res) => {
-        console.log("gene data from backend: ")
-        console.log(res.data)
-        console.log(URL)
+  
 
-        setGene_data(res.data);
+        setGene_data(clone(res.data));
         set_graph_table_filter_data(res.data);
         set_loaded_gene_info(true);
       });
@@ -240,6 +243,22 @@ function GenePage() {
 
   }, []);
 
+  useEffect(() => {
+    async function fetchRowType() {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${gene_data.dataset_id}`).then((res) => {
+
+        set_dataset_rowType( res.data )
+
+        console.log( "got the row type info" )
+        console.log( gene_data )
+        console.log( res.data )
+
+    });
+    }
+
+    fetchRowType();
+  }, [gene_data.dataset_id])
+
 
   useEffect(() => {
     async function fetchPatientsData() {
@@ -258,6 +277,19 @@ function GenePage() {
     }
 
     fetchPatientsData()
+  }, [gene_data])
+
+  useEffect(() => {
+    let temp_obj = clone( gene_data )
+    let list_attr = Object.keys(temp_obj)
+    for(let i = 0; i < list_attr.length; i++){
+      if(temp_obj[list_attr[i]].constructor.name == 'Object' && !Array.isArray(temp_obj[list_attr[i]]) && !( temp_obj[list_attr[i]] instanceof Date)  ){
+        // object so remove (or convert to array)
+        delete temp_obj[list_attr[i]]
+      }
+    }
+
+    set_basic_gene_info( temp_obj )
   }, [gene_data])
 
   const graphDataFilter = (cur_filters) => {
@@ -421,8 +453,7 @@ function GenePage() {
                                     className="mb-3"
                                 >
                                     <Tab eventKey="basic_info" title="Basic Info">
-                                    <BasicInfo title_info_box = "Gene Information" input_gene={gene_data} inner_content_elements={[<p>Description: {gene_external_data.description}</p>, <p>Dataset ID: {gene_data.dataset_id}</p>,
-                                        <a href={"/dataset/" + gene_data.dataset_id}>Link to Dataset</a>]} />
+                                    <BasicInfo title_info_box = "Gene Information" input_gene={gene_data} input_description={gene_external_data.description} />
                                     </Tab>
                                     <Tab eventKey="gene_graph" title="Graph">
                                     <div id="graph_gene_box">
@@ -475,8 +506,8 @@ function GenePage() {
                                           : <div></div> }
                                         </div>
                                     </div>
-                                    </Tab>
-                                    {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ? 
+                                   </Tab>
+                                    { dataset_rowType == "patient" ?
                                       <Tab eventKey="patients_list" title="Patient List">
                                           <div class="card shadow mb-4" id="display_filter_patients_gene">
                                               <div class="card-header py-3">
@@ -494,13 +525,17 @@ function GenePage() {
                                      
                                       </Tab>
                                       :
-                                      <>No Patient Data</>
+                                      <>
+                                        
+                                      </>
+                                      
                                     }
                                     <Tab eventKey="animation" title="Animation">
                                     <GeneSequenceAnimation />
                                     </Tab>
                                 </Tabs>
-                            </div>
+                              </div>
+
                         </div>
 
                     </div>

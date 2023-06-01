@@ -21,12 +21,16 @@ function BasicInfo(props){
               <div class="card-body" >
                 {props ? (
                   <div>
-                    {props.inner_content_elements.map((cur_display_element, cur_index) => 
+                    
                       <>
                         <br />
-                        {cur_display_element}
+                        <p>Description: {props.input_description}</p>
+                        <br />
+                        <p>Dataset ID: {props.input_gene.dataset_id}</p>
+                        < br />
+                        <a href={"/dataset/" + props.input_gene.dataset_id}>Link to Dataset</a>
                       </>
-                    )}
+              
                     <br />
                     <br />
                     {Object.keys(props.input_gene).map((single_attr, attr_index) => {
