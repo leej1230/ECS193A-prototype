@@ -1378,9 +1378,7 @@ class Database:
 
             print(" the upload results: \n")
 
-            print( dataset.get_patients() )
-
-            '''if len(dataset.get_patients()) > 0:
+            if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())
 
             if len(dataset.get_genes()) > 0:
@@ -1390,7 +1388,7 @@ class Database:
 
             Database.dataset_collection.insert_one(serial.data)
 
-            Database.Counters.increment_dataset_counter()'''
+            Database.Counters.increment_dataset_counter()
             return loads(dumps(status.HTTP_201_CREATED))
 
         def delete_dataset_one(request):

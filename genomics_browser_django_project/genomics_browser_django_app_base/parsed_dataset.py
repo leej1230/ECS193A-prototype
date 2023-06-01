@@ -81,6 +81,13 @@ class ParsedDataset :
     def insert_patients_into_db(self) : 
         pass
 
+    def get_gene_values_for_patient(self, input_index, gene_values_df):
+        # format: patient rows in subset gene values df
+        if len(gene_values_df) > input_index:
+            # ok to access
+            return json.loads(json.dumps({"arr": gene_values_df.iloc[input_index].tolist()}))
+        return None
+
     def get_dataset_info(self):
         col_list = self.df.columns.values
 
@@ -129,8 +136,11 @@ class ParsedDataset :
             return temp_dataset
 
     def get_genes(self):
+
+        col_list = self.df.columns.values
+
         if self.rowType == "patient":
-            gene_names = [gene_names for gene_names in self.df.columns if self.geneCode in gene_names]
+            gene_names = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
             gene_values = self.df[gene_names].T
             patient_ids = [pid for pid in self.df[self.get_column_starting_with(self.patientCode)]]
             return [{
@@ -142,21 +152,25 @@ class ParsedDataset :
             } for i in range(len(gene_names))]
         else:
             gene_names = self.get_all_genes_data()
-            patient_ids = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
 
-            patient_columns = [column for column in self.df.columns if column.startswith(self.patientCode)]
-            columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns 
+            patient_columns = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
+            columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns
+            gene_values = self.df[patient_columns].T 
 
-            return [{
-                "gene_id": str(gene_names[i]).upper(),
-                "dataset_id": int(self.dataset_id),
-                "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
-                # traverse through all columes excepet the patient and gene columns
-                **{
+            '''**{
                 column: str(self.df[column].iloc[i]).lower()
                 for column in self.df.columns
                 if column not in columns_to_exclude
-                }
+                }'''
+
+            return [{
+                "id": 1,
+                "name": str(gene_names[i]).upper(),
+                "dataset_id": int(self.dataset_id),
+                "patient_ids": json.loads(json.dumps({"arr": patient_columns})),
+                "gene_values": self.get_gene_values_for_patient(i,gene_values) 
+                # traverse through all columes excepet the patient and gene columns
+                
             } for i in range(len(gene_names))]
 
     def get_patients(self):
