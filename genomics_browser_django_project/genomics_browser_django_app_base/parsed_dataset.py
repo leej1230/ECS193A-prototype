@@ -87,7 +87,7 @@ class ParsedDataset :
         if self.rowType == "gene":
             gene_ids = self.get_all_genes_data()
             gene_ids_count = len(gene_ids)
-            patient_ids = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.geneCode )] == self.patientCode]
+            patient_ids = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             patient_ids_count = len(patient_ids)
             temp_dataset = {
                 'id': int(self.dataset_id),
@@ -159,15 +159,15 @@ class ParsedDataset :
                 }
             } for i in range(len(gene_names))]
 
-    def get_patients(self) :
+    def get_patients(self):
+        col_list = self.df.columns.values
+
         if self.rowType == "patient":
-            gene_ids = [gene_id for gene_id in self.df.columns.to_list() if self.geneCode in gene_id]
+            gene_ids = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
             dataset_id = self.dataset_id
 
-            print("in parsed dataset")
-
-            gene_columns = [column for column in self.df.columns if column.startswith(self.geneCode)]
-            columns_to_exclude = [self.get_column_starting_with(self.patientCode)] + gene_columns            
+            #gene_columns = [column for column in self.df.columns if column.startswith(self.geneCode)]
+            columns_to_exclude = [self.get_column_starting_with(self.patientCode)] + gene_ids            
 
             result = []
             for i in range(self.df.shape[0]):
@@ -178,7 +178,7 @@ class ParsedDataset :
                 }
                 
                 # Traverse through all columns except the patient and gene columns
-                for column in self.df.columns:
+                for column in self.df.columns.values:
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
                 
@@ -187,7 +187,7 @@ class ParsedDataset :
             return result
 
         else:
-            patient_names = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
+            patient_names = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             gene_ids = self.get_all_genes_data()
             gene_values = self.df[patient_names].T
             return [{
