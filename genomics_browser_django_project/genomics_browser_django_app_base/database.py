@@ -1378,7 +1378,7 @@ class Database:
 
             print(" the upload results: \n")
 
-            print( dataset.get_column_starting_with("Isch") )
+            print( dataset.get_dataset_info() )
 
             '''if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())

@@ -55,7 +55,7 @@ class ParsedDataset :
     def get_column_starting_with(self, start_string):
         cols_list = self.df.columns.values
         for col_val in cols_list:
-            if str(col_val).lower().startswith(start_string.lower()):
+            if str(self.df[col_val].iloc[0]).lower().startswith(start_string.lower()):
                 return col_val
         return None
     
@@ -87,7 +87,7 @@ class ParsedDataset :
         if self.rowType == "gene":
             gene_ids = self.get_all_genes_data()
             gene_ids_count = len(gene_ids)
-            patient_ids = [patient_names for patient_names in self.df.columns if self.patientCode in patient_names]
+            patient_ids = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.geneCode )] == self.patientCode]
             patient_ids_count = len(patient_ids)
             temp_dataset = {
                 'id': int(self.dataset_id),
@@ -109,6 +109,7 @@ class ParsedDataset :
             gene_ids = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
             gene_ids_count = len(gene_ids)
             patient_ids = [patient_id for patient_id in self.df[self.get_column_starting_with(self.patientCode)].values]
+
             patient_ids_count = len(patient_ids)
             temp_dataset = {
                 'id': int(self.dataset_id),
