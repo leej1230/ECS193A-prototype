@@ -49,12 +49,10 @@ function GenePage() {
   const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
-    { patient_id: "" },
-    { id: 0 }
+    { patient_id: "" }
   ]);
   const [patient_information_expanded, set_patient_information_expanded] = useState([
-    { patient_id: "" },
-    { id: 0 }
+    { patient_id: "" }
   ]);
 
   const [graphType, setGraphType] = useState('bar');
@@ -128,29 +126,39 @@ function GenePage() {
   const patients_table_node = useRef(null);
 
   const generatePatientTable = (patients_info) => {
-    if (patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null ) {
+    if ( patients_info.length == 0 || patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null ) {
       return;
     }
-
-    for (let i = 0; i < patients_info.length; i++) {
-      var cur_patient = patients_info[i]
-      // patient has no id, so this is fine
-      cur_patient['id'] = i + 1
-      let patient_index = gene_data.patient_ids.arr.indexOf(cur_patient['patient_id'])
-      if (patient_index !== -1) {
-        cur_patient['gene_val'] = gene_data.gene_values.arr[patient_index]
-      }
-    }
-
-    // 'id' not need options
-    var patient_columns_list = []
 
     //var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
     var column_possibilities = false;
 
-    if( patients_info.length > 0 ){
-      column_possibilities = Object.keys( patients_info[0] )
+    // 'id' not need options
+    var patient_columns_list = []
+    
+
+    if( dataset_rowType == "patient" ){
+      for (let i = 0; i < patients_info.length; i++) {
+        var cur_patient = patients_info[i]
+        // patient has no id, so this is fine
+        cur_patient['id'] = i + 1
+        let patient_index = gene_data.patient_ids.arr.indexOf(cur_patient['patient_id'])
+        if (patient_index !== -1) {
+          cur_patient['gene_val'] = gene_data.gene_values.arr[patient_index]
+        }
+      }
+
+      
+    } else if( dataset_rowType == "gene" ){
+      // genes are rows, patients: only gene value and ids info
+      // add some hardcoded values in this case like patient_id, gene_values, etc. so use those
+
+      let cur_gene_index = patients_info[0].gene_ids.arr.indexOf( gene_data.name )
+      patients_info = patients_info.map( (patient_obj_element, patient_obj_key) => { return {'patient_id': patient_obj_element.patient_id, 'gene_value':patient_obj_element.gene_values.arr[cur_gene_index] } } )
+
     }
+
+    column_possibilities = Object.keys( patients_info[0] )
 
     for (let i = 0; i < column_possibilities.length; i++) {
 
@@ -178,7 +186,7 @@ function GenePage() {
           }),
           filterRenderer: (onFilter, column) => {
             return (
-              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patient_information_expanded} />
+              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
             )
           }
         }
@@ -249,10 +257,6 @@ function GenePage() {
 
         set_dataset_rowType( res.data )
 
-        console.log( "got the row type info" )
-        console.log( gene_data )
-        console.log( res.data )
-
     });
     }
 
@@ -269,7 +273,10 @@ function GenePage() {
         await axios.get(patientsDataAPIURL).then((res) => {
 
             if (res.data.length > 0) {
-              set_patient_information_expanded(generatePatientTable(res.data));
+              let some_result = generatePatientTable(clone(res.data))
+              set_patient_information_expanded( some_result );
+              set_patient_data_table_filtered( some_result )
+
             }
         });
 
@@ -277,13 +284,14 @@ function GenePage() {
     }
 
     fetchPatientsData()
-  }, [gene_data])
+  }, [dataset_rowType])
+
 
   useEffect(() => {
     let temp_obj = clone( gene_data )
     let list_attr = Object.keys(temp_obj)
     for(let i = 0; i < list_attr.length; i++){
-      if(temp_obj[list_attr[i]].constructor.name == 'Object' && !Array.isArray(temp_obj[list_attr[i]]) && !( temp_obj[list_attr[i]] instanceof Date)  ){
+      if(temp_obj[list_attr[i]] != null && temp_obj[list_attr[i]].constructor.name == 'Object' && !Array.isArray(temp_obj[list_attr[i]]) && !( temp_obj[list_attr[i]] instanceof Date)  ){
         // object so remove (or convert to array)
         delete temp_obj[list_attr[i]]
       }
@@ -507,7 +515,7 @@ function GenePage() {
                                         </div>
                                     </div>
                                    </Tab>
-                                    { dataset_rowType == "patient" ?
+                                    { dataset_rowType == "patient" || (patient_information_expanded.length > 0 && patient_information_expanded[0]['patient_id'] != "" ) ?
                                       <Tab eventKey="patients_list" title="Patient List">
                                           <div class="card shadow mb-4" id="display_filter_patients_gene">
                                               <div class="card-header py-3">
@@ -516,7 +524,7 @@ function GenePage() {
 
                                               <div class="row" id="table_options_outer">
                                               <div id="patient_table_area">
-                                                  <BootstrapTable keyField='id' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                                  <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
                                               </div>
                                               </div>
                                           </div>
