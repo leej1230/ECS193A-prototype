@@ -1,7 +1,12 @@
+module.exports = function (api) {
+  api.cache.forever();
 
-  module.exports = function (api) {
-    api.cache.forever()
-    return {
-      plugins: ['macros'],
-    }
-  }
+  const presets = [
+    '@babel/preset-env',
+    '@babel/preset-react',
+  ];
+
+  return {
+    presets,
+  };
+};

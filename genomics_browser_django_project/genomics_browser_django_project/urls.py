@@ -202,5 +202,15 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "delete_one_edit"},
     ),
+    path(
+        'api/submit_authorized_email',
+        views.BackendServer.as_view(),
+        {"inner": "Utils", "callback": "authorize_Email"},
+    ),
+    path(
+        'api/check_authorized_email',
+        views.BackendServer.as_view(),
+        {"inner": "Utils", "callback": "check_Email"},
+    ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]

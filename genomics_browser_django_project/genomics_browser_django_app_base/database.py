@@ -40,6 +40,7 @@ class Database:
     user_collection = client['users']
     superuser_collection = client['superusers']
     role_history_collection = client['role_histories']
+    authorized_email_collection = client['authorized_emails']
 
     class Users:
         def get_user_one(request):
@@ -1739,7 +1740,27 @@ class Database:
 
             return loads(dumps(status.HTTP_201_CREATED))
 
-'''
-{'bookmarked_genes': cur_user['bookmarked_genes'], 'bookmarked_datasets' : cur_user['bookmarked_datasets'],
-                                                'edits': cur_user['edits'] }
-'''
+    class Utils:
+        def authorize_Email(request):
+            email = json.loads(request['ctx'].body).get('email')
+            email_query = {"email": email}
+            isEmailRegistered = Database.authorized_email_collection.find_one(email_query)
+            
+            if isEmailRegistered:
+                response_data = {'success': False, 'message': 'Email already exists'}
+            else:
+                new_email = {"email": email}
+                Database.authorized_email_collection.insert_one(new_email)
+                response_data = {'success': True, 'message': 'Email added successfully'}
+
+            return response_data
+
+
+        def check_Email(request):
+            email = json.loads(request['ctx'].body).get('email')
+            email_query = {"email": email}
+            query_res = Database.authorized_email_collection.find_one(email_query)
+
+            res = True if query_res else False
+
+            return {"isExists":res}

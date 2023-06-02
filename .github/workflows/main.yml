@@ -1,0 +1,30 @@
+name: Frontend Jest Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Run Jest
+        uses: stefanoeb/jest-action@1.0.3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies from requirements.txt
+        run: pip install -r requirements.txt
+
+      - name: Set environmental variable from Github Repo Secrets
+        run: echo "DATABASE_CONNECTION_STRING=$ENV_VALUE" >> $GITHUB_ENV
+        env:
+          ENV_VALUE: ${{ secrets.DATABASE_CONNECTION_STRING }}
+
+      - name: Run Django unit tests
+        run: python manage.py test
+        working-directory: ./genomics_browser_django_project
