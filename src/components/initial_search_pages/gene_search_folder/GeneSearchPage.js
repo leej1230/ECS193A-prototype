@@ -36,7 +36,7 @@ function GeneSearchPage() {
     try {
       let search_input_for_url = clone(searchInput)
 
-      if( search_input_for_url === "" ){
+      if (search_input_for_url === "") {
         search_input_for_url = " ";
       }
       const response = await axios.get(
@@ -79,9 +79,9 @@ function GeneSearchPage() {
           <div id="content">
 
             <div class="container-fluid" id="full_gene_search_page">
-              
-                <DashboardSidebar input_cur_active={"search_gene"} />
-              
+
+              <DashboardSidebar input_cur_active={"search_gene"} />
+
               <div id="gene_search_page_content">
 
                 <div id="title_box_gene_search">
@@ -142,7 +142,7 @@ function GeneSearchPage() {
                     <h5 id="bookmark_genes_card_header_text">Bookmarked Genes</h5>
                   </div>
                   <div class="card-body" id="bookmark_genes_card_body">
-                    <SliderGene />
+                    {/* <SliderGene /> */}
                   </div>
 
                 </div>
