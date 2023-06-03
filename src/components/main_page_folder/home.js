@@ -1,4 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./home.css";
@@ -14,15 +13,10 @@ import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import GetUserAfterRender from "../../util/getUser";
 import DashboardSidebar from "../dashboard_side/dashboardSidebar";
 
-const user_post_url = `${process.env.REACT_APP_BACKEND_URL}/api/registration`;
-
 function Home() {
-    const { user } = useAuth0();
-    const userMetadata = user?.["https://unique.app.com/user_metadata"];
-
     const [gene_count, set_gene_count] = useState(0);
     const [dataset_count, set_dataset_count] = useState(0);
-    const [height_link_cards, set_height_link_cards] = useState("300px");
+    const [height_link_cards,] = useState("300px");
 
     const getCountInfo = async () => {
         console.log("count information: ");
@@ -214,6 +208,7 @@ function Home() {
                                                     <a href="/search_genes_page">
                                                         Genes Search
                                                         <img
+                                                            alt="gene_search_img"
                                                             src="https://www.ukri.org/wp-content/uploads/2022/02/MRC-180222-DNASequencingDataGenomicAnalysis-GettyImages-1293619871-735x490.jpg"
                                                             style={{
                                                                 maxWidth:
@@ -253,6 +248,7 @@ function Home() {
                                                     <a href="/search_datasets_page">
                                                         Datasets Search
                                                         <img
+                                                            alt="dataset_search_img"
                                                             src="https://www.shutterstock.com/image-vector/abstract-business-chart-uptrend-line-260nw-593939270.jpg"
                                                             style={{
                                                                 maxWidth:

@@ -26,8 +26,6 @@ function debounce(fn, ms) {
 
 
 function SliderGeneItemsContainer(props) {
-  const [index, setIndex] = useState(0);
-
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
     width: window.innerWidth
@@ -77,8 +75,8 @@ export default function SliderGene() {
   const [genes_list, setGenesList] = useState([]);
   const [groupings, setGroupings] = useState([]);
 
-  const { user, isLoading } = useAuth0();
-  const [userInfo, setUserInfo] = useState();
+  const { user } = useAuth0();
+  const [, setUserInfo] = useState();
   const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
 
   const handleFetchUser = async () => {
@@ -97,6 +95,7 @@ export default function SliderGene() {
 
   useEffect(() => {
     handleFetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -110,20 +109,20 @@ export default function SliderGene() {
 
       let copy_resp_data = clone(response.data);
       for (let i = 0; i < copy_resp_data.length; i++) {
-        if (copy_resp_data[i] == null) {
+        if (copy_resp_data[i] === null) {
           copy_resp_data = copy_resp_data.splice(i, 1);
           i = i - 1;
         }
       }
 
-      if (copy_resp_data && copy_resp_data.length == 1 && copy_resp_data[0] == null) {
+      if (copy_resp_data && copy_resp_data.length === 1 && copy_resp_data[0] == null) {
         setGenesList([]);
       } else {
         setGenesList(copy_resp_data);
       }
 
     });
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmarkedGenes]);
 
   useEffect(() => {
@@ -133,7 +132,7 @@ export default function SliderGene() {
       var num_groups = Math.floor(num_genes / 6);
       var last_group_num_genes = num_genes % 6;
 
-      if (num_genes == 0) {
+      if (num_genes === 0) {
         return []
       }
 

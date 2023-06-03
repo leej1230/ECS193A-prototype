@@ -58,24 +58,10 @@ const columns = [
     { title: "Value", field: "value" },
 ];
 
-function createPatientFormatted(input_patient_data) {
-    // return formatted for table
-    var init_arr = [];
-    var data_input = input_patient_data;
-    Object.keys(data_input).forEach(function (key) {
-        var val_input = data_input[key];
-        init_arr.push({ field_name: key, value: val_input });
-    });
-
-    console.log(init_arr);
-
-    return init_arr;
-}
-
 function Sample() {
     // state = {samples: []}
     const [patient_data, setPatient_data] = useState();
-    const [patient_table_input_format, set_patient_table_input_format] =
+    const [patient_table_input_format,] =
         useState([{ field_name: "", value: "" }]);
     const [graphType, setGraphType] = useState("bar");
 

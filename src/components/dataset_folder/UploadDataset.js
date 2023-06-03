@@ -42,7 +42,7 @@ function UploadDataset() {
         console.log(patientCode);
         console.log(rowType);
 
-        if (isFilePicked == false) {
+        if (isFilePicked === false) {
             return;
         }
 
@@ -53,7 +53,7 @@ function UploadDataset() {
         formData.append('geneCode', geneCode);
         formData.append('patientCode', patientCode);
         formData.append('rowType', rowType);
-        
+
         const config = {
             headers: {
                 "content-type": "multipart/form-data",
@@ -121,21 +121,21 @@ function UploadDataset() {
                             />
                         </div>
                         <div className="form-group">
-              <label htmlFor="dataOption">Dataset Row Type</label>
-              <select className="form-control" id="dataOption" onChange={(e) => setrowType(e.target.value)}>
-                <option value="">Choose row type</option>
-                <option value="gene">Gene</option>
-                <option value="patient">Patient</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="geneCode">Gene Code</label>
-              <input type="text" className="form-control" id="geneCode" onChange={(e) => setgeneCode(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label htmlFor="patientCode">Patient Code</label>
-              <input type="text" className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
-            </div>
+                            <label htmlFor="dataOption">Dataset Row Type</label>
+                            <select className="form-control" id="dataOption" onChange={(e) => setrowType(e.target.value)}>
+                                <option value="">Choose row type</option>
+                                <option value="gene">Gene</option>
+                                <option value="patient">Patient</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="geneCode">Gene Code</label>
+                            <input type="text" className="form-control" id="geneCode" onChange={(e) => setgeneCode(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="patientCode">Patient Code</label>
+                            <input type="text" className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
+                        </div>
                         <button
                             type="button"
                             class="btn btn-primary"

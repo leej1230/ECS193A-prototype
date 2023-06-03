@@ -29,6 +29,7 @@ function GeneSearchPage() {
     } else {
       setIsMounted(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listPage]);
 
   //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
@@ -142,7 +143,7 @@ function GeneSearchPage() {
                     <h5 id="bookmark_genes_card_header_text">Bookmarked Genes</h5>
                   </div>
                   <div class="card-body" id="bookmark_genes_card_body">
-                    {/* <SliderGene /> */}
+                    <SliderGene />
                   </div>
 
                 </div>

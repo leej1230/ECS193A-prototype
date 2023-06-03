@@ -36,7 +36,7 @@ function Profile() {
     };
 
     const handleRemoveBookmark = async (type, val) => {
-        if (type == "dataset") {
+        if (type === "dataset") {
             const formData = new FormData();
             formData.append("user_id", user.sub.split("|")[1]);
             formData.append("dataset_url", val);
@@ -57,6 +57,7 @@ function Profile() {
 
     useEffect(() => {
         handleFetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     console.log(bookmarkedGenes);

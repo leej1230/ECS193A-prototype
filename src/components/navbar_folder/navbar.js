@@ -6,13 +6,10 @@ import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 
 function Navbar() {
-    const [dropdown_notifications, setDropdownNotifications] = useState(false);
     const [dropdown_user, setDropdownUser] = useState(false);
-    const [num_notifications, set_num_notifications] = useState(3);
-    const { user, logout, isAuthenticated } = useAuth0();
+    const { user, logout } = useAuth0();
     const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
-    var menuClass = `dropdown-menu ${dropdown_notifications ? " show" : ""}`;
     var userMenuClass = `dropdown-menu ${dropdown_user ? " show" : ""}`;
 
     return (
@@ -30,6 +27,7 @@ function Navbar() {
                                 href="/"
                             >
                                 <img
+                                    alt="logo"
                                     style={{
                                         maxWidth: "100%",
                                         minWidth: "100%",
@@ -79,12 +77,13 @@ function Navbar() {
                     >
                         <a
                             class="nav-link dropdown-toggle"
+                            href={() => false}
                             id="userDropdown"
                             role="button"
                             data-toggle="dropdown"
                             aria-haspopup="true"
                             onClick={async () => {
-                                if (dropdown_user == true) {
+                                if (dropdown_user === true) {
                                     await setDropdownUser(false);
                                 } else {
                                     await setDropdownUser(true);

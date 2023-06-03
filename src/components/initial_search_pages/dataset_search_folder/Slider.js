@@ -26,8 +26,6 @@ function debounce(fn, ms) {
 }
 
 function SliderItemsContainer(props) {
-    const [index, setIndex] = useState(0);
-
     const [dimensions, setDimensions] = React.useState({
         height: window.innerHeight,
         width: window.innerWidth,
@@ -78,8 +76,8 @@ export default function Slider() {
 
     const [gotInfo, set_gotInfo] = useState(false);
 
-    const { user, isLoading } = useAuth0();
-    const [userInfo, setUserInfo] = useState();
+    const { user } = useAuth0();
+    const [, setUserInfo] = useState();
     const [bookmarkedDatasets, setBookmarkedDatasets] = useState([]);
 
     const handleFetchUser = async () => {
@@ -98,26 +96,27 @@ export default function Slider() {
 
     useEffect(() => {
         handleFetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
 
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/datasets_some`, {
-        // Data to be sent to the server
-        datasets_request_list: clone(bookmarkedDatasets)
-    }, { 'content-type': 'application/json' }).then((response) => {
-        console.log("post has been sent");
-        console.log("bookmarked datasets: ", bookmarkedDatasets)
-        console.log(response.data);
-        if(response.data && response.data.length == 1 && response.data[0] == null){
-            setDatasetsList([]);
-        } else {
-            setDatasetsList(response.data);
-        }
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/datasets_some`, {
+            // Data to be sent to the server
+            datasets_request_list: clone(bookmarkedDatasets)
+        }, { 'content-type': 'application/json' }).then((response) => {
+            console.log("post has been sent");
+            console.log("bookmarked datasets: ", bookmarkedDatasets)
+            console.log(response.data);
+            if (response.data && response.data.length === 1 && response.data[0] == null) {
+                setDatasetsList([]);
+            } else {
+                setDatasetsList(response.data);
+            }
 
-        set_gotInfo(true);
-        
-    });
+            set_gotInfo(true);
+
+        });
 
     }, [bookmarkedDatasets]);
 
@@ -127,7 +126,7 @@ export default function Slider() {
             var num_groups = Math.floor(num_datasets / 6);
             var last_group_num_datasets = num_datasets % 6;
 
-            if (num_datasets == 0) {
+            if (num_datasets === 0) {
                 return []
             }
 
@@ -155,7 +154,7 @@ export default function Slider() {
 
 
         setGroupings(createDatasetListGroups());
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datasets_list.length]);
 
     return (

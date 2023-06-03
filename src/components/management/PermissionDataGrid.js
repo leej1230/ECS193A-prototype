@@ -5,21 +5,19 @@ import { useContext, useEffect, useState } from "react";
 import GetUserAfterRender from "../../util/getUser";
 import UserStatusContext from "./UserStatusContext";
 
-const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 const users_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/get-user-all`;
 const role_update_url = `${process.env.REACT_APP_BACKEND_URL}/api/update-role`;
 const role_log_add_url = `${process.env.REACT_APP_BACKEND_URL}/api/add-role-log`;
-const role_log_fetch_url = `${process.env.REACT_APP_BACKEND_URL}/api/get-role-log`;
 
 const PermissionDataGrid = () => {
     let userData = GetUserAfterRender();
 
     const { setUserStatusChange } = useContext(UserStatusContext);
-    const { user, isLoading } = useAuth0();
+    const { user } = useAuth0();
     const userMetadata = user?.["https://unique.app.com/user_metadata"];
     const [currentPage, setCurrentPage] = useState(1);
     const [totalData, setTotalData] = useState([]);
-    const [data, setData] = useState([]); // New state to store the data from the API
+    const [, setData] = useState([]); // New state to store the data from the API
     const [dirty, setDirty] = useState(false);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -126,6 +124,7 @@ const PermissionDataGrid = () => {
 
         // Restore the page after fetching users
         setCurrentPage(savedPage);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, totalData.length, dirty]); // Run the effect only when currentPage changes
 
     const columns = [
@@ -167,9 +166,8 @@ const PermissionDataGrid = () => {
                     type="checkbox"
                     style={{ margin: "1rem" }}
                     checked={params.value}
-                    className={`form-check-input ${
-                        params.value ? "checked" : ""
-                    }`}
+                    className={`form-check-input ${params.value ? "checked" : ""
+                        }`}
                     onChange={() =>
                         handleCheckboxChange(
                             params.row.index,
