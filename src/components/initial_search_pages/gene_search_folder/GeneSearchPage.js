@@ -25,9 +25,9 @@ function GeneSearchPage() {
 
   useEffect(() => {
     if (isMounted) {
-      handleSearch();
+      //handleSearch();
     } else {
-      setIsMounted(true);
+      //setIsMounted(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listPage]);
@@ -153,7 +153,7 @@ function GeneSearchPage() {
               </div>
 
 
-            </div>
+              </div>
 
           </div>
         </div>

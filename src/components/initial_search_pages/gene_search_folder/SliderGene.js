@@ -108,9 +108,10 @@ export default function SliderGene() {
       console.log(response.data);
 
       let copy_resp_data = clone(response.data);
+
       for (let i = 0; i < copy_resp_data.length; i++) {
         if (copy_resp_data[i] === null) {
-          copy_resp_data = copy_resp_data.splice(i, 1);
+          copy_resp_data.splice(i, 1);
           i = i - 1;
         }
       }

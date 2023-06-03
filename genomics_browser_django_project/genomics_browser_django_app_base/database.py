@@ -1046,7 +1046,7 @@ class Database:
                         {'_id': 0, 'patient_ids': 0, 'gene_values': 0}
                 )
                 
-
+                
                 gene_objs_list.append(one_gene)
 
             gene_objs_list = gene_objs_list[1:]
