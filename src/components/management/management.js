@@ -18,32 +18,34 @@ const Management = () => {
 
     return (
         <body id="page-top" className="gene_body">
+            <div className="profile">
+                {/* ... other code */}
 
-            {/* ... other code */}
+                <InviteForm />
 
-            <InviteForm />
+                <div className="card">
+                    <div className="card-body">
+                        <h2 className="card-title2">User List</h2>
+                        <UserStatusContext.Provider
+                            value={{ userStatusChange, setUserStatusChange }}
+                        >
+                            <PermissionDataGrid />
+                        </UserStatusContext.Provider>
+                    </div>
+                </div>
 
-            <div className="card">
-                <div className="card-body">
-                    <h2 className="card-title2">User List</h2>
-                    <UserStatusContext.Provider
-                        value={{ userStatusChange, setUserStatusChange }}
-                    >
-                        <PermissionDataGrid />
-                    </UserStatusContext.Provider>
+                <div className="card">
+                    <div className="card-body">
+                        <h2 className="card-title2">History Log</h2>
+                        <UserStatusContext.Provider
+                            value={{ userStatusChange, setUserStatusChange }}
+                        >
+                            <HistoryLogDataGrid />
+                        </UserStatusContext.Provider>
+                    </div>
                 </div>
             </div>
 
-            <div className="card">
-                <div className="card-body">
-                    <h2 className="card-title2">History Log</h2>
-                    <UserStatusContext.Provider
-                        value={{ userStatusChange, setUserStatusChange }}
-                    >
-                        <HistoryLogDataGrid />
-                    </UserStatusContext.Provider>
-                </div>
-            </div>
         </body>
     );
 };
