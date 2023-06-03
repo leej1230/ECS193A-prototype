@@ -1,7 +1,7 @@
 // https://developer.auth0.com/resources/guides/spa/react/basic-authentication
 import React, { useState, useEffect } from 'react';
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import NotAuthorized from './components/notAuthorized';
+import NotAuthorized from "./notAuthorized";
 import axios from 'axios';
 import LoadingSpinner from './components/spinner/spinner';
 
@@ -32,7 +32,7 @@ const PrivateRoute = ({ children, isAdmin, isStaff, ...propsForComponent }) => {
         } else if (emailAuthorized) {
             return <>{children}</>;
         } else {
-            return <NotAuthorized />;
+            return <NotAuthorized missingPerm={"Email"} />;
         }
     });
 
