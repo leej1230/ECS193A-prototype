@@ -19,9 +19,6 @@ function Profile() {
     const [userInfo, setUserInfo] = useState();
     const [bookmarkedGenes, setBookmarkedGenes] = useState(null);
     const [bookmarkedDatasets, setBookmarkedDatasets] = useState(null);
-    const [datasetExists, setDatasetExists] = useState(true);
-    const [geneExists, setGeneExists] = useState(true);
-
 
     const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
@@ -57,57 +54,6 @@ function Profile() {
             });
         }
     };
-
-    const GeneNotDeleted = async (geneURL) => {
-        try {
-          const response = await axios.get(
-            `${process.env.REACT_APP_BACKEND_URL}/api/gene/${geneURL}`
-          );
-          //console.log(response.data.dataset_id)
-          if (response.status === 500) {
-            setGeneExists(false);
-            return null;
-          }
-          if (response.status === 200) {
-            setGeneExists(true);
-          }
-          if (response.data.dataset_id === null){
-            setGeneExists(false);
-            return null;
-          }
-          return response.data.dataset_id
-        } catch (error) {
-          setGeneExists(false);
-          return null;
-        }  
-      };
-      
-
-    
-    const DatasetNotDeleted = async (datasetID) => {
-        try {
-          const response = await axios.get(
-            `${process.env.REACT_APP_BACKEND_URL}/api/dataset/${datasetID}`
-          );
-          //console.log(response.data.id)
-          if (response.status === 500) {
-            setDatasetExists(false);
-            return null;
-          }
-          if (response.status === 200) {
-            setDatasetExists(true);
-          }
-          if (response.data.id === null && response.data.name === ""){
-            setDatasetExists(false);
-            return null;
-          }
-          return response.datasetID;
-        } catch (error) {
-          setDatasetExists(false);
-          return null;
-        }
-      };
-    
 
     useEffect(() => {
         handleFetchUser();
@@ -216,18 +162,9 @@ function Profile() {
                                                         style={{
                                                             marginLeft: "5px",
                                                         }}
-                                                        onClick={(e) => {
-                                                            const result = GeneNotDeleted(geneUrl);
-                                                            if (result === null) {
-                                                              e.preventDefault();
-                                                            }
-                                                          }}
                                                     >
                                                         {geneUrl}
                                                     </a>
-                                                    {!geneExists && (
-                                                            <span style={{ color: "red" }}> (Dataset page containing this gene was deleted)</span>
-                                                            )}
                                                 </div>
                                             ))
                                         ) : (
@@ -275,13 +212,6 @@ function Profile() {
                                                                 marginLeft:
                                                                     "5px",
                                                             }}
-                                                            onClick={(e) => {
-                                                                const datasetID = datasetsUrl.split("/")[1];
-                                                                const result = DatasetNotDeleted(datasetID);
-                                                                if (result === null) {
-                                                                  e.preventDefault();
-                                                                }
-                                                              }}
                                                         >
                                                             {
                                                                 datasetsUrl.split(
@@ -289,9 +219,6 @@ function Profile() {
                                                                 )[0]
                                                             }
                                                         </a>
-                                                        {!datasetExists && (
-                                                            <span style={{ color: "red" }}> (Dataset page was deleted)</span>
-                                                            )}
                                                     </div>
                                                 )
                                             )
@@ -312,5 +239,3 @@ function Profile() {
 }
 
 export default Profile;
-// <button onClick={() => GeneNotDeleted(geneUrl)}>Test URL</button>
-// <button onClick={() => DatasetNotDeleted(datasetsUrl.split('/')[1])}>Test URL</button>
