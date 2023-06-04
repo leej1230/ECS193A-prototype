@@ -25,10 +25,11 @@ function GeneSearchPage() {
 
   useEffect(() => {
     if (isMounted) {
-      handleSearch();
+      //handleSearch();
     } else {
-      setIsMounted(true);
+      //setIsMounted(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listPage]);
 
   //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
@@ -36,7 +37,7 @@ function GeneSearchPage() {
     try {
       let search_input_for_url = clone(searchInput)
 
-      if( search_input_for_url === "" ){
+      if (search_input_for_url === "") {
         search_input_for_url = " ";
       }
       const response = await axios.get(
@@ -79,9 +80,9 @@ function GeneSearchPage() {
           <div id="content">
 
             <div class="container-fluid" id="full_gene_search_page">
-              
-                <DashboardSidebar input_cur_active={"search_gene"} />
-              
+
+              <DashboardSidebar input_cur_active={"search_gene"} />
+
               <div id="gene_search_page_content">
 
                 <div id="title_box_gene_search">
@@ -152,7 +153,7 @@ function GeneSearchPage() {
               </div>
 
 
-            </div>
+              </div>
 
           </div>
         </div>

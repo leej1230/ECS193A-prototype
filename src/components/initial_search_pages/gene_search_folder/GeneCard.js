@@ -14,11 +14,12 @@ function GeneCard(props) {
   const [dataset_name, set_dataset_name] = useState("---");
   
   useEffect(() => {
-    if(props.gene){
+
+    if(props.gene && 'dataset_id' in props.gene && props.gene.dataset_id != null){
       axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset_name_from_dataset_id/${props.gene.dataset_id}`)
         .then(async (result) => {
-          console.log(result.data)
+
           set_dataset_name(String(result.data))
         })
     }

@@ -85,6 +85,11 @@ urlpatterns = [
         {"inner": "Counters", "callback": "get_counter_all"},
     ),
     path(
+        'api/get_row_type/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_row_type"},
+    ),
+    path(
         'api/registration',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "post_user_one"},
@@ -160,7 +165,7 @@ urlpatterns = [
         {"inner": "Genes", "callback": "get_seq_names"},
     ),
     path(
-        'api/delete_dataset/<slug:dataset_id>',
+        'api/delete_dataset',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),
@@ -196,6 +201,16 @@ urlpatterns = [
         'api/delete_edit_record',
         views.BackendServer.as_view(),
         {"inner": "Users", "callback": "delete_one_edit"},
+    ),
+    path(
+        'api/submit_authorized_email',
+        views.BackendServer.as_view(),
+        {"inner": "Utils", "callback": "authorize_Email"},
+    ),
+    path(
+        'api/check_authorized_email',
+        views.BackendServer.as_view(),
+        {"inner": "Utils", "callback": "check_Email"},
     ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]

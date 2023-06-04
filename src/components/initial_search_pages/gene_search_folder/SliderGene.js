@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, CardActions, Typography } from '@mui/material';
-import { Button } from "@mui/material";
 
 import GeneList from "./GeneList"
 import axios from 'axios';
@@ -8,7 +6,7 @@ import ScrollBars from "react-custom-scrollbars";
 
 import { useAuth0 } from '@auth0/auth0-react';
 
-import {clone} from "ramda";
+import { clone } from "ramda";
 
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css"
@@ -28,9 +26,7 @@ function debounce(fn, ms) {
 
 
 function SliderGeneItemsContainer(props) {
-  const [index, setIndex] = useState(0);
-
-  const [dimensions, setDimensions] = React.useState({ 
+  const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
     width: window.innerWidth
   })
@@ -45,19 +41,19 @@ function SliderGeneItemsContainer(props) {
 
     window.addEventListener('resize', debouncedHandleResize)
 
-      return _ => {
-        window.removeEventListener('resize', debouncedHandleResize)
+    return _ => {
+      window.removeEventListener('resize', debouncedHandleResize)
 
-      }
-    })
+    }
+  })
 
   return (
     <div>
 
       <ScrollBars
-       style={{ width: parseInt(0.7 * dimensions.width), height: '405px', margin: '0px', padding: '0px' }}  >
+        style={{ width: parseInt(0.7 * dimensions.width), height: '405px', margin: '0px', padding: '0px' }}  >
         {props.gene_groups_list.map((child, index) =>
-        <div key={index}> <GeneList curWindowWidth={dimensions.width} curWindowHeight={dimensions.height} genes_arr={props.gene_groups_list[index]} /> </div>)}
+          <div key={index}> <GeneList curWindowWidth={dimensions.width} curWindowHeight={dimensions.height} genes_arr={props.gene_groups_list[index]} /> </div>)}
       </ScrollBars>
 
       <script src="../../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
@@ -79,26 +75,27 @@ export default function SliderGene() {
   const [genes_list, setGenesList] = useState([]);
   const [groupings, setGroupings] = useState([]);
 
-  const { user, isLoading } = useAuth0();
-  const [userInfo, setUserInfo] = useState();
+  const { user } = useAuth0();
+  const [, setUserInfo] = useState();
   const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
 
   const handleFetchUser = async () => {
     const userSub = user.sub.split("|")[1];
     try {
-        const res = await axios.get(`${user_get_url}/${userSub}`);
-        console.log(res.data);
-        setUserInfo(res.data)
-        setBookmarkedGenes(res.data.bookmarked_genes);
-        console.log("fetched and saved user and bookmark information")
+      const res = await axios.get(`${user_get_url}/${userSub}`);
+
+      setUserInfo(res.data)
+      setBookmarkedGenes(clone(res.data.bookmarked_genes));
+
 
     } catch (e) {
-        console.log("Failed to fetch user Info.", e);
+      console.log("Failed to fetch user Info.", e);
     }
   };
 
   useEffect(() => {
     handleFetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -109,14 +106,24 @@ export default function SliderGene() {
     }, { 'content-type': 'application/json' }).then((response) => {
       console.log("post has been sent");
       console.log(response.data);
-      if(response.data && response.data.length == 1 && response.data[0] == null){
-        setGenesList([]);
-      }else{
-        setGenesList(response.data);
-      }
-      
-    });
 
+      let copy_resp_data = clone(response.data);
+
+      for (let i = 0; i < copy_resp_data.length; i++) {
+        if (copy_resp_data[i] === null) {
+          copy_resp_data.splice(i, 1);
+          i = i - 1;
+        }
+      }
+
+      if (copy_resp_data && copy_resp_data.length === 1 && copy_resp_data[0] == null) {
+        setGenesList([]);
+      } else {
+        setGenesList(copy_resp_data);
+      }
+
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmarkedGenes]);
 
   useEffect(() => {
@@ -126,11 +133,11 @@ export default function SliderGene() {
       var num_groups = Math.floor(num_genes / 6);
       var last_group_num_genes = num_genes % 6;
 
-      if(num_genes == 0){
+      if (num_genes === 0) {
         return []
       }
 
-      if(last_group_num_genes > 0){
+      if (last_group_num_genes > 0) {
         num_groups = num_groups + 1
       }
 
@@ -138,7 +145,7 @@ export default function SliderGene() {
       for (let index = 0; index < num_groups; index++) {
         const start_gene_index = index * 6;
         let end_gene_index = start_gene_index + 6;
-        if ((index+1) === num_groups && num_genes % 6 > 0 ) {
+        if ((index + 1) === num_groups && num_genes % 6 > 0) {
           end_gene_index = start_gene_index + last_group_num_genes;
         }
 
@@ -151,7 +158,7 @@ export default function SliderGene() {
 
       return groups_list;
     }
-    
+
     setGroupings(createGeneListGroups());
   }, [genes_list]);
 
@@ -169,8 +176,8 @@ export default function SliderGene() {
 
       <script src="../../bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
       <script src="../../bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-      </div>
-    );
+    </div>
+  );
 
 }
 

@@ -11,6 +11,19 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# Set the project base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '../.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +41,7 @@ SECRET_KEY = (
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','ecs193-deploy-test.herokuapp.com']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,17 +91,16 @@ WSGI_APPLICATION = 'genomics_browser_django_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-'''DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'genomics_browser_database',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb+srv://jaewoo1230:foreveryone1230@test.dq6btwc.mongodb.net/?retryWrites=true&w=majority'
+            'host': env('DATABASE_CONNECTION_STRING')
         },
     }
-}'''
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

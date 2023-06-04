@@ -1,0 +1,17 @@
+#gene_table_area{
+    width: 100%;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#dataset_genes_list{
+    flex: 1;
+}
+
+#dataset_table_and_stats_row {
+    margin-top: 2%;
+    margin-left: 1px;
+    display: flex;
+    margin-right: 1px;
+}

@@ -1,16 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-
-import { Box, Card, CardContent, CardActions, Typography, Button, Table, TableRow, TableCell, TableContainer, TableBody, Paper } from '@mui/material';
-
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React from 'react';
 
 import ReactPlayer from 'react-player'
-
-import LoginButton from './LoginButton';
-
-//import './bootstrap_landing_page_template/css/styles.css'
 
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "../bootstrap_gene_page/css/sb-admin-2.min.css"
@@ -33,7 +24,7 @@ function HomePage() {
     const { loginWithRedirect } = useAuth0();
 
     // orig window dimensions: 1536 x 754 (width x height)
-    const [dimensions, setDimensions] = React.useState({
+    const [, setDimensions] = React.useState({
         height: window.innerHeight,
         width: window.innerWidth
     })
@@ -136,10 +127,7 @@ function HomePage() {
                 controls={false}
                 //style={{ minWidth:parseInt(dimensions.width), minHeight:parseInt(dimensions.height),  width: parseInt(dimensions.width), height: parseInt(dimensions.height), position: 'absolute', left: 0, right: 0 }}
                 style={{ minWidth: vid_width, minHeight: vid_height, width: vid_width, height: vid_height, position: 'absolute', left: 0, right: 0, zindex: -1 }}
-                onLoad={async (response) => {
-                    const { width, height } = response.naturalSize;
-                    //
-                }}
+                onLoad={async () => { }}
                 disablePictureInPicture={true}
             />
 
@@ -147,9 +135,7 @@ function HomePage() {
                 <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
                 <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
                 <div className="d-flex align-items-center justify-content-center">
-                    <a class="btn btn-primary" onClick={() => loginWithRedirect()}>Start</a>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-                    {/* <button class="btn btn-primary" type="submit">Signup</button>
-                    <LoginButton /> */}
+                    <a href={() => false} class="btn btn-primary" onClick={() => loginWithRedirect()}>Start</a>
                 </div>
             </div>
 
@@ -169,29 +155,3 @@ function HomePage() {
 }
 
 export default HomePage
-
-{/*
-
-            <div class="container">
-                <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
-                <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
-                <div className="d-flex align-items-center justify-content-center">
-                   
-                </div>
-                
-            </div>
-
-        </div>
-        </footer>
-
-        */}
-
-{/*<video
-                autoPlay
-                muted
-                loop
-                style={{ height: "100%", width: "100%", objectFit: "cover" }} //object-fit:cover
-                >
-                <source src="https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4" type="video/mp4" />
-                </video>*/}
-

@@ -64,6 +64,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             'patient_id_count',
             'date_created',
             'url',
+            'rowType'
         )
 
 

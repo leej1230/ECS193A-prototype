@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import {  CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import "./GenePage.css";
 
 import GeneNameHeaderHolder from './GeneNameHeaderHolder'
@@ -9,9 +9,10 @@ import BasicInfo from './BasicInfo'
 import NumberFilter from '../filters/NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
 import ProductFilter from '../filters/ProductFilter';
+import filterNumber from '../filters/filterNumber'
 import SampleGraph from './echartdemo';
 
-import filterFactory, { FILTER_TYPES, customFilter, textFilter,  Comparator } from 'react-bootstrap-table2-filter';
+import filterFactory, { FILTER_TYPES, customFilter, textFilter, Comparator } from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
@@ -29,12 +30,13 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 import LoadingSpinner from "../spinner/spinner";
+import { clone } from "ramda";
 
 
 const selectOptions = [
-    { value: "Yes", label: "yes" },
-    { value: "No", label: "no" },
-    { value: "unknown", label: "Unknown" },
+  { value: "Yes", label: "yes" },
+  { value: "No", label: "no" },
+  { value: "unknown", label: "Unknown" },
 ];
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1);
@@ -44,34 +46,23 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMP
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
+  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
-    { patient_id: "" },
-    { age: 0 },
-    { diabete: "" },
-    { final_diagnosis: "" },
-    { gender: "" },
-    { hypercholesterolemia: "" },
-    { hypertension: "" },
-    { race: "" },
-    { id: 0 }
+    { patient_id: "" }
   ]);
   const [patient_information_expanded, set_patient_information_expanded] = useState([
-    { patient_id: "" },
-    { age: 0 },
-    { diabete: "" },
-    { final_diagnosis: "" },
-    { gender: "" },
-    { hypercholesterolemia: "" },
-    { hypertension: "" },
-    { race: "" },
-    { id: 0 }
+    { patient_id: "" }
   ]);
 
   const [graphType, setGraphType] = useState('bar');
-  
+
+  const [, set_basic_gene_info] = useState({ id: 1, dataset_id: 0, name: "a" })
+
+  const [dataset_rowType, set_dataset_rowType] = useState("")
+
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
+  const [loaded_gene_info, set_loaded_gene_info] = useState(false);
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -97,92 +88,80 @@ function GenePage() {
       delay: 1000,
       type: FILTER_TYPES.MULTISELECT
     }),
-        filterRenderer: (onFilter, column) => {
-                return (
-                    <ProductFilter
-                        onFilter={onFilter}
-                        column={column}
-                        optionsInput={selectOptions}
-                    />
-                );
-            },
-        },
-        {
-            dataField: "hypertension",
-            text: "Hypertension",
-            filter: customFilter({
-                delay: 1000,
-                type: FILTER_TYPES.MULTISELECT,
-            }),
+    filterRenderer: (onFilter, column) => {
+      return (
+        <ProductFilter
+          onFilter={onFilter}
+          column={column}
+          optionsInput={selectOptions}
+        />
+      );
+    },
+  },
+  {
+    dataField: "hypertension",
+    text: "Hypertension",
+    filter: customFilter({
+      delay: 1000,
+      type: FILTER_TYPES.MULTISELECT,
+    }),
 
-            filterRenderer: (onFilter, column) => {
-                return (
-                    <ProductFilter
-                        onFilter={onFilter}
-                        column={column}
-                        optionsInput={selectOptions}
-                    />
-                );
-            },
-        },
-        {
-            dataField: "race",
-            text: "Race",
-        },
-    ]);
+    filterRenderer: (onFilter, column) => {
+      return (
+        <ProductFilter
+          onFilter={onFilter}
+          column={column}
+          optionsInput={selectOptions}
+        />
+      );
+    },
+  },
+  {
+    dataField: "race",
+    text: "Race",
+  },
+  ]);
 
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
 
-
-  const filterNumber = (filterVals, data) => {
-    let compareValCode = filterVals['compareValCode']
-    let inputVal1 = filterVals['inputVal1']
-    let inputVal2 = filterVals['inputVal2']
-    let colName = filterVals['colName']
-
-    if (compareValCode === 0) {
-      // no filter
-      return data;
-    }
-    else if (compareValCode === 1) {
-      // <
-
-      return data.filter(patient_one => patient_one[colName] < inputVal1);
-    } else if (compareValCode === 2) {
-      // >
-      return data.filter(patient_one => patient_one[colName] > inputVal1);
-    } else if (compareValCode === 3) {
-      // =
-      return data.filter(patient_one => patient_one[colName] === inputVal1);
-    } else if (compareValCode === 4) {
-      // Between
-      return data.filter(patient_one => patient_one[colName] > inputVal1 && patient_one[colName] < inputVal2);
-    }
-
-
-  }
-
   const generatePatientTable = (patients_info) => {
-    if (patients_info === null) {
+    if (patients_info.length === 0 || patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null) {
       return;
     }
 
-    for (let i = 0; i < patients_info.length; i++) {
-      var cur_patient = patients_info[i]
-      // patient has no id, so this is fine
-      cur_patient['id'] = i + 1
-      let patient_index = gene_data.patient_ids.arr.indexOf(cur_patient['patient_id'])
-      if (patient_index !== -1) {
-        cur_patient['gene_val'] = gene_data.gene_values.arr[patient_index]
-      }
-    }
+    //var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+    var column_possibilities = false;
 
     // 'id' not need options
     var patient_columns_list = []
 
-    var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
+
+    if (dataset_rowType === "patient") {
+      for (let i = 0; i < patients_info.length; i++) {
+        var cur_patient = patients_info[i]
+        // patient has no id, so this is fine
+        cur_patient['id'] = i + 1
+        let patient_index = gene_data.patient_ids.arr.indexOf(cur_patient['patient_id'])
+        if (patient_index !== -1) {
+          cur_patient['gene_val'] = gene_data.gene_values.arr[patient_index]
+        }
+      }
+
+
+    } else if (dataset_rowType === "gene") {
+      // genes are rows, patients: only gene value and ids info
+      // add some hardcoded values in this case like patient_id, gene_values, etc. so use those
+
+      let cur_gene_index = patients_info[0].gene_ids.arr.indexOf(gene_data.name)
+      patients_info = patients_info.map((patient_obj_element, patient_obj_key) => { return { 'patient_id': patient_obj_element.patient_id, 'gene_value': patient_obj_element.gene_values.arr[cur_gene_index] } })
+
+    }
+
+    column_possibilities = Object.keys(patients_info[0])
+
     for (let i = 0; i < column_possibilities.length; i++) {
+
       var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
 
       let select_options_col = []
@@ -207,7 +186,7 @@ function GenePage() {
           }),
           filterRenderer: (onFilter, column) => {
             return (
-              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patient_information_expanded} />
+              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
             )
           }
         }
@@ -249,34 +228,78 @@ function GenePage() {
   // componentDidMount() {
   useEffect(() => {
     async function fetchGeneData() {
-      const res = await axios.get(URL);
-      const gene_ext = await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`);
-      setGeneExternalData(gene_ext.data);
-      setGene_data(res.data);
-      set_graph_table_filter_data(res.data);
+      await axios.get(URL).then((res) => {
+
+
+        setGene_data(clone(res.data));
+        set_graph_table_filter_data(res.data);
+        set_loaded_gene_info(true);
+      });
+      await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
+        setGeneExternalData(gene_ext.data);
+      });
+
+
     }
 
 
 
     fetchGeneData();
 
-    //handleFetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
 
 
   }, []);
+
+  useEffect(() => {
+    async function fetchRowType() {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${gene_data.dataset_id}`).then((res) => {
+
+        set_dataset_rowType(res.data)
+
+      });
+    }
+
+    fetchRowType();
+  }, [gene_data.dataset_id])
 
 
   useEffect(() => {
     async function fetchPatientsData() {
 
-      const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
-      const res = await axios.get(patientsDataAPIURL);
-      if (res.data.length > 0) {
-        set_patient_information_expanded(generatePatientTable(res.data));
+      if (gene_data && 'dataset_id' in gene_data && gene_data.dataset_id != null) {
+
+        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
+        await axios.get(patientsDataAPIURL).then((res) => {
+
+          if (res.data.length > 0) {
+            let some_result = generatePatientTable(clone(res.data))
+            set_patient_information_expanded(some_result);
+            set_patient_data_table_filtered(some_result)
+
+          }
+        });
+
       }
     }
 
     fetchPatientsData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset_rowType])
+
+
+  useEffect(() => {
+    let temp_obj = clone(gene_data)
+    let list_attr = Object.keys(temp_obj)
+    for (let i = 0; i < list_attr.length; i++) {
+      if (temp_obj[list_attr[i]] !== null && temp_obj[list_attr[i]].constructor.name === 'Object' && !Array.isArray(temp_obj[list_attr[i]]) && !(temp_obj[list_attr[i]] instanceof Date)) {
+        // object so remove (or convert to array)
+        delete temp_obj[list_attr[i]]
+      }
+    }
+
+    set_basic_gene_info(temp_obj)
   }, [gene_data])
 
   const graphDataFilter = (cur_filters) => {
@@ -412,129 +435,147 @@ function GenePage() {
 
   return (
     <body id="page-top" class="gene_body">
-            <div id="wrapper">
-                {!gene_data["name"] ? (
-                    <div style={{ marginTop: "40vh" }}>
-                        <LoadingSpinner />
-                    </div>
-                ) :(
+      <div id="wrapper">
+        {!(gene_data && ("name" in gene_data) && gene_data["name"]) ? (
+          <div style={{ marginTop: "40vh" }}>
+            <LoadingSpinner />
+          </div>
+        ) : (
 
-                <div id="content-wrapper" class="d-flex flex-column">
+          <div id="content-wrapper" class="d-flex flex-column">
 
 
-                    <div id="content">
+            <div id="content">
 
-                        <div class="container-fluid" id="gene_page_full">
+              <div class="container-fluid" id="gene_page_full">
 
-                            <div id="control_buttons_gene_page">
-                                <a href={"/gene/" + gene_data.name + "/" + gene_data.id} class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
-                                    class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
-                            </div>
-
-                            <GeneNameHeaderHolder input_object_data={gene_data} />
-
-                            <div class="container-fluid" id="gene_tabs_container_content" >
-                                <Tabs
-                                    defaultActiveKey="basic_info"
-                                    id="uncontrolled-tab-example"
-                                    className="mb-3"
-                                >
-                                    <Tab eventKey="basic_info" title="Basic Info">
-                                    <BasicInfo title_info_box = "Gene Information" inner_content_elements={[<p>Description: {gene_external_data.description}</p>, <p>Dataset ID: {gene_data.dataset_id}</p>,
-                                        <a href={"/dataset/" + gene_data.dataset_id}>Link to Dataset</a>]} />
-                                    </Tab>
-                                    <Tab eventKey="gene_graph" title="Graph">
-                                    <div id="graph_gene_box">
-                                        <div class="card shadow mb-4">
-                                        <div
-                                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                            <h6 class="m-0 font-weight-bold text-primary">Data Graph</h6>
-
-                                        </div>
-                                        <div class="card-body">
-
-                                            {graph_table_filter_data ? (
-                                            <div>
-                                                <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
-                                                <div className='GraphType'>
-                                                <FormControl margin='dense' fullWidth>
-                                                    <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
-                                                    <Select
-                                                    labelId="GraphTypeLabel"
-                                                    id="GraphTypeSelect"
-                                                    value={graphType}
-                                                    label="GraphType"
-                                                    onChange={(e) => { setGraphType(e.target.value) }}
-                                                    >
-                                                    <MenuItem value={'bar'}>Bar</MenuItem>
-                                                    <MenuItem value={'line'}>Basic Line</MenuItem>
-                                                    <MenuItem value={'pie'}>Pie</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                                </div>
-                                            </div>
-                                            ) : (
-                                            <div>
-                                                <CircularProgress />
-                                            </div>
-                                            )}
-
-                                        </div>
-
-                                        <div id='graph_filter'>
-                                            <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </Tab>
-                                    <Tab eventKey="patients_list" title="Patient List">
-                                    <div class="card shadow mb-4" id="display_filter_patients_gene">
-                                        <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                                        </div>
-
-                                        <div class="row" id="table_options_outer">
-                                        <div id="patient_table_area">
-                                            <BootstrapTable keyField='id' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </Tab>
-                                    <Tab eventKey="animation" title="Animation">
-                                    <GeneSequenceAnimation />
-                                    </Tab>
-                                </Tabs>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <footer class="sticky-footer bg-white">
-                      <div class="container my-auto">
-                          <div class="copyright text-center my-auto">
-                              <span>Copyright &copy; Your Website 2021</span>
-                          </div>
-                      </div>
-                    </footer>
-                
+                <div id="control_buttons_gene_page">
+                  <a href={"/gene/" + gene_data.name + "/" + gene_data.id} class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
+                    class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
                 </div>
-                )}
+
+                <GeneNameHeaderHolder input_object_data={gene_data} />
+
+                <div class="container-fluid" id="gene_tabs_container_content" >
+                  <Tabs
+                    defaultActiveKey="basic_info"
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
+                  >
+                    <Tab eventKey="basic_info" title="Basic Info">
+                      <BasicInfo title_info_box="Gene Information" input_gene={gene_data} input_description={gene_external_data.description} />
+                    </Tab>
+                    <Tab eventKey="gene_graph" title="Graph">
+                      <div id="graph_gene_box">
+                        <div class="card shadow mb-4">
+                          <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Data Graph</h6>
+
+                          </div>
+                          <div class="card-body">
+
+                            {loaded_gene_info ?
+                              <>
+                                {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
+                                  (<div>
+                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
+                                    <div className='GraphType'>
+                                      <FormControl margin='dense' fullWidth>
+                                        <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
+                                        <Select
+                                          labelId="GraphTypeLabel"
+                                          id="GraphTypeSelect"
+                                          value={graphType}
+                                          label="GraphType"
+                                          onChange={(e) => { setGraphType(e.target.value) }}
+                                        >
+                                          <MenuItem value={'bar'}>Bar</MenuItem>
+                                          <MenuItem value={'line'}>Basic Line</MenuItem>
+                                          <MenuItem value={'pie'}>Pie</MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    </div>
+                                  </div>
+                                  ) : (
+                                    <div> No Graph of Gene Values Since No Patient Data </div>
+                                  )}
+                              </>
+                              : (
+                                <div>
+                                  <CircularProgress />
+                                </div>
+
+                              )}
+
+                          </div>
+                          {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
+                            <div id='graph_filter'>
+                              <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
+                            </div>
+                            : <div></div>}
+                        </div>
+                      </div>
+                    </Tab>
+                    {dataset_rowType === "patient" || (patient_information_expanded.length > 0 && patient_information_expanded[0]['patient_id'] !== "") ?
+                      <Tab eventKey="patients_list" title="Patient List">
+                        <div class="card shadow mb-4" id="display_filter_patients_gene">
+                          <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                          </div>
+
+                          <div class="row" id="table_options_outer">
+                            <div id="patient_table_area">
+                              <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                            </div>
+                          </div>
+                        </div>
+                        :
+                        <></>
+
+                      </Tab>
+                      :
+                      <>
+
+                      </>
+
+                    }
+                    <Tab eventKey="animation" title="Animation">
+                      <GeneSequenceAnimation />
+                    </Tab>
+                  </Tabs>
+                </div>
+
+              </div>
+
             </div>
-            
 
-            <script src="../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
-            <script src="../bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                  <span>Copyright &copy; Your Website 2021</span>
+                </div>
+              </div>
+            </footer>
 
-            <script src="../bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+          </div>
+        )}
+      </div>
 
-            <script src="../bootstrap_gene_page/js/sb-admin-2.min.js"></script>
 
-            <script src="../bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+      <script src="../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
+      <script src="../bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-            <script src="../bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
-            <script src="../bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
-        </body>
-    );
+      <script src="../bootstrap_gene_page/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <script src="../bootstrap_gene_page/js/sb-admin-2.min.js"></script>
+
+      <script src="../bootstrap_gene_page/vendor/chart.js/Chart.min.js"></script>
+
+      <script src="../bootstrap_gene_page/js/demo/chart-area-demo.js"></script>
+      <script src="../bootstrap_gene_page/js/demo/chart-pie-demo.js"></script>
+    </body>
+  );
 }
 
 export default GenePage;

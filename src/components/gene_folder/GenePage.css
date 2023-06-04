@@ -69,6 +69,16 @@ body{
     margin-top: 40px;
 }
 
+#info_box{
+    left: 0;
+    top: 0;
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    min-width: 100%;
+    justify-content: center;
+}
+
 #graph_gene_box{
     justify-content: center;
     margin-left: 0px;
