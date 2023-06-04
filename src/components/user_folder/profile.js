@@ -9,7 +9,6 @@ import "./profile.css";
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 const remove_gene_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`;
 const remove_dataset_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`;
-const url = process.env.REACT_APP_FRONTEND_URL;
 
 function Profile() {
     const { user } = useAuth0();
@@ -120,7 +119,7 @@ function Profile() {
                                             {is_admin && (
                                                 <div>
                                                     <a
-                                                        href={`${url}/manage`}
+                                                        href="/manage"
                                                         style={{
                                                             fontSize:
                                                                 "22px",
@@ -159,7 +158,7 @@ function Profile() {
                                                 }
                                             />
                                             <a
-                                                href={`${url}/gene/${geneUrl}`}
+                                                href={`/gene/${geneUrl}`}
                                                 className="mx-3"
                                                 style={{
                                                     marginLeft: "5px",
@@ -203,7 +202,7 @@ function Profile() {
                                                     }
                                                 />
                                                 <a
-                                                    href={`${url}/dataset/${datasetsUrl.split(
+                                                    href={`/dataset/${datasetsUrl.split(
                                                         "/"
                                                     )[1]
                                                         }`}
