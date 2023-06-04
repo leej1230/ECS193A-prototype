@@ -11,14 +11,12 @@ const remove_gene_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remov
 const remove_dataset_bookmark_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`;
 const url = process.env.REACT_APP_FRONTEND_URL;
 
-const is_admin = true;
-const is_member = true;
-
 function Profile() {
-    const { user, isLoading } = useAuth0();
-    const [userInfo, setUserInfo] = useState();
+    const { user } = useAuth0();
     const [bookmarkedGenes, setBookmarkedGenes] = useState(null);
     const [bookmarkedDatasets, setBookmarkedDatasets] = useState(null);
+    const [is_admin, setIs_admin] = useState(false);
+    const [is_staff, setIs_staff] = useState(false);
 
     const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
@@ -27,9 +25,11 @@ function Profile() {
         try {
             const res = await axios.get(`${user_get_url}/${userSub}`);
             console.log(res.data);
-            setUserInfo(res.data);
-            setBookmarkedGenes(res.data.bookmarked_genes);
-            setBookmarkedDatasets(res.data.bookmarked_datasets);
+            const fetchedUserInfo = res.data;
+            setBookmarkedGenes(fetchedUserInfo.bookmarked_genes);
+            setBookmarkedDatasets(fetchedUserInfo.bookmarked_datasets);
+            setIs_admin(fetchedUserInfo.is_admin)
+            setIs_staff(fetchedUserInfo.is_staff)
         } catch (e) {
             console.log("Failed to fetch user Info.", e);
         }
@@ -71,166 +71,164 @@ function Profile() {
                 </div>
 
                 {userMetadata && (
-                    <div className="container mx-2 my-2">
-                        {isLoading || !userInfo ? (
-                            <div style={{ marginTop: "40vh" }}>
-                                <LoadingSpinner />
-                            </div>
-                        ) : (
-                            <div>
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h2 className="card-title2">
-                                            User Information
-                                        </h2>
-                                        <div className="card-content">
-                                            <div className="user-info">
-                                                {userMetadata && (
+                    <div>
+                        <div className="card">
+                            <div className="card-body">
+                                <h2 className="card-title2">User Information</h2>
+                                <div className="card-content">
+                                    <div className="user-info">
+                                        {userMetadata && (
+                                            <h4>
+                                                User full name: {userMetadata.given_name}{" "}
+                                                {userMetadata.family_name}
+                                            </h4>
+                                        )}
+                                        <ul className="role-list">
+                                            {userMetadata && (
+                                                <h4>
+                                                    User full name:{" "}
+                                                    {
+                                                        userMetadata.given_name
+                                                    }{" "}
+                                                    {
+                                                        userMetadata.family_name
+                                                    }
+                                                </h4>
+                                            )}
+                                            <ul className="role-list">
+                                                {is_admin &&
+                                                    is_staff ? (
                                                     <h4>
-                                                        User full name:{" "}
-                                                        {
-                                                            userMetadata.given_name
-                                                        }{" "}
-                                                        {
-                                                            userMetadata.family_name
-                                                        }
+                                                        User Role: Admin and Staff
+                                                    </h4>
+                                                ) : is_admin &&
+                                                    !is_staff ? (
+                                                    <h4>
+                                                        User Role: Admin
+                                                    </h4>
+                                                ) : !is_admin &&
+                                                    is_staff ? (
+                                                    <h4>
+                                                        User Role: Staff
+                                                    </h4>
+                                                ) : (
+                                                    <h4>
+                                                        User Role: No Role
                                                     </h4>
                                                 )}
-                                                <ul className="role-list">
-                                                    {is_admin && is_member ? (
-                                                        <h4>
-                                                            User Role: Admin and
-                                                            Verified
-                                                        </h4>
-                                                    ) : !is_admin &&
-                                                        is_member ? (
-                                                        <h4>
-                                                            User Role: Verified
-                                                        </h4>
-                                                    ) : (
-                                                        <h4>
-                                                            User Role: Not
-                                                            Verified
-                                                        </h4>
-                                                    )}
-                                                    {is_admin && (
-                                                        <div>
-                                                            <a
-                                                                href={`${url}/manage`}
-                                                                style={{
-                                                                    fontSize:
-                                                                        "22px",
-                                                                }}
-                                                            >
-                                                                Manage Users
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h2 className="card-title2">
-                                            Gene Bookmarks
-                                        </h2>
-                                        {Boolean(bookmarkedGenes) &&
-                                            bookmarkedGenes.length > 0 ? (
-                                            bookmarkedGenes.map((geneUrl) => (
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        justifyContent:
-                                                            "flex-start",
-                                                    }}
-                                                >
-                                                    <DeleteIcon
-                                                        sx={{ color: "red" }}
-                                                        onClick={() =>
-                                                            handleRemoveBookmark(
-                                                                "gene",
-                                                                geneUrl
-                                                            )
-                                                        }
-                                                    />
+                                            </ul>
+                                            {is_admin && (
+                                                <div>
                                                     <a
-                                                        href={`${url}/gene/${geneUrl}`}
-                                                        className="mx-3"
+                                                        href={`${url}/manage`}
                                                         style={{
-                                                            marginLeft: "5px",
+                                                            fontSize:
+                                                                "22px",
                                                         }}
                                                     >
-                                                        {geneUrl}
+                                                        Manage Users
                                                     </a>
                                                 </div>
-                                            ))
-                                        ) : (
-                                            <h4 className="mx-3 my-2">
-                                                No Bookmarks Yet!
-                                            </h4>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h2 className="card-title2">
-                                            Datasets Bookmarks
-                                        </h2>
-                                        {Boolean(bookmarkedDatasets) &&
-                                            bookmarkedDatasets.length > 0 ? (
-                                            bookmarkedDatasets.map(
-                                                (datasetsUrl) => (
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            justifyContent:
-                                                                "flex-start",
-                                                        }}
-                                                    >
-                                                        <DeleteIcon
-                                                            sx={{
-                                                                color: "red",
-                                                            }}
-                                                            onClick={() =>
-                                                                handleRemoveBookmark(
-                                                                    "dataset",
-                                                                    datasetsUrl
-                                                                )
-                                                            }
-                                                        />
-                                                        <a
-                                                            href={`${url}/dataset/${datasetsUrl.split(
-                                                                "/"
-                                                            )[1]
-                                                                }`}
-                                                            className="mx-3"
-                                                            style={{
-                                                                marginLeft:
-                                                                    "5px",
-                                                            }}
-                                                        >
-                                                            {
-                                                                datasetsUrl.split(
-                                                                    "/"
-                                                                )[0]
-                                                            }
-                                                        </a>
-                                                    </div>
-                                                )
-                                            )
-                                        ) : (
-                                            <h4 className="mx-3 my-2">
-                                                No Bookmarks Yet!
-                                            </h4>
-                                        )}
+                                            )}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
+
+                        <div className="card">
+                            <div className="card-body">
+                                <h2 className="card-title2">Gene Bookmarks</h2>
+                                {Boolean(bookmarkedGenes) &&
+                                    bookmarkedGenes.length > 0 ? (
+                                    bookmarkedGenes.map((geneUrl) => (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent:
+                                                    "flex-start",
+                                            }}
+                                        >
+                                            <DeleteIcon
+                                                sx={{ color: "red" }}
+                                                onClick={() =>
+                                                    handleRemoveBookmark(
+                                                        "gene",
+                                                        geneUrl
+                                                    )
+                                                }
+                                            />
+                                            <a
+                                                href={`${url}/gene/${geneUrl}`}
+                                                className="mx-3"
+                                                style={{
+                                                    marginLeft: "5px",
+                                                }}
+                                            >
+                                                {geneUrl}
+                                            </a>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <h4 className="mx-3 my-2">
+                                        No Bookmarks Yet!
+                                    </h4>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-body">
+                                <h2 className="card-title2">Dataset Bookmarks</h2>
+                                {Boolean(bookmarkedDatasets) &&
+                                    bookmarkedDatasets.length > 0 ? (
+                                    bookmarkedDatasets.map(
+                                        (datasetsUrl) => (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent:
+                                                        "flex-start",
+                                                }}
+                                            >
+                                                <DeleteIcon
+                                                    sx={{
+                                                        color: "red",
+                                                    }}
+                                                    onClick={() =>
+                                                        handleRemoveBookmark(
+                                                            "dataset",
+                                                            datasetsUrl
+                                                        )
+                                                    }
+                                                />
+                                                <a
+                                                    href={`${url}/dataset/${datasetsUrl.split(
+                                                        "/"
+                                                    )[1]
+                                                        }`}
+                                                    className="mx-3"
+                                                    style={{
+                                                        marginLeft:
+                                                            "5px",
+                                                    }}
+                                                >
+                                                    {
+                                                        datasetsUrl.split(
+                                                            "/"
+                                                        )[0]
+                                                    }
+                                                </a>
+                                            </div>
+                                        )
+                                    )
+                                ) : (
+                                    <h4 className="mx-3 my-2">
+                                        No Bookmarks Yet!
+                                    </h4>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
