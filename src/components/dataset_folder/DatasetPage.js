@@ -48,6 +48,8 @@ function DatasetPage() {
   const [gotPatientInfo, set_gotPatientInfo] = useState(false)
   const [gotGeneInfo, set_gotGeneInfo] = useState(true);
 
+  const [reload_edits, set_reload_edits] = useState(false);
+
   const { user } = useAuth0();
 
   useEffect(() => {
@@ -293,8 +295,8 @@ function DatasetPage() {
                     <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
-                    <DatasetEditTable input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
-                    <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_displayHistoryTable={displayHistoryTable} />
+                    <DatasetEditTable input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} />
+                    <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_displayHistoryTable={displayHistoryTable} input_reload_history={reload_edits} input_set_reload_edit_history={set_reload_edits} />
                   </Tab>
                 </Tabs>
               </div>
