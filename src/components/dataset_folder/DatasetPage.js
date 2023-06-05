@@ -164,7 +164,7 @@ function DatasetPage() {
 
         let gene_patient_subset_values = {};
 
-        if (("patient_ids" in gene_with_value_information) && gene_with_value_information[i]["patient_ids"] != null && ("arr" in gene_with_value_information[i]["patient_ids"]) && gene_with_value_information[i]["patient_ids"]["arr"] != null) {
+        if (("patient_ids" in gene_with_value_information[i]) && gene_with_value_information[i]["patient_ids"] != null && ("arr" in gene_with_value_information[i]["patient_ids"]) && gene_with_value_information[i]["patient_ids"]["arr"] != null) {
 
           let temp_patient_arr = gene_with_value_information[i]["patient_ids"]["arr"]
 
@@ -172,6 +172,8 @@ function DatasetPage() {
 
             gene_patient_subset_values[temp_patient_arr[j]] = parseFloat(gene_with_value_information[i]["gene_values"]["arr"][j]);
           }
+
+          console.log("patient info exists ",  gene_patient_subset_values)
         }
 
         combined_dataset_full_information.push({ ...existing_gene_info, ...gene_patient_subset_values })
