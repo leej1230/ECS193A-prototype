@@ -1072,15 +1072,20 @@ class Database:
 
             doc_count = 0
 
+            genes = []
+
             if search_word.strip() == '':
                 doc_count = Database.gene_collection.count_documents({})
-                genes = (
+                genes_full = (
                     Database.gene_collection.find(
                         {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
                     )
+                )
+                '''
                     .skip(numberofList * page)
                     .limit(numberofList)
-                )
+                '''
+                genes = [gene for gene in genes_full]
             else:
                 # Perform fuzzy matching using the search_word
                 fuzzy_results = []
@@ -1102,7 +1107,13 @@ class Database:
                     gene[0] for gene in fuzzy_results
                 ]  # Extract the genes from the sorted list
 
-            genes = genes[page * numberofList : (page + 1) * numberofList]
+            
+            
+            print( "fuzzy results: ", genes )
+
+
+
+            genes = genes[ (page * numberofList) : ((page+1) * numberofList)]
 
             json_data = loads(dumps(genes))
             totalPages = math.ceil(doc_count / numberofList)

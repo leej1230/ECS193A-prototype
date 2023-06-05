@@ -19,11 +19,12 @@ function GeneSearchResultsHolder(props) {
     const [isMounted, setIsMounted] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
+    const [lastPage, setLastPage] = useState(1);
 
     const { user } = useAuth0();
 
     //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
-    const handleSearch = async () => {
+    const handleSearch = async (cur_page) => {
       try {
         let search_input_for_url = clone(props.input_search_keyword)
 
@@ -32,25 +33,30 @@ function GeneSearchResultsHolder(props) {
         }
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL
-          }/api/gene_search/${search_input_for_url}/${listPage.toString()}`
+          }/api/gene_search/${search_input_for_url}/${cur_page.toString()}`
         );
         setSearchResult(response.data.genes);
 
         console.log("search gene results: ");
         console.log(response.data);
 
+        console.log("total num pages: ")
+        console.log(response.data.total_pages);
+
+        setLastPage( response.data.total_pages )
+
         setHasSearched(true);
       } catch (error) {
         console.error(error);
       }
-      console.log(listPage)
+      console.log("cur page: ", cur_page)
 
       props.setPerformSearch(false);
     };
 
     useEffect(() => {
       if(props.performSearch == true){
-        handleSearch();
+        handleSearch(listPage);
       }
     }, [props.performSearch]);
 
@@ -64,16 +70,17 @@ function GeneSearchResultsHolder(props) {
       }, [listPage, props.input_search_keyword]);
 
   const handleIncrementPage = async () => {
-    console.log(user)
-    setListPage(listPage + 1);
-    handleSearch();
+    if( listPage < lastPage ){
+      setListPage(listPage + 1);
+      handleSearch(listPage + 1);
+    }
     // console.log(listPage)
   }
 
   const handleDecrementPage = () => {
     if (listPage > 1) {
       setListPage(listPage - 1);
-      handleSearch();
+      handleSearch(listPage - 1);
     }
     // console.log(listPage)
   }
@@ -101,9 +108,12 @@ function GeneSearchResultsHolder(props) {
                             {listPage > 1 ? <div className="float-left">
                             <button onClick={handleDecrementPage}>Prev Page</button>
                             </div> : <div></div>}
-                            <div className="float-right">
-                            <button onClick={handleIncrementPage}>Next Page</button>
-                            </div>
+                            {listPage < lastPage ? 
+                              <div className="float-right">
+                              <button onClick={handleIncrementPage}>Next Page</button>
+                              </div>
+                              : <div></div>
+                            }
                         </div>
                         )}
         </>
