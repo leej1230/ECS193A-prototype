@@ -21,15 +21,16 @@ function GeneSearchResultsHolder(props) {
     const [searchResult, setSearchResult] = useState([]);
     const [lastPage, setLastPage] = useState(1);
     const [numPerPage, setNumPerPage] = useState({value: 5, label: "5"});
+    const [selectChanged, setSelectChanged] = useState(false);
 
     const options_select = [{value: 5, label: "5"},{value: 10, label: "10"},{value: 15, label: "15"}]
 
     const { user } = useAuth0();
 
-    const handleSelect = (selected) => {
-      console.log("selected option : ");
-      console.log(selected);
+    const handleSelect = async (selected) => {
       setNumPerPage(selected);
+      setListPage(1);
+      setSelectChanged(true);
     };
 
     //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
@@ -40,6 +41,9 @@ function GeneSearchResultsHolder(props) {
         if (search_input_for_url === "") {
           search_input_for_url = " ";
         }
+
+        console.log("look at page size and cur page: ", cur_page, " size: ", numPerPage);
+
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL
           }/api/gene_search/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
@@ -77,6 +81,13 @@ function GeneSearchResultsHolder(props) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [listPage, props.input_search_keyword]);
+
+  useEffect(() => {
+    if(selectChanged == true){
+      handleSearch(1);
+      setSelectChanged(false);
+    }
+  }, [numPerPage, selectChanged]);
 
   const handleIncrementPage = async () => {
     if( listPage < lastPage ){

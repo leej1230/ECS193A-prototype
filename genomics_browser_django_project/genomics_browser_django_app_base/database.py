@@ -1074,6 +1074,8 @@ class Database:
 
             genes = []
 
+            print("number of list: ", numberofList)
+
             if search_word.strip() == '':
                 doc_count = Database.gene_collection.count_documents({})
                 genes_full = (
