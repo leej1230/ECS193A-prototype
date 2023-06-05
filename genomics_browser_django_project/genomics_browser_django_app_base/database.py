@@ -812,6 +812,8 @@ class Database:
                 dict: HTTP 201 Created status message.
             """
 
+            max_edits_per_dataset_user_combo = 5
+
             data_request = json.loads(request['ctx'].body)
 
             update_dict = data_request['modify_list']
@@ -845,6 +847,20 @@ class Database:
                     if update_dataset_id in edits_structure:
                         # dataset already has some edits
                         edits_list_for_dataset = edits_structure[update_dataset_id]
+
+                        # if pass the maximum allowed for the undo history, then need to remove the oldest one
+                        if len(edits_list_for_dataset) >= max_edits_per_dataset_user_combo :
+                            index_to_remove = -1
+                            oldest_date = None
+                            for i in range(0, len(edits_list_for_dataset)):
+                                cur_edit_record_date = edits_list_for_dataset[i]['edit_date']
+                                if oldest_date == None or cur_edit_record_date < oldest_date:
+                                    oldest_date = cur_edit_record_date
+                                    index_to_remove = i
+                            
+                            edits_list_for_dataset.pop(index_to_remove)
+
+
                         edits_list_for_dataset.append({'id': new_edit_id, 'edit_info':copy.deepcopy(update_dict), 'old_values':copy.deepcopy(objects_old_values_saved) , 'edit_date':datetime.datetime.now() })
                         edits_structure[update_dataset_id] = edits_list_for_dataset
                     else:
