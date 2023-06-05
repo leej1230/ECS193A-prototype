@@ -9,6 +9,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import SampleList from "./SampleList";
 
+import './GeneSearchResultsHolder.css'
+
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -107,44 +109,48 @@ function GeneSearchResultsHolder(props) {
 
     return (
         <>
-            <SampleList resultList={searchResult} />
-                        {!hasSearched && (
+                <div id="searchResultsHolder">
+                    <SampleList resultList={searchResult} />
+                </div>
+                    
+                    {!hasSearched && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
+                        Start Searching!
+                    </div>
+                    )}
+                    {hasSearched && searchResult.length === 0 && (
+                    <div>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
-                            Start Searching!
+                        No results
                         </div>
-                        )}
-                        {hasSearched && searchResult.length === 0 && (
-                        <div>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
-                            No results
-                            </div>
-                            {listPage > 1 ? <div className="float-left">
-                            <button onClick={handleDecrementPage}>Prev Page</button>
-                            </div> : <div></div>}
-                        </div>
-                        )}
-                        {searchResult.length > 0 && (
-                        <div>
-                            {listPage > 1 ? <div className="float-left">
-                            <button onClick={handleDecrementPage}>Prev Page</button>
-                            </div> : <div></div>}
-                            <Select className="float-right"
-                                options={options_select}
-                                isLoading={!options_select}
-                                closeMenuOnSelect={true}
-                                onChange={handleSelect}
-                                value={numPerPage}
-                                name={"page_size"}
-                              />
-                            {listPage < lastPage ? 
-                              <div className="float-right">
-                              <button onClick={handleIncrementPage}>Next Page</button>
-                              </div>
-                              : <div></div>
-                            }
-                        </div>
-                        )}
-        </>
+                        {listPage > 1 ? <div className="float-left page_change_btn">
+                        <button class="btn btn-primary" onClick={handleDecrementPage}>Prev Page</button>
+                        </div> : <div></div>}
+                    </div>
+                    )}
+                    {searchResult.length > 0 && (
+                    <div>
+                        {listPage > 1 ? <div className="float-left page_change_btn">
+                        <button class="btn btn-primary" onClick={handleDecrementPage}>Prev Page</button>
+                        </div> : <div></div>}
+                        <Select className="float-right"
+                            options={options_select}
+                            isLoading={!options_select}
+                            closeMenuOnSelect={true}
+                            onChange={handleSelect}
+                            value={numPerPage}
+                            name={"page_size"}
+                          />
+                        {listPage < lastPage ? 
+                          <div className="float-right page_change_btn" >
+                            <button class="btn btn-primary" onClick={handleIncrementPage}>Next Page</button>
+                          </div>
+                          : <div></div>
+                        }
+                    </div>
+                    )}
+            
+            </>
     )
 }
 

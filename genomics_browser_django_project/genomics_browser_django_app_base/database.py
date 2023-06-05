@@ -1074,8 +1074,6 @@ class Database:
 
             genes = []
 
-            print("number of list: ", numberofList)
-
             if search_word.strip() == '':
                 doc_count = Database.gene_collection.count_documents({})
                 genes_full = (
@@ -1108,11 +1106,6 @@ class Database:
                 genes = [
                     gene[0] for gene in fuzzy_results
                 ]  # Extract the genes from the sorted list
-
-            
-            
-            print( "fuzzy results: ", genes )
-
 
 
             genes = genes[ (page * numberofList) : ((page+1) * numberofList)]
