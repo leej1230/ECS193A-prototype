@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
 
 import { clone } from "ramda";
 import axios from "axios";
+import Select from "react-select";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -20,8 +20,17 @@ function GeneSearchResultsHolder(props) {
     const [hasSearched, setHasSearched] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [lastPage, setLastPage] = useState(1);
+    const [numPerPage, setNumPerPage] = useState({value: 5, label: "5"});
+
+    const options_select = [{value: 5, label: "5"},{value: 10, label: "10"},{value: 15, label: "15"}]
 
     const { user } = useAuth0();
+
+    const handleSelect = (selected) => {
+      console.log("selected option : ");
+      console.log(selected);
+      setNumPerPage(selected);
+    };
 
     //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
     const handleSearch = async (cur_page) => {
@@ -33,7 +42,7 @@ function GeneSearchResultsHolder(props) {
         }
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL
-          }/api/gene_search/${search_input_for_url}/${cur_page.toString()}`
+          }/api/gene_search/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
         );
         setSearchResult(response.data.genes);
 
@@ -108,6 +117,14 @@ function GeneSearchResultsHolder(props) {
                             {listPage > 1 ? <div className="float-left">
                             <button onClick={handleDecrementPage}>Prev Page</button>
                             </div> : <div></div>}
+                            <Select className="float-right"
+                                options={options_select}
+                                isLoading={!options_select}
+                                closeMenuOnSelect={true}
+                                onChange={handleSelect}
+                                value={numPerPage}
+                                name={"page_size"}
+                              />
                             {listPage < lastPage ? 
                               <div className="float-right">
                               <button onClick={handleIncrementPage}>Next Page</button>

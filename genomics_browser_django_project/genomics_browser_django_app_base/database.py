@@ -1068,7 +1068,7 @@ class Database:
             search_word = request['search_word']
             page = int(request['page_id']) - 1
 
-            numberofList = 5
+            numberofList = int(request['num_per_page'])
 
             doc_count = 0
 
