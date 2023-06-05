@@ -162,62 +162,64 @@ function GenePage() {
 
     for (let i = 0; i < column_possibilities.length; i++) {
 
-      var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
+      if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' ){
+          var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
 
-      let select_options_col = []
+          let select_options_col = []
 
-      for (let j = 0; j < unique.length; j++) {
-        select_options_col.push({ value: unique[j], label: unique[j] })
-      }
-
-      var col_obj = {
-        dataField: column_possibilities[i],
-        text: column_possibilities[i]
-      }
-      if (unique.length > 0 && Number.isInteger(unique[0])) {
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          headerStyle: { minWidth: '150px' },
-          filter: customFilter({
-            delay: 1000,
-            onFilter: filterNumber,
-            type: FILTER_TYPES.NUMBER
-          }),
-          filterRenderer: (onFilter, column) => {
-            return (
-              <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
-            )
+          for (let j = 0; j < unique.length; j++) {
+            select_options_col.push({ value: unique[j], label: unique[j] })
           }
-        }
-      }
-      else if (unique.length < 3) {
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          headerStyle: { minWidth: '150px' },
-          filter: customFilter({
-            delay: 1000,
-            type: FILTER_TYPES.MULTISELECT
-          }),
 
-          filterRenderer: (onFilter, column) => {
-            return (
-              <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))} />
-            )
+          var col_obj = {
+            dataField: column_possibilities[i],
+            text: column_possibilities[i]
           }
+          if (unique.length > 0 && Number.isInteger(unique[0])) {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                onFilter: filterNumber,
+                type: FILTER_TYPES.NUMBER
+              }),
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
+                )
+              }
+            }
+          }
+          else if (unique.length < 3) {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                type: FILTER_TYPES.MULTISELECT
+              }),
+
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))} />
+                )
+              }
+            }
+          } else {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: textFilter({
+                comparator: Comparator.EQ
+              })
+            }
+          }
+          patient_columns_list.push(col_obj)
         }
-      } else {
-        col_obj = {
-          dataField: column_possibilities[i],
-          text: column_possibilities[i],
-          headerStyle: { minWidth: '150px' },
-          filter: textFilter({
-            comparator: Comparator.EQ
-          })
-        }
-      }
-      patient_columns_list.push(col_obj)
     }
 
     set_patient_columns(patient_columns_list);
@@ -234,6 +236,8 @@ function GenePage() {
         setGene_data(clone(res.data));
         set_graph_table_filter_data(res.data);
         set_loaded_gene_info(true);
+
+        console.log( "graph filter information: ", res.data );
       });
       await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
         setGeneExternalData(gene_ext.data);
