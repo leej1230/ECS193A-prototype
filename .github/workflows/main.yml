@@ -11,6 +11,8 @@ jobs:
 
       - name: Run Jest
         uses: stefanoeb/jest-action@1.0.3
+        with:
+          jestArgs: --verbose
         continue-on-error: true
 
       - name: Set up Python 3.9
