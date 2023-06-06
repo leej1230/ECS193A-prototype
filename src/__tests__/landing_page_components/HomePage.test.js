@@ -1,13 +1,17 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-// import { getById } from '@testing-library/dom';
 import '@testing-library/jest-dom/extend-expect';
 import HomePage from '../../components/landing_page_components/HomePage';
+import { useAuth0 } from '@auth0/auth0-react';
+
+jest.mock('@auth0/auth0-react');
 
 describe('HomePage', () => {
     let getByText;
-
+    
     beforeEach(() => {
+        const loginWithRedirectMock = jest.fn();
+        useAuth0.mockReturnValue({ loginWithRedirect: loginWithRedirectMock, isAuthenticated: false });
         ({ getByText } = render(<HomePage />));
     });
 
@@ -42,25 +46,12 @@ describe('HomePage', () => {
     });
 
     it('start button functions', () => {
-        const loginWithRedirectMock = jest.fn();
-
         const startButton = getByText('Start');
 
         fireEvent.click(startButton);
 
-        expect(loginWithRedirectMock).toHaveBeenCalledTimes(1);
+        expect(useAuth0().loginWithRedirect).toHaveBeenCalled();
+        expect(useAuth0().loginWithRedirect).toHaveBeenCalledTimes(1);
     });
 
-    // it('renders the ReactPlayer', () => {
-    //     const { container } = render(<HomePage />);
-    //     const reactPlayerComponent = getById(container, 'video_back');
-
-    //     expect(reactPlayerComponent).toBeInTheDocument();
-    //     expect(reactPlayerComponent).toHaveAttribute('url', 'https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4');
-    //     expect(reactPlayerComponent).toHaveAttribute('loop', 'true');
-    //     expect(reactPlayerComponent).toHaveAttribute('playing', 'true');
-    //     expect(reactPlayerComponent).toHaveAttribute('volume', '0');
-    //     expect(reactPlayerComponent).toHaveAttribute('muted', 'true');
-    //     expect(reactPlayerComponent).toHaveAttribute('controls', 'false');
-    // });
 });
