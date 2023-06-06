@@ -2,11 +2,12 @@ describe("Management Page", () => {
     beforeEach(() => {
         cy.login("manage");
         cy.intercept("GET", "http://localhost:8000/api/get-user-all", {
-            fixture: "users.json",
+            fixture: "permission_users.json",
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
-        });
+        }).as("getUserAll");
+        cy.wait("@getUserAll");
     });
 
     it("Displays the Authorize User List header", () => {
@@ -30,51 +31,21 @@ describe("Management Page", () => {
     });
 
     it("Fetches and displays user list data", () => {
-        cy.intercept("GET", "http://localhost:8000/api/get-user-all", {
-            fixture: "users.json",
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-        }).as("getUserAll");
-
-        cy.wait("@getUserAll");
+        cy.get('[data-id="testPermissionTable"]').should("have.length", 5);
     });
 
-    //     // Assert the presence of user data in the DataGrid
-    //     // cy.get('[data-testid="user-list"] [data-testid="row"]').should(
-    //         // "have.length",
-    //         // 3
-    //     );
-    // });
-
-    // it("Toggles the checkbox in the User List", () => {
-    //     cy.intercept("GET", "http://localhost:8000/api/get-user-all", {
-    //         fixture: "users.json",
-    //     }).as("getUserAll");
-    //     cy.intercept("POST", "http://localhost:8000/api/update-role").as(
-    //         "updateRole"
-    //     );
-
-    //     // Wait for the API response
-    //     cy.wait("@getUserAll");
-
-    //     // Toggle the first checkbox
-    //     cy.get(
-    //         '[data-testid="user-list"] [data-testid="row"] input[type="checkbox"]'
-    //     )
-    //         .first()
-    //         .click();
-
-    //     // Wait for the role update request
-    //     cy.wait("@updateRole");
-
-    //     // Assert the checkbox state
-    //     cy.get(
-    //         '[data-testid="user-list"] [data-testid="row"] input[type="checkbox"]'
-    //     )
-    //         .first()
-    //         .should("be.checked");
-    // });
+    it("Toggles the checkbox in the User List", () => {
+        cy.get(
+            '[data-id="testPermissionTable"] [data-field="is_staff"] input[type="checkbox"]'
+        )
+            .first()
+            .click();
+        cy.get(
+            '[data-id="testPermissionTable"] [data-field="is_staff"] input[type="checkbox"]'
+        )
+            .first()
+            .uncheck();
+    });
 
     // it("Fetches and displays History Log data", () => {
     //     cy.intercept("GET", "http://localhost:8000/api/get-role-log", {
