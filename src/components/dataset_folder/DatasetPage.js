@@ -9,8 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { clone } from "ramda";
 
-import LoadingSpinner from "../spinner/spinner";
-
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -47,6 +45,8 @@ function DatasetPage() {
 
   const [gotPatientInfo, set_gotPatientInfo] = useState(false)
   const [gotGeneInfo, set_gotGeneInfo] = useState(true);
+
+  const [reload_edits, set_reload_edits] = useState(false);
 
   const { user } = useAuth0();
 
@@ -162,7 +162,7 @@ function DatasetPage() {
 
         let gene_patient_subset_values = {};
 
-        if (("patient_ids" in gene_with_value_information) && gene_with_value_information[i]["patient_ids"] != null && ("arr" in gene_with_value_information[i]["patient_ids"]) && gene_with_value_information[i]["patient_ids"]["arr"] != null) {
+        if (("patient_ids" in gene_with_value_information[i]) && gene_with_value_information[i]["patient_ids"] != null && ("arr" in gene_with_value_information[i]["patient_ids"]) && gene_with_value_information[i]["patient_ids"]["arr"] != null) {
 
           let temp_patient_arr = gene_with_value_information[i]["patient_ids"]["arr"]
 
@@ -170,6 +170,8 @@ function DatasetPage() {
 
             gene_patient_subset_values[temp_patient_arr[j]] = parseFloat(gene_with_value_information[i]["gene_values"]["arr"][j]);
           }
+
+          console.log("patient info exists ",  gene_patient_subset_values)
         }
 
         combined_dataset_full_information.push({ ...existing_gene_info, ...gene_patient_subset_values })
@@ -224,26 +226,7 @@ function DatasetPage() {
 
 
 
-  return !dataset["name"] ? (
-    <body id="page-top" >
-
-      <div id="wrapper">
-
-        <div id="content-wrapper" class="d-flex flex-column">
-
-
-          <div id="content">
-            <div id="loading_element">
-              <LoadingSpinner />
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </body>
-  ) : (
-
-    <body id="page-top" >
+  return <body id="page-top" >
 
       <div id="wrapper">
 
@@ -293,8 +276,8 @@ function DatasetPage() {
                     <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
-                    <DatasetEditTable input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} />
-                    <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_displayHistoryTable={displayHistoryTable} />
+                    <DatasetEditTable input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} />
+                    <DatasetChangeUndo input_dataset_id={DATASET_ID} row_type={dataset.rowType} input_displayHistoryTable={displayHistoryTable} input_reload_history={reload_edits} input_set_reload_edit_history={set_reload_edits} />
                   </Tab>
                 </Tabs>
               </div>
@@ -318,7 +301,7 @@ function DatasetPage() {
 
     </body>
 
-  )
+
 }
 
 export default DatasetPage;
@@ -355,3 +338,24 @@ const get_combined_patients_genes_data = () => {
 
     }
 */
+
+/*
+!dataset["name"] ? (
+    <body id="page-top" >
+
+      <div id="wrapper">
+
+        <div id="content-wrapper" class="d-flex flex-column">
+
+
+          <div id="content">
+            <div id="loading_element">
+              <LoadingSpinner />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </body>
+  ) : (
+    */
