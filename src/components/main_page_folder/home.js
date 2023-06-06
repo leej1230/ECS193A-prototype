@@ -36,18 +36,18 @@ function Home() {
     })
 
     const [ dataset_img_dim , set_dataset_img_dim ] = React.useState({
-        height : 280, 
-        width: 418
+        height : Math.floor( (280 / 418) * window.innerWidth * 0.7 * 0.5 * 1.2 ), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
     })
 
     const [ gene_img_dim , set_gene_img_dim ] = React.useState({
-        height : 490, 
-        width: 735
+        height : Math.floor( (495 / 735 ) * window.innerWidth * 0.7 * 0.5 * 1.2 ), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
     })
 
     const [ link_img_holder_dim , set_link_img_holder_dim ] = React.useState({
-        height : 300, 
-        width: 210
+        height : Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2 * 0.7), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
     })
 
     const getCountInfo = async () => {

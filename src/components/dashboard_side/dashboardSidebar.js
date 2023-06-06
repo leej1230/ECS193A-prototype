@@ -18,7 +18,7 @@ function DashboardSidebar(props) {
             <SideNav.Nav defaultSelected={props.input_cur_active}>
                 <NavItem eventKey="home">
                     <NavIcon>
-                        <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} />
+                    <a href="/console" style={{ textDecoration: 'None' }}><i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', color: 'white' }} /></a>
                     </NavIcon>
                     <NavText style={{ color: 'white' }}>
                         <a href="/console" style={{ textDecoration: 'None' }}>Home</a>
@@ -26,15 +26,15 @@ function DashboardSidebar(props) {
                 </NavItem>
                 <NavItem eventKey="search_gene">
                     <NavIcon >
-                        <FontAwesomeIcon id="gene_icon" icon={icon({ name: 'dna', style: 'solid' })} />
+                        <a href="/search_genes_page" style={{ textDecoration: 'None' }}><FontAwesomeIcon id="gene_icon" icon={icon({ name: 'dna', style: 'solid' })} /></a>
                     </NavIcon>
                     <NavText style={{ color: 'white' }}>
-                        <a href="/search_genes_page" style={{ textDecoration: 'None' }}>Gene Search</a>
+                        Gene Search
                     </NavText>
                 </NavItem>
                 <NavItem eventKey="search_dataset" >
                     <NavIcon >
-                        <FontAwesomeIcon id="dataset_search_icon" icon={icon({ name: 'file', style: 'solid' })} />
+                        <a href="/search_datasets_page" style={{ textDecoration: 'None' }}><FontAwesomeIcon id="dataset_search_icon" icon={icon({ name: 'file', style: 'solid' })} /></a>
                     </NavIcon>
                     <NavText style={{ color: 'white' }}>
                         <a href="/search_datasets_page" style={{ textDecoration: 'None' }}>Dataset Search</a>
