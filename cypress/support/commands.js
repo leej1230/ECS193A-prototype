@@ -121,7 +121,7 @@ Cypress.Commands.add("login", () => {
         { args: { username, password } },
         ({ username, password }) => {
             cy.get("input#1-email").type(username);
-            cy.get("input#1-password").type(password);
+            cy.get("input#1-password").type(password, { log: false });
             cy.get("button#1-submit").click();
         }
     );
