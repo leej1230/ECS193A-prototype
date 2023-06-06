@@ -29,7 +29,7 @@ function DashboardSidebar(props) {
                         <a href="/search_genes_page" style={{ textDecoration: 'None' }}><FontAwesomeIcon id="gene_icon" icon={icon({ name: 'dna', style: 'solid' })} /></a>
                     </NavIcon>
                     <NavText style={{ color: 'white' }}>
-                        Gene Search
+                        <a href="/search_genes_page" style={{ textDecoration: 'None' }}>Gene Search</a>
                     </NavText>
                 </NavItem>
                 <NavItem eventKey="search_dataset" >
