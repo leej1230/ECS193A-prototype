@@ -33,3 +33,4 @@ py_test_scripts.py
 __pycache__/
 .vscode
 .env*
+cypress.env.json

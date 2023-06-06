@@ -4,7 +4,7 @@ import { AES, enc } from "crypto-js";
 
 function GetUserAfterRender() {
     const { user } = useAuth0();
-    const encryptedLSUser = localStorage.getItem("user");
+    let encryptedLSUser = localStorage.getItem("user");
     let decryptedLSUser = null;
     if (!encryptedLSUser) {
         const userMetadata = user?.["https://unique.app.com/user_metadata"];
@@ -36,21 +36,24 @@ function GetUserAfterRender() {
                 }
             })
             .finally(() => {
-                axios.get(`${user_get_url}/${auth0_uid}`).then((res) => {
-                    console.log(res);
-                    const encryptedUser = AES.encrypt(
-                        JSON.stringify(res.data),
-                        process.env.REACT_APP_AES_PRIVATE_KEY
-                    );
-                    localStorage.setItem("user", encryptedUser);
-                }).finally(() => {
-                    decryptedLSUser = JSON.parse(
-                        AES.decrypt(
-                            encryptedLSUser,
+                axios
+                    .get(`${user_get_url}/${auth0_uid}`)
+                    .then((res) => {
+                        console.log(res);
+                        encryptedLSUser = AES.encrypt(
+                            JSON.stringify(res.data),
                             process.env.REACT_APP_AES_PRIVATE_KEY
-                        ).toString(enc.Utf8)
-                    );
-                })
+                        );
+                        localStorage.setItem("user", encryptedLSUser);
+                    })
+                    .finally(() => {
+                        decryptedLSUser = JSON.parse(
+                            AES.decrypt(
+                                encryptedLSUser,
+                                process.env.REACT_APP_AES_PRIVATE_KEY
+                            ).toString(enc.Utf8)
+                        );
+                    });
             });
     }
 
