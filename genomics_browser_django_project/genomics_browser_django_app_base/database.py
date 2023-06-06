@@ -1269,22 +1269,42 @@ class Database:
             search_word = request['search_word']
             page = int(request['page_id']) - 1
 
-            numberofList = 5
+            numberofList = int(request['num_per_page'])
 
             doc_count = 0
 
             datasets = []
 
-            if search_word == " ":
+            if search_word == " " or search_word.strip() == '':
                 doc_count = Database.dataset_collection.count_documents({})
                 datasets = (
                     Database.dataset_collection.find(
                         {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1, 'rowType':1, 'geneCode':1, 'patientCode':1}
                     )
-                    .skip(numberofList * page)
-                    .limit(numberofList)
                 )
+                '''.skip(numberofList * page)
+                    .limit(numberofList)'''
             else:
+                fuzzy_results = []
+                all_datasets = Database.dataset_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'id': 1, 'description': 1, 'date_created': 1, 'rowType':1, 'geneCode':1, 'patientCode':1}
+                )
+                for dataset in all_datasets:
+                    ratio = fuzz.ratio(search_word, dataset['name'])
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (dataset, ratio)
+                        )  # Store dataset and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
+                doc_count = len(fuzzy_results)
+                datasets = [
+                    dataset[0] for dataset in fuzzy_results
+                ]  # Extract the datasets from the sorted list
+
+                '''
                 doc_count = Database.dataset_collection.count_documents(
                     {'name': {'$regex': search_word, '$options': 'i'}}
                 )
@@ -1295,11 +1315,19 @@ class Database:
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
-                )
+                )'''
+            
+            datasets = datasets[ (page * numberofList) : ((page+1) * numberofList)]
 
             json_data = loads(dumps(datasets))
 
             totalPages = math.ceil(doc_count / numberofList)
+
+            response_data = {
+                'datasets': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
 
             #print(totalPages)
             return json_data

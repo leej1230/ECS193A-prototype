@@ -35,7 +35,7 @@ urlpatterns = [
         {"inner": "Genes", "callback": "get_gene_some"},
     ),
     path(
-        'api/dataset_search/<str:search_word>/<str:page_id>',
+        'api/dataset_search/<str:search_word>/<str:page_id>/<str:num_per_page>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_search_dataset"},
     ),
