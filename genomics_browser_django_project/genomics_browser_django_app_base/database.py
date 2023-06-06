@@ -1389,6 +1389,7 @@ class Database:
                 'FILES': request['ctx'].FILES.copy(),
                 'POST': request['ctx'].POST.copy(),
             }
+            person_uploaded = request['ctx']['POST'].get('nameFull')
             date_created = request['ctx']['POST'].get('dateCreated')
             date_created = re.sub(
                 r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
@@ -1406,6 +1407,7 @@ class Database:
                 rowType = request['ctx']['POST'].get('rowType'),
                 date_created=date_created,
                 dataset_id=Database.Counters.get_new_dataset_counter(),
+                person_uploaded_dataset=person_uploaded
             )
 
             # Serialize dataset, insert records into database, and increment counters
@@ -1454,8 +1456,6 @@ class Database:
 
                 full_users_list = full_users_list[1:]
 
-                print( "all the users: ", full_users_list )
-                print("")
 
                 for i in range(0,len(full_users_list)):
                     # need to delete bookmarks: genes and datasets, delete edits
@@ -1494,13 +1494,11 @@ class Database:
                         user_updated_obj['bookmarked_datasets'] = cur_user['bookmarked_datasets']
                     if 'edits' in cur_user and need_to_update_edits:
                         user_updated_obj['edits'] = cur_user['edits']
-                    
-                    print(user_updated_obj)
-                    print("")
+                 
 
                     if need_to_update_edits or need_to_update_bookmarks_gene or need_to_update_bookmarks_dataset:
                         # save updated values
-                        print("updating actually....\n")
+                        
                         Database.user_collection.update_one(
                                 {'auth0_uid': cur_user['auth0_uid']}, {"$set": user_updated_obj }
                             )
