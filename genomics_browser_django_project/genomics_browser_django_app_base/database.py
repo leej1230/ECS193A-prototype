@@ -1090,7 +1090,7 @@ class Database:
 
             genes = []
 
-            if search_word.strip() == '':
+            if search_word.strip() == '' or search_word == " ":
                 doc_count = Database.gene_collection.count_documents({})
                 genes_full = (
                     Database.gene_collection.find(
