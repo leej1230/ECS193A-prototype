@@ -1,7 +1,6 @@
 describe("Home Page", () => {
     beforeEach(() => {
-        cy.login();
-        cy.visit("http://localhost:3000/console");
+        cy.login("console");
     });
 
     it("displays the total gene count", () => {

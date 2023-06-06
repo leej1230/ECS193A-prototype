@@ -16,7 +16,7 @@ import DashboardSidebar from "../dashboard_side/dashboardSidebar";
 function Home() {
     const [gene_count, set_gene_count] = useState(0);
     const [dataset_count, set_dataset_count] = useState(0);
-    const [height_link_cards,] = useState("300px");
+    const [height_link_cards] = useState("300px");
 
     const getCountInfo = async () => {
         console.log("count information: ");

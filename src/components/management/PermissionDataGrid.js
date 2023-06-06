@@ -166,8 +166,9 @@ const PermissionDataGrid = () => {
                     type="checkbox"
                     style={{ margin: "1rem" }}
                     checked={params.value}
-                    className={`form-check-input ${params.value ? "checked" : ""
-                        }`}
+                    className={`form-check-input ${
+                        params.value ? "checked" : ""
+                    }`}
                     onChange={() =>
                         handleCheckboxChange(
                             params.row.index,
@@ -205,6 +206,7 @@ const PermissionDataGrid = () => {
             ),
         },
     ];
+    console.log(totalData);
     return (
         <DataGrid
             rows={totalData}

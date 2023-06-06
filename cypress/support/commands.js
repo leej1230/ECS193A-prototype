@@ -104,7 +104,7 @@ Cypress.Commands.add(
     }
 );
 
-Cypress.Commands.add("login", () => {
+Cypress.Commands.add("login", (route) => {
     const username = Cypress.env("auth0_username");
     const password = Cypress.env("auth0_password");
     const url = Cypress.env("auth0_url");
@@ -115,7 +115,7 @@ Cypress.Commands.add("login", () => {
     });
     log.snapshot("before");
 
-    cy.visit("http://localhost:3000/console");
+    cy.visit(`http://localhost:3000/${route}`);
     cy.origin(
         url,
         { args: { username, password } },
@@ -125,7 +125,9 @@ Cypress.Commands.add("login", () => {
             cy.get("button#1-submit").click();
         }
     );
-    cy.url().should("include", "/console");
+    cy.url().should("include", `${route}`);
     log.snapshot("after");
+
     log.end();
+    cy.visit(`http://localhost:3000/${route}`);
 });
