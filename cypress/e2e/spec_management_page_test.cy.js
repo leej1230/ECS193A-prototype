@@ -1,6 +1,12 @@
 describe("Management Page", () => {
     beforeEach(() => {
         cy.login("manage");
+        cy.intercept("GET", "http://localhost:8000/api/get-user-all", {
+            fixture: "users.json",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+        });
     });
 
     it("Displays the Authorize User List header", () => {
@@ -30,15 +36,9 @@ describe("Management Page", () => {
                 "Access-Control-Allow-Origin": "*",
             },
         }).as("getUserAll");
+
+        cy.wait("@getUserAll");
     });
-
-    // it("Fetches and displays User List data", () => {
-    //     cy.intercept("GET", "http://localhost:8000/api/get-user-all", {
-    //         fixture: "users.json",
-    //     }).as("getUserAll");
-
-    //     // Wait for the API response
-    //     cy.wait("@getUserAll");
 
     //     // Assert the presence of user data in the DataGrid
     //     // cy.get('[data-testid="user-list"] [data-testid="row"]').should(
