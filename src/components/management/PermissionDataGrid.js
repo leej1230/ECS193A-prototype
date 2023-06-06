@@ -104,13 +104,7 @@ const PermissionDataGrid = () => {
                 ...row,
             }));
             setTotalData(dataWithIds);
-            const startIdx = (currentPage - 1) * 10;
-            const endIdx =
-                startIdx + 10 > dataWithIds.length
-                    ? dataWithIds.length
-                    : startIdx + 10;
-            const dat = dataWithIds.slice(startIdx, endIdx);
-            setData(dat);
+            setData(dataWithIds);
         } catch (e) {
             console.log("Failed to fetch user Info.", e);
         }
@@ -206,7 +200,6 @@ const PermissionDataGrid = () => {
             ),
         },
     ];
-    console.log(totalData);
     return (
         <DataGrid
             rows={totalData}

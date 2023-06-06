@@ -103,7 +103,6 @@ const HistoryLogDataGrid = () => {
         };
 
         fetchLog();
-        console.log(userStatusChange);
     }, [userStatusChange]);
 
     return (
