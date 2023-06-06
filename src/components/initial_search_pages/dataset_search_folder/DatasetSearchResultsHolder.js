@@ -5,9 +5,8 @@ import { clone } from "ramda";
 import axios from "axios";
 import Select from "react-select";
 
-import { useAuth0 } from "@auth0/auth0-react";
 
-import DatasetSampleList from "./SampleListDatasetResultDisplay";
+import DatasetSampleList from "./DatasetSampleList";
 
 import './DatasetSearchResultsHolder.css';
 
@@ -26,15 +25,13 @@ function DatasetSearchResultsHolder(props) {
 
     const options_select = [{value: 5, label: "5"},{value: 10, label: "10"},{value: 15, label: "15"}]
 
-    const { user } = useAuth0();
-
     const handleSelect = async (selected) => {
       setNumPerPage(selected);
       setListPage(1);
       setSelectChanged(true);
     };
 
-    //   Url to search gene by keywords: 'api/gene/search/<str:search_word>/<str:page_id>'
+    //   Url to search  by keywords: 'api/dataset_search/search/<str:search_word>/<str:page_id>'
     const handleSearch = async (cur_page) => {
       try {
         let search_input_for_url = clone(props.input_search_keyword)
@@ -49,7 +46,7 @@ function DatasetSearchResultsHolder(props) {
           `${process.env.REACT_APP_BACKEND_URL
           }/api/dataset_search/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
         );
-        setSearchResult(response.data.genes);
+        setSearchResult(response.data.datasets);
 
         console.log("search dataset results: ");
         console.log(response.data);
@@ -69,6 +66,7 @@ function DatasetSearchResultsHolder(props) {
     };
 
     useEffect(() => {
+        console.log("perform search is true");
       if(props.performSearch == true){
         handleSearch(listPage);
       }
@@ -84,6 +82,7 @@ function DatasetSearchResultsHolder(props) {
       }, [listPage, props.input_search_keyword]);
 
   useEffect(() => {
+    console.log("select has changed");
     if(selectChanged == true){
       handleSearch(1);
       setSelectChanged(false);

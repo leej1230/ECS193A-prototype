@@ -1330,7 +1330,7 @@ class Database:
             }
 
             #print(totalPages)
-            return json_data
+            return loads(dumps(response_data))
         
         def get_dataset_name_for_id(request):
             """Get the dataset name given dataset ID.
