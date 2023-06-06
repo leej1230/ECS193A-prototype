@@ -29,7 +29,6 @@ import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
-import LoadingSpinner from "../spinner/spinner";
 import { clone } from "ramda";
 
 
@@ -440,11 +439,7 @@ function GenePage() {
   return (
     <body id="page-top" class="gene_body">
       <div id="wrapper">
-        {!(gene_data && ("name" in gene_data) && gene_data["name"]) ? (
-          <div style={{ marginTop: "40vh" }}>
-            <LoadingSpinner />
-          </div>
-        ) : (
+        
 
           <div id="content-wrapper" class="d-flex flex-column">
 
@@ -563,7 +558,7 @@ function GenePage() {
             </footer>
 
           </div>
-        )}
+    
       </div>
 
 
@@ -583,3 +578,11 @@ function GenePage() {
 }
 
 export default GenePage;
+
+/*
+{!(gene_data && ("name" in gene_data) && gene_data["name"]) ? (
+          <div style={{ marginTop: "40vh" }}>
+            <LoadingSpinner />
+          </div>
+        ) : (
+*/

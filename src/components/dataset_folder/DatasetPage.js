@@ -9,8 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { clone } from "ramda";
 
-import LoadingSpinner from "../spinner/spinner";
-
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 
@@ -228,26 +226,7 @@ function DatasetPage() {
 
 
 
-  return !dataset["name"] ? (
-    <body id="page-top" >
-
-      <div id="wrapper">
-
-        <div id="content-wrapper" class="d-flex flex-column">
-
-
-          <div id="content">
-            <div id="loading_element">
-              <LoadingSpinner />
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </body>
-  ) : (
-
-    <body id="page-top" >
+  return <body id="page-top" >
 
       <div id="wrapper">
 
@@ -322,7 +301,7 @@ function DatasetPage() {
 
     </body>
 
-  )
+
 }
 
 export default DatasetPage;
@@ -359,3 +338,24 @@ const get_combined_patients_genes_data = () => {
 
     }
 */
+
+/*
+!dataset["name"] ? (
+    <body id="page-top" >
+
+      <div id="wrapper">
+
+        <div id="content-wrapper" class="d-flex flex-column">
+
+
+          <div id="content">
+            <div id="loading_element">
+              <LoadingSpinner />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </body>
+  ) : (
+    */
