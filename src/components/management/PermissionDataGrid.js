@@ -4,6 +4,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import GetUserAfterRender from "../../util/getUser";
 import UserStatusContext from "./UserStatusContext";
+import { filter } from "ramda";
 
 const users_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/get-user-all`;
 const role_update_url = `${process.env.REACT_APP_BACKEND_URL}/api/update-role`;
@@ -98,19 +99,16 @@ const PermissionDataGrid = () => {
     const handleFetchUsers = async () => {
         try {
             const res = await axios.get(users_get_url);
-            const dataWithIds = res.data.map((row, index) => ({
+            const filteredData = res.data.filter((item) => {
+                return item.email!=user.email
+            })
+            const dataWithIds = filteredData.map((row, index) => ({
                 id: row.auth0_uid,
                 index: index + 1,
                 ...row,
             }));
             setTotalData(dataWithIds);
-            const startIdx = (currentPage - 1) * 10;
-            const endIdx =
-                startIdx + 10 > dataWithIds.length
-                    ? dataWithIds.length
-                    : startIdx + 10;
-            const dat = dataWithIds.slice(startIdx, endIdx);
-            setData(dat);
+            setData(dataWithIds);
         } catch (e) {
             console.log("Failed to fetch user Info.", e);
         }
@@ -166,8 +164,9 @@ const PermissionDataGrid = () => {
                     type="checkbox"
                     style={{ margin: "1rem" }}
                     checked={params.value}
-                    className={`form-check-input ${params.value ? "checked" : ""
-                        }`}
+                    className={`form-check-input ${
+                        params.value ? "checked" : ""
+                    }`}
                     onChange={() =>
                         handleCheckboxChange(
                             params.row.index,

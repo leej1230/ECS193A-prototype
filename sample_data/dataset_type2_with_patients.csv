@@ -1,3 +1,3 @@
-Gene ID,Gene Name,Gene Type,p-value(Ischemic Stroke 0 to 24 h (TP1) vs. VRFC (TP0)),Fold-Change(Ischemic Stroke 0 to 24 h (TP1) vs. VRFC (TP0),UCDSS-1000,Change description,UCDSS-1001,UCDSS-1012
+Gene ID,Gene Name,Gene Type,p-value(Ischemic Stroke 0 to 24 h (TP1) vs. VRFC (TP0)),Fold-Change(Ischemic Stroke 0 to 24 h (TP1) vs. VRFC (TP0)),UCDSS-1000,Change description,UCDSS-1001,UCDSS-1012
 ENSG00000213172.3,RP1-228H13.2,processed pseudogene,2.23E-04,-4.48,0.1,Ischemic Stroke 0 to 24 h (TP1) down vs. VRFC (TP0),0.0023,1.37
 ENSG00000205885.7,C1RL-AS1,antisense,3.62E-04,-2.88,4.1,Ischemic Stroke 0 to 24 h (TP1) down vs. VRFC (TP0),0.0056,1.222

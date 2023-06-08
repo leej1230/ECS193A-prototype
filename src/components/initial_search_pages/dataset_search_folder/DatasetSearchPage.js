@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import "./DatasetSearchPage.css";
-import DatasetSampleList from "./DatasetSampleList";
 import Slider from "./Slider";
 import axios from "axios";
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
@@ -11,61 +10,14 @@ import { clone } from "ramda";
 
 import DashboardSidebar from "../../dashboard_side/dashboardSidebar";
 
+import DatasetSearchResultsHolder from "./DatasetSearchResultsHolder";
+
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
 function DatasetSearchPage() {
-  const [searchResult, setSearchResult] = useState([]);
   //   Space so that user can run "blank" search
   const [searchInput, setSearchInput] = useState(" ");
-  const [listPage, setListPage] = useState(1);
-  const [isMounted, setIsMounted] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-
-  useEffect(() => {
-    if (isMounted) {
-      handleSearch();
-    } else {
-      //handleUserSubmit();
-      setIsMounted(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listPage]);
-
-  //   Url to search dataset by keywords: 'api/dataset_search/<str:search_word>/<str:page_id>'
-  const handleSearch = async () => {
-    try {
-      let search_input_for_url = clone(searchInput)
-      if (search_input_for_url === "") {
-        search_input_for_url = " ";
-      }
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL
-        }/api/dataset_search/${search_input_for_url}/${listPage.toString()}`
-      );
-      setSearchResult(response.data);
-      setHasSearched(true);
-      console.log("dataset search line 56");
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-    console.log(listPage)
-  };
-
-  const handleIncrementPage = async () => {
-    //console.log(user)
-    setListPage(listPage + 1);
-    // handleSearch();
-    // console.log(listPage)
-  }
-
-  const handleDecrementPage = () => {
-    if (listPage > 1) {
-      setListPage(listPage - 1);
-      // handleSearch();
-    }
-    // console.log(listPage)
-  }
+  const [clickedSearch, setClickedSearch] = useState(false);
 
   return (
     <body id="page-top">
@@ -104,7 +56,7 @@ function DatasetSearchPage() {
                     label="Search by dataset name"
                   />
 
-                  <button type="submit" onClick={handleSearch} class="btn btn-primary" id="search_dataset_button" aria-label="search">
+                  <button type="submit"  onClick={ (e) => { setClickedSearch(true) }} class="btn btn-primary" id="search_dataset_button" aria-label="search">
                     <i class="fas fa-search"></i>
                   </button>
                 </div>
@@ -112,34 +64,7 @@ function DatasetSearchPage() {
                 <div id="dataset_search_results_display_container">
                   <div class="card shadow" id="dataset_search_results_display">
 
-                    <div>
-                      <DatasetSampleList resultList={searchResult} />
-                      {!hasSearched && (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
-                          Start Searching!
-                        </div>
-                      )}
-                      {hasSearched && searchResult.length === 0 && (
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
-                            No results
-                          </div>
-                          {listPage > 1 ? <div className="float-left">
-                            <button onClick={handleDecrementPage}>Prev Page</button>
-                          </div> : <div></div>}
-                        </div>
-                      )}
-                      {searchResult.length > 0 && (
-                        <div>
-                          {listPage > 1 ? <div className="float-left">
-                            <button onClick={handleDecrementPage}>Prev Page</button>
-                          </div> : <div></div>}
-                          <div className="float-right">
-                            <button onClick={handleIncrementPage}>Next Page</button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <DatasetSearchResultsHolder input_search_keyword={searchInput} performSearch={clickedSearch} setPerformSearch={setClickedSearch} />
 
 
                   </div>
@@ -236,4 +161,37 @@ export default DatasetSearchPage;
                 
               </div>
 
+  */
+
+  
+  /*
+
+<div>
+                      <DatasetSampleList resultList={searchResult} />
+                      {!hasSearched && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
+                          Start Searching!
+                        </div>
+                      )}
+                      {hasSearched && searchResult.length === 0 && (
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '100%', maxWidth: '100%' }}>
+                            No results
+                          </div>
+                          {listPage > 1 ? <div className="float-left">
+                            <button onClick={handleDecrementPage}>Prev Page</button>
+                          </div> : <div></div>}
+                        </div>
+                      )}
+                      {searchResult.length > 0 && (
+                        <div>
+                          {listPage > 1 ? <div className="float-left">
+                            <button onClick={handleDecrementPage}>Prev Page</button>
+                          </div> : <div></div>}
+                          <div className="float-right">
+                            <button onClick={handleIncrementPage}>Next Page</button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
   */
