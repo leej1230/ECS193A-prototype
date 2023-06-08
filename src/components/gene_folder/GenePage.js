@@ -450,8 +450,9 @@ function GenePage() {
               <div class="container-fluid" id="gene_page_full">
 
                 <div id="control_buttons_gene_page">
-                  <a href={"/gene/" + gene_data.name + "/" + gene_data.id} class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1"><i
-                    class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>
+                  {/*<a href={"/gene/" + gene_data.name + "/" + gene_data.id} class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1">{/*<i
+                    class="fas fa-download fa-sm text-white-50"></i>Generate Report</a>*/}
+                    
                 </div>
 
                 <GeneNameHeaderHolder input_object_data={gene_data} />
