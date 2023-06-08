@@ -27,7 +27,7 @@ function debounce(fn, ms) {
 function Home() {
     const [gene_count, set_gene_count] = useState(0);
     const [dataset_count, set_dataset_count] = useState(0);
-    const [height_link_cards,] = useState("300px");
+    const [height_link_cards] = useState("300px");
 
     // orig window dimensions: 1536 x 754 (width x height)
     const [dimensions, setDimensions] = React.useState({

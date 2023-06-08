@@ -1,30 +1,44 @@
-// https://developer.auth0.com/resources/guides/spa/react/basic-authentication
-import { useAuth0 , withAuthenticationRequired } from "@auth0/auth0-react";
+import axios from "axios";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { AES, enc } from "crypto-js";
 import React from "react";
 import NotAuthorized from "./notAuthorized";
-import LoadingSpinner from './components/spinner/spinner';
+import { useState } from "react";
+import { useEffect } from "react";
+import LoadingSpinner from "./components/spinner/spinner";
 
 const AdminRoute = ({ children, isAdmin, ...propsForComponent }) => {
-    const Component = withAuthenticationRequired(() => <>{children}</>);
+    const email_register_url = `${process.env.REACT_APP_BACKEND_URL}/api/check_authorized_email`;
+    const [emailAuthorized, setEmailAuthorized] = useState(null);
     const { user, isLoading } = useAuth0();
 
-    const encryptedLSUser = localStorage.getItem("user");
-    const decryptedLSUser = encryptedLSUser
-        ? JSON.parse(
-            AES.decrypt(
-                encryptedLSUser,
-                process.env.REACT_APP_AES_PRIVATE_KEY
-            ).toString(enc.Utf8)
-        )
-        : {};
+    useEffect(() => {
+        const checkEmailExists = async () => {
+            if (user && user.email) {
+                try {
+                    const response = await axios.post(email_register_url, {
+                        email: user.email,
+                    });
+                    setEmailAuthorized(response.data.isExists);
+                } catch (error) {
+                    console.error("Error checking email:", error);
+                }
+            }
+        };
 
-    if (isLoading) {
-        return <LoadingSpinner />;
-    } else if (!decryptedLSUser.is_admin) {
-        console.log(decryptedLSUser)
-        return <NotAuthorized missingPerm={"admin"} />;
-    }
+        checkEmailExists();
+    }, [user]);
+
+    const Component = withAuthenticationRequired(() => {
+        if (isLoading || emailAuthorized === null) {
+            return <LoadingSpinner />;
+        } else if (emailAuthorized) {
+            return <>{children}</>;
+        } else {
+            return <NotAuthorized missingPerm={"Admin"} />;
+        }
+    });
+
     return <Component {...propsForComponent} />;
 };
 
