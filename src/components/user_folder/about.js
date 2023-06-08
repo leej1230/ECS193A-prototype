@@ -119,13 +119,14 @@ function About() {
 
 
       <ReactPlayer
-        id="video_back"
-        url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
-        loop={true}
-        playing={true}
-        volume={0}
-        muted={true}
-        controls={false}
+      data-testid="react-player"
+      id="video_back"
+      url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
+      loop={true}
+      playing={true}
+      volume={0}
+      muted={true}
+      controls={false}
         //style={{ minWidth:parseInt(dimensions.width), minHeight:parseInt(dimensions.height),  width: parseInt(dimensions.width), height: parseInt(dimensions.height), position: 'absolute', left: 0, right: 0 }}
         style={{ minWidth: vid_width, minHeight: vid_height, width: vid_width, height: vid_height, position: 'absolute', left: 0, right: 0, zindex: -1 }}
         onLoad={async (response) => {
