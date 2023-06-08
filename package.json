@@ -42,6 +42,7 @@
     "material-table": "^1.63.0",
     "moment": "^2.29.4",
     "multiselect-react-dropdown": "^2.0.25",
+    "node": "^20.2.0",
     "path": "^0.12.7",
     "python-bridge": "^1.1.0",
     "ramda": "^0.29.0",

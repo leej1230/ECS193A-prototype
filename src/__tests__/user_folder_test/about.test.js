@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactPlayer from 'react-player';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; 
 import About from '../../components/user_folder/About';
