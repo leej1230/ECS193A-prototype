@@ -13,10 +13,42 @@ import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import GetUserAfterRender from "../../util/getUser";
 import DashboardSidebar from "../dashboard_side/dashboardSidebar";
 
+function debounce(fn, ms) {
+    let timer
+    return _ => {
+        clearTimeout(timer)
+        timer = setTimeout(_ => {
+            timer = null
+            fn.apply(this, arguments)
+        }, ms)
+    };
+}
+
 function Home() {
     const [gene_count, set_gene_count] = useState(0);
     const [dataset_count, set_dataset_count] = useState(0);
     const [height_link_cards] = useState("300px");
+
+    // orig window dimensions: 1536 x 754 (width x height)
+    const [dimensions, setDimensions] = React.useState({
+        height: window.innerHeight,
+        width: window.innerWidth
+    })
+
+    const [ dataset_img_dim , set_dataset_img_dim ] = React.useState({
+        height : Math.floor( (280 / 418) * window.innerWidth * 0.7 * 0.5 * 1.2 ), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
+    })
+
+    const [ gene_img_dim , set_gene_img_dim ] = React.useState({
+        height : Math.floor( (495 / 735 ) * window.innerWidth * 0.7 * 0.5 * 1.2 ), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
+    })
+
+    const [ link_img_holder_dim , set_link_img_holder_dim ] = React.useState({
+        height : Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2 * 0.7), 
+        width: Math.floor(window.innerWidth * 0.7 * 0.5 * 1.2)
+    })
 
     const getCountInfo = async () => {
         console.log("count information: ");
@@ -35,6 +67,52 @@ function Home() {
     useEffect(() => {
         getCountInfo();
     }, []);
+
+    React.useEffect(() => {
+        const debouncedHandleResize = debounce(function handleResize() {
+
+            // set img holder width and height
+            let temp_link_holder_width = window.innerWidth * 0.7 * 0.5;
+            let temp_link_holder_height = temp_link_holder_width * 0.7;
+
+            // dataset height width
+            let temp_dataset_img_width = Math.floor(temp_link_holder_width * 1.2)
+            let temp_dataset_img_height = Math.floor( (280 / 418) * temp_dataset_img_width );
+
+            // gene height width
+            let temp_gene_img_width = Math.floor( temp_link_holder_width * 1.2 );
+            let temp_gene_img_height = Math.floor( (495 / 735 ) * temp_gene_img_width );
+
+
+            setDimensions({
+                height: window.innerHeight,
+                width: window.innerWidth
+            });
+
+            set_link_img_holder_dim({
+                height: Math.floor( temp_link_holder_height ),
+                width: Math.floor(temp_link_holder_width)
+            });
+
+            set_dataset_img_dim({
+                height: Math.floor( temp_dataset_img_height ),
+                width: Math.floor( temp_dataset_img_width )
+            });
+
+            set_gene_img_dim({
+                height: Math.floor( temp_gene_img_height ),
+                width: Math.floor( temp_gene_img_width )
+            });
+
+
+        }, 1000)
+
+        window.addEventListener('resize', debouncedHandleResize)
+
+        return _ => {
+            window.removeEventListener('resize', debouncedHandleResize)
+        }
+    })
 
     GetUserAfterRender();
 
@@ -159,8 +237,8 @@ function Home() {
                             <div
                                 style={{
                                     minWidth: "100%",
-                                    minHeight: `${height_link_cards}`,
-                                    maxHeight: `${height_link_cards}`,
+                                    minHeight: `${link_img_holder_dim.height}px`,
+                                    maxHeight: `${link_img_holder_dim.height}px`,
                                     left: 0,
                                     marginLeft: "40px",
                                     justifyContent: "center",
@@ -172,8 +250,8 @@ function Home() {
                                         display: "inline-block",
                                         minWidth: "70%",
                                         maxWidth: "70%",
-                                        minHeight: `${height_link_cards}`,
-                                        maxHeight: `${height_link_cards}`,
+                                        minHeight: `${link_img_holder_dim.height}px`,
+                                        maxHeight: `${link_img_holder_dim.height}px`,
                                     }}
                                 >
                                     <div
@@ -182,8 +260,8 @@ function Home() {
                                             minWidth: "100%",
                                             maxWidth: "100%",
                                             display: "flex",
-                                            minHeight: `${height_link_cards}`,
-                                            maxHeight: `${height_link_cards}`,
+                                            minHeight: `${link_img_holder_dim.height}px`,
+                                            maxHeight: `${link_img_holder_dim.height}px`,
                                         }}
                                     >
                                         <div
@@ -212,13 +290,14 @@ function Home() {
                                                             src="https://www.ukri.org/wp-content/uploads/2022/02/MRC-180222-DNASequencingDataGenomicAnalysis-GettyImages-1293619871-735x490.jpg"
                                                             style={{
                                                                 maxWidth:
-                                                                    "100%",
+                                                                    `${gene_img_dim.width}px`,
                                                                 minWidth:
-                                                                    "100%",
+                                                                    `${gene_img_dim.width}px`,
                                                                 minHeight:
-                                                                    "100%",
+                                                                    `${gene_img_dim.height}px`,
                                                                 maxHeight:
-                                                                    "100%",
+                                                                    `${gene_img_dim.height}px`,
+                                                                objectFit: 'cover'
                                                             }}
                                                         ></img>
                                                     </a>
@@ -250,15 +329,18 @@ function Home() {
                                                         <img
                                                             alt="dataset_search_img"
                                                             src="https://www.shutterstock.com/image-vector/abstract-business-chart-uptrend-line-260nw-593939270.jpg"
+                                                            width='100%'
+                                                            height='100%'
                                                             style={{
                                                                 maxWidth:
-                                                                    "100%",
+                                                                    `${dataset_img_dim.width}px`,
                                                                 minWidth:
-                                                                    "100%",
+                                                                    `${dataset_img_dim.width}px`,
                                                                 minHeight:
-                                                                    "100%",
+                                                                    `${dataset_img_dim.height}px`,
                                                                 maxHeight:
-                                                                    "100%",
+                                                                    `${dataset_img_dim.height}px`,
+                                                                objectFit: 'cover'
                                                             }}
                                                         ></img>
                                                     </a>

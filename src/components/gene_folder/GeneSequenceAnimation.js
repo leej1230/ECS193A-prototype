@@ -72,36 +72,42 @@ function GeneSequenceAnimation(props){
 
     return(
         <div class="col-xl" id="gene_animation">
-            <TableContainer style={{ width: '100%', height: '500px', overflow: 'scroll' }}>
+          <div class="card shadow" >
+            <div
+              class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Code</h6>
+            </div>
 
-            <Table style={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                <TableRow>
-                    <TableCell>Code</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {
-                    gene_code_info.code.map(function (item, row_i) {
-                    return <TableRow key={row_i}>
-                        <TableCell>
-                        
-                        <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
-                            return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
-                            {code_str}
-                            </div>
-                        })}</div>
+            <div class="card-body" >
+              <TableContainer style={{ width: '100%', height: '500px', overflow: 'scroll' }}>
 
-                        </TableCell>
-                        
-                    </TableRow>
+              <Table style={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                  </TableHead>
+                  <TableBody>
+                  {
+                      gene_code_info.code.map(function (item, row_i) {
+                      return <TableRow key={row_i}>
+                          <TableCell>
+                          
+                          <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
+                              return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
+                              {code_str}
+                              </div>
+                          })}</div>
 
-                    })
-                }
-                </TableBody>
-            </Table>
+                          </TableCell>
+                          
+                      </TableRow>
 
-            </TableContainer>
+                      })
+                  }
+                  </TableBody>
+              </Table>
+
+              </TableContainer>
+            </div>
+          </div>
 
         </div>
     )

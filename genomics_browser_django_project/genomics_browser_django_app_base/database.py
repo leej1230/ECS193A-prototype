@@ -849,6 +849,8 @@ class Database:
                 dict: HTTP 201 Created status message.
             """
 
+            max_edits_per_dataset_user_combo = 5
+
             data_request = json.loads(request['ctx'].body)
 
             update_dict = data_request['modify_list']
@@ -890,6 +892,27 @@ class Database:
                         edits_list_for_dataset = edits_structure[
                             update_dataset_id
                         ]
+
+                        # if pass the maximum allowed for the undo history, then need to remove the oldest one
+                        if (
+                            len(edits_list_for_dataset)
+                            >= max_edits_per_dataset_user_combo
+                        ):
+                            index_to_remove = -1
+                            oldest_date = None
+                            for i in range(0, len(edits_list_for_dataset)):
+                                cur_edit_record_date = edits_list_for_dataset[
+                                    i
+                                ]['edit_date']
+                                if (
+                                    oldest_date == None
+                                    or cur_edit_record_date < oldest_date
+                                ):
+                                    oldest_date = cur_edit_record_date
+                                    index_to_remove = i
+
+                            edits_list_for_dataset.pop(index_to_remove)
+
                         edits_list_for_dataset.append(
                             {
                                 'id': new_edit_id,
@@ -1151,19 +1174,22 @@ class Database:
             search_word = request['search_word']
             page = int(request['page_id']) - 1
 
-            numberofList = 5
+            numberofList = int(request['num_per_page'])
 
             doc_count = 0
 
-            if search_word.strip() == '':
+            genes = []
+
+            if search_word.strip() == '' or search_word == " ":
                 doc_count = Database.gene_collection.count_documents({})
-                genes = (
-                    Database.gene_collection.find(
-                        {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
-                    )
+                genes_full = Database.gene_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
+                )
+                '''
                     .skip(numberofList * page)
                     .limit(numberofList)
-                )
+                '''
+                genes = [gene for gene in genes_full]
             else:
                 # Perform fuzzy matching using the search_word
                 fuzzy_results = []
@@ -1185,7 +1211,7 @@ class Database:
                     gene[0] for gene in fuzzy_results
                 ]  # Extract the genes from the sorted list
 
-            genes = genes[page * numberofList : (page + 1) * numberofList]
+            genes = genes[(page * numberofList) : ((page + 1) * numberofList)]
 
             json_data = loads(dumps(genes))
             totalPages = math.ceil(doc_count / numberofList)
@@ -1327,32 +1353,60 @@ class Database:
             search_word = request['search_word']
             page = int(request['page_id']) - 1
 
-            numberofList = 5
+            numberofList = int(request['num_per_page'])
 
             doc_count = 0
 
             datasets = []
 
-            if search_word == " ":
+            if search_word == " " or search_word.strip() == '':
                 doc_count = Database.dataset_collection.count_documents({})
-                datasets = (
-                    Database.dataset_collection.find(
-                        {},
-                        {
-                            '_id': 0,
-                            'name': 1,
-                            'id': 1,
-                            'description': 1,
-                            'date_created': 1,
-                            'rowType': 1,
-                            'geneCode': 1,
-                            'patientCode': 1,
-                        },
-                    )
-                    .skip(numberofList * page)
-                    .limit(numberofList)
+                datasets = Database.dataset_collection.find(
+                    {},
+                    {
+                        '_id': 0,
+                        'name': 1,
+                        'id': 1,
+                        'description': 1,
+                        'date_created': 1,
+                        'rowType': 1,
+                        'geneCode': 1,
+                        'patientCode': 1,
+                    },
                 )
+                '''.skip(numberofList * page)
+                    .limit(numberofList)'''
             else:
+                fuzzy_results = []
+                all_datasets = Database.dataset_collection.find(
+                    {},
+                    {
+                        '_id': 0,
+                        'name': 1,
+                        'id': 1,
+                        'description': 1,
+                        'date_created': 1,
+                        'rowType': 1,
+                        'geneCode': 1,
+                        'patientCode': 1,
+                    },
+                )
+                for dataset in all_datasets:
+                    ratio = fuzz.ratio(search_word, dataset['name'])
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (dataset, ratio)
+                        )  # Store dataset and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
+                doc_count = len(fuzzy_results)
+                datasets = [
+                    dataset[0] for dataset in fuzzy_results
+                ]  # Extract the datasets from the sorted list
+
+                '''
                 doc_count = Database.dataset_collection.count_documents(
                     {'name': {'$regex': search_word, '$options': 'i'}}
                 )
@@ -1372,14 +1426,24 @@ class Database:
                     )
                     .skip(numberofList * page)
                     .limit(numberofList)
-                )
+                )'''
+
+            datasets = datasets[
+                (page * numberofList) : ((page + 1) * numberofList)
+            ]
 
             json_data = loads(dumps(datasets))
 
             totalPages = math.ceil(doc_count / numberofList)
 
+            response_data = {
+                'datasets': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
+
             # print(totalPages)
-            return json_data
+            return loads(dumps(response_data))
 
         def get_dataset_name_for_id(request):
             """Get the dataset name given dataset ID.
@@ -1464,6 +1528,7 @@ class Database:
                 'FILES': request['ctx'].FILES.copy(),
                 'POST': request['ctx'].POST.copy(),
             }
+            person_uploaded = request['ctx']['POST'].get('nameFull')
             date_created = request['ctx']['POST'].get('dateCreated')
             date_created = re.sub(
                 r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
@@ -1481,6 +1546,7 @@ class Database:
                 rowType=request['ctx']['POST'].get('rowType'),
                 date_created=date_created,
                 dataset_id=Database.Counters.get_new_dataset_counter(),
+                person_uploaded_dataset=person_uploaded,
             )
 
             # Serialize dataset, insert records into database, and increment counters
@@ -1518,11 +1584,6 @@ class Database:
 
                 request_data = json.loads(request['ctx'].body)
 
-                # need to delete bookmarks: genes and datasets
-                cur_user = Database.user_collection.find_one(
-                    {'auth0_uid': request_data['user_id']}
-                )
-
                 genes_in_dataset = Database.Genes.get_genes_from_dataset(
                     {'dataset_id': int(request_data['dataset_id'])}
                 )
@@ -1531,72 +1592,85 @@ class Database:
                     {'dataset_id': int(request_data['dataset_id'])}
                 )
 
-                need_to_update_bookmarks_gene = False
-                need_to_update_bookmarks_dataset = False
-                need_to_update_edits = False
+                cur_users = Database.user_collection.find({})
 
-                for gene_cur in genes_in_dataset:
+                full_users_list = [{}]
+                for doc in cur_users:
+                    full_users_list.append(doc)
+
+                full_users_list = full_users_list[1:]
+
+                for i in range(0, len(full_users_list)):
+                    # need to delete bookmarks: genes and datasets, delete edits
+                    cur_user = full_users_list[i]
+
+                    need_to_update_bookmarks_gene = False
+                    need_to_update_bookmarks_dataset = False
+                    need_to_update_edits = False
+
+                    for gene_cur in genes_in_dataset:
+                        inner_code = (
+                            str(gene_cur['name']) + '/' + str(gene_cur['id'])
+                        )
+                        if (
+                            'bookmarked_genes' in cur_user
+                            and inner_code in cur_user['bookmarked_genes']
+                        ):
+                            cur_user['bookmarked_genes'] = list(
+                                cur_user['bookmarked_genes']
+                            )
+                            cur_user['bookmarked_genes'].remove(inner_code)
+                            need_to_update_bookmarks_gene = True
+
                     inner_code = (
-                        str(gene_cur['name']) + '/' + str(gene_cur['id'])
+                        str(cur_dataset['name']) + '/' + str(cur_dataset['id'])
                     )
                     if (
-                        'bookmarked_genes' in cur_user
-                        and inner_code in cur_user['bookmarked_genes']
+                        'bookmarked_datasets' in cur_user
+                        and inner_code in cur_user['bookmarked_datasets']
                     ):
-                        cur_user['bookmarked_genes'] = list(
-                            cur_user['bookmarked_genes']
+                        cur_user['bookmarked_datasets'] = list(
+                            cur_user['bookmarked_datasets']
                         )
-                        cur_user['bookmarked_genes'].remove(inner_code)
-                        need_to_update_bookmarks_gene = True
+                        cur_user['bookmarked_datasets'].remove(inner_code)
+                        need_to_update_bookmarks_dataset = True
 
-                inner_code = (
-                    str(cur_dataset['name']) + '/' + str(cur_dataset['id'])
-                )
-                if (
-                    'bookmarked_datasets' in cur_user
-                    and inner_code in cur_user['bookmarked_datasets']
-                ):
-                    cur_user['bookmarked_datasets'] = list(
-                        cur_user['bookmarked_datasets']
-                    )
-                    cur_user['bookmarked_datasets'].remove(inner_code)
-                    need_to_update_bookmarks_dataset = True
+                    # clear edit records for this dataset
+                    if 'edits' in cur_user:
+                        if str(cur_dataset['id']) in cur_user['edits']:
+                            cur_user['edits'].pop(str(cur_dataset['id']), None)
+                            need_to_update_edits = True
 
-                # clear edit records for this dataset
-                if 'edits' in cur_user:
-                    if str(cur_dataset['id']) in cur_user['edits']:
-                        cur_user['edits'].pop(str(cur_dataset['id']), None)
-                        need_to_update_edits = True
+                    user_updated_obj = {}
 
-                user_updated_obj = {}
+                    if (
+                        'bookmarked_genes' in cur_user
+                        and need_to_update_bookmarks_gene
+                    ):
+                        user_updated_obj['bookmarked_genes'] = cur_user[
+                            'bookmarked_genes'
+                        ]
+                    if (
+                        'bookmarked_datasets' in cur_user
+                        and need_to_update_bookmarks_dataset
+                    ):
+                        user_updated_obj['bookmarked_datasets'] = cur_user[
+                            'bookmarked_datasets'
+                        ]
+                    if 'edits' in cur_user and need_to_update_edits:
+                        user_updated_obj['edits'] = cur_user['edits']
 
-                if (
-                    'bookmarked_genes' in cur_user
-                    and need_to_update_bookmarks_gene
-                ):
-                    user_updated_obj['bookmarked_genes'] = cur_user[
-                        'bookmarked_genes'
-                    ]
-                if (
-                    'bookmarked_datasets' in cur_user
-                    and need_to_update_bookmarks_dataset
-                ):
-                    user_updated_obj['bookmarked_datasets'] = cur_user[
-                        'bookmarked_datasets'
-                    ]
-                if 'edits' in cur_user and need_to_update_edits:
-                    user_updated_obj['edits'] = cur_user['edits']
+                    if (
+                        need_to_update_edits
+                        or need_to_update_bookmarks_gene
+                        or need_to_update_bookmarks_dataset
+                    ):
+                        # save updated values
 
-                if (
-                    need_to_update_edits
-                    or need_to_update_bookmarks_gene
-                    or need_to_update_bookmarks_dataset
-                ):
-                    # save updated values
-                    Database.user_collection.update_one(
-                        {'auth0_uid': request_data['user_id']},
-                        {"$set": user_updated_obj},
-                    )
+                        Database.user_collection.update_one(
+                            {'auth0_uid': cur_user['auth0_uid']},
+                            {"$set": user_updated_obj},
+                        )
 
                 datasets_deleted = Database.dataset_collection.delete_one(
                     {'id': int(request_data['dataset_id'])}
