@@ -77,6 +77,7 @@ class DatasetModel(models.Model):
     date_created = models.DateField(blank=True, null=True)
     url = models.URLField(blank=True, null=True)
     rowType = models.TextField(blank=False, null=False)
+    person_uploaded_dataset = models.TextField(blank=False, null=False)
 
 
 class CounterModel(models.Model):

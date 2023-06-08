@@ -50,8 +50,12 @@ function DatasetChangeUndo(props) {
 
     });
 
+    console.log("change occured history disturbed");
+
+    props.input_set_reload_edit_history(false);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.input_data])
+  }, [props.input_data, props.input_reload_history])
 
   const handleCollapseClick = (input_index) => {
     let cur_collapse_arr = collapse_array;
@@ -86,6 +90,7 @@ function DatasetChangeUndo(props) {
                         //console.log(response);
 
                         alert("Data Changes Undone");
+                 
 
                       });
 
@@ -97,6 +102,8 @@ function DatasetChangeUndo(props) {
                       }, { 'content-type': 'application/json' }).then((response) => {
                         alert("Edit Record Deleted");
                       });
+
+                      props.input_set_reload_edit_history(true);
 
                       //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
 

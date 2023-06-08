@@ -1,0 +1,12 @@
+
+#searchResultsHolder{
+    overflow: auto;
+    max-height: 600px;
+}
+
+.page_change_btn{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

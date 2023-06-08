@@ -6,6 +6,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import "./UploadDataset.css";
 
+import { useAuth0 } from "@auth0/auth0-react";
+
 import { Cancel, CheckCircle } from "@material-ui/icons";
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
@@ -24,6 +26,9 @@ function UploadDataset() {
     const [rowType, setrowType] = useState("");
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
+
+    const { user, isLoading } = useAuth0();
+    const userMetadata = user?.["https://unique.app.com/user_metadata"];
 
     const changeHandler = (e) => {
         setSelectedFile(e.target.files[0]);
@@ -53,6 +58,7 @@ function UploadDataset() {
         formData.append('geneCode', geneCode);
         formData.append('patientCode', patientCode);
         formData.append('rowType', rowType);
+        formData.append('nameFull' , `${userMetadata.given_name}${" "}${userMetadata.family_name}`);
 
         const config = {
             headers: {

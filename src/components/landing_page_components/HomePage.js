@@ -132,10 +132,12 @@ function HomePage() {
             />
 
             <div id="title_landing_info">
-                <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
-                <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
-                <div className="d-flex align-items-center justify-content-center">
-                    <a href={() => false} class="btn btn-primary" onClick={() => loginWithRedirect()}>Start</a>
+                <div id="title_info_contents">
+                    <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Genomics Browser</div>
+                    <div class="h4 text-white d-flex align-items-center justify-content-center">Helping Researchers and Medical Professionals Work With Genomics Data</div>
+                    <div className="d-flex align-items-center justify-content-center">
+                        <a href={() => false} class="btn btn-primary"   onClick={() => loginWithRedirect()}>Start</a>
+                    </div>
                 </div>
             </div>
 

@@ -26,6 +26,8 @@ yarn-error.log*
 genomics_browser_django_project/genomics_browser_django_venv/*
 genomics_browser_venv/*
 
+cypress.env.json
+
 options.txt
 
 py_test_scripts.py
@@ -33,3 +35,6 @@ py_test_scripts.py
 __pycache__/
 .vscode
 .env*
+cypress.env.json
+*.png
+*.mp4
