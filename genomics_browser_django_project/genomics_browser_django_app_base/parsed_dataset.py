@@ -14,6 +14,15 @@ class ParsedDataset :
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
+        for rowIndex, row in self.df.iterrows():
+            for columnIndex, value in self.df.items():
+                try:
+                    self.df.at[rowIndex, columnIndex] = float(self.df[columnIndex].loc[rowIndex])
+                    print("row,col: ", (rowIndex, columnIndex))
+                    print( self.df.loc[rowIndex, columnIndex] )
+                except:
+                    {}
+
         """
         print(self.description)
         print(self.url)
@@ -177,6 +186,11 @@ class ParsedDataset :
                 for column in self.df.columns.values:
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
+                        # detect numeric values
+                        try:
+                            data[column] = float(data[column])
+                        except:
+                            {}
                 
                 result.append(data)
 
@@ -204,6 +218,11 @@ class ParsedDataset :
                 for column in self.df.columns.values:
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
+                        # detect numeric values
+                        try:
+                            data[column] = float(data[column])
+                        except:
+                            {}
                 
                 result.append(data)
 
