@@ -33,5 +33,19 @@ describe('Profile', () => {
         jest.clearAllMocks();
     });
 
+    it('renders user information correctly', async () => {
+      await waitFor(() => {
+        expect(
+          screen.getByText((content, element) => {
+            const hasText = (node) => node.textContent.trim().includes(content.trim());
+            const nodeHasText = hasText(element);
+            const childrenDontHaveText = Array.from(element.children).every((child) => !hasText(child));
+            return nodeHasText && childrenDontHaveText;
+          }, { exact: false }).toBeInTheDocument()
+        );
+      });
+    });
+    
+
 
 });
