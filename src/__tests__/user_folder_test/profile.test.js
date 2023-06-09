@@ -12,7 +12,7 @@ jest.mock('@auth0/auth0-react', () => ({
 
 describe('Profile', () => {
     beforeEach(() => {
-    // Mock the useAuth0 hook implementation
+
     useAuth0.mockReturnValue({
       user: {
         sub: 'auth0|1234567890',
@@ -23,7 +23,6 @@ describe('Profile', () => {
       },
     });
 
-    // Mock axios get and post methods
     jest.spyOn(axios, 'get').mockResolvedValue({ data: { bookmarked_genes: [], bookmarked_datasets: [], is_admin: false, is_staff: false } });
     jest.spyOn(axios, 'post').mockResolvedValue({ data: [] });
 
