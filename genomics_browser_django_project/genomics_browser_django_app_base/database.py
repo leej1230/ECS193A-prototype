@@ -1268,7 +1268,10 @@ class Database:
 
             genes_found_list = genes_found_list[1:]
 
-            json_data = loads(dumps(genes_found_list))
+            json_data = json.loads( json.dumps(genes_found_list) )
+
+            #json_data = loads(dumps(genes_found_list))
+
             return json_data
 
         def get_seq_names(request):
@@ -1551,8 +1554,6 @@ class Database:
 
             # Serialize dataset, insert records into database, and increment counters
             serial = DatasetSerializer(dataset.get_dataset_info())
-
-            # print(" the upload results: \n")
 
             if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())

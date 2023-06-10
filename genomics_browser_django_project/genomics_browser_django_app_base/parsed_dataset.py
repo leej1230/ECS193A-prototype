@@ -4,6 +4,7 @@ import pandas as pd
 # import requests
 import json
 import numpy as np
+import math
 
 class ParsedDataset : 
     def __init__(self, *args, **kwargs) : 
@@ -14,12 +15,17 @@ class ParsedDataset :
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
+        self.df.dropna(axis=1, how='all')
+        self.df.dropna(axis=0, how='all')
+
+
+
         for rowIndex, row in self.df.iterrows():
             for columnIndex, value in self.df.items():
                 try:
                     self.df.at[rowIndex, columnIndex] = float(self.df[columnIndex].loc[rowIndex])
-                    print("row,col: ", (rowIndex, columnIndex))
-                    print( self.df.loc[rowIndex, columnIndex] )
+                    #print("row,col: ", (rowIndex, columnIndex))
+                    #print( self.df.loc[rowIndex, columnIndex] )
                 except:
                     {}
 
@@ -156,6 +162,9 @@ class ParsedDataset :
             gene_names = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
             gene_values = self.df[gene_names].T
             patient_ids = [pid for pid in self.df[self.get_column_starting_with(self.patientCode)]]
+
+            gene_values = gene_values.fillna("nan/na")
+
             return [{
                 "id": int(starting_counter + i),
                 "name": str(gene_names[i]).upper(),
@@ -170,6 +179,7 @@ class ParsedDataset :
             columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns
             gene_values = self.df[patient_columns].T 
 
+            gene_values = gene_values.fillna("nan/na")
 
             result = []
             for i in range(len(gene_names)):
@@ -189,6 +199,8 @@ class ParsedDataset :
                         # detect numeric values
                         try:
                             data[column] = float(data[column])
+                            if np.isnan( data[column] ):
+                                data[column] = "nan/na"
                         except:
                             {}
                 
@@ -219,8 +231,11 @@ class ParsedDataset :
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
                         # detect numeric values
+                        
                         try:
                             data[column] = float(data[column])
+                            if np.isnan( data[column] ):
+                                data[column] = "nan/na"
                         except:
                             {}
                 
@@ -232,6 +247,8 @@ class ParsedDataset :
             patient_names = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             gene_ids = self.get_all_genes_data()
             gene_values = self.df[patient_names].T
+
+            gene_values = gene_values.fillna("nan/na")
             
             # if genes are columns, then patients not have any info related
             return [{

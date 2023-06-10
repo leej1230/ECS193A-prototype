@@ -71,7 +71,10 @@ function DatasetPage() {
     const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${DATASET_ID}`;
 
     axios.get(gene_full_url).then((result) => {
-      set_gene_with_value_information(result.data);
+      console.log("get gene and patient data: ");
+      console.log(  result.data  );
+
+      set_gene_with_value_information( result.data );
       set_gotGeneInfo(true);
     })
   }, [DATASET_ID])
