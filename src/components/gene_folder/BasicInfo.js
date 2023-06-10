@@ -29,6 +29,8 @@ function BasicInfo(props) {
                 <p>Dataset ID: {props.input_gene.dataset_id}</p>
                 < br />
                 <a href={"/dataset/" + props.input_gene.dataset_id}>Link to Dataset</a>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <a href={`https://www.genecards.org/cgi-bin/carddisp.pl?id=${props.input_gene.name}&id_type=ensembl` } target="_blank" rel="noopener noreferrer">Gene Cards Link</a>
               </>
 
               <br />
