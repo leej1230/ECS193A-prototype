@@ -195,14 +195,11 @@ function GenePage() {
       for(let temp_index = 0; temp_index < column_possibilities.length; temp_index++){
         copy_filter_types_states_arr.push({value: "text", label: "text"});
       }
-      console.log("filter states after added new elements: ")
-      console.log(copy_filter_types_states_arr);
+
       set_filter_types_states_arr(copy_filter_types_states_arr)
 
     }
 
-    console.log("filter state objs: ");
-    console.log(copy_filter_types_states_arr);
 
     for (let i = 0; i < column_possibilities.length; i++) {
 
@@ -222,7 +219,27 @@ function GenePage() {
             text: column_possibilities[i]
           }
           
-          if( copy_column_filter_types_arr[i] == "number" ){
+          if ( unique.length < 3 ) {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                type: FILTER_TYPES.MULTISELECT
+              }),
+
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <>
+                    <p className="float-center">Multiselect</p>
+                    <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))} />
+                  </>
+                )
+              }
+            }
+          }
+          else if( copy_column_filter_types_arr[i] == "number" ){
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
@@ -245,7 +262,7 @@ function GenePage() {
                               
                             }}
                             value={copy_filter_types_states_arr[i]}
-                            name={"page_size"}
+                            name={"filter_type"}
                           />
                     <br />
                     <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
@@ -254,38 +271,7 @@ function GenePage() {
               }
             }
           }
-          else if ( copy_column_filter_types_arr[i] == "multiselect" ) {
-            col_obj = {
-              dataField: column_possibilities[i],
-              text: column_possibilities[i],
-              headerStyle: { minWidth: '150px' },
-              filter: customFilter({
-                delay: 1000,
-                type: FILTER_TYPES.MULTISELECT
-              }),
-
-              filterRenderer: (onFilter, column) => {
-                return (
-                  <>
-                    <SelectDropDown className="float-center"
-                            options={options_select}
-                            isLoading={!options_select}
-                            closeMenuOnSelect={true}
-                            onChange={(e) => {
-                              //handleSelect(e, i);
-                              handleSelect(e, i);
-                              
-                            }}
-                            value={copy_filter_types_states_arr[i]}
-                            name={"page_size"}
-                          />
-                    <br />
-                    <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))} />
-                  </>
-                )
-              }
-            }
-          } else {
+           else {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
@@ -308,7 +294,7 @@ function GenePage() {
                               
                             }}
                             value={copy_filter_types_states_arr[i]}
-                            name={"page_size"}
+                            name={"filter_type"}
                           />
                     <br />
                     <StringFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
@@ -459,9 +445,6 @@ function GenePage() {
     let patients_filtered = patient_information_expanded;
     let isFiltered = false;
 
-    console.log("modified filters: ")
-    console.log(cur_filters);
-
     for (let i = 0; i < filter_columns.length; i++) {
       let current_filter = cur_filters[filter_columns[i]];
       if (current_filter.filterType === "NUMBER") {
@@ -494,7 +477,6 @@ function GenePage() {
 
         if ( current_filter.filterVal.compareValCode === 1 ){
           isFiltered = true
-          console.log("filter is on and works!!!");
           patients_filtered = patients_filtered.filter(patient_one => String(patient_one[filter_columns[i]]) === String(current_filter.filterVal.inputVal1) );
         }
       } else if (current_filter.filterType === "MULTISELECT") {
