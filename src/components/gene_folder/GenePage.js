@@ -9,6 +9,7 @@ import BasicInfo from './BasicInfo'
 import NumberFilter from '../filters/NumberFilter';
 import GeneSequenceAnimation from './GeneSequenceAnimation';
 import ProductFilter from '../filters/ProductFilter';
+import StringFilter from '../filters/StringFilter';
 import filterNumber from '../filters/filterNumber'
 import SampleGraph from './echartdemo';
 
@@ -22,6 +23,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import {default as SelectDropDown} from "react-select";
 
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
@@ -37,6 +39,8 @@ const selectOptions = [
   { value: "No", label: "no" },
   { value: "unknown", label: "Unknown" },
 ];
+
+const options_select = [{value: "text", label: "text"},{value: "number", label: "number"}]
 
 const SAMPLE_ID = window.location.pathname.split("/").at(-1);
 
@@ -62,6 +66,10 @@ function GenePage() {
 
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
   const [loaded_gene_info, set_loaded_gene_info] = useState(false);
+  
+  const [column_filter_types_arr, set_column_filter_types_arr] = useState([ 'text', 'number' , 'multiselect' ]);
+  const [ filter_types_states_arr , set_filter_types_states_arr ] = useState([{value: "text", label: "text"}]);
+
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
     text: ''
@@ -124,6 +132,22 @@ function GenePage() {
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
 
+  useEffect(() => {
+    generatePatientTable(patient_information_expanded);
+  }, [column_filter_types_arr, filter_types_states_arr])
+
+  const handleSelect = async (input_select_obj, input_index) => {
+    let temp_var = clone(column_filter_types_arr);
+
+    temp_var[input_index] = input_select_obj.value;
+    
+    set_column_filter_types_arr( temp_var );
+
+    temp_var = clone(filter_types_states_arr);
+    temp_var[input_index] = input_select_obj;
+    set_filter_types_states_arr( temp_var )
+  };
+
   const generatePatientTable = (patients_info) => {
     if (patients_info.length === 0 || patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null) {
       return;
@@ -159,10 +183,33 @@ function GenePage() {
 
     column_possibilities = Object.keys(patients_info[0])
 
+    let copy_column_filter_types_arr = clone(column_filter_types_arr);
+    let copy_filter_types_states_arr = clone(filter_types_states_arr);
+
+    if( copy_column_filter_types_arr.length !== column_possibilities.length ){
+      // first loading of screen
+      set_column_filter_types_arr(Array(column_possibilities.length).fill("text"));
+      copy_column_filter_types_arr = Array(column_possibilities.length).fill("text")
+
+      copy_filter_types_states_arr = []
+      for(let temp_index = 0; temp_index < column_possibilities.length; temp_index++){
+        copy_filter_types_states_arr.push({value: "text", label: "text"});
+      }
+      console.log("filter states after added new elements: ")
+      console.log(copy_filter_types_states_arr);
+      set_filter_types_states_arr(copy_filter_types_states_arr)
+
+    }
+
+    console.log("filter state objs: ");
+    console.log(copy_filter_types_states_arr);
+
     for (let i = 0; i < column_possibilities.length; i++) {
 
       if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' ){
           var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
+
+          unique = unique.filter(x => x != "nan/na");
 
           let select_options_col = []
 
@@ -174,7 +221,104 @@ function GenePage() {
             dataField: column_possibilities[i],
             text: column_possibilities[i]
           }
-          if (unique.length > 0 && Number.isInteger(unique[0])) {
+          
+          if( copy_column_filter_types_arr[i] == "number" ){
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                onFilter: filterNumber,
+                type: FILTER_TYPES.NUMBER
+              }),
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <>
+                    <SelectDropDown className="float-center"
+                            options={options_select}
+                            isLoading={!options_select}
+                            closeMenuOnSelect={true}
+                            onChange={(e) => {
+                              //handleSelect(e, i);
+                              handleSelect(e, i);
+                              
+                            }}
+                            value={copy_filter_types_states_arr[i]}
+                            name={"page_size"}
+                          />
+                    <br />
+                    <NumberFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
+                  </>
+                )
+              }
+            }
+          }
+          else if ( copy_column_filter_types_arr[i] == "multiselect" ) {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                type: FILTER_TYPES.MULTISELECT
+              }),
+
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <>
+                    <SelectDropDown className="float-center"
+                            options={options_select}
+                            isLoading={!options_select}
+                            closeMenuOnSelect={true}
+                            onChange={(e) => {
+                              //handleSelect(e, i);
+                              handleSelect(e, i);
+                              
+                            }}
+                            value={copy_filter_types_states_arr[i]}
+                            name={"page_size"}
+                          />
+                    <br />
+                    <ProductFilter onFilter={onFilter} column={column} optionsInput={JSON.parse(JSON.stringify(select_options_col))} />
+                  </>
+                )
+              }
+            }
+          } else {
+            col_obj = {
+              dataField: column_possibilities[i],
+              text: column_possibilities[i],
+              headerStyle: { minWidth: '150px' },
+              filter: customFilter({
+                delay: 1000,
+                type: FILTER_TYPES.TEXT
+              }),
+
+              filterRenderer: (onFilter, column) => {
+                return (
+                  <>
+                    <SelectDropDown className="float-center"
+                            options={options_select}
+                            isLoading={!options_select}
+                            closeMenuOnSelect={true}
+                            onChange={(e) => {
+                              //handleSelect(e, i);
+                              handleSelect(e, i);
+                              
+                            }}
+                            value={copy_filter_types_states_arr[i]}
+                            name={"page_size"}
+                          />
+                    <br />
+                    <StringFilter onFilter={onFilter} column={column} input_patient_information_expanded={patients_info} />
+                  </>
+                )
+              }
+            }
+          }
+
+          /*if (unique.length > 0 && Number.isInteger(unique[0])) {
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
@@ -216,7 +360,7 @@ function GenePage() {
                 comparator: Comparator.EQ
               })
             }
-          }
+          }*/
           patient_columns_list.push(col_obj)
         }
     }
@@ -315,6 +459,9 @@ function GenePage() {
     let patients_filtered = patient_information_expanded;
     let isFiltered = false;
 
+    console.log("modified filters: ")
+    console.log(cur_filters);
+
     for (let i = 0; i < filter_columns.length; i++) {
       let current_filter = cur_filters[filter_columns[i]];
       if (current_filter.filterType === "NUMBER") {
@@ -342,8 +489,14 @@ function GenePage() {
 
       } else if (current_filter.filterType === "TEXT") {
 
-        isFiltered = true
-        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal)
+        //isFiltered = true
+        //patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal)
+
+        if ( current_filter.filterVal.compareValCode === 1 ){
+          isFiltered = true
+          console.log("filter is on and works!!!");
+          patients_filtered = patients_filtered.filter(patient_one => String(patient_one[filter_columns[i]]) === String(current_filter.filterVal.inputVal1) );
+        }
       } else if (current_filter.filterType === "MULTISELECT") {
 
         // need to or through the filters selected for a column
@@ -411,8 +564,10 @@ function GenePage() {
 
       } else if (current_filter.filterType === "TEXT") {
 
-        isFiltered = true
-        patients_filtered = patients_filtered.filter(patient_one => patient_one[filter_columns[i]] === current_filter.filterVal)
+        if ( current_filter.filterVal.compareValCode == 1 ){
+          isFiltered = true
+          patients_filtered = patients_filtered.filter(patient_one => String(patient_one[filter_columns[i]]) === String(current_filter.filterVal.inputVal1 ) )
+        }
       } else if (current_filter.filterType === "MULTISELECT") {
 
         // need to or through the filters selected for a column
