@@ -15,7 +15,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
-const SAMPLE_ID = window.location.pathname.split("/").at(-1)
+const SAMPLE_DATASET_NAME = window.location.pathname.split("/").at(-1)
 
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 
@@ -33,7 +33,7 @@ function NameHeaderHolder(props){
           .then((res) => {
             console.log(res.data);
             setUserInfo(res.data);
-            setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_ID}`));
+            setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`));
           })
           .catch((e) => {
             console.log("Failed to fetch user Info.", e)
@@ -61,12 +61,12 @@ function NameHeaderHolder(props){
                             await setBookmarked(false);
                             const formData = new FormData();
                             formData.append("user_id", user.sub.split("|")[1]);
-                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`);
                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`, formData)
                             } else {
                             const formData = new FormData();
                             formData.append("user_id", user.sub.split("|")[1]);
-                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`);
                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`, formData)
                             await setBookmarked(true);
                             }
@@ -77,11 +77,11 @@ function NameHeaderHolder(props){
                         </button>
 
                     </div>
-                    <div>
+                    {/*<div>
                         <p class="d-sm-inline-block subtitle_tag" >ID:</p>
                         &nbsp;
                         <p class="d-sm-inline-block subtitle_content" >{props.input_object_data.id}</p>
-                    </div>
+                    </div>*/}
                     </div>
                 ) : (
                     <div>

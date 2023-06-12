@@ -13,9 +13,9 @@ function GeneCard(props) {
   const [extended_gene_information, set_extended_gene_information] = useState(undefined);
   const [dataset_name, set_dataset_name] = useState("---");
   
-  useEffect(() => {
+  {/*useEffect(() => {
 
-    if(props.gene && 'dataset_id' in props.gene && props.gene.dataset_id != null){
+    if(props.gene && 'dataset_name' in props.gene && props.gene.dataset_name != null){
       axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset_name_from_dataset_id/${props.gene.dataset_id}`)
         .then(async (result) => {
@@ -23,7 +23,7 @@ function GeneCard(props) {
           set_dataset_name(String(result.data))
         })
     }
-  }, [props]);
+  }, [props]);*/}
 
   useEffect(() => {
 
@@ -31,7 +31,7 @@ function GeneCard(props) {
 
       let temp_gene_name = props.gene.name
       let end_index = temp_gene_name.indexOf( "." )
-      if( end_index >= 0 -1 ){
+      if( end_index >= 0 ){
         // present
         temp_gene_name = temp_gene_name.substring(0, end_index )
       }
@@ -55,12 +55,14 @@ function GeneCard(props) {
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title"><a href={props.gene ? "/gene/" + props.gene.name + "/" + props.gene.id : "#"} onClick={() => {
+          <h5 class="card-title"><a href={props.gene ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : "#"} onClick={() => {
             }} >{props.gene ? props.gene.name : ""}</a></h5>
-          <LimitedText numLines='1' text={`Gene ID: ${props.gene && props.gene.id ? props.gene.id : "-"},  Dataset ID: ${props.gene && props.gene.dataset_id ? props.gene.dataset_id : "-"}`} />
+          {/*<LimitedText numLines='1' text={`Gene ID: ${props.gene && props.gene.id ? props.gene.id : "-"}`} /> */}
           <LimitedText numLines='1' text={`Gene Type: ${extended_gene_information ? extended_gene_information.biotype : "Protein Coding"}`} />
           <LimitedText numLines='1' text={`Other Name: ${extended_gene_information ? extended_gene_information.display_name : "---" }`} />
           <LimitedText numLines='1' text={`Dataset Name: ${dataset_name}`} />
+
+          {/* Dataset ID: ${props.gene && props.gene.dataset_id ? props.gene.dataset_id : "-"} */}
 
           {/*<LimitedText text={props.gene ? props.gene.description : ""} />*/}
           

@@ -42,14 +42,14 @@ const selectOptions = [
 
 const options_select = [{value: "text", label: "text"},{value: "number", label: "number"}]
 
-const SAMPLE_ID = window.location.pathname.split("/").at(-1);
+const SAMPLE_DATASET_NAME = window.location.pathname.split("/").at(-1);
 
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
-const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_ID}`
+const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] = useState({ id: 1, dataset_id: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
+  const [gene_data, setGene_data] = useState({  dataset_name: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
   const [gene_external_data, setGeneExternalData] = useState({ description: "" });
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" }
@@ -60,7 +60,7 @@ function GenePage() {
 
   const [graphType, setGraphType] = useState('bar');
 
-  const [, set_basic_gene_info] = useState({ id: 1, dataset_id: 0, name: "a" })
+  const [, set_basic_gene_info] = useState({ dataset_name: 0, name: "a" })
 
   const [dataset_rowType, set_dataset_rowType] = useState("")
 
@@ -205,7 +205,7 @@ function GenePage() {
 
     for (let i = 0; i < column_possibilities.length; i++) {
 
-      if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' ){
+      if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' && column_possibilities[i] != 'dataset_name' ){
 
           if( !(column_possibilities[i] in copy_column_filter_types_arr) ){
             // add column and column type
@@ -407,7 +407,7 @@ function GenePage() {
 
   useEffect(() => {
     async function fetchRowType() {
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${gene_data.dataset_id}`).then((res) => {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${gene_data.dataset_name}`).then((res) => {
 
         set_dataset_rowType(res.data)
 
@@ -415,15 +415,15 @@ function GenePage() {
     }
 
     fetchRowType();
-  }, [gene_data.dataset_id])
+  }, [gene_data.dataset_name])
 
 
   useEffect(() => {
     async function fetchPatientsData() {
 
-      if (gene_data && 'dataset_id' in gene_data && gene_data.dataset_id != null) {
+      if (gene_data && 'dataset_name' in gene_data && gene_data.dataset_name != null) {
 
-        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_id}`
+        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_name}`
         await axios.get(patientsDataAPIURL).then((res) => {
 
           if (res.data.length > 0) {
@@ -649,7 +649,7 @@ function GenePage() {
                                         >
                                           <MenuItem value={'bar'}>Bar</MenuItem>
                                           <MenuItem value={'line'}>Basic Line</MenuItem>
-                                          <MenuItem value={'pie'}>Pie</MenuItem>
+                                          {/*<MenuItem value={'pie'}>Pie</MenuItem>*/}
                                         </Select>
                                       </FormControl>
                                     </div>

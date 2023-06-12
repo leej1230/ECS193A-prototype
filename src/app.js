@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import AdminRoute from "./adminRoute";
-import Sample from "./components/Sample";
+//import Sample from "./components/Sample";
 import GenePageBootstrap from "./components/bootstrap_gene_page/GenePageBootstrap";
 import DatasetPage from "./components/dataset_folder/DatasetPage";
 import UpdateDataset from "./components/dataset_folder/UpdateDataset";
@@ -34,7 +34,7 @@ const adminRoutes = [
 
 const staffRoutes = [
     {
-        path: "/gene/:name/:id",
+        path: "/gene/:name/:dataset_name",
         element: (
             <>
                 <Navbar />
@@ -45,7 +45,7 @@ const staffRoutes = [
         ),
     },
     {
-        path: "/dataset/:id",
+        path: "/dataset/:dataset_name",
         element: (
             <>
                 <Navbar />
@@ -69,7 +69,7 @@ const privateRoutes = [
             </>
         ),
     },
-    {
+    /*{
         path: "/data/:id",
         element: (
             <>
@@ -77,7 +77,7 @@ const privateRoutes = [
                 <Sample />
             </>
         ),
-    },
+    },*/
 
     {
         path: "/search_datasets_page",
@@ -121,7 +121,7 @@ const privateRoutes = [
             </>
         ),
     },
-    {
+    /*{
         path: "/frontend_test/:id",
         element: (
             <>
@@ -131,7 +131,7 @@ const privateRoutes = [
                 </div>
             </>
         ),
-    },
+    },*/
 
     {
         path: "/gene_bootstrap",

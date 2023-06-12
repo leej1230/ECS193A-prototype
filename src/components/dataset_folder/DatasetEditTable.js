@@ -119,7 +119,7 @@ function DatasetEditTable(props) {
 
       if (props.input_together_patient_gene_information.length > 0) {
         let example_val = props.input_together_patient_gene_information[0][column_possibilities[i]]
-        if (((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val === 'number' && !isNaN(example_val))) && (column_possibilities[i] !== 'dataset_id')) {
+        if (((typeof example_val === 'string' || example_val instanceof String) || (typeof example_val === 'number' && !isNaN(example_val))) && (column_possibilities[i] !== 'dataset_name')) {
           // only allow number and string types
           // dataset_id column not needed
 
@@ -614,7 +614,7 @@ function DatasetEditTable(props) {
                       // Data to be sent to the server
                       modify_list: clone(modified_objects_list_to_update_back),
                       save_undo_list: clone(prev_objects_list_to_undo),
-                      dataset_id: parseInt(props.input_dataset_id),
+                      dataset_name: parseInt(props.input_dataset_name),
                       row_type_for_dataset: props.row_type,
                       dataset_patient_code: props.input_patient_code,
                       user_id: user.sub.split("|")[1]

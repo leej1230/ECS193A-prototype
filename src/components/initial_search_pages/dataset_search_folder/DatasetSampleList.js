@@ -8,7 +8,7 @@ import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
-const DATASET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/all`;
+const DATASET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/dataset_by_name/all`;
 // const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
 
 function DatasetSampleList(props) {

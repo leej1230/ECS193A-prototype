@@ -16,9 +16,8 @@ const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/all`;
 function SampleListGeneResultDisplay(props) {
 
     const [extended_gene_information, set_extended_gene_information] = useState(undefined);
-    const [dataset_name, set_dataset_name] = useState("---");
   
-  useEffect(() => {
+  {/*useEffect(() => {
     if(props.gene){
 
       //console.log("gene info: ")
@@ -31,7 +30,7 @@ function SampleListGeneResultDisplay(props) {
           set_dataset_name(String(result.data))
         })
     }
-  }, [props]);
+  }, [props]);*/}
 
   useEffect(() => {
 
@@ -62,10 +61,13 @@ function SampleListGeneResultDisplay(props) {
   return (
     <div>
         <div id="gene_display_result_single">
-            <p id="search_gene_result_name_display">{props.gene && props.gene.name ? props.gene.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={props.gene && props.gene.name && props.gene.id ? "/gene/" + props.gene.name + "/" + props.gene.id : "#"}>Link to Gene Page</a> </p>
-            <p id="search_gene_result_info_display">Gene ID: {props.gene && props.gene.id ? props.gene.id : '-'} &nbsp; &nbsp; &nbsp; Dataset Name: {dataset_name} &nbsp; &nbsp; &nbsp; Dataset ID: {props.gene && props.gene.dataset_id ? props.gene.dataset_id : '-'} &nbsp; &nbsp; &nbsp; Gene Type: {extended_gene_information && extended_gene_information.biotype ? extended_gene_information.biotype : "-"} &nbsp; &nbsp; &nbsp; Other Name: { extended_gene_information && extended_gene_information.display_name ? extended_gene_information.display_name : "-"} &nbsp; &nbsp; &nbsp; </p>
+            <p id="search_gene_result_name_display">{props.gene && props.gene.name ? props.gene.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : "#"}>Link to Gene Page</a> </p>
+            <p id="search_gene_result_info_display">Gene Type: {extended_gene_information && extended_gene_information.biotype ? extended_gene_information.biotype : "-"} &nbsp; &nbsp; &nbsp; Other Name: { extended_gene_information && extended_gene_information.display_name ? extended_gene_information.display_name : "-"} &nbsp; &nbsp; &nbsp; </p>
             <hr id="line_div_category_search_content" />
         </div>
+
+        {/* Gene ID: {props.gene && props.gene.id ? props.gene.id : '-'} &nbsp; &nbsp; &nbsp; */}
+        {/* Dataset Name: {dataset_name} &nbsp; &nbsp; &nbsp; Dataset ID: {props.gene && props.gene.dataset_id ? props.gene.dataset_id : '-'} &nbsp; &nbsp; &nbsp;  */}
       
 
       <script src="../../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>

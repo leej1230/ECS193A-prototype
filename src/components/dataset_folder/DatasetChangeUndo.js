@@ -40,7 +40,7 @@ function DatasetChangeUndo(props) {
 
     axios.post(edit_recs_url, {
       // Data to be sent to the server
-      dataset_id: parseInt(props.input_dataset_id),
+      dataset_name: parseInt(props.input_dataset_name),
       user_id: user.sub.split("|")[1]
     }, { 'content-type': 'application/json' }).then((result) => {
       //console.log("post has been sent");
@@ -82,7 +82,7 @@ function DatasetChangeUndo(props) {
                       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                         // Data to be sent to the server
                         modify_list: clone(single_edit_record["old_values"]),
-                        dataset_id: parseInt(props.input_dataset_id),
+                        dataset_name: parseInt(props.input_dataset_name),
                         user_id: user.sub.split("|")[1],
                         row_type_for_dataset: props.row_type,
                         dataset_patient_code: props.input_patient_code
@@ -98,7 +98,7 @@ function DatasetChangeUndo(props) {
                       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record`, {
                         // Data to be sent to the server
                         edit_record_id: parseInt(single_edit_record.id),
-                        dataset_id: parseInt(props.input_dataset_id),
+                        dataset_name: props.input_dataset_name,
                         user_id: user.sub.split("|")[1]
                       }, { 'content-type': 'application/json' }).then((response) => {
                         alert("Edit Record Deleted");

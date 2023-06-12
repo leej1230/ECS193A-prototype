@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = (
-            'id',
             'email',
             'first_name',
             'last_name',
@@ -30,7 +29,6 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientModel
         fields = (
-            'id',
             'patient_id',
             'age',
             'diabete',
@@ -41,21 +39,20 @@ class PatientSerializer(serializers.ModelSerializer):
             'race',
             'gene_ids',
             # 'gene_values',
-            'dataset_id',
+            'dataset_name',
         )
 
 
 class GeneSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeneModel
-        fields = ('id', 'name', 'dataset_id', 'patient_ids', 'gene_values')
+        fields = ( 'name', 'dataset_name', 'patient_ids', 'gene_values')
 
 
 class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = DatasetModel
         fields = (
-            'id',
             'name',
             'description',
             'gene_ids',

@@ -27,8 +27,9 @@ function DatasetNameHolder(props) {
         //console.log(res.data);
         setUserInfo(res.data);
 
-        if (res.data && res.data.bookmarked_datasets) {
-          setBookmarked(res.data.bookmarked_datasets.includes(`${props.input_dataset.name}/${props.input_dataset_id}`))
+        if (res.data && 'bookmarked_datasets' in res.data && res.data.bookmarked_datasets) {
+          //setBookmarked(res.data.bookmarked_datasets.includes(`${props.input_dataset.name}/${props.input_dataset_id}`))
+          setBookmarked(res.data.bookmarked_datasets.includes(`${props.input_dataset && 'name' in props.input_dataset && props.input_dataset.name ? props.input_dataset.name : "" }`))
         }
 
       })
@@ -48,25 +49,27 @@ function DatasetNameHolder(props) {
         <div id="text_title">
           <div class="d-sm-inline-block" id="title_tag">Dataset:</div>
           &nbsp;
-          <div class="d-sm-inline-block" >{props.input_dataset && props.input_dataset["name"] ? props.input_dataset["name"] : "[No Name]"}</div>
+          <div class="d-sm-inline-block" >{props.input_dataset && 'name' in props.input_dataset && props.input_dataset["name"] ? props.input_dataset["name"] : "[No Name]"}</div>
           &nbsp;
           &nbsp;
           <button
             type="button"
             className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
             onClick={async () => {
-              if (bookmarked === true) {
-                await setBookmarked(false);
-                const formData = new FormData();
-                formData.append("user_id", user.sub.split("|")[1]);
-                formData.append("dataset_url", `${props.input_dataset.name}/${props.input_dataset_id}`);
-                axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
-              } else {
-                const formData = new FormData();
-                formData.append("user_id", user.sub.split("|")[1]);
-                formData.append("dataset_url", `${props.input_dataset.name}/${props.input_dataset_id}`);
-                axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
-                await setBookmarked(true);
+              if(props.input_dataset && 'name' in props.input_dataset && props.input_dataset.name ){
+                if (bookmarked === true) {
+                  await setBookmarked(false);
+                  const formData = new FormData();
+                  formData.append("user_id", user.sub.split("|")[1]);
+                  formData.append("dataset_url", `${props.input_dataset.name}`);
+                  axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
+                } else {
+                  const formData = new FormData();
+                  formData.append("user_id", user.sub.split("|")[1]);
+                  formData.append("dataset_url", `${props.input_dataset.name}`);
+                  axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
+                  await setBookmarked(true);
+                }
               }
             }}
           >
@@ -75,11 +78,11 @@ function DatasetNameHolder(props) {
           </button>
 
         </div>
-        <div>
+        {/*<div>
           <p class="d-sm-inline-block subtitle_tag" >Dataset ID:</p>
           &nbsp;
           <p class="d-sm-inline-block subtitle_content" >{props.input_dataset_id}</p>
-        </div>
+        </div>*/}
       </h5>
     </div>
   )
