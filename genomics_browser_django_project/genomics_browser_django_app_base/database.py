@@ -859,9 +859,6 @@ class Database:
 
             objects_list = list(update_dict.keys())
 
-            # print("update information line 638: ")
-            # print( update_dict )
-
             if (
                 'save_undo_list' in data_request
                 and len(data_request['save_undo_list'].keys()) > 0
@@ -923,6 +920,7 @@ class Database:
                                 'edit_date': datetime.datetime.now(),
                             }
                         )
+
                         edits_structure[
                             update_dataset_id
                         ] = edits_list_for_dataset
@@ -962,10 +960,12 @@ class Database:
                         }
                     },
                 )
+            
+            
 
             objects_dataset_id = int(data_request['dataset_id'])
 
-            if data_request['row_type_for_dataset'] == "gene_rows":
+            if data_request['row_type_for_dataset'] == "gene":
                 # genes are the rows, patient info not exist but just possibly gene values
                 for i in range(0, len(objects_list)):
                     cur_gene_obj = update_dict[objects_list[i]]
@@ -995,9 +995,13 @@ class Database:
                                 keys_attributes_list[j]
                             )
 
-                            gene_values_list[gene_patient_index] = float(
-                                cur_gene_obj[keys_attributes_list[j]]
-                            )
+                            try:
+                                gene_values_list[gene_patient_index] = float(
+                                    cur_gene_obj[keys_attributes_list[j]]
+                                )
+                            except:
+                                gene_values_list[gene_patient_index] = cur_gene_obj[keys_attributes_list[j]]
+                                
 
                     # gene modify: set to all new attributes, remove patient keys since saving array of gene values
                     if gene_values_list != None:
@@ -1022,6 +1026,7 @@ class Database:
 
                     keys_attributes_list = list(cur_patient_obj.keys())
                     update_patient_obj = copy.deepcopy(cur_patient_obj)
+
                     for j in range(0, len(keys_attributes_list)):
                         if keys_attributes_list[j][0:4] == "ENSG":
                             # gene modify so remove key from patient info to modify since gene modified separately
@@ -1040,9 +1045,14 @@ class Database:
                                 objects_list[i]
                             )
                             gene_values_list = gene['gene_values']['arr']
-                            gene_values_list[gene_patient_index] = float(
-                                cur_patient_obj[keys_attributes_list[j]]
-                            )
+
+                            try:
+                                # value may or may not be able to convert to float
+                                gene_values_list[gene_patient_index] = float(
+                                    cur_patient_obj[keys_attributes_list[j]]
+                                )
+                            except:
+                                gene_values_list[gene_patient_index] = cur_patient_obj[keys_attributes_list[j]]
 
                             Database.gene_collection.update_one(
                                 {

@@ -363,6 +363,9 @@ function DatasetEditTable(props) {
 
   const updateCellEditMatrix = async (stateChangeInfo) => {
 
+    console.log("updating of the cell result -> ");
+    console.log( stateChangeInfo );
+
     let copy_matrix_filtered = table_matrix_filtered;
     let object_edited_index = -1
     if (props.row_type === "gene") {
@@ -375,14 +378,16 @@ function DatasetEditTable(props) {
 
     let copy_prev_objects_undo_list = prev_objects_list_to_undo;
 
-    let sample_val = props.input_together_patient_gene_information[0][stateChangeInfo["cellEdit"]["dataField"]]
+    let sample_val = String(stateChangeInfo["cellEdit"]["newValue"]).trim()
     let type_str = "str"
 
-
-    if (Number.isInteger(sample_val)) {
-      type_str = "int"
-    } else if (typeof sample_val === 'number') {
-      type_str = "float"
+    if ( sample_val != "" && !isNaN( Number(sample_val) ) ) {
+      // number
+      if( Number.isInteger(Number(sample_val)) ){
+        type_str = "int"
+      } else {
+        type_str = "float"
+      }
     }
 
     if (!(stateChangeInfo["cellEdit"]["rowId"] in copy_modified_objects_list)) {
