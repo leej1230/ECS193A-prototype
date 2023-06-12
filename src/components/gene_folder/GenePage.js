@@ -31,7 +31,7 @@ import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
-import { clone } from "ramda";
+import { clone, none } from "ramda";
 
 
 const selectOptions = [
@@ -67,8 +67,8 @@ function GenePage() {
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
   const [loaded_gene_info, set_loaded_gene_info] = useState(false);
   
-  const [column_filter_types_arr, set_column_filter_types_arr] = useState([ 'text', 'number' , 'multiselect' ]);
-  const [ filter_types_states_arr , set_filter_types_states_arr ] = useState([{value: "text", label: "text"}]);
+  const [column_filter_types_arr, set_column_filter_types_arr] = useState({}); // { 'id': "text", 'age': "number" }
+  const [ filter_types_states_arr , set_filter_types_states_arr ] = useState({}); // { 'id': {value: "text", label: "text"} }
 
   const [patient_columns, set_patient_columns] = useState([{
     dataField: 'id',
@@ -136,15 +136,15 @@ function GenePage() {
     generatePatientTable(patient_information_expanded);
   }, [column_filter_types_arr, filter_types_states_arr])
 
-  const handleSelect = async (input_select_obj, input_index) => {
+  const handleSelect = async (input_select_obj, input_col_name) => {
     let temp_var = clone(column_filter_types_arr);
 
-    temp_var[input_index] = input_select_obj.value;
+    temp_var[input_col_name] = input_select_obj.value;
     
     set_column_filter_types_arr( temp_var );
 
     temp_var = clone(filter_types_states_arr);
-    temp_var[input_index] = input_select_obj;
+    temp_var[input_col_name] = input_select_obj;
     set_filter_types_states_arr( temp_var )
   };
 
@@ -154,7 +154,7 @@ function GenePage() {
     }
 
     //var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
-    var column_possibilities = false;
+    var column_possibilities = [];
 
     // 'id' not need options
     var patient_columns_list = []
@@ -186,7 +186,7 @@ function GenePage() {
     let copy_column_filter_types_arr = clone(column_filter_types_arr);
     let copy_filter_types_states_arr = clone(filter_types_states_arr);
 
-    if( copy_column_filter_types_arr.length !== column_possibilities.length ){
+    /*if( copy_column_filter_types_arr.length !== column_possibilities.length ){
       // first loading of screen
       set_column_filter_types_arr(Array(column_possibilities.length).fill("text"));
       copy_column_filter_types_arr = Array(column_possibilities.length).fill("text")
@@ -198,12 +198,27 @@ function GenePage() {
 
       set_filter_types_states_arr(copy_filter_types_states_arr)
 
-    }
+    }*/
+
+    let have_modified_cols = false
 
 
     for (let i = 0; i < column_possibilities.length; i++) {
 
       if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' ){
+
+          if( !(column_possibilities[i] in copy_column_filter_types_arr) ){
+            // add column and column type
+            copy_column_filter_types_arr[column_possibilities[i]] = "text"
+            have_modified_cols = true
+          }
+
+          if( !(column_possibilities[i] in copy_filter_types_states_arr) ){
+            // add column and column type
+            copy_filter_types_states_arr[column_possibilities[i]] = {value: "text", label: "text"}
+            have_modified_cols = true
+          }
+
           var unique = [...new Set(patients_info.flatMap(item => item[column_possibilities[i]]))];
 
           unique = unique.filter(x => x != "nan/na");
@@ -239,7 +254,7 @@ function GenePage() {
               }
             }
           }
-          else if( copy_column_filter_types_arr[i] == "number" ){
+          else if( copy_column_filter_types_arr[column_possibilities[i]] == "number" ){
             col_obj = {
               dataField: column_possibilities[i],
               text: column_possibilities[i],
@@ -258,10 +273,10 @@ function GenePage() {
                             closeMenuOnSelect={true}
                             onChange={(e) => {
                               //handleSelect(e, i);
-                              handleSelect(e, i);
+                              handleSelect(e, column_possibilities[i] );
                               
                             }}
-                            value={copy_filter_types_states_arr[i]}
+                            value={copy_filter_types_states_arr[ column_possibilities[i] ]}
                             name={"filter_type"}
                           />
                     <br />
@@ -290,10 +305,10 @@ function GenePage() {
                             closeMenuOnSelect={true}
                             onChange={(e) => {
                               //handleSelect(e, i);
-                              handleSelect(e, i);
+                              handleSelect(e, column_possibilities[i]);
                               
                             }}
-                            value={copy_filter_types_states_arr[i]}
+                            value={copy_filter_types_states_arr[ column_possibilities[i]]}
                             name={"filter_type"}
                           />
                     <br />
@@ -349,6 +364,11 @@ function GenePage() {
           }*/
           patient_columns_list.push(col_obj)
         }
+    }
+
+    if( have_modified_cols ){
+      set_column_filter_types_arr( copy_column_filter_types_arr )
+      set_filter_types_states_arr( copy_filter_types_states_arr )
     }
 
     set_patient_columns(patient_columns_list);

@@ -104,6 +104,16 @@ function DatasetPage() {
   }, [dataset]);
 
   useEffect(() => {
+    if(set_reload_edits == true){
+      setDatasetTableInputFormat(createDatasetFormatted());
+      setGeneIds(saveGeneIdArray());
+      setPatientIds(savePatientIdArray());
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [set_reload_edits] );
+
+  useEffect(() => {
     let simple_objs = []
     if (gene_with_value_information === null || gene_with_value_information.length === 0) {
       simple_objs = [{ 'id': 0, 'id_in_db': 1, 'gene_id': "NONE" }];
