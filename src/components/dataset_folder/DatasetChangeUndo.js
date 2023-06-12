@@ -84,7 +84,8 @@ function DatasetChangeUndo(props) {
                         modify_list: clone(single_edit_record["old_values"]),
                         dataset_id: parseInt(props.input_dataset_id),
                         user_id: user.sub.split("|")[1],
-                        row_type_for_dataset: props.row_type
+                        row_type_for_dataset: props.row_type,
+                        dataset_patient_code: props.input_patient_code
                       }, { 'content-type': 'application/json' }).then((response) => {
                         //console.log("post has been sent");
                         //console.log(response);

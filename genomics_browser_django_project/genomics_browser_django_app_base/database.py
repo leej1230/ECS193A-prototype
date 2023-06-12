@@ -988,7 +988,7 @@ class Database:
                         gene_values_list = gene['gene_values']['arr']
 
                     for j in range(0, len(keys_attributes_list)):
-                        if keys_attributes_list[j][0:5] == "UCDSS":
+                        if len(keys_attributes_list[j]) >= len(data_request['dataset_patient_code']) and keys_attributes_list[j][0:(len(data_request['dataset_patient_code']))] == data_request['dataset_patient_code']:
                             update_gene_obj.pop(keys_attributes_list[j], None)
 
                             gene_patient_index = patient_objects_list.index(
@@ -1028,7 +1028,7 @@ class Database:
                     update_patient_obj = copy.deepcopy(cur_patient_obj)
 
                     for j in range(0, len(keys_attributes_list)):
-                        if keys_attributes_list[j][0:4] == "ENSG":
+                        if len(keys_attributes_list[j]) >= 4 and keys_attributes_list[j][0:4] == "ENSG":
                             # gene modify so remove key from patient info to modify since gene modified separately
                             update_patient_obj.pop(
                                 keys_attributes_list[j], None

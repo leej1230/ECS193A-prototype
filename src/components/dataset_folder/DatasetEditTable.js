@@ -430,8 +430,8 @@ function DatasetEditTable(props) {
 
       copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_update_info;
 
-      // store old value
-      let existing_object_save_old_info = clone(copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
+      // do not need to store old value if already have it
+      /*let existing_object_save_old_info = clone(copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
       if (type_str === "int") {
         existing_object_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
       } else if (type_str === "float") {
@@ -439,7 +439,7 @@ function DatasetEditTable(props) {
       } else {
         existing_object_save_old_info[data_field_key] = String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
       }
-      copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_save_old_info;
+      copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_save_old_info;*/
     }
 
     if (type_str === "int") {
@@ -616,6 +616,7 @@ function DatasetEditTable(props) {
                       save_undo_list: clone(prev_objects_list_to_undo),
                       dataset_id: parseInt(props.input_dataset_id),
                       row_type_for_dataset: props.row_type,
+                      dataset_patient_code: props.input_patient_code,
                       user_id: user.sub.split("|")[1]
                     }, { 'content-type': 'application/json' }).then((response) => {
                       //console.log("post has been sent");
