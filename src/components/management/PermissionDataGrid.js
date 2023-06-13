@@ -10,6 +10,7 @@ import { filter } from "ramda";
 const users_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/get-user-all`;
 const role_update_url = `${process.env.REACT_APP_BACKEND_URL}/api/update-role`;
 const role_log_add_url = `${process.env.REACT_APP_BACKEND_URL}/api/add-role-log`;
+const remove_user_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-user`;
 
 const PermissionDataGrid = () => {
     let userData = GetUserAfterRender();
@@ -25,6 +26,22 @@ const PermissionDataGrid = () => {
         page: 0,
         pageSize: 5,
     });
+
+    const handleUserRemove = (targetEmail) => {
+        const formData = new FormData();
+        formData.append("targetEmail", targetEmail);
+        axios
+            .post(remove_user_url, formData)
+            .then(() => {
+                console.log("User has removed. To redo, re-invite from Authorize User menu.")
+                    .then(() => {
+                        window.location.reload(true);
+                    })
+            })
+            .catch((error) => {
+                console.log("System could not remove user from internal reason. Please retry or contact developers.", error);
+            })
+    }
 
     const handleCheckboxChange = (
         index,
