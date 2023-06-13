@@ -14,6 +14,7 @@ describe('DatasetEditTable', () => {
     beforeEach(() => {
         axios.get.mockResolvedValue({ data: [] });
       });
+      
     
       it('renders the table with initial data', async () => {
         const input_together_patient_gene_information = [
@@ -53,7 +54,7 @@ describe('DatasetEditTable', () => {
       });
 
 
-      test('renders DatasetEditTable component', () => {
+      it('renders DatasetEditTable component', () => {
         const props = {
           input_together_patient_gene_information: [
             {
