@@ -29,17 +29,12 @@ const PermissionDataGrid = () => {
 
     const handleUserRemove = (targetEmail) => {
         const formData = new FormData();
-        formData.append("targetEmail", targetEmail);
+        formData.append("email", targetEmail);
         axios
             .post(remove_user_url, formData)
             .then(() => {
-                console.log("User has removed. To redo, re-invite from Authorize User menu.")
-                    .then(() => {
-                        window.location.reload(true);
-                    })
-            })
-            .catch((error) => {
-                console.log("System could not remove user from internal reason. Please retry or contact developers.", error);
+                alert("User has removed. To redo, re-invite from Authorize User menu.")
+                window.location.reload(true);
             })
     }
 
