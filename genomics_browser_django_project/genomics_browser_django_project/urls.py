@@ -212,5 +212,10 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Utils", "callback": "check_Email"},
     ),
+    path(
+        'api/remove-user',
+        views.BackendServer.as_view(),
+        {"inner": "Utils", "callback": "remove_Email"},
+    ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]
