@@ -381,7 +381,6 @@ function GenePage() {
     async function fetchGeneData() {
       await axios.get(URL).then((res) => {
 
-
         setGene_data(clone(res.data));
         set_graph_table_filter_data(res.data);
         set_loaded_gene_info(true);
@@ -407,7 +406,7 @@ function GenePage() {
 
   useEffect(() => {
     async function fetchRowType() {
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${gene_data.dataset_name}`).then((res) => {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_row_type/${SAMPLE_DATASET_NAME}`).then((res) => {
 
         set_dataset_rowType(res.data)
 
@@ -423,7 +422,7 @@ function GenePage() {
 
       if (gene_data && 'dataset_name' in gene_data && gene_data.dataset_name != null) {
 
-        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${gene_data.dataset_name}`
+        const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`
         await axios.get(patientsDataAPIURL).then((res) => {
 
           if (res.data.length > 0) {

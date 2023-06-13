@@ -86,9 +86,11 @@ class BackendServer(View):
                 type(data) == int
             ):  # If the data is an integer, it is a status code.
                 status = data
+            
             return JsonResponse(
                 data, **request_kwargs, safe=False, status=status
             )
+        
         except Exception as e:
             return JsonResponse(
                 {'error': str(e)}, **request_kwargs, safe=False, status=500

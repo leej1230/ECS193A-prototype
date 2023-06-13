@@ -12,7 +12,7 @@ import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 
 import './DatasetChangeUndo.css'
 
-import { clone } from "ramda";
+import { clone, update } from "ramda";
 
 function DatasetChangeUndo(props) {
 
@@ -33,29 +33,38 @@ function DatasetChangeUndo(props) {
 
     update_edit_collapse();
 
+    console.log("changed var ");
+    console.log(edit_records_list);
+
   }, [edit_records_list])
 
   useEffect(() => {
-    const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits_dataset_user/all`;
 
-    axios.post(edit_recs_url, {
-      // Data to be sent to the server
-      dataset_name: parseInt(props.input_dataset_name),
-      user_id: user.sub.split("|")[1]
-    }, { 'content-type': 'application/json' }).then((result) => {
-      //console.log("post has been sent");
-      //console.log(response);
+    const update_the_edits = async () => {
+      const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits_dataset_user/all`;
 
-      set_edit_records_list(result.data)
+      await axios.post(edit_recs_url, {
+        // Data to be sent to the server
+        dataset_name: props.input_dataset_name,
+        user_id: user.sub.split("|")[1]
+      }, { 'content-type': 'application/json' }).then((result) => {
+        //console.log("post has been sent");
+        //console.log(response);
 
-    });
+        set_edit_records_list(result.data)
 
-    console.log("change occured history disturbed");
+      });
 
-    props.input_set_reload_edit_history(false);
+      console.log("change occured history disturbed");
+
+      props.input_set_reload_edit_history(false);
+
+    };
+
+    update_the_edits();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.input_data, props.input_reload_history])
+  }, [props.input_dataset_name, props.input_reload_history])
 
   const handleCollapseClick = (input_index) => {
     let cur_collapse_arr = collapse_array;
@@ -127,7 +136,7 @@ function DatasetChangeUndo(props) {
                         <TableBootstrap striped bordered hover>
                           <thead>
                             <tr>
-                              <th>{props.row_type === "gene_rows" ? "Gene" : "Patient"}</th>
+                              <th>{props.row_type === "gene" ? "Gene" : "Patient"}</th>
                               <th>Column Key</th>
                               <th>Old Value</th>
                               <th>Editted New Value</th>

@@ -20,12 +20,12 @@ from genomics_browser_django_app_base import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(
-        'api/patient/<slug:patient_name>/<slug:dataset_name>',
+        'api/patient/<str:patient_name>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "get_patient_one"},
     ),
     path(
-        'api/gene/<str:gene_name>/<slug:dataset_name>',
+        'api/gene/<str:gene_name>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_gene_one"},
     ),
@@ -80,7 +80,7 @@ urlpatterns = [
         {"inner": "Counters", "callback": "get_counter_all"},
     ),
     path(
-        'api/get_row_type/<slug:dataset_name>',
+        'api/get_row_type/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_row_type"},
     ),
@@ -165,7 +165,7 @@ urlpatterns = [
         {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),
     path(
-        'api/patients/<str:gene_name>/<slug:dataset_name>',
+        'api/patients/<str:gene_id>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {
             "inner": "Patients",
@@ -173,12 +173,12 @@ urlpatterns = [
         },
     ),
     path(
-        'api/patients_in_dataset/<slug:dataset_name>',
+        'api/patients_in_dataset/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "get_patients_from_dataset"},
     ),
     path(
-        'api/genes_in_dataset/<slug:dataset_name>',
+        'api/genes_in_dataset/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_genes_from_dataset"},
     ),

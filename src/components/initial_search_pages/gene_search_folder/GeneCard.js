@@ -27,9 +27,9 @@ function GeneCard(props) {
 
   useEffect(() => {
 
-    if(props.gene){
+    if( props.gene && 'name' in props.gene && props.gene.name ){
 
-      let temp_gene_name = props.gene.name
+      let temp_gene_name = props.gene.name;
       let end_index = temp_gene_name.indexOf( "." )
       if( end_index >= 0 ){
         // present
@@ -55,12 +55,12 @@ function GeneCard(props) {
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title"><a href={props.gene ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : "#"} onClick={() => {
-            }} >{props.gene ? props.gene.name : ""}</a></h5>
+          <h5 class="card-title"><a href={props.gene && 'name' in props.gene && 'dataset_name' in props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : ""} onClick={() => {
+            }} >{props.gene && 'name' in props.gene && props.gene.name ? props.gene.name : ""}</a></h5>
           {/*<LimitedText numLines='1' text={`Gene ID: ${props.gene && props.gene.id ? props.gene.id : "-"}`} /> */}
-          <LimitedText numLines='1' text={`Gene Type: ${extended_gene_information ? extended_gene_information.biotype : "Protein Coding"}`} />
-          <LimitedText numLines='1' text={`Other Name: ${extended_gene_information ? extended_gene_information.display_name : "---" }`} />
-          <LimitedText numLines='1' text={`Dataset Name: ${dataset_name}`} />
+          <LimitedText numLines='1' text={`Gene Type: ${extended_gene_information && 'biotype' in extended_gene_information ? extended_gene_information.biotype : "Protein Coding"}`} />
+          <LimitedText numLines='1' text={`Other Name: ${extended_gene_information && 'display_name' in extended_gene_information ? extended_gene_information.display_name : "---" }`} />
+          <LimitedText numLines='1' text={`Dataset Name: ${ props.gene && 'dataset_name' in props.gene && props.gene.dataset_name ? props.gene.dataset_name : "" }`} />
 
           {/* Dataset ID: ${props.gene && props.gene.dataset_id ? props.gene.dataset_id : "-"} */}
 

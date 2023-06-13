@@ -92,7 +92,7 @@ function DatasetGenesListTable(props) {
 
             return (
               <span>
-                <a id="gene_list_single_link" href={"/gene/" + cell + "/" + row.id_in_db}>{cell}</a>
+                <a id="gene_list_single_link" href={ row && 'dataset_name' in row && row.dataset_name ? "/gene/" + cell + "/" + row.dataset_name : ""}>{cell}</a>
               </span>
             );
           },

@@ -16,11 +16,11 @@ function Dataset(props) {
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
         <div class="card-body">
-          <h5 class="card-title"><a href={props.dataset ? "/dataset/" + props.dataset.name : "#"} onClick={() => {
+          <h5 class="card-title"><a href={props.dataset && 'name' in props.dataset && props.dataset.name ? "/dataset/" + props.dataset.name : ""} onClick={() => {
             
-          }} > {props.dataset ? props.dataset.name : ""} </a></h5>
+          }} > { props.dataset && 'name' in props.dataset && props.dataset.name ? props.dataset.name : ""} </a></h5>
           {/*<p id="dataset_card_bookmark_display">Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'}</p>*/}
-          <LimitedText numLines='2' text={`Description: ${props.dataset ? props.dataset.description : ""}`} />
+          <LimitedText numLines='2' text={`Description: ${ props.dataset && 'description' in props.dataset && props.dataset.description ? props.dataset.description : ""}`} />
           
           {/*<p >{props.dataset.description}</p>*/}
           {/*<br />

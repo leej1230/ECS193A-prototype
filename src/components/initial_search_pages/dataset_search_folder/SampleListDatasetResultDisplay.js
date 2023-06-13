@@ -20,9 +20,9 @@ function SampleListDatasetResultDisplay(props) {
   return (
     <div>
         <div id="dataset_display_result_single">
-            <p id="search_dataset_result_name_display">{props.dataset && props.dataset.name ? props.dataset.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={props.dataset && props.dataset.name ? "/dataset/" + props.dataset.name : "#"}>Link to Dataset Page</a> </p>
-            <p id="search_dataset_result_info_display">Date Uploaded: {props.dataset && props.dataset.date_created ? props.dataset.date_created : '-'} </p>
-            <LimitedText numLines='1' text={`Description: ${props.dataset && props.dataset.description ? props.dataset.description : '-'}`} />
+            <p id="search_dataset_result_name_display">{ props.dataset && 'name' in props.dataset && props.dataset.name ? props.dataset.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={props.dataset && props.dataset.name ? "/dataset/" + props.dataset.name : ""}>Link to Dataset Page</a> </p>
+            <p id="search_dataset_result_info_display">Date Uploaded: {props.dataset && 'date_created' in props.dataset && props.dataset.date_created ? props.dataset.date_created : '-'} </p>
+            <LimitedText numLines='1' text={`Description: ${props.dataset && 'description' in props.dataset && props.dataset.description ? props.dataset.description : '-'}`} />
             <hr id="line_div_category_search_content" />
         </div>
 

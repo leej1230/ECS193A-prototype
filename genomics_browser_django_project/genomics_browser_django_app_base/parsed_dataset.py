@@ -254,7 +254,6 @@ class ParsedDataset :
             
             # if genes are columns, then patients not have any info related
             return [{
-                "id": 1,
                 "patient_id": str(patient_names[i]).upper(),
                 "dataset_id": int(self.dataset_id),
                 "gene_ids": json.loads(json.dumps({"arr": gene_ids})),

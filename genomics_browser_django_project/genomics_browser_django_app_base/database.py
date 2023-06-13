@@ -25,8 +25,12 @@ from genomics_browser_django_app_base.serializers import (
     GeneSerializer,
     UserSerializer,
 )
+
 from rest_framework import status
+#from rest_framework.decorators import api_view, renderer_classes
+
 from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 # from django.http.response import JsonResponse
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -106,7 +110,7 @@ class Database:
                 dict: The user information.
             """
             Database.user_collection.delete_one(
-                {'auth0_uid': int(request['user_id'])}
+                {'auth0_uid': request['user_id']}
             )
             Database.Counters.decrement_user_counter()
 
@@ -203,8 +207,11 @@ class Database:
             user_updated = Database.user_collection.find_one(
                 {'auth0_uid': user_updated_id}
             )
+
             if 'edits' in user_updated:
                 edits_structure = user_updated['edits']
+
+                
                 if update_dataset_name in edits_structure:
                     # dataset already has some edits
                     edits_for_dataset_by_user_result = edits_structure[
@@ -220,12 +227,13 @@ class Database:
                 data_request = json.loads(request['ctx'].body)
 
                 edit_rec_id = int(data_request['edit_record_id'])
-                update_dataset_name = str(int(data_request['dataset_name']))
+                update_dataset_name = data_request['dataset_name']
                 user_updated_id = data_request['user_id']
 
                 user_updated = Database.user_collection.find_one(
                     {'auth0_uid': user_updated_id}
                 )
+
                 if 'edits' in user_updated:
                     edits_structure = user_updated['edits']
                     if update_dataset_name in edits_structure:
@@ -731,7 +739,7 @@ class Database:
                 {
                     '$and': [
                         {'name': str(request['gene_id'])},
-                        {'dataset_name': int(request['dataset_name'])},
+                        {'dataset_name': str(request['dataset_name'])},
                     ]
                 }
             )
@@ -860,7 +868,7 @@ class Database:
             data_request = json.loads(request['ctx'].body)
 
             update_dict = data_request['modify_list']
-            update_dataset_name = str(int(data_request['dataset_name']))
+            update_dataset_name = str(data_request['dataset_name'])
             user_updating_id = data_request['user_id']
 
             objects_list = list(update_dict.keys())
@@ -982,7 +990,7 @@ class Database:
                     gene = Database.gene_collection.find_one(
                         {
                             'name': str(objects_list[i]),
-                            'dataset_name': int(objects_dataset_name),
+                            'dataset_name': str(objects_dataset_name),
                         }
                     )
 
@@ -1019,7 +1027,7 @@ class Database:
                         {
                             '$and': [
                                 {'name': str(objects_list[i])},
-                                {'dataset_name': int(objects_dataset_name)},
+                                {'dataset_name': str(objects_dataset_name)},
                             ]
                         },
                         {"$set": update_gene_obj},
@@ -1043,7 +1051,7 @@ class Database:
                             gene = Database.gene_collection.find_one(
                                 {
                                     'name': str(keys_attributes_list[j]),
-                                    'dataset_name': int(objects_dataset_name),
+                                    'dataset_name': str(objects_dataset_name),
                                 }
                             )
                             gene_objects_list = gene['patient_ids']['arr']
@@ -1064,7 +1072,7 @@ class Database:
                                 {
                                     '$and': [
                                         {'name': str(keys_attributes_list[j])},
-                                        {'dataset_name': int(objects_dataset_name)},
+                                        {'dataset_name': str(objects_dataset_name)},
                                     ]
                                 },
                                 {
@@ -1079,7 +1087,7 @@ class Database:
                         {
                             '$and': [
                                 {'patient_id': str(objects_list[i])},
-                                {'dataset_name': int(objects_dataset_name)},
+                                {'dataset_name': str(objects_dataset_name)},
                             ]
                         },
                         {"$set": update_patient_obj},
@@ -1088,6 +1096,7 @@ class Database:
             return loads(dumps({'status': 'success'}))
 
     class Genes:
+   
         def get_gene_one(request):
             """Retrieves the data for a single gene from the gene collection in the database.
 
@@ -1328,7 +1337,7 @@ class Database:
 
             return loads(dumps(dataset['rowType']))
 
-        @staticmethod
+
         def get_dataset_one(request):
             """Get a single dataset with a given dataset name.
 
@@ -1339,15 +1348,18 @@ class Database:
                 dict: A serialized dataset object matching the query.
             """
 
-            print("d name -> ", request['dataset_name'] )
-            '''dataset = Database.dataset_collection.find_one(
-                {'name': request['dataset_name'] }
+            dataset = Database.dataset_collection.find_one(
+                {'name': request['dataset_name'] }, {'_id': 0}
             )
+
+            
             if dataset:
                 serial = DatasetSerializer(dataset, many=False)
-                return serial.data
-            else:
-                return loads(dumps({}))'''
+
+                json_data = loads(dumps(serial.data))
+                return json_data
+   
+            return {}
 
         def get_dataset_count(request):
             """Retrieves the count of all datasets in the dataset collection in the database.
@@ -1479,7 +1491,7 @@ class Database:
             """
 
             dataset = Database.dataset_collection.find_one(
-                {'name': int(request['dataset_name'])}
+                {'name': request['dataset_name']}
             )
 
             name_info = dataset['name']
@@ -1694,10 +1706,10 @@ class Database:
                     {'name': request_data['dataset_name'] }
                 )
                 genes_deleted = Database.gene_collection.delete_many(
-                    {'dataset_name': int(request_data['dataset_name'])}
+                    {'dataset_name': request_data['dataset_name']}
                 )
                 patients_deleted = Database.patient_collection.delete_many(
-                    {'dataset_name': int(request_data['dataset_name'])}
+                    {'dataset_name': request_data['dataset_name']}
                 )
 
                 last_dataset_counter = (
@@ -1751,7 +1763,7 @@ class Database:
             patientCode = (request['ctx']['POST'].get('patientCode'),)
             rowType = (request['ctx']['POST'].get('rowType'),)
             url = request['ctx']['POST'].get('urltoFile')
-            dataset_name = int(request['ctx']['POST'].get('datasetName'))
+            dataset_name = request['ctx']['POST'].get('datasetName')
 
             dataset_to_modify = Database.Datasets.get_dataset_one(
                 {'name': dataset_name}

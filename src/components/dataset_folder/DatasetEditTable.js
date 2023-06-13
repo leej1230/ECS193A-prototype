@@ -285,6 +285,7 @@ function DatasetEditTable(props) {
     }
 
     init_columns();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table_matrix_filtered])
 
@@ -614,7 +615,7 @@ function DatasetEditTable(props) {
                       // Data to be sent to the server
                       modify_list: clone(modified_objects_list_to_update_back),
                       save_undo_list: clone(prev_objects_list_to_undo),
-                      dataset_name: parseInt(props.input_dataset_name),
+                      dataset_name: props.input_dataset_name,
                       row_type_for_dataset: props.row_type,
                       dataset_patient_code: props.input_patient_code,
                       user_id: user.sub.split("|")[1]

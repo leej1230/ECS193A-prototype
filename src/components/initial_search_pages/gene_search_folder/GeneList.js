@@ -12,9 +12,9 @@ function GeneList(props) {
     <div class="card" style={{margin: '0px', padding: '0px'}}>
       <div class="card-body">
         <div className="outer_grid">
-          {props.genes_arr.map((data_set_single, index) => (
+          {props.genes_arr ? props.genes_arr.map((data_set_single, index) => (
             <GeneCard curOuterWindowWidth={props.curWindowWidth} curOuterWindowHeight={props.curWindowHeight} gene={props.genes_arr[index]} />
-          ))}
+          )) : ""}
         </div>
       </div>
 
