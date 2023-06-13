@@ -1338,6 +1338,7 @@ class Database:
             return loads(dumps(dataset['rowType']))
 
 
+        @staticmethod
         def get_dataset_one(request):
             """Get a single dataset with a given dataset name.
 
@@ -1587,19 +1588,20 @@ class Database:
             if len(dataset.get_patients()) > 0:
                 Database.Patients.post_patient_many(dataset.get_patients())
 
-            cur_gene_cntr = Database.Counters.get_last_gene_counter()
-            list_new_genes = dataset.get_genes(cur_gene_cntr)
+            #cur_gene_cntr = Database.Counters.get_last_gene_counter()
+            #list_new_genes = dataset.get_genes(cur_gene_cntr)
+            list_new_genes = dataset.get_genes()
             if len(list_new_genes) > 0:
                 Database.Genes.post_gene_many(list_new_genes)
-                Database.Counters.update_gene_counter(
+                '''Database.Counters.update_gene_counter(
                     {'new_counter_value': (cur_gene_cntr + len(list_new_genes))}
-                )
+                )'''
 
-            Database.Counters.increment_gene_counter()
+            #Database.Counters.increment_gene_counter()
 
             Database.dataset_collection.insert_one(serial.data)
 
-            Database.Counters.increment_dataset_counter()
+            #Database.Counters.increment_dataset_counter()
             return loads(dumps(status.HTTP_201_CREATED))
 
         def delete_dataset_one(request):
@@ -1757,16 +1759,17 @@ class Database:
                 'POST': request['ctx'].POST.copy(),
             }
 
-            date_created = request['ctx']['POST'].get('dateCreated')
+            #date_created = request['ctx']['POST'].get('dateCreated')
             description = request['ctx']['POST'].get('description')
-            geneCode = (request['ctx']['POST'].get('geneCode'),)
+            '''geneCode = (request['ctx']['POST'].get('geneCode'),)
             patientCode = (request['ctx']['POST'].get('patientCode'),)
-            rowType = (request['ctx']['POST'].get('rowType'),)
+            rowType = (request['ctx']['POST'].get('rowType'),)'''
             url = request['ctx']['POST'].get('urltoFile')
             dataset_name = request['ctx']['POST'].get('datasetName')
 
+
             dataset_to_modify = Database.Datasets.get_dataset_one(
-                {'name': dataset_name}
+                {'dataset_name': str(dataset_name) }
             )
             # print("existing record:   ", dataset_to_modify)
             atleast_one_modified = False
@@ -1776,18 +1779,20 @@ class Database:
             if (
                 description != None
                 and description != ""
+                and 'description' in dataset_to_modify
                 and description != dataset_to_modify['description']
             ):
                 new_dataset["description"] = description
                 atleast_one_modified = True
 
-            if url != None and url != "" and url != dataset_to_modify['url']:
+            if url != None and url != "" and 'url' in dataset_to_modify and url != dataset_to_modify['url']:
                 new_dataset["url"] = url
                 atleast_one_modified = True
 
-            if (
+            '''if (
                 date_created != 'null'
                 and date_created != None
+                and date_created != ""
                 and atleast_one_modified
             ):
                 date_created = re.sub(
@@ -1808,13 +1813,15 @@ class Database:
                         'patient_id_count': 0,
                         'date_created': date_created,
                         'url': url,
+                        'rowType': 'patient',
+                        'person_uploaded_dataset': "a"
                     }
                 )
 
-                new_dataset["date_created"] = serial_temp.data['date_created']
+                new_dataset["date_created"] = serial_temp.data['date_created']'''
 
             # Extract data from request and create ParsedDataset object
-            if (
+            '''if (
                 request['ctx']['FILES'] != None
                 and len(list(request['ctx']['FILES'].values())) > 0
             ):
@@ -1961,7 +1968,7 @@ class Database:
                     json.dumps({"arr": updated_patient_ids})
                 )
                 new_dataset["gene_id_count"] = len(updated_gene_names)
-                new_dataset["patient_id_count"] = len(updated_patient_ids)
+                new_dataset["patient_id_count"] = len(updated_patient_ids)'''
 
                 # updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
 

@@ -39,7 +39,7 @@ function UpdateDataset(){
         formData.append('datasetName', datasetName );
         formData.append('description', description );
         formData.append('urltoFile', urltoFile );
-        formData.append('dateCreated', dateCreated );
+        //formData.append('dateCreated', dateCreated );
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -100,7 +100,7 @@ function UpdateDataset(){
                   <button type="button" class="btn btn-primary" onClick={handleSubmission}>Submit</button>
                 </form> 
 
-                <div class="row justify-content-center">
+                {/*<div class="row justify-content-center">
                   
                       <div className='progress-bar' style={{ width: 200, height: 200 }}>
                         <CircularProgressbar 
@@ -121,7 +121,7 @@ function UpdateDataset(){
                           })}
                         />
                       </div>
-                </div>
+                  </div>*/}
 
               </div>
 
