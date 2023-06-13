@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
@@ -100,7 +101,7 @@ const PermissionDataGrid = () => {
         try {
             const res = await axios.get(users_get_url);
             const filteredData = res.data.filter((item) => {
-                return item.email!=user.email
+                return item.email != user.email
             })
             const dataWithIds = filteredData.map((row, index) => ({
                 id: row.auth0_uid,
@@ -164,9 +165,8 @@ const PermissionDataGrid = () => {
                     type="checkbox"
                     style={{ margin: "1rem" }}
                     checked={params.value}
-                    className={`form-check-input ${
-                        params.value ? "checked" : ""
-                    }`}
+                    className={`form-check-input ${params.value ? "checked" : ""
+                        }`}
                     onChange={() =>
                         handleCheckboxChange(
                             params.row.index,
@@ -199,6 +199,25 @@ const PermissionDataGrid = () => {
                             `${userMetadata.given_name} ${userMetadata.family_name}`,
                             `${params.row.first_name} ${params.row.last_name}`
                         )
+                    }
+                />
+            ),
+        },
+        {
+            field: "remove_user",
+            headerName: "Delete User",
+            width: 120,
+            renderCell: (params) => (
+                <DeleteIcon
+                    sx={{ color: "red" }}
+                    onClick={() => {
+                        if (window.confirm(`You are trying to remove ${params.row.first_name} ${params.row.last_name}! Are you sure?`) == true) {
+                            // console.log("Here is user that you just chose!", params.row.email)
+                            handleUserRemove(params.row.email);
+                        } else {
+                            // console.log("You cancelled!")
+                        }
+                    }
                     }
                 />
             ),
