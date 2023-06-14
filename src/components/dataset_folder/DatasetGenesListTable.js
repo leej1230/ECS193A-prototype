@@ -64,7 +64,7 @@ function DatasetGenesListTable(props) {
       // 'id' not need options, always string/link interpret
       let gene_columns_list = []
 
-      if (gene_objs_information === null || gene_objs_information.length === 0) {
+      if ( !gene_objs_information || gene_objs_information.length === 0) {
         return [{
           dataField: 'id',
           text: ''
@@ -78,7 +78,7 @@ function DatasetGenesListTable(props) {
       console.log(gene_objs_information)
 
       let column_possibilities = ['gene_id']
-      for (let i = 0; i < column_possibilities.length; i++) {
+      for (let i = 0; column_possibilities && i < column_possibilities.length; i++) {
 
 
         let col_obj = {
@@ -138,6 +138,9 @@ function DatasetGenesListTable(props) {
   }
 
   const hasLevenshteinDistanceLessThanEqualOne = (current_input_str, str_reference) => {
+    if( !current_input_str || !str_reference ){
+      return 5;
+    }
     if (Math.abs(current_input_str.length - str_reference.length) > 1) {
       // rand number more than 1 to be discarded when filtered
       return 5;
@@ -200,7 +203,7 @@ function DatasetGenesListTable(props) {
 
   return (
     <div class="row" id="dataset_table_and_stats_row">
-      {props.input_gene_list_loaded ? (
+      {props.input_gene_list_loaded && gene_list_filtered ? (
         <div class="card shadow" id="dataset_genes_list">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>

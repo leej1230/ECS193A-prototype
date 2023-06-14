@@ -25,7 +25,7 @@ function DatasetChangeUndo(props) {
 
     const update_edit_collapse = () => {
       let new_collapse_array = []
-      for (let i = 0; i < edit_records_list.length; i++) {
+      for (let i = 0; edit_records_list && i < edit_records_list.length; i++) {
         new_collapse_array.push(false);
       }
       set_collapse_array(clone(new_collapse_array));
@@ -79,7 +79,7 @@ function DatasetChangeUndo(props) {
         <div >
           <p>Edit History</p>
 
-          {edit_records_list.length > 0 ?
+          {edit_records_list && edit_records_list.length > 0 ?
             <ul id="history_results_list">
               {edit_records_list.map((single_edit_record, index) => {
 

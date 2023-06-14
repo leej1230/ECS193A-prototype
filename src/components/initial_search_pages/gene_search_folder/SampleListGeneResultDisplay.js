@@ -14,7 +14,7 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
 function SampleListGeneResultDisplay(props) {
 
     const [extended_gene_information, set_extended_gene_information] = useState(undefined);
-    const [extended_info_loaded, set_external_info_loaded] = useState(false);
+    const [external_info_null, set_external_info_null] = useState(true);
   
   {/*useEffect(() => {
     if(props.gene){
@@ -33,7 +33,15 @@ function SampleListGeneResultDisplay(props) {
 
   useEffect(() => {
 
-    if(props.gene && 'name' in props.gene && props.gene.name ){
+    if(extended_gene_information !== null){
+      set_extended_gene_information(null);
+      set_external_info_null(true);
+    }
+    
+  }, [props, props.gene]);
+
+  useEffect(() => {
+    if(props.gene && 'name' in props.gene && props.gene.name && external_info_null === true && extended_gene_information === null ){
 
       let temp_gene_name = props.gene.name
       let end_index = temp_gene_name.indexOf( "." )
@@ -55,9 +63,11 @@ function SampleListGeneResultDisplay(props) {
             
           }
         )
+
+        set_external_info_null(false)
       
     }
-  }, [props]);
+  }, [external_info_null , extended_gene_information])
 
   return (
     <div>

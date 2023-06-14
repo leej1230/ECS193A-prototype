@@ -74,7 +74,7 @@ function DatasetEditTable(props) {
   const generateDatasetMatrixTable = () => {
     let columns_list = [];
 
-    if (props.input_together_patient_gene_information.length === 0) {
+    if ( !props.input_together_patient_gene_information || props.input_together_patient_gene_information.length === 0) {
       return [
         { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
       ]
@@ -101,7 +101,7 @@ function DatasetEditTable(props) {
 
     let have_modified_cols = false
 
-    for (let i = 0; i < column_possibilities.length; i++) {
+    for (let i = 0; column_possibilities && i < column_possibilities.length; i++) {
 
       let unique = [...new Set(props.input_together_patient_gene_information.flatMap(item => item[column_possibilities[i]]))];
 
@@ -603,7 +603,7 @@ function DatasetEditTable(props) {
       <div id="dataset_view_table">
         <div class="row">
           <div class="col">
-            {props.input_edit_dataset_loaded ?  (
+            {props.input_edit_dataset_loaded && table_matrix_filtered ?  (
               <div class="card shadow">
                 <div class="card-header py-3">
                   <div id="table_edit_header">

@@ -131,7 +131,7 @@ function DatasetSearchResultsHolder(props) {
                         </div> : <div></div>}
                     </div>
                     )}
-                    {searchResult.length > 0 && (
+                    {searchResult && searchResult.length > 0 && (
                     <div>
                         {listPage > 1 ? <div className="float-left page_change_btn">
                         <button class="btn btn-primary" onClick={handleDecrementPage}>Prev Page</button>

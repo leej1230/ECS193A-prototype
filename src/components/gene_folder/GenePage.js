@@ -50,7 +50,7 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMP
 function GenePage() {
   // state = {samples: []}
   const [gene_data, setGene_data] = useState({  dataset_name: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
-  const [gene_external_data, setGeneExternalData] = useState({ description: "" });
+  const [gene_external_data, setGeneExternalData] = useState(null);
   const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
     { patient_id: "" }
   ]);
@@ -629,7 +629,7 @@ function GenePage() {
                     className="mb-3"
                   >
                     <Tab eventKey="basic_info" title="Basic Info">
-                      <BasicInfo input_gene={gene_data} input_description={gene_external_data.description} input_basic_info_loaded={basic_info_loaded} />
+                      <BasicInfo input_gene={gene_data} input_description={gene_external_data ? gene_external_data.description : ""} input_basic_info_loaded={basic_info_loaded && gene_external_data} />
                     </Tab>
                     <Tab eventKey="gene_graph" title="Graph">
                       <div id="graph_gene_box">

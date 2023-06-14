@@ -120,6 +120,9 @@ export default function Slider() {
 
     useEffect(() => {
         function createDatasetListGroups() {
+            if(!datasets_list){
+                return []
+            }
             var num_datasets = datasets_list.length;
             var num_groups = Math.floor(num_datasets / 6);
             var last_group_num_datasets = num_datasets % 6;
@@ -155,7 +158,7 @@ export default function Slider() {
 
         set_gotInfo(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [datasets_list.length]);
+    }, [datasets_list ? datasets_list.length : datasets_list]);
 
     return (
         <>
@@ -163,7 +166,7 @@ export default function Slider() {
                 <LoadingSpinner />
             ) : (
                 <>
-                    {datasets_list.length > 0 ? (
+                    {datasets_list && datasets_list.length > 0 ? (
                         <SliderItemsContainer dataset_groups_list={groupings} />
                     ) : (
                         <></>

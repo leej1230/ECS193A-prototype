@@ -27,9 +27,9 @@ import DatasetChangeUndo from './DatasetChangeUndo';
 const SAMPLE_DATASET_NAME = window.location.pathname.split("/").at(-1);
 
 function DatasetPage() {
-  const [dataset, setDataset] = useState({ gene_ids: "0", patient_ids: "0" });
+  const [dataset, setDataset] = useState(null);
   {/*const [DATASET_ID,] = useState(window.location.pathname.split("/").at(-1));*/}
-  const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
+  const [datasetTableInputFormat, setDatasetTableInputFormat] = useState(null);
   
   // loader per component
   const [name_holder_loaded, set_name_holder_loaded] = useState(false);
@@ -39,20 +39,24 @@ function DatasetPage() {
 
   const [, setGeneIds] = useState([]);
   const [, setPatientIds] = useState([]);
-  const [together_patient_gene_information, set_together_patient_gene_information] = useState([
-    { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
-  ]);
-  const [patient_information, set_patient_information] = useState([
-    { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "" }
-  ]);
-  const [gene_with_value_information, set_gene_with_value_information] = useState([
-    { id: 1, name: "", patient_ids: { arr: [] }, gene_values: { arr: [] } }
-  ]);
+  const [together_patient_gene_information, set_together_patient_gene_information] = useState(null);
+  // [
+    // { patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "", ENSG: 3.2 }
+  //]
+  const [patient_information, set_patient_information] = useState(null);
+  // [
+    //{ patient_id: "", age: 0, diabete: "", final_diagnosis: "", gender: "", hypercholesterolemia: "", hypertension: "", race: "" }
+  //]
+  const [gene_with_value_information, set_gene_with_value_information] = useState(null);
+  // [
+    // { id: 1, name: "", patient_ids: { arr: [] }, gene_values: { arr: [] } }
+  //]
 
-  const [gene_information_expanded, setGene_information_expanded] = useState([{ 'id': 0, 'gene_id': "NONE" }]);
+  const [gene_information_expanded, setGene_information_expanded] = useState(null);
+  // [{ 'id': 0, 'gene_id': "NONE" }]
   const [displayHistoryTable, setDisplayHistoryTable] = useState(false);
 
-  const [gotPatientInfo, set_gotPatientInfo] = useState(false)
+  const [gotPatientInfo, set_gotPatientInfo] = useState(false);
   const [gotGeneInfo, set_gotGeneInfo] = useState(true);
 
   const [reload_edits, set_reload_edits] = useState(false);
@@ -159,7 +163,7 @@ function DatasetPage() {
 
   useEffect(() => {
     let simple_objs = []
-    if (gene_with_value_information === null || gene_with_value_information.length === 0) {
+    if ( !gene_with_value_information || gene_with_value_information.length === 0) {
       simple_objs = [{ 'id': 0, 'gene_id': "NONE" }];
     } else {
       for (let i = 0; i < gene_with_value_information.length; i++) {
@@ -220,7 +224,7 @@ function DatasetPage() {
     if ( dataset && 'rowType' in dataset && dataset.rowType === "gene") {
       // rows are genes
 
-      for (let i = 0; i < gene_with_value_information.length; i++) {
+      for (let i = 0; gene_with_value_information &&  i < gene_with_value_information.length; i++) {
         let existing_gene_info = clone(gene_with_value_information[i]);
 
         let gene_patient_subset_values = {};
@@ -229,7 +233,7 @@ function DatasetPage() {
 
           let temp_patient_arr = gene_with_value_information[i]["patient_ids"]["arr"]
 
-          for (let j = 0; j < temp_patient_arr.length; j++) {
+          for (let j = 0; temp_patient_arr && j < temp_patient_arr.length; j++) {
 
             gene_patient_subset_values[temp_patient_arr[j]] = parseFloat(gene_with_value_information[i]["gene_values"]["arr"][j]);
           }
@@ -241,12 +245,12 @@ function DatasetPage() {
       }
     } else {
       // patients are rows
-      for (let i = 0; i < patient_information.length; i++) {
+      for (let i = 0; patient_information && i < patient_information.length; i++) {
         let existing_patient_info = clone(patient_information[i]);
 
         let gene_patient_subset_values = {};
 
-        for (let j = 0; j < gene_with_value_information.length; j++) {
+        for (let j = 0; gene_with_value_information && j < gene_with_value_information.length; j++) {
 
           if (gene_with_value_information[j] != null && ("patient_ids" in gene_with_value_information[j]) && (gene_with_value_information[j]["patient_ids"] != null) && ("arr" in gene_with_value_information[j]["patient_ids"])) {
 
@@ -323,7 +327,7 @@ function DatasetPage() {
 
               </div>
 
-              <DatasetNameHolder input_dataset={dataset} input_name_holder_loaded={name_holder_loaded} />
+              <DatasetNameHolder input_dataset={dataset} input_name_holder_loaded={name_holder_loaded && dataset} />
 
               <div class="container-fluid" id="tabs_container" >
                 <Tabs
@@ -332,13 +336,13 @@ function DatasetPage() {
                   className="mb-3"
                 >
                   <Tab eventKey="basic_info" title="Basic Info">
-                    <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} input_basic_info_loaded={basic_info_loaded} />
+                    <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} input_basic_info_loaded={ basic_info_loaded && datasetTableInputFormat } />
                   </Tab>
                   <Tab eventKey="genes_list" title="Genes List">
                     <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} input_gene_list_loaded={gene_list_table_loaded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
-                    <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} input_edit_dataset_loaded={edit_table_loaded} />
+                    <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} input_edit_dataset_loaded={edit_table_loaded && together_patient_gene_information} />
                     <DatasetChangeUndo input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : ""} input_displayHistoryTable={displayHistoryTable} input_reload_history={reload_edits} input_set_reload_edit_history={set_reload_edits} />
                   </Tab>
                 </Tabs>
