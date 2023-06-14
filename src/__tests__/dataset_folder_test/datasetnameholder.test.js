@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect'; 
-import DatasetNameHolder from '../../components/dataset_folder/DatasetNameHolder';
+import DatasetNameHolder from '../../components/dataset_folder/DatasetNameHolder.js';
 import { useAuth0 } from '@auth0/auth0-react';
 
 

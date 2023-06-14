@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import axios from 'axios';
-import UploadDataset from '../../components/dataset_folder/UploadDataset';
+import UploadDataset from '../../components/dataset_folder/UploadDataset.js';
 import { CheckCircle } from '@material-ui/icons';
 
 jest.mock('axios');

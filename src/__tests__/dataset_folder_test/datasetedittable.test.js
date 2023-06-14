@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect'; 
-import DatasetEditTable from '../../components/dataset_folder/DatasetEditTable';
+import DatasetEditTable from '../../components/dataset_folder/DatasetEditTable.js';
 
 
 jest.mock('axios');

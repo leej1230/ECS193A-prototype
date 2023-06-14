@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BrowserRouter as Router } from 'react-router-dom';
 import MockAdapter from 'axios-mock-adapter';
 import '@testing-library/jest-dom/extend-expect'; 
-import DatasetPage from '../../components/dataset_folder/DatasetPage';
+import DatasetPage from '../../components/dataset_folder/DatasetPage.js';
 
 jest.mock('axios', () => ({
     get: jest.fn(() => Promise.resolve({ data: {} })),

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import DatasetChangeUndo from '../../components/dataset_folder/DatasetChangeUndo';
+import DatasetChangeUndo from '../../components/dataset_folder/DatasetChangeUndo.js';
 
 jest.mock('axios');
 jest.mock('@auth0/auth0-react');
