@@ -10,7 +10,7 @@ import { clone } from "ramda";
 
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
-import LoadingSpinner from "../../spinner/spinner";
+import { CircularProgress } from "@mui/material";
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
@@ -163,7 +163,7 @@ export default function Slider() {
     return (
         <>
             {!gotInfo ? (
-                <LoadingSpinner />
+                <CircularProgress />
             ) : (
                 <>
                     {datasets_list && datasets_list.length > 0 ? (

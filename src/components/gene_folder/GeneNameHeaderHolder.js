@@ -33,7 +33,10 @@ function NameHeaderHolder(props){
           .then((res) => {
             console.log(res.data);
             setUserInfo(res.data);
-            setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`));
+            if( res.data && 'bookmarked_genes' in res.data && res.data.bookmarked_genes ){
+                setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`));
+            }
+            
           })
           .catch((e) => {
             console.log("Failed to fetch user Info.", e)

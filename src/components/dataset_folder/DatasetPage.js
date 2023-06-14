@@ -137,7 +137,7 @@ function DatasetPage() {
       
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gotGeneInfo, gotPatientInfo]);
+  }, [gotGeneInfo, gotPatientInfo , gene_with_value_information , patient_information ]);
 
   useEffect(() => {
     setDatasetTableInputFormat(createDatasetFormatted());

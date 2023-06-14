@@ -49,18 +49,20 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/${SAMPLE_NAME}/${SAMP
 
 function GenePage() {
   // state = {samples: []}
-  const [gene_data, setGene_data] = useState({  dataset_name: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } });
+  const [gene_data, setGene_data] = useState(null);
+  // {  dataset_name: 0, name: "a", patient_ids: { arr: [0] }, gene_values: { arr: [0] } }
   const [gene_external_data, setGeneExternalData] = useState(null);
-  const [patient_data_table_filtered, set_patient_data_table_filtered] = useState([
-    { patient_id: "" }
-  ]);
-  const [patient_information_expanded, set_patient_information_expanded] = useState([
-    { patient_id: "" }
-  ]);
+  const [patient_data_table_filtered, set_patient_data_table_filtered] = useState(
+    null
+  );
+  const [patient_information_expanded, set_patient_information_expanded] = useState(
+    null
+  );
 
   const [graphType, setGraphType] = useState('bar');
 
-  const [, set_basic_gene_info] = useState({ dataset_name: 0, name: "a" })
+  const [, set_basic_gene_info] = useState(null)
+  // { dataset_name: 0, name: "a" }
 
   const [dataset_rowType, set_dataset_rowType] = useState("")
 
@@ -138,7 +140,9 @@ function GenePage() {
   const patients_table_node = useRef(null);
 
   useEffect(() => {
-    generatePatientTable(patient_information_expanded);
+    let some_result = generatePatientTable(patient_information_expanded);
+    console.log("patients table setting: ", some_result)
+    set_patient_data_table_filtered(some_result)
   }, [column_filter_types_arr, filter_types_states_arr])
 
   const handleSelect = async (input_select_obj, input_col_name) => {
@@ -154,7 +158,7 @@ function GenePage() {
   };
 
   const generatePatientTable = (patients_info) => {
-    if (patients_info.length === 0 || patients_info === null || !('patient_ids' in gene_data) || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null) {
+    if ( !patients_info || patients_info.length === 0 || !('patient_ids' in gene_data) || !gene_data || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null) {
       return;
     }
 
@@ -164,9 +168,11 @@ function GenePage() {
     // 'id' not need options
     var patient_columns_list = []
 
+    console.log("starting patient table: ", patients_info)
+
 
     if (dataset_rowType === "patient") {
-      for (let i = 0; i < patients_info.length; i++) {
+      for (let i = 0; patients_info && i < patients_info.length; i++) {
         var cur_patient = patients_info[i]
         // patient has no id, so this is fine
         cur_patient['id'] = i + 1
@@ -208,7 +214,7 @@ function GenePage() {
     let have_modified_cols = false
 
 
-    for (let i = 0; i < column_possibilities.length; i++) {
+    for (let i = 0; column_possibilities && i < column_possibilities.length; i++) {
 
       if( column_possibilities[i] != 'gene_ids' && column_possibilities[i] != 'dataset_id' && column_possibilities[i] != 'dataset_name' ){
 
@@ -422,7 +428,7 @@ function GenePage() {
     }
 
     fetchRowType();
-  }, [gene_data.dataset_name])
+  }, [gene_data])
 
 
   useEffect(() => {
@@ -433,9 +439,10 @@ function GenePage() {
         const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`
         await axios.get(patientsDataAPIURL).then((res) => {
 
-          if (res.data.length > 0) {
+          if (res.data &&  res.data.length > 0) {
+            console.log("fetch patient stuff: ", res.data);
             let some_result = generatePatientTable(clone(res.data))
-            set_patient_information_expanded(some_result);
+            console.log("process patient table: ", some_result)
             set_patient_data_table_filtered(some_result)
 
             set_patient_table_loaded(true);
@@ -452,7 +459,7 @@ function GenePage() {
 
 
   useEffect(() => {
-    let temp_obj = clone(gene_data)
+    let temp_obj = clone(gene_data ?  gene_data : {})
     let list_attr = Object.keys(temp_obj)
     for (let i = 0; i < list_attr.length; i++) {
       if (temp_obj[list_attr[i]] !== null && temp_obj[list_attr[i]].constructor.name === 'Object' && !Array.isArray(temp_obj[list_attr[i]]) && !(temp_obj[list_attr[i]] instanceof Date)) {
@@ -528,7 +535,7 @@ function GenePage() {
       let new_patient_ids = []
       let new_gene_vals = []
 
-      for (let j = 0; j < patients_filtered.length; j++) {
+      for (let j = 0; patients_filtered && j < patients_filtered.length; j++) {
         new_patient_ids.push(patients_filtered[j]['patient_id'])
         new_gene_vals.push(patients_filtered[j]['gene_val'])
       }
@@ -658,7 +665,7 @@ function GenePage() {
                                         >
                                           <MenuItem value={'bar'}>Bar</MenuItem>
                                           <MenuItem value={'line'}>Basic Line</MenuItem>
-                                          {/*<MenuItem value={'pie'}>Pie</MenuItem>*/}
+                                       
                                         </Select>
                                       </FormControl>
                                     </div>
@@ -687,31 +694,48 @@ function GenePage() {
                         </div>
                       </div>
                     </Tab>
-                        {dataset_rowType === "patient" || (patient_information_expanded.length > 0 && patient_information_expanded[0]['patient_id'] !== "") ?
-                          ( <Tab eventKey="patients_list" title="Patient List">
-                            <div class="card shadow mb-4" id="display_filter_patients_gene">
-                              <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                              </div>
+                    <Tab eventKey="patients_list" title="Patient List">
+                       {patient_data_table_filtered ? 
+                          (
+                            <>
+                              {dataset_rowType === "patient"  || (patient_data_table_filtered.length > 0) ?
+                                (
+                                  <div class="card shadow mb-4" id="display_filter_patients_gene">
+                                    <div class="card-header py-3">
+                                      <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                                    </div>
 
-                              <div class="row" id="table_options_outer">
-                                <div id="patient_table_area">
-                                  <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                    <div class="row" id="table_options_outer">
+                                      <div id="patient_table_area">
+                                        <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                          
+                              :
+                              <div class="card shadow mb-4" id="display_filter_patients_gene">
+                                <div class="card-header py-3">
+                                  <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                                </div>
+
+                                <div class="row" id="table_options_outer">
+                                  <div id="patient_table_area">
+                                    <p>No patient data</p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            :
-                            <></>
-
-                          </Tab> )
+                              }
+                            </>
+                           )
                           :
                           (
                             <div>
                               <CircularProgress />
                             </div>
 
-                        )}
-                      
+                          )}
+                      </Tab>
                     <Tab eventKey="animation" title="Animation">
                       <GeneSequenceAnimation  />
                     </Tab>

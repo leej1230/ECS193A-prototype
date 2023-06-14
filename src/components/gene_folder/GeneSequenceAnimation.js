@@ -18,7 +18,7 @@ import './GeneSequenceAnimation.css'
 
 function breakUpCode(code_str) {
     let list_str_code = []
-    for (var i = 0; i < code_str.length; i += 5) {
+    for (var i = 0; code_str && i < code_str.length; i += 5) {
       let temp_str = "";
       if (i + 5 < code_str.length) {
         temp_str = code_str.substring(i, i + 5);
@@ -59,7 +59,7 @@ function GeneSequenceAnimation(props){
           console.log(resp);
           console.log("seq names");
           var data_code = resp.data;
-          if (data_code.code.length > 1) {
+          if (data_code && data_code.code && data_code.code.length > 1) {
             // remove 'mrna' initial
             data_code.code = data_code.code.slice(1, data_code.code.length);
             // remove blanks at end

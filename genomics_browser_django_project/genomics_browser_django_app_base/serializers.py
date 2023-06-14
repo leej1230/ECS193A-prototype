@@ -62,7 +62,9 @@ class DatasetSerializer(serializers.ModelSerializer):
             'date_created',
             'url',
             'rowType',
-            'person_uploaded_dataset'
+            'person_uploaded_dataset',
+            'patientCode',
+            'geneCode'
         )
 
 

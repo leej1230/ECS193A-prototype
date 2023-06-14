@@ -873,6 +873,8 @@ class Database:
 
             objects_list = list(update_dict.keys())
 
+            
+
             if (
                 'save_undo_list' in data_request
                 and len(data_request['save_undo_list'].keys()) > 0
@@ -975,7 +977,6 @@ class Database:
                     },
                 )
             
-            
 
             objects_dataset_name = data_request['dataset_name']
 
@@ -1000,9 +1001,12 @@ class Database:
                         patient_objects_list = gene['patient_ids']['arr']
                     if 'gene_values' in gene:
                         gene_values_list = gene['gene_values']['arr']
+                    
+                    print(gene)
+                    print(data_request)
 
                     for j in range(0, len(keys_attributes_list)):
-                        if len(keys_attributes_list[j]) >= len(data_request['dataset_patient_code']) and keys_attributes_list[j][0:(len(data_request['dataset_patient_code']))] == data_request['dataset_patient_code']:
+                        if data_request['dataset_patient_code'] != "" and len(keys_attributes_list[j]) >= len(data_request['dataset_patient_code']) and keys_attributes_list[j][0:(len(data_request['dataset_patient_code']))] == data_request['dataset_patient_code']:
                             update_gene_obj.pop(keys_attributes_list[j], None)
 
                             gene_patient_index = patient_objects_list.index(
@@ -1576,7 +1580,7 @@ class Database:
                 {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ).lower() }
             )
 
-            print(dataset_check_duplicate)
+
             # no result from find_one() is {}, so check this
             if dataset_check_duplicate == None or (dataset_check_duplicate != None and  len(dataset_check_duplicate.keys()) > 0 ):
                 return loads(dumps(status.HTTP_409_CONFLICT))
@@ -1595,7 +1599,7 @@ class Database:
                 )
 
                 # Serialize dataset, insert records into database, and increment counters
-    
+
                 serial = DatasetSerializer(dataset.get_dataset_info())
 
                 if len(dataset.get_patients()) > 0:

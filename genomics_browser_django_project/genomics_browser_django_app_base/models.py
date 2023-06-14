@@ -83,6 +83,8 @@ class DatasetModel(models.Model):
     url = models.URLField(blank=True, null=True)
     rowType = models.TextField(blank=False, null=False)
     person_uploaded_dataset = models.TextField(blank=False, null=False)
+    patientCode = models.TextField(blank=False, null=False)
+    geneCode = models.TextField(blank=False, null=False)
 
 
 class CounterModel(models.Model):
