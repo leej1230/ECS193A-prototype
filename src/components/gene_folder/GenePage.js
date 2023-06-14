@@ -143,7 +143,7 @@ function GenePage() {
     let some_result = generatePatientTable(patient_information_expanded);
     console.log("patients table setting: ", some_result)
     set_patient_data_table_filtered(some_result)
-  }, [column_filter_types_arr, filter_types_states_arr])
+  }, [column_filter_types_arr, filter_types_states_arr, patient_information_expanded])
 
   const handleSelect = async (input_select_obj, input_col_name) => {
     let temp_var = clone(column_filter_types_arr);
@@ -441,21 +441,25 @@ function GenePage() {
 
           if (res.data &&  res.data.length > 0) {
             console.log("fetch patient stuff: ", res.data);
+            set_patient_information_expanded(res.data);
             let some_result = generatePatientTable(clone(res.data))
             console.log("process patient table: ", some_result)
             set_patient_data_table_filtered(some_result)
 
-            set_patient_table_loaded(true);
-
           }
+
+          
         });
 
       }
+
+      console.log("got here!!!")
+          set_patient_table_loaded(true);
     }
 
     fetchPatientsData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataset_rowType])
+  }, [dataset_rowType, loaded_gene_info])
 
 
   useEffect(() => {
@@ -695,10 +699,10 @@ function GenePage() {
                       </div>
                     </Tab>
                     <Tab eventKey="patients_list" title="Patient List">
-                       {patient_data_table_filtered ? 
+                       {patient_table_loaded || patient_data_table_filtered ? 
                           (
                             <>
-                              {dataset_rowType === "patient"  || (patient_data_table_filtered.length > 0) ?
+                              {dataset_rowType === "patient"  || (patient_data_table_filtered && patient_data_table_filtered.length > 0) ?
                                 (
                                   <div class="card shadow mb-4" id="display_filter_patients_gene">
                                     <div class="card-header py-3">

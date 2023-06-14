@@ -56,7 +56,7 @@ function NameHeaderHolder(props){
                     <div>
                         <p className='d-sm-inline-block title_tag'>Name:</p>
                         &nbsp;
-                        <p className='d-sm-inline-block gene_name'>{props.input_object_data.name}</p>
+                        <p className='d-sm-inline-block gene_name'>{props.input_object_data ? props.input_object_data.name : ""}</p>
                         &nbsp;
                         <button
                         type="button"
