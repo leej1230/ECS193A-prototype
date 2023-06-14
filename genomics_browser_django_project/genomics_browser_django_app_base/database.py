@@ -1579,8 +1579,7 @@ class Database:
             print(dataset_check_duplicate)
             # no result from find_one() is {}, so check this
             if dataset_check_duplicate == None or (dataset_check_duplicate != None and  len(dataset_check_duplicate.keys()) > 0 ):
-                print("got duplicate dataset upload!!!!")
-                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
+                return loads(dumps(status.HTTP_409_CONFLICT))
 
             try:
                 dataset = ParsedDataset(

@@ -109,7 +109,12 @@ function UploadDataset() {
             })
             .catch((error) => {
                 setState(false);
-                alert("Please provide a properly formatted dataset and correct specifications.");
+                if(error.response.status === 409){
+                    alert("Please provide a unique dataset name. The name provided already exists.");
+                } else {
+                    // 406 error
+                    alert("Please provide a properly formatted dataset and correct specifications. Issue in entered values or csv.");
+                }
             });
     };
 

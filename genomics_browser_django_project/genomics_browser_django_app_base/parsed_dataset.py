@@ -34,6 +34,7 @@ class ParsedDataset :
                     all_follow = all(truth_val == True for truth_val in mapping_check)
                     if done_traversal == False and all_follow == True:
                         done_traversal = True
+                        break
 
                 if done_traversal == False:
                     self.df = None
@@ -47,6 +48,7 @@ class ParsedDataset :
                     all_follow = all(truth_val == True for truth_val in mapping_check)
                     if done_traversal == False and all_follow == True:
                         done_traversal = True
+                        break
 
                 if done_traversal == False:
                     self.df = None
@@ -60,7 +62,6 @@ class ParsedDataset :
 
         self.df.dropna(axis=1, how='all')
         self.df.dropna(axis=0, how='all')
-
 
 
         for rowIndex, row in self.df.iterrows():
@@ -113,10 +114,13 @@ class ParsedDataset :
     def get_column_starting_with(self, start_string):
         if start_string == None or start_string == "":
             return None
-        cols_list = list(self.df.columns.values)
-        for col_val in cols_list:
-            if str(self.df[col_val].iloc[0]).lower().startswith(start_string.lower()):
-                return col_val
+        col_opts = list(self.df.columns)
+        for col_option_name in col_opts:
+            temp_list = self.df[col_option_name].tolist()
+            mapping_check = list(map(lambda x: True if ( (len(str(x)) >= len(start_string) and str(x)[0:len(start_string)] == start_string ) ) else False , temp_list))
+            all_follow = all(truth_val == True for truth_val in mapping_check)
+            if all_follow == True:
+                return col_option_name
         return None
     
     def get_all_genes_data(self):
