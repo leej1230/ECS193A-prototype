@@ -65,7 +65,6 @@ function GenePage() {
   const [dataset_rowType, set_dataset_rowType] = useState("")
 
   const [graph_table_filter_data, set_graph_table_filter_data] = useState();
-  const [loaded_gene_info, set_loaded_gene_info] = useState(false);
   
   const [column_filter_types_arr, set_column_filter_types_arr] = useState({}); // { 'id': "text", 'age': "number" }
   const [ filter_types_states_arr , set_filter_types_states_arr ] = useState({}); // { 'id': {value: "text", label: "text"} }
@@ -128,6 +127,12 @@ function GenePage() {
     text: "Race",
   },
   ]);
+
+  // loader states
+  const [gene_name_holder_loader , set_gene_name_holder_loader] = useState(false);
+  const [basic_info_loaded, set_basic_info_loaded] = useState(false);
+  const [loaded_gene_info, set_loaded_gene_info] = useState(false); // for graph
+  const [patient_table_loaded, set_patient_table_loaded] = useState(false);
 
   const graph_table_node = useRef(null);
   const patients_table_node = useRef(null);
@@ -383,12 +388,15 @@ function GenePage() {
 
         setGene_data(clone(res.data));
         set_graph_table_filter_data(res.data);
+        
         set_loaded_gene_info(true);
+        set_gene_name_holder_loader(true);
 
         console.log( "graph filter information: ", res.data );
       });
       await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
         setGeneExternalData(gene_ext.data);
+        set_basic_info_loaded( true );
       });
 
 
@@ -429,6 +437,8 @@ function GenePage() {
             let some_result = generatePatientTable(clone(res.data))
             set_patient_information_expanded(some_result);
             set_patient_data_table_filtered(some_result)
+
+            set_patient_table_loaded(true);
 
           }
         });
@@ -610,7 +620,7 @@ function GenePage() {
                     
                 </div>
 
-                <GeneNameHeaderHolder input_object_data={gene_data} />
+                <GeneNameHeaderHolder input_object_data={gene_data} input_gene_name_holder_loaded={gene_name_holder_loader} />
 
                 <div class="container-fluid" id="gene_tabs_container_content" >
                   <Tabs
@@ -619,7 +629,7 @@ function GenePage() {
                     className="mb-3"
                   >
                     <Tab eventKey="basic_info" title="Basic Info">
-                      <BasicInfo title_info_box="Gene Information" input_gene={gene_data} input_description={gene_external_data.description} />
+                      <BasicInfo input_gene={gene_data} input_description={gene_external_data.description} input_basic_info_loaded={basic_info_loaded} />
                     </Tab>
                     <Tab eventKey="gene_graph" title="Graph">
                       <div id="graph_gene_box">
@@ -656,7 +666,15 @@ function GenePage() {
                                   ) : (
                                     <div> No Graph of Gene Values Since No Patient Data </div>
                                   )}
+                             
+                          
+                                  {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
+                                    <div id='graph_filter'>
+                                      <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
+                                    </div>
+                                    : <div></div>}
                               </>
+
                               : (
                                 <div>
                                   <CircularProgress />
@@ -664,40 +682,38 @@ function GenePage() {
 
                               )}
 
+
                           </div>
-                          {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
-                            <div id='graph_filter'>
-                              <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
-                            </div>
-                            : <div></div>}
                         </div>
                       </div>
                     </Tab>
-                    {dataset_rowType === "patient" || (patient_information_expanded.length > 0 && patient_information_expanded[0]['patient_id'] !== "") ?
-                      <Tab eventKey="patients_list" title="Patient List">
-                        <div class="card shadow mb-4" id="display_filter_patients_gene">
-                          <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
-                          </div>
+                        {dataset_rowType === "patient" || (patient_information_expanded.length > 0 && patient_information_expanded[0]['patient_id'] !== "") ?
+                          ( <Tab eventKey="patients_list" title="Patient List">
+                            <div class="card shadow mb-4" id="display_filter_patients_gene">
+                              <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Patient List</h6>
+                              </div>
 
-                          <div class="row" id="table_options_outer">
-                            <div id="patient_table_area">
-                              <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                              <div class="row" id="table_options_outer">
+                                <div id="patient_table_area">
+                                  <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        :
-                        <></>
+                            :
+                            <></>
 
-                      </Tab>
-                      :
-                      <>
+                          </Tab> )
+                          :
+                          (
+                            <div>
+                              <CircularProgress />
+                            </div>
 
-                      </>
-
-                    }
+                        )}
+                      
                     <Tab eventKey="animation" title="Animation">
-                      <GeneSequenceAnimation />
+                      <GeneSequenceAnimation  />
                     </Tab>
                   </Tabs>
                 </div>

@@ -30,6 +30,13 @@ function DatasetPage() {
   const [dataset, setDataset] = useState({ gene_ids: "0", patient_ids: "0" });
   {/*const [DATASET_ID,] = useState(window.location.pathname.split("/").at(-1));*/}
   const [datasetTableInputFormat, setDatasetTableInputFormat] = useState([]);
+  
+  // loader per component
+  const [name_holder_loaded, set_name_holder_loaded] = useState(false);
+  const [basic_info_loaded, set_basic_info_loaded] = useState(false);
+  const [gene_list_table_loaded, set_gene_list_table_loaded] = useState(false);
+  const [edit_table_loaded, set_edit_table_loaded] = useState(false);
+
   const [, setGeneIds] = useState([]);
   const [, setPatientIds] = useState([]);
   const [together_patient_gene_information, set_together_patient_gene_information] = useState([
@@ -59,6 +66,7 @@ function DatasetPage() {
 
       await axios.get(url).then((result) => {
         setDataset(result.data);
+        set_name_holder_loaded(true);
       });
     }
 
@@ -114,6 +122,8 @@ function DatasetPage() {
       // need to use "let" to make copy or else same object in both states will lead change in one to affect other
       //let copy_obj =  clone(combined_patients_gene_data);
 
+      set_edit_table_loaded(true);
+
     }
 
       if( gotGeneInfo === true && gotPatientInfo === true ){
@@ -130,6 +140,8 @@ function DatasetPage() {
     setGeneIds(saveGeneIdArray());
     setPatientIds(savePatientIdArray());
 
+    set_basic_info_loaded(true);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset]);
 
@@ -138,6 +150,8 @@ function DatasetPage() {
       setDatasetTableInputFormat(createDatasetFormatted());
       setGeneIds(saveGeneIdArray());
       setPatientIds(savePatientIdArray());
+
+      set_basic_info_loaded(true);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,6 +168,8 @@ function DatasetPage() {
     }
     setGene_information_expanded(simple_objs);
     setGeneIds(simple_objs)
+
+    set_gene_list_table_loaded(true);
   }, [gene_with_value_information])
 
   const createDatasetFormatted = () => {
@@ -272,7 +288,6 @@ function DatasetPage() {
   const navigate = useNavigate();
 
 
-
   return <body id="page-top" >
 
       <div id="wrapper">
@@ -308,7 +323,7 @@ function DatasetPage() {
 
               </div>
 
-              <DatasetNameHolder input_dataset={dataset} />
+              <DatasetNameHolder input_dataset={dataset} input_name_holder_loaded={name_holder_loaded} />
 
               <div class="container-fluid" id="tabs_container" >
                 <Tabs
@@ -317,13 +332,13 @@ function DatasetPage() {
                   className="mb-3"
                 >
                   <Tab eventKey="basic_info" title="Basic Info">
-                    <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} />
+                    <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} input_basic_info_loaded={basic_info_loaded} />
                   </Tab>
                   <Tab eventKey="genes_list" title="Genes List">
-                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} />
+                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} input_gene_list_loaded={gene_list_table_loaded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
-                    <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} />
+                    <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} input_edit_dataset_loaded={edit_table_loaded} />
                     <DatasetChangeUndo input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : ""} input_displayHistoryTable={displayHistoryTable} input_reload_history={reload_edits} input_set_reload_edit_history={set_reload_edits} />
                   </Tab>
                 </Tabs>

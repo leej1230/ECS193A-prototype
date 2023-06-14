@@ -9,9 +9,10 @@ import "./UploadDataset.css";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { Cancel, CheckCircle } from "@material-ui/icons";
+import { CircularProgress } from '@mui/material';
+
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
-import LoadingSpinner from "../spinner/spinner";
 
 function UploadDataset() {
     const [selectedFile, setSelectedFile] = useState();
@@ -187,7 +188,7 @@ function UploadDataset() {
                     </form>
 
                     <div class="row justify-content-center">
-                        {progress > 0 && progress < 100 && <LoadingSpinner />}
+                        {progress > 0 && progress < 100 && <CircularProgress />}
                         {progress === 100 && state === true && (
                             <CheckCircle
                                 color="green"

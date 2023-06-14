@@ -11,6 +11,8 @@ import "../bootstrap_gene_page/css/sb-admin-2.min.css"
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+import { CircularProgress } from '@mui/material';
+
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
 function DatasetNameHolder(props) {
@@ -45,45 +47,53 @@ function DatasetNameHolder(props) {
 
   return (
     <div id="dataset_name_holder">
-      <h5 class="h5 text-gray-800">
-        <div id="text_title">
-          <div class="d-sm-inline-block" id="title_tag">Dataset:</div>
-          &nbsp;
-          <div class="d-sm-inline-block" >{props.input_dataset && 'name' in props.input_dataset && props.input_dataset["name"] ? props.input_dataset["name"] : "[No Name]"}</div>
-          &nbsp;
-          &nbsp;
-          <button
-            type="button"
-            className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
-            onClick={async () => {
-              if(props.input_dataset && 'name' in props.input_dataset && props.input_dataset.name ){
-                if (bookmarked === true) {
-                  await setBookmarked(false);
-                  const formData = new FormData();
-                  formData.append("user_id", user.sub.split("|")[1]);
-                  formData.append("dataset_url", `${props.input_dataset.name}`);
-                  axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
-                } else {
-                  const formData = new FormData();
-                  formData.append("user_id", user.sub.split("|")[1]);
-                  formData.append("dataset_url", `${props.input_dataset.name}`);
-                  axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
-                  await setBookmarked(true);
-                }
-              }
-            }}
-          >
-            {bookmarked ? <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'regular' })} />}
+      {props.input_name_holder_loaded ? (
+          <h5 class="h5 text-gray-800">
+            <div id="text_title">
+              <div class="d-sm-inline-block" id="title_tag">Dataset:</div>
+              &nbsp;
+              <div class="d-sm-inline-block" >{props.input_dataset && 'name' in props.input_dataset && props.input_dataset["name"] ? props.input_dataset["name"] : "[No Name]"}</div>
+              &nbsp;
+              &nbsp;
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary m-2 ml-auto d-sm-inline-block"
+                onClick={async () => {
+                  if(props.input_dataset && 'name' in props.input_dataset && props.input_dataset.name ){
+                    if (bookmarked === true) {
+                      await setBookmarked(false);
+                      const formData = new FormData();
+                      formData.append("user_id", user.sub.split("|")[1]);
+                      formData.append("dataset_url", `${props.input_dataset.name}`);
+                      axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-dataset-bookmark`, formData)
+                    } else {
+                      const formData = new FormData();
+                      formData.append("user_id", user.sub.split("|")[1]);
+                      formData.append("dataset_url", `${props.input_dataset.name}`);
+                      axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-dataset-bookmark`, formData)
+                      await setBookmarked(true);
+                    }
+                  }
+                }}
+              >
+                {bookmarked ? <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'solid' })} /> : <FontAwesomeIcon icon={icon({ name: 'bookmark', style: 'regular' })} />}
 
-          </button>
+              </button>
 
+            </div>
+            {/*<div>
+              <p class="d-sm-inline-block subtitle_tag" >Dataset ID:</p>
+              &nbsp;
+              <p class="d-sm-inline-block subtitle_content" >{props.input_dataset_id}</p>
+            </div>*/}
+          </h5>
+      )
+      :
+      (
+        <div>
+            <CircularProgress />
         </div>
-        {/*<div>
-          <p class="d-sm-inline-block subtitle_tag" >Dataset ID:</p>
-          &nbsp;
-          <p class="d-sm-inline-block subtitle_content" >{props.input_dataset_id}</p>
-        </div>*/}
-      </h5>
+      )}
     </div>
   )
 }

@@ -14,6 +14,8 @@ import filterNumber from '../filters/filterNumber';
 
 import {default as SelectDropDown} from "react-select";
 
+import { CircularProgress } from '@mui/material';
+
 import './DatasetEditTable.css'
 
 const options_select = [{value: "text", label: "text"},{value: "number", label: "number"}];
@@ -601,55 +603,64 @@ function DatasetEditTable(props) {
       <div id="dataset_view_table">
         <div class="row">
           <div class="col">
-            <div class="card shadow">
-              <div class="card-header py-3">
-                <div id="table_edit_header">
-                  <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
-                  <button class="btn btn-primary table_btn_content" onClick={async () => {
-                    let new_val = !props.input_displayHistoryTable;
-                    await props.input_set_displayHistoryTable(new_val);
-                  }}>Toggle Show History and Undo</button>
-                  <button class="btn btn-primary table_btn_content" onClick={async () => {
-
-                    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
-                      // Data to be sent to the server
-                      modify_list: clone(modified_objects_list_to_update_back),
-                      save_undo_list: clone(prev_objects_list_to_undo),
-                      dataset_name: props.input_dataset_name,
-                      row_type_for_dataset: props.row_type,
-                      dataset_patient_code: props.input_patient_code,
-                      user_id: user.sub.split("|")[1]
-                    }, { 'content-type': 'application/json' }).then((response) => {
-                      //console.log("post has been sent");
-                      //console.log(response);
-
-                      alert("Data Updated");
-                      props.input_set_reload_history(true);
-
-                    });
-
-                    // each save is independent
-                    set_prev_objects_list_to_undo({});
-                    set_modified_objects_list_to_update_back({});
-
+            {props.input_edit_dataset_loaded ?  (
+              <div class="card shadow">
+                <div class="card-header py-3">
+                  <div id="table_edit_header">
+                    <h5 class="m-0 font-weight-bold text-primary" id="table_edit_title">Dataset Matrix</h5>
                     
+                    <button class="btn btn-primary table_btn_content" onClick={async () => {
+                      let new_val = !props.input_displayHistoryTable;
+                      await props.input_set_displayHistoryTable(new_val);
+                    }}>Toggle Show History and Undo</button>
+                    <button class="btn btn-primary table_btn_content" onClick={async () => {
+
+                      axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
+                        // Data to be sent to the server
+                        modify_list: clone(modified_objects_list_to_update_back),
+                        save_undo_list: clone(prev_objects_list_to_undo),
+                        dataset_name: props.input_dataset_name,
+                        row_type_for_dataset: props.row_type,
+                        dataset_patient_code: props.input_patient_code,
+                        user_id: user.sub.split("|")[1]
+                      }, { 'content-type': 'application/json' }).then((response) => {
+                        //console.log("post has been sent");
+                        //console.log(response);
+
+                        alert("Data Updated");
+                        props.input_set_reload_history(true);
+
+                      });
+
+                      // each save is independent
+                      set_prev_objects_list_to_undo({});
+                      set_modified_objects_list_to_update_back({});
+
+                      
 
 
 
-                  }}>Save Changes</button>
+                    }}>Save Changes</button>
+                  </div>
+                </div>
+                <div class="card-body" id="full_matrix_table">
+                  <BootstrapTable keyField={props.row_type === "gene" ? "name" : "patient_id"} data={table_matrix_filtered} columns={together_data_columns} filter={filterFactory()} pagination={paginationFactory()} ref={n => dataset_matrix_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: true }} cellEdit={cellEditFactory({ mode: 'click' })} filterPosition="top" onTableChange={(type, newState) => {
+
+                    if ('cellEdit' in newState) {
+                      updateCellEditMatrix(newState);
+                    } else {
+                      matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
+                    }
+                  }} />
                 </div>
               </div>
-              <div class="card-body" id="full_matrix_table">
-                <BootstrapTable keyField={props.row_type === "gene" ? "name" : "patient_id"} data={table_matrix_filtered} columns={together_data_columns} filter={filterFactory()} pagination={paginationFactory()} ref={n => dataset_matrix_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: true }} cellEdit={cellEditFactory({ mode: 'click' })} filterPosition="top" onTableChange={(type, newState) => {
-
-                  if ('cellEdit' in newState) {
-                    updateCellEditMatrix(newState);
-                  } else {
-                    matrixFilter(dataset_matrix_node.current.filterContext.currFilters);
-                  }
-                }} />
-              </div>
-            </div>
+              )
+              :
+              (
+                <div>
+                    <CircularProgress />
+                </div>
+              )}
           </div>
         </div>
 

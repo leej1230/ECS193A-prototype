@@ -45,9 +45,11 @@ function NameHeaderHolder(props){
     }, []);
 
     return <div id="name_box">
+
+            {props.input_gene_name_holder_loaded ? (
                 <h5 class="h5 text-gray-800">
-                {props.input_object_data ? (
-                    <div>
+                
+                <div>
                     <div>
                         <p className='d-sm-inline-block title_tag'>Name:</p>
                         &nbsp;
@@ -77,18 +79,20 @@ function NameHeaderHolder(props){
                         </button>
 
                     </div>
-                    {/*<div>
-                        <p class="d-sm-inline-block subtitle_tag" >ID:</p>
+                    <div>
+                        <p class="d-sm-inline-block subtitle_tag" >Dataset Name: </p>
                         &nbsp;
-                        <p class="d-sm-inline-block subtitle_content" >{props.input_object_data.id}</p>
-                    </div>*/}
+                        <p class="d-sm-inline-block subtitle_content" >{SAMPLE_DATASET_NAME}</p>
                     </div>
+                    </div>
+                
+                </h5>
+
                 ) : (
                     <div>
                     <CircularProgress />
                     </div>
                 )}
-                </h5>
             </div>
 }
 

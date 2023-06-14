@@ -8,6 +8,8 @@ import './DatasetGenesListTable.js'
 
 import TextFuzzyFilter from '../filters/TextFuzzyFilter';
 
+import { CircularProgress } from '@mui/material';
+
 function DatasetGenesListTable(props) {
 
   const gene_list_node = useRef(null);
@@ -198,18 +200,26 @@ function DatasetGenesListTable(props) {
 
   return (
     <div class="row" id="dataset_table_and_stats_row">
-      <div class="card shadow" id="dataset_genes_list">
-        <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>
-        </div>
-        <div class="card-body">
-          <div class="row" id="table_options_outer">
-            <div id="gene_table_area">
-              <BootstrapTable keyField='id' ref={n => gene_list_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={gene_list_filtered} columns={gene_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) }} />
+      {props.input_gene_list_loaded ? (
+        <div class="card shadow" id="dataset_genes_list">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Gene Ids</h6>
+          </div>
+          <div class="card-body">
+            <div class="row" id="table_options_outer">
+              <div id="gene_table_area">
+                <BootstrapTable keyField='id' ref={n => gene_list_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={gene_list_filtered} columns={gene_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { geneListFilter(gene_list_node.current.filterContext.currFilters) }} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )
+      :
+      (
+        <div>
+            <CircularProgress />
+        </div>
+      )}
     </div>
   )
 }

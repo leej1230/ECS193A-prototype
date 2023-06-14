@@ -64,7 +64,7 @@ function Home() {
         console.log("line 44 dataset count total: ", parseInt(res.data.count));
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         getCountInfo();
     }, []);
 
