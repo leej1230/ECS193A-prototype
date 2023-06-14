@@ -119,6 +119,7 @@ function Contact() {
 
 
       <ReactPlayer
+        data-testid="react-player"
         id="video_back"
         url='https://static.videezy.com/system/resources/previews/000/018/787/original/Komp_2.mp4'
         loop={true}
