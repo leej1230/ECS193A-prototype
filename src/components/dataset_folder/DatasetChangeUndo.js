@@ -52,7 +52,9 @@ function DatasetChangeUndo(props) {
 
     console.log("change occured history disturbed");
 
-    props.input_set_reload_edit_history(false);
+    if(props.input_set_reload_edit_history){
+      props.input_set_reload_edit_history(false);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.input_data, props.input_reload_history])
