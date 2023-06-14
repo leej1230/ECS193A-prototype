@@ -43,7 +43,7 @@ function DatasetNameHolder(props) {
   useEffect(() => {
     handleFetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [props.input_dataset])
 
   return (
     <div id="dataset_name_holder">
