@@ -2046,3 +2046,13 @@ class Database:
             res = True if query_res else False
 
             return {"isExists": res}
+
+        def remove_Email(request):
+            email = request['ctx'].POST['email']
+            delete_query = {"email": email}
+            try:
+                Database.authorized_email_collection.find_one_and_delete(delete_query)
+                Database.user_collection.find_one_and_delete(delete_query)
+            except:
+                return loads(dumps(status.HTTP_400_BAD_REQUEST))
+            return {'message': 'User removed successfully',}

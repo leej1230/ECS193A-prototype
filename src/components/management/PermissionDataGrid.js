@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { filter } from "ramda";
 const users_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/get-user-all`;
 const role_update_url = `${process.env.REACT_APP_BACKEND_URL}/api/update-role`;
 const role_log_add_url = `${process.env.REACT_APP_BACKEND_URL}/api/add-role-log`;
+const remove_user_url = `${process.env.REACT_APP_BACKEND_URL}/api/remove-user`;
 
 const PermissionDataGrid = () => {
     let userData = GetUserAfterRender();
@@ -24,6 +26,17 @@ const PermissionDataGrid = () => {
         page: 0,
         pageSize: 5,
     });
+
+    const handleUserRemove = (targetEmail) => {
+        const formData = new FormData();
+        formData.append("email", targetEmail);
+        axios
+            .post(remove_user_url, formData)
+            .then(() => {
+                alert("User has removed. To redo, re-invite from Authorize User menu.")
+                window.location.reload(true);
+            })
+    }
 
     const handleCheckboxChange = (
         index,
@@ -100,7 +113,7 @@ const PermissionDataGrid = () => {
         try {
             const res = await axios.get(users_get_url);
             const filteredData = res.data.filter((item) => {
-                return item.email!=user.email
+                return item.email != user.email
             })
             const dataWithIds = filteredData.map((row, index) => ({
                 id: row.auth0_uid,
@@ -164,9 +177,8 @@ const PermissionDataGrid = () => {
                     type="checkbox"
                     style={{ margin: "1rem" }}
                     checked={params.value}
-                    className={`form-check-input ${
-                        params.value ? "checked" : ""
-                    }`}
+                    className={`form-check-input ${params.value ? "checked" : ""
+                        }`}
                     onChange={() =>
                         handleCheckboxChange(
                             params.row.index,
@@ -199,6 +211,25 @@ const PermissionDataGrid = () => {
                             `${userMetadata.given_name} ${userMetadata.family_name}`,
                             `${params.row.first_name} ${params.row.last_name}`
                         )
+                    }
+                />
+            ),
+        },
+        {
+            field: "remove_user",
+            headerName: "Delete User",
+            width: 120,
+            renderCell: (params) => (
+                <DeleteIcon
+                    sx={{ color: "red" }}
+                    onClick={() => {
+                        if (window.confirm(`You are trying to remove ${params.row.first_name} ${params.row.last_name}! Are you sure?`) == true) {
+                            // console.log("Here is user that you just chose!", params.row.email)
+                            handleUserRemove(params.row.email);
+                        } else {
+                            // console.log("You cancelled!")
+                        }
+                    }
                     }
                 />
             ),
