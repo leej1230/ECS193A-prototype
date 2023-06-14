@@ -91,7 +91,7 @@ function DatasetChangeUndo(props) {
                       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                         // Data to be sent to the server
                         modify_list: clone(single_edit_record["old_values"]),
-                        dataset_name: parseInt(props.input_dataset_name),
+                        dataset_name: props.input_dataset_name,
                         user_id: user.sub.split("|")[1],
                         row_type_for_dataset: props.row_type,
                         dataset_patient_code: props.input_patient_code

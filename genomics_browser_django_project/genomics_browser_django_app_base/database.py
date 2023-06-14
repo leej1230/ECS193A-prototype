@@ -989,22 +989,23 @@ class Database:
                     update_gene_obj = copy.deepcopy(cur_gene_obj)
 
                     gene = Database.gene_collection.find_one(
-                        {
-                            'name': str(objects_list[i]),
-                            'dataset_name': str(objects_dataset_name),
-                        }
-                    )
+                                {
+                                    '$and': [
+                                        {'name': str(objects_list[i])},
+                                        {'dataset_name': str(objects_dataset_name)},
+                                    ]
+                                }
+                            )
+
+                    print(gene)
 
                     patient_objects_list = None
                     gene_values_list = None
-                    if 'patient_ids' in gene:
+                    if 'patient_ids' in gene and gene['patient_ids'] and 'arr' in gene['patient_ids'] and gene['patient_ids']['arr'] and len(gene['patient_ids']['arr']) > 0:
                         patient_objects_list = gene['patient_ids']['arr']
-                    if 'gene_values' in gene:
+                    if 'gene_values' in gene and gene['gene_values'] and 'arr' in gene['gene_values'] and gene['patient_ids']['arr'] and len(gene['gene_values']['arr']) > 0:
                         gene_values_list = gene['gene_values']['arr']
                     
-                    print(gene)
-                    print(data_request)
-
                     for j in range(0, len(keys_attributes_list)):
                         if data_request['dataset_patient_code'] != "" and len(keys_attributes_list[j]) >= len(data_request['dataset_patient_code']) and keys_attributes_list[j][0:(len(data_request['dataset_patient_code']))] == data_request['dataset_patient_code']:
                             update_gene_obj.pop(keys_attributes_list[j], None)
@@ -1013,12 +1014,13 @@ class Database:
                                 keys_attributes_list[j]
                             )
 
-                            try:
-                                gene_values_list[gene_patient_index] = float(
-                                    cur_gene_obj[keys_attributes_list[j]]
-                                )
-                            except:
-                                gene_values_list[gene_patient_index] = cur_gene_obj[keys_attributes_list[j]]
+                            if gene_patient_index >= 0 :
+                                try:
+                                    gene_values_list[gene_patient_index] = float(
+                                        cur_gene_obj[keys_attributes_list[j]]
+                                    )
+                                except:
+                                    gene_values_list[gene_patient_index] = cur_gene_obj[keys_attributes_list[j]]
                                 
 
                     # gene modify: set to all new attributes, remove patient keys since saving array of gene values
@@ -1054,8 +1056,10 @@ class Database:
 
                             gene = Database.gene_collection.find_one(
                                 {
-                                    'name': str(keys_attributes_list[j]),
-                                    'dataset_name': str(objects_dataset_name),
+                                    '$and': [
+                                        {'name': str(keys_attributes_list[j])},
+                                        {'dataset_name': str(objects_dataset_name)},
+                                    ]
                                 }
                             )
                             gene_objects_list = gene['patient_ids']['arr']
@@ -1064,13 +1068,16 @@ class Database:
                             )
                             gene_values_list = gene['gene_values']['arr']
 
-                            try:
-                                # value may or may not be able to convert to float
-                                gene_values_list[gene_patient_index] = float(
-                                    cur_patient_obj[keys_attributes_list[j]]
-                                )
-                            except:
-                                gene_values_list[gene_patient_index] = cur_patient_obj[keys_attributes_list[j]]
+                            if gene_patient_index >= 0:
+
+                                try:
+                                    # value may or may not be able to convert to float
+                                    gene_values_list[gene_patient_index] = float(
+                                        cur_patient_obj[keys_attributes_list[j]]
+                                    )
+                                except:
+                                    gene_values_list[gene_patient_index] = cur_patient_obj[keys_attributes_list[j]]
+                            
 
                             Database.gene_collection.update_one(
                                 {
@@ -1596,7 +1603,10 @@ class Database:
                     rowType=request['ctx']['POST'].get('rowType'),
                     date_created=date_created,
                     person_uploaded_dataset=person_uploaded,
+       
                 )
+
+                print(dataset.get_dataset_info())
 
                 # Serialize dataset, insert records into database, and increment counters
 

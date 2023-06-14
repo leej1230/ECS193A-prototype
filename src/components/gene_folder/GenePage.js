@@ -702,7 +702,7 @@ function GenePage() {
                        {patient_table_loaded || patient_data_table_filtered ? 
                           (
                             <>
-                              {dataset_rowType === "patient"  || (patient_data_table_filtered && patient_data_table_filtered.length > 0) ?
+                              {(dataset_rowType === "patient"  && (patient_data_table_filtered && patient_data_table_filtered.length > 0)) || (patient_data_table_filtered && patient_data_table_filtered.length > 0) ?
                                 (
                                   <div class="card shadow mb-4" id="display_filter_patients_gene">
                                     <div class="card-header py-3">
