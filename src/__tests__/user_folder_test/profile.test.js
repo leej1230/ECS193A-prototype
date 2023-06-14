@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import '@testing-library/jest-dom/extend-expect';
-import Profile from '../../components/user_folder/Profile';
+import Profile from '../../components/user_folder/profile.js';
 import { itIT } from '@mui/material/locale';
 import DeleteIcon from '@mui/icons-material/Delete';
 

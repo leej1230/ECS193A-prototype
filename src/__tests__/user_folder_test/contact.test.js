@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; 
-import Contact from '../../components/user_folder/Contact';
+import Contact from '../../components/user_folder/contact.js';
 
 describe('Contact', () => {
     it('renders without errors', () => {

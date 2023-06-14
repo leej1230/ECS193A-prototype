@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; 
-import About from '../../components/user_folder/About';
+import About from '../../components/user_folder/about.js';
 
 describe('About', () => {
   it('renders without errors', () => {
