@@ -59,7 +59,8 @@ function UploadDataset() {
             set_file_err_msg(false);
         }
         
-        if ( patientCode === "" ){
+        // patient code only required if patients are rows, otherwise patients can be cols and missed
+        if ( patientCode === "" && rowType == "patient" ){
             incomplete = true;
             set_patient_code_err_msg(true);
         } else {
@@ -104,9 +105,11 @@ function UploadDataset() {
             .post(api_url, formData, config)
             .then((result) => {
                 setState(true);
+                
             })
             .catch((error) => {
                 setState(false);
+                alert("Please provide a properly formatted dataset and correct specifications.");
             });
     };
 

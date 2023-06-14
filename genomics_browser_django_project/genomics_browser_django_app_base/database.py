@@ -1570,39 +1570,55 @@ class Database:
             date_created = datetime.datetime.strptime(
                 date_created, '%a %b %d %Y %H:%M:%S'
             ).date()
-            dataset = ParsedDataset(
-                in_txt=list(request['ctx']['FILES'].values())[0],
-                name=list(request['ctx']['FILES'].values())[0].name,
-                description=request['ctx']['POST'].get('description'),
-                url=request['ctx']['POST'].get('urltoFile'),
-                geneCode=request['ctx']['POST'].get('geneCode'),
-                patientCode=request['ctx']['POST'].get('patientCode'),
-                rowType=request['ctx']['POST'].get('rowType'),
-                date_created=date_created,
-                person_uploaded_dataset=person_uploaded,
+
+            # check if dataset name already exist
+            dataset_check_duplicate = Database.Datasets.get_dataset_one(
+                {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ) }
             )
 
-            # Serialize dataset, insert records into database, and increment counters
-            serial = DatasetSerializer(dataset.get_dataset_info())
+            print(dataset_check_duplicate)
+            # no result from find_one() is {}, so check this
+            if dataset_check_duplicate == None or (dataset_check_duplicate != None and  len(dataset_check_duplicate.keys()) > 0 ):
+                print("got duplicate dataset upload!!!!")
+                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
 
-            if len(dataset.get_patients()) > 0:
-                Database.Patients.post_patient_many(dataset.get_patients())
+            try:
+                dataset = ParsedDataset(
+                    in_txt=list(request['ctx']['FILES'].values())[0],
+                    name=list(request['ctx']['FILES'].values())[0].name,
+                    description=request['ctx']['POST'].get('description'),
+                    url=request['ctx']['POST'].get('urltoFile'),
+                    geneCode=request['ctx']['POST'].get('geneCode'),
+                    patientCode=request['ctx']['POST'].get('patientCode'),
+                    rowType=request['ctx']['POST'].get('rowType'),
+                    date_created=date_created,
+                    person_uploaded_dataset=person_uploaded,
+                )
 
-            #cur_gene_cntr = Database.Counters.get_last_gene_counter()
-            #list_new_genes = dataset.get_genes(cur_gene_cntr)
-            list_new_genes = dataset.get_genes()
-            if len(list_new_genes) > 0:
-                Database.Genes.post_gene_many(list_new_genes)
-                '''Database.Counters.update_gene_counter(
-                    {'new_counter_value': (cur_gene_cntr + len(list_new_genes))}
-                )'''
+                # Serialize dataset, insert records into database, and increment counters
+    
+                serial = DatasetSerializer(dataset.get_dataset_info())
 
-            #Database.Counters.increment_gene_counter()
+                if len(dataset.get_patients()) > 0:
+                    Database.Patients.post_patient_many(dataset.get_patients())
 
-            Database.dataset_collection.insert_one(serial.data)
+                #cur_gene_cntr = Database.Counters.get_last_gene_counter()
+                #list_new_genes = dataset.get_genes(cur_gene_cntr)
+                list_new_genes = dataset.get_genes()
+                if len(list_new_genes) > 0:
+                    Database.Genes.post_gene_many(list_new_genes)
+                    '''Database.Counters.update_gene_counter(
+                        {'new_counter_value': (cur_gene_cntr + len(list_new_genes))}
+                    )'''
 
-            #Database.Counters.increment_dataset_counter()
-            return loads(dumps(status.HTTP_201_CREATED))
+                #Database.Counters.increment_gene_counter()
+
+                Database.dataset_collection.insert_one(serial.data)
+
+                #Database.Counters.increment_dataset_counter()
+                return loads(dumps(status.HTTP_201_CREATED))
+            except:
+                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
 
         def delete_dataset_one(request):
             try:

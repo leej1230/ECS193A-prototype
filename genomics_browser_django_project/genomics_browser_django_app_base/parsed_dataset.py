@@ -5,13 +5,56 @@ import pandas as pd
 import json
 import numpy as np
 import math
+import csv
 
 class ParsedDataset : 
     def __init__(self, *args, **kwargs) : 
         self.__dict__.update(kwargs)
         # self.output_csv = out_csv_path
         # self.df = pd.read_csv(self.input_txt, sep="\t")
-        self.df = pd.read_csv(self.in_txt)
+
+        # perform some checks
+        # 1. check if csv file
+        # 2. check if column of patient codes or gene codes exist, and row type is compatible
+        if (len(self.in_txt) >= 4 and str(self.in_txt)[-4:] == ".csv") == False:
+            return None
+        
+        self.df = None
+        try:
+            self.df = pd.read_csv(self.in_txt)
+
+            done_traversal = False
+
+            if self.rowType == "gene":
+                # must have at least one column where all rows start with gene code
+                col_opts = list(self.df.columns)
+                for col_option_name in col_opts:
+                    temp_list = self.df[col_option_name].tolist()
+                    mapping_check = list(map(lambda x: True if ( (len(str(x)) >= len(self.geneCode) and str(x)[0:len(self.geneCode)] == self.geneCode ) ) else False , temp_list))
+                    all_follow = all(truth_val == True for truth_val in mapping_check)
+                    if done_traversal == False and all_follow == True:
+                        done_traversal = True
+
+                if done_traversal == False:
+                    self.df = None
+                    return None
+            else:
+                # must have at least one column where all rows start with patient code
+                col_opts = list(self.df.columns.values)
+                for col_option_name in col_opts:
+                    temp_list = self.df[col_option_name].tolist()
+                    mapping_check = list(map(lambda x: True if ( (len(str(x)) >= len(self.patientCode) and str(x)[0:len(self.patientCode)] == self.patientCode ) ) else False , temp_list))
+                    all_follow = all(truth_val == True for truth_val in mapping_check)
+                    if done_traversal == False and all_follow == True:
+                        done_traversal = True
+
+                if done_traversal == False:
+                    self.df = None
+                    return None
+        except:
+            self.df = None
+            return None
+        
         self.remove_duplicate_samples()
         self.remove_duplicate_columns()
 
@@ -47,7 +90,7 @@ class ParsedDataset :
         self.df.to_csv(self.output_csv)
 
     def remove_duplicate_samples(self) :
-        col_list = self.df.columns.values
+        col_list = list(self.df.columns.values)
         if self.rowType == "gene":
             col_list = [cur_col_name for cur_col_name in col_list if str(self.df[cur_col_name].values[0])[0:len( self.geneCode )] == self.geneCode ]
         else:
@@ -62,13 +105,15 @@ class ParsedDataset :
         self.df = self.df.loc[:,~self.df.columns.duplicated()]
 
     def get_header(self):
-        return list(self.df.columns)
+        return list(self.df.columns.values)
     
     def get_column_values(self, columns):
         return self.df[columns].values.tolist()
     
     def get_column_starting_with(self, start_string):
-        cols_list = self.df.columns.values
+        if start_string == None or start_string == "":
+            return None
+        cols_list = list(self.df.columns.values)
         for col_val in cols_list:
             if str(self.df[col_val].iloc[0]).lower().startswith(start_string.lower()):
                 return col_val
@@ -81,16 +126,22 @@ class ParsedDataset :
         return self.get_column_values(column_name)
     
     def get_all_patients_data(self):
+        if self.patientCode == "":
+            return []
         column_name = self.get_column_starting_with(self.patientCode)
         if column_name is None:
             return []
         return self.get_column_values(column_name)
 
     def get_patient_data(self, patient_id) :
+        if self.patientCode == "":
+            return []
         return self.df.loc[self.df[self.get_column_starting_with(self.patientCode)] == patient_id]
     
-    def get_patient_gene_data(self, patient_id) : 
-        return self.get_patient_data(patient_id).filter(regex = self.geneCode + "|" + self.get_column_starting_with(self.patientCode))
+    '''def get_patient_gene_data(self, patient_id) : 
+        if self.patientCode == "":
+            return []
+        return self.get_patient_data(patient_id).filter(regex = self.geneCode + "|" + self.get_column_starting_with(self.patientCode))'''
     
     
     def insert_patients_into_db(self) : 
@@ -104,12 +155,14 @@ class ParsedDataset :
         return None
 
     def get_dataset_info(self):
-        col_list = self.df.columns.values
+        col_list = list(self.df.columns.values)
 
         if self.rowType == "gene":
             gene_ids = self.get_all_genes_data()
             gene_ids_count = len(gene_ids)
-            patient_ids = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
+            patient_ids = []
+            if len(self.patientCode) > 0:
+                patient_ids = [patient_name for patient_name in list(self.df.columns.values) if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             patient_ids_count = len(patient_ids)
             temp_dataset = {
                 'name': str(self.name).lower(),
@@ -156,7 +209,7 @@ class ParsedDataset :
 
     def get_genes(self):
 
-        col_list = self.df.columns.values
+        col_list = list(self.df.columns.values)
 
         if self.rowType == "patient":
             gene_names = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
@@ -174,7 +227,9 @@ class ParsedDataset :
         else:
             gene_names = self.get_all_genes_data()
 
-            patient_columns = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
+            patient_columns = []
+            if len(self.patientCode) > 0:
+                patient_columns = [patient_name for patient_name in list(self.df.columns.values) if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns
             gene_values = self.df[patient_columns].T 
 
@@ -191,7 +246,7 @@ class ParsedDataset :
                     }
                 
                 # Traverse through all columns except the patient and gene columns
-                for column in self.df.columns.values:
+                for column in list(self.df.columns.values):
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
                         # detect numeric values
@@ -207,7 +262,7 @@ class ParsedDataset :
             return result
 
     def get_patients(self):
-        col_list = self.df.columns.values
+        col_list = list(self.df.columns.values)
 
         if self.rowType == "patient":
             gene_ids = [gene_id for gene_id in col_list if str(gene_id)[0:len( self.geneCode )] == self.geneCode ]
@@ -224,7 +279,7 @@ class ParsedDataset :
                 }
                 
                 # Traverse through all columns except the patient and gene columns
-                for column in self.df.columns.values:
+                for column in list(self.df.columns.values):
                     if column not in columns_to_exclude:
                         data[column] = str(self.df[column].iloc[i]).lower()
                         # detect numeric values
@@ -241,7 +296,9 @@ class ParsedDataset :
             return result
 
         else:
-            patient_names = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
+            patient_names = []
+            if len(self.patientCode) > 0:
+                patient_names = [patient_name for patient_name in list(self.df.columns.values) if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             gene_ids = self.get_all_genes_data()
             gene_values = self.df[patient_names].T
 
