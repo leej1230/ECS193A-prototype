@@ -14,6 +14,7 @@ const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
 function SampleListGeneResultDisplay(props) {
 
     const [extended_gene_information, set_extended_gene_information] = useState(undefined);
+    const [extended_info_loaded, set_external_info_loaded] = useState(false);
   
   {/*useEffect(() => {
     if(props.gene){
@@ -49,6 +50,8 @@ function SampleListGeneResultDisplay(props) {
         }).catch(
           function (error) {
             //console.log('failed external info fetch!')
+
+            set_extended_gene_information({})
             
           }
         )
@@ -59,9 +62,19 @@ function SampleListGeneResultDisplay(props) {
   return (
     <div>
         <div id="gene_display_result_single">
-            <p id="search_gene_result_name_display">{props.gene && 'name' in props.gene && props.gene.name ? props.gene.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={props.gene && 'name' in props.gene && 'dataset_name' in props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : ""}>Link to Gene Page</a> </p>
-            <p id="search_gene_result_info_display">Dataset Name: {props.gene && 'dataset_name' in props.gene && props.gene.dataset_name ? props.gene.dataset_name : ""} &nbsp; &nbsp; &nbsp; Gene Type: {extended_gene_information && 'biotype' in extended_gene_information && extended_gene_information.biotype ? extended_gene_information.biotype : "-"} &nbsp; &nbsp; &nbsp; Other Name: { extended_gene_information && 'display_name' in extended_gene_information && extended_gene_information.display_name ? extended_gene_information.display_name : "-"} &nbsp; &nbsp; &nbsp; </p>
-            <hr id="line_div_category_search_content" />
+            {extended_gene_information ? (
+              <>
+                <p id="search_gene_result_name_display">{props.gene && 'name' in props.gene && props.gene.name ? props.gene.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_gene_result_link_display" href={props.gene && 'name' in props.gene && 'dataset_name' in props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : ""}>Link to Gene Page</a> </p>
+                <p id="search_gene_result_info_display">Dataset Name: {props.gene && 'dataset_name' in props.gene && props.gene.dataset_name ? props.gene.dataset_name : ""} &nbsp; &nbsp; &nbsp; Gene Type: {extended_gene_information && 'biotype' in extended_gene_information && extended_gene_information.biotype ? extended_gene_information.biotype : "-"} &nbsp; &nbsp; &nbsp; Other Name: { extended_gene_information && 'display_name' in extended_gene_information && extended_gene_information.display_name ? extended_gene_information.display_name : "-"} &nbsp; &nbsp; &nbsp; </p>
+                <hr id="line_div_category_search_content" />
+              </>
+            )
+            :
+            (
+              <div>
+                <CircularProgress />
+              </div>
+            )}
         </div>
 
         {/* Gene ID: {props.gene && props.gene.id ? props.gene.id : '-'} &nbsp; &nbsp; &nbsp; */}

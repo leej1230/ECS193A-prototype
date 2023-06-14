@@ -1573,7 +1573,7 @@ class Database:
 
             # check if dataset name already exist
             dataset_check_duplicate = Database.Datasets.get_dataset_one(
-                {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ) }
+                {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ).lower() }
             )
 
             print(dataset_check_duplicate)

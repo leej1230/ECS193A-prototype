@@ -10,7 +10,7 @@ import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
 
 function SampleList(props) {
-  const [gene_data, setGENE_data] = useState();
+  const [gene_data, setGENE_data] = useState(undefined);
 
   useEffect(() => {
     async function updateGeneList() {

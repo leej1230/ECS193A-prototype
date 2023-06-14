@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import LimitedText from '../../filters/LimitedText';
 
+import CircularProgress from "@mui/material/CircularProgress";
+
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css"
 
@@ -12,6 +14,8 @@ function GeneCard(props) {
 
   const [extended_gene_information, set_extended_gene_information] = useState(undefined);
   const [dataset_name, set_dataset_name] = useState("---");
+
+  const [external_info_loaded, set_external_info_loaded] = useState(false);
   
   {/*useEffect(() => {
 
@@ -44,7 +48,7 @@ function GeneCard(props) {
         }).catch(
           function (error) {
             console.log('failed external info fetch!')
-            
+            set_extended_gene_information({})
           }
         )
       
@@ -54,22 +58,30 @@ function GeneCard(props) {
   return (
     <div> 
       <div class="card" style={{minWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, maxWidth: `${parseInt( ((0.7 * props.curOuterWindowWidth) - 60) / 3)}px`, minHeight: '175px', maxHeight: '175px', overflow:'hidden'}}>
-        <div class="card-body">
-          <h5 class="card-title"><a href={props.gene && 'name' in props.gene && 'dataset_name' in props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : ""} onClick={() => {
-            }} >{props.gene && 'name' in props.gene && props.gene.name ? props.gene.name : ""}</a></h5>
-          {/*<LimitedText numLines='1' text={`Gene ID: ${props.gene && props.gene.id ? props.gene.id : "-"}`} /> */}
-          <LimitedText numLines='1' text={`Gene Type: ${extended_gene_information && 'biotype' in extended_gene_information ? extended_gene_information.biotype : "Protein Coding"}`} />
-          <LimitedText numLines='1' text={`Other Name: ${extended_gene_information && 'display_name' in extended_gene_information ? extended_gene_information.display_name : "---" }`} />
-          <LimitedText numLines='1' text={`Dataset Name: ${ props.gene && 'dataset_name' in props.gene && props.gene.dataset_name ? props.gene.dataset_name : "" }`} />
+        {extended_gene_information ? (
+          <div class="card-body">
+            <h5 class="card-title"><a href={props.gene && 'name' in props.gene && 'dataset_name' in props.gene && props.gene.name && props.gene.dataset_name ? "/gene/" + props.gene.name + "/" + props.gene.dataset_name : ""} onClick={() => {
+              }} >{props.gene && 'name' in props.gene && props.gene.name ? props.gene.name : ""}</a></h5>
+            {/*<LimitedText numLines='1' text={`Gene ID: ${props.gene && props.gene.id ? props.gene.id : "-"}`} /> */}
+            <LimitedText numLines='1' text={`Gene Type: ${extended_gene_information && 'biotype' in extended_gene_information ? extended_gene_information.biotype : "Protein Coding"}`} />
+            <LimitedText numLines='1' text={`Other Name: ${extended_gene_information && 'display_name' in extended_gene_information ? extended_gene_information.display_name : "---" }`} />
+            <LimitedText numLines='1' text={`Dataset Name: ${ props.gene && 'dataset_name' in props.gene && props.gene.dataset_name ? props.gene.dataset_name : "" }`} />
 
-          {/* Dataset ID: ${props.gene && props.gene.dataset_id ? props.gene.dataset_id : "-"} */}
+            {/* Dataset ID: ${props.gene && props.gene.dataset_id ? props.gene.dataset_id : "-"} */}
 
-          {/*<LimitedText text={props.gene ? props.gene.description : ""} />*/}
-          
-          {/*<p >{props.gene.description}</p>*/}
-          <br />
-          
-        </div>
+            {/*<LimitedText text={props.gene ? props.gene.description : ""} />*/}
+            
+            {/*<p >{props.gene.description}</p>*/}
+            <br />
+            
+          </div>
+        )
+        :
+        (
+          <div>
+            <CircularProgress />
+          </div>
+        )}
       </div>
 
       <script src="../../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>

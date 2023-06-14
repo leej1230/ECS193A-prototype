@@ -6,6 +6,8 @@ import ScrollBars from "react-custom-scrollbars";
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+import CircularProgress from "@mui/material/CircularProgress";
+
 import { clone } from "ramda";
 
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
@@ -78,6 +80,8 @@ export default function SliderGene() {
   const { user } = useAuth0();
   const [, setUserInfo] = useState();
   const [bookmarkedGenes, setBookmarkedGenes] = useState([]);
+
+  const [groupings_loaded, set_groupings_loaded] = useState(false);
 
   const handleFetchUser = async () => {
     const userSub = user.sub.split("|")[1];
@@ -160,11 +164,24 @@ export default function SliderGene() {
     }
 
     setGroupings(createGeneListGroups());
+
+    set_groupings_loaded(true);
   }, [genes_list]);
 
   return (
     <div>
-      {genes_list.length > 0 ? <SliderGeneItemsContainer gene_groups_list={groupings} /> : <></>}
+      {groupings_loaded ? (
+        <>
+          {genes_list.length > 0 ? <SliderGeneItemsContainer gene_groups_list={groupings} /> : <></>}
+        </>
+        )
+        :
+        (
+          <div>
+            <CircularProgress />
+          </div>
+        )
+      }
       <script src="../../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>
       <script src="../../bootstrap_gene_page/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 

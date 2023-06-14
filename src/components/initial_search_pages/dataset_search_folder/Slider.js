@@ -114,8 +114,6 @@ export default function Slider() {
                 setDatasetsList(response.data);
             }
 
-            set_gotInfo(true);
-
         });
 
     }, [bookmarkedDatasets]);
@@ -154,6 +152,8 @@ export default function Slider() {
 
 
         setGroupings(createDatasetListGroups());
+
+        set_gotInfo(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datasets_list.length]);
 

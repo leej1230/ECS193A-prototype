@@ -22,7 +22,7 @@ function DatasetSampleList(props) {
   return (
     <div>
 
-      {dataset_data ? (
+      {props.input_search_loaded ? (
         <div>
           {dataset_data &&
             dataset_data.map((dataset_val) => (
