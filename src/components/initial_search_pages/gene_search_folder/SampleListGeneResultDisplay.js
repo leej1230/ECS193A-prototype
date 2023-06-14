@@ -21,13 +21,13 @@ function SampleListGeneResultDisplay(props) {
   useEffect(() => {
     if(props.gene){
 
-      console.log("gene info: ")
-      console.log(props.gene)
+      //console.log("gene info: ")
+      //console.log(props.gene)
 
       axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/dataset_name_from_dataset_id/${props.gene.dataset_id}`)
         .then(async (result) => {
-          console.log(result.data)
+          //console.log(result.data)
           set_dataset_name(String(result.data))
         })
     }
@@ -51,7 +51,7 @@ function SampleListGeneResultDisplay(props) {
           set_extended_gene_information({ display_name: result.data["display_name"] , biotype: result.data["biotype"] , description: result.data["description"], assembly_name: result.data["assembly_name"] })
         }).catch(
           function (error) {
-            console.log('failed external info fetch!')
+            //console.log('failed external info fetch!')
             
           }
         )

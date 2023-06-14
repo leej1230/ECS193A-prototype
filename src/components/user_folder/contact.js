@@ -137,26 +137,28 @@ function Contact() {
       />
 
       <div id="title_landing_info">
-        <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Contact Information</div>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 d-flex justify-content-end">
-              <div className="card" style={{ width: '18rem' }}>
-                <div class="card-body">
-                  <h5 class="card-title">Project Proposer</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Paulina Carmona</h6>
-                  <p class="card-text">Department of Neurology/MIND Institute UC Davis</p>
-                  <a href="#" class="card-link">External Link if needed</a>
+        <div id="title_info_contents">
+          <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">Contact Information</div>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 d-flex justify-content-end">
+                <div className="card" style={{ width: '18rem' }}>
+                  <div class="card-body">
+                    <h5 class="card-title">Project Proposer</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Paulina Carmona</h6>
+                    <p class="card-text">Department of Neurology/MIND Institute UC Davis</p>
+                    <a href="#" class="card-link">External Link if needed</a>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-6 d-flex justify-content-start">
-              <div className="card" style={{ width: '18rem' }}>
-                <div class="card-body">
-                  <h5 class="card-title">Developers</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Jaewoo Lee<br></br> Mehita Achuthan<br></br> Salila Renduchintala<br></br> Lucas Chen </h6>
-                  <p class="card-text">Students at UC Davis.</p>
-                  <a href="#" class="card-link">External Link if needed</a>
+              <div class="col-md-6 d-flex justify-content-start">
+                <div className="card" style={{ width: '18rem' }}>
+                  <div class="card-body">
+                    <h5 class="card-title">Developers</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Jaewoo Lee<br></br> Mehita Achuthan<br></br> Salila Renduchintala<br></br> Lucas Chen </h6>
+                    <p class="card-text">Students at UC Davis.</p>
+                    <a href="#" class="card-link">External Link if needed</a>
+                  </div>
                 </div>
               </div>
             </div>

@@ -76,14 +76,18 @@ function Profile() {
                                 <h2 className="card-title2">User Information</h2>
                                 <div className="card-content">
                                     <div className="user-info">
-                                        {userMetadata && (
-                                            <h4>
-                                                User full name: {userMetadata.given_name}{" "}
-                                                {userMetadata.family_name}
-                                            </h4>
-                                        )}
                                         <ul className="role-list">
-                                            
+                                            {userMetadata && (
+                                                <h4>
+                                                    User Full name:{" "}
+                                                    {
+                                                        userMetadata.given_name
+                                                    }{" "}
+                                                    {
+                                                        userMetadata.family_name
+                                                    }
+                                                </h4>
+                                            )}
                                             <ul className="role-list">
                                                 {is_admin &&
                                                     is_staff ? (

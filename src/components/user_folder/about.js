@@ -137,12 +137,14 @@ function About() {
       />
 
       <div id="title_landing_info">
-        <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">About</div>
-        <div class="h4 text-white mx-5 d-flex align-items-center justify-content-center blockquote text-center">
-          The Sharp lab at UC Davis Medical Center studies gene expression in patients with neurological and developmental disorders.
-          We investigate the pathophysiology of such disorders and identify gene expression changes that can lead to the development of diagnostic biomarkers and therapeutics.
-          Our team has accumulated a vast amount of data. In the current way we access our projects, it may take days and several people to gather manually information regarding patient cohorts, clinical characteristics, patient history, sample types and results, as they are archived in separate sources and data types.
-          Having this information integrated in a single queriable platform, will facilitate our research, manuscript and grant writing, and preparation of data to share with stakeholders.
+        <div id="title_info_contents">
+          <div class="h1 text-white d-flex align-items-center justify-content-center" id="title_website">About</div>
+          <div class="h4 text-white mx-5 d-flex align-items-center justify-content-center blockquote text-center">
+            The Sharp lab at UC Davis Medical Center studies gene expression in patients with neurological and developmental disorders.
+            We investigate the pathophysiology of such disorders and identify gene expression changes that can lead to the development of diagnostic biomarkers and therapeutics.
+            Our team has accumulated a vast amount of data. In the current way we access our projects, it may take days and several people to gather manually information regarding patient cohorts, clinical characteristics, patient history, sample types and results, as they are archived in separate sources and data types.
+            Having this information integrated in a single queriable platform, will facilitate our research, manuscript and grant writing, and preparation of data to share with stakeholders.
+          </div>
         </div>
       </div>
 
