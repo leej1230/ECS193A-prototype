@@ -58,7 +58,12 @@ function UpdateDataset(){
         })
         .catch((error) => {
           console.error('Update failed', error);
-          alert("Due to some error, data has not been updated");
+          if(error.response.status === 409){
+              alert("Please provide correct dataset name. Make sure lowercase.");
+          } else {
+              // 406 error
+              alert("Error!");
+          }
         })
     }
     

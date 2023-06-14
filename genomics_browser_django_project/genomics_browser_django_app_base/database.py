@@ -1769,229 +1769,237 @@ class Database:
         def update_dataset_one(request):
             # dataset id mandatory, date created will exist, so POST will always be there
 
-            request['ctx'] = {
-                'FILES': request['ctx'].FILES.copy(),
-                'POST': request['ctx'].POST.copy(),
-            }
+            try:
+                request['ctx'] = {
+                    'FILES': request['ctx'].FILES.copy(),
+                    'POST': request['ctx'].POST.copy(),
+                }
 
-            #date_created = request['ctx']['POST'].get('dateCreated')
-            description = request['ctx']['POST'].get('description')
-            '''geneCode = (request['ctx']['POST'].get('geneCode'),)
-            patientCode = (request['ctx']['POST'].get('patientCode'),)
-            rowType = (request['ctx']['POST'].get('rowType'),)'''
-            url = request['ctx']['POST'].get('urltoFile')
-            dataset_name = request['ctx']['POST'].get('datasetName')
+                #date_created = request['ctx']['POST'].get('dateCreated')
+                description = request['ctx']['POST'].get('description')
+                '''geneCode = (request['ctx']['POST'].get('geneCode'),)
+                patientCode = (request['ctx']['POST'].get('patientCode'),)
+                rowType = (request['ctx']['POST'].get('rowType'),)'''
+                url = request['ctx']['POST'].get('urltoFile')
+                dataset_name = request['ctx']['POST'].get('datasetName')
 
 
-            dataset_to_modify = Database.Datasets.get_dataset_one(
-                {'dataset_name': str(dataset_name) }
-            )
-            # print("existing record:   ", dataset_to_modify)
-            atleast_one_modified = False
-
-            new_dataset = {}
-
-            if (
-                description != None
-                and description != ""
-                and 'description' in dataset_to_modify
-                and description != dataset_to_modify['description']
-            ):
-                new_dataset["description"] = description
-                atleast_one_modified = True
-
-            if url != None and url != "" and 'url' in dataset_to_modify and url != dataset_to_modify['url']:
-                new_dataset["url"] = url
-                atleast_one_modified = True
-
-            '''if (
-                date_created != 'null'
-                and date_created != None
-                and date_created != ""
-                and atleast_one_modified
-            ):
-                date_created = re.sub(
-                    r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
-                )
-                date_created = datetime.datetime.strptime(
-                    date_created, '%a %b %d %Y %H:%M:%S'
-                ).date()
-                date_modified = date_created
-
-                serial_temp = DatasetSerializer(
-                    {
-                        'name': dataset_name,
-                        'description': "",
-                        'gene_ids': json.dumps({'arr': []}),
-                        'patient_ids': json.dumps({'arr': []}),
-                        'gene_id_count': 0,
-                        'patient_id_count': 0,
-                        'date_created': date_created,
-                        'url': url,
-                        'rowType': 'patient',
-                        'person_uploaded_dataset': "a"
-                    }
+                dataset_to_modify = Database.Datasets.get_dataset_one(
+                    {'dataset_name': str(dataset_name) }
                 )
 
-                new_dataset["date_created"] = serial_temp.data['date_created']'''
+                if dataset_to_modify != None and len(dataset_to_modify.keys()) == 0:
+                    print("really bad!!!")
+                    return loads(dumps(status.HTTP_409_CONFLICT))
 
-            # Extract data from request and create ParsedDataset object
-            '''if (
-                request['ctx']['FILES'] != None
-                and len(list(request['ctx']['FILES'].values())) > 0
-            ):
-                in_txt_file = list(request['ctx']['FILES'].values())[0]
-                name_file = list(request['ctx']['FILES'].values())[0].name
+                print("existing record:   ", dataset_to_modify)
+                atleast_one_modified = False
 
-                df = pd.read_csv(in_txt_file)
-                df = df.drop_duplicates(subset=["Sample name"])
-                df = df.loc[:, ~df.columns.duplicated()]
+                new_dataset = {}
 
-                updated_gene_names = [
-                    updated_gene_names
-                    for updated_gene_names in df.columns
-                    if "ENSG" in updated_gene_names
-                ]
-                updated_patient_ids = [pid for pid in df["Sample name"]]
+                if (
+                    description != None
+                    and description != ""
+                    and 'description' in dataset_to_modify
+                    and description != dataset_to_modify['description']
+                ):
+                    new_dataset["description"] = description
+                    atleast_one_modified = True
 
-                orig_gene_names = dataset_to_modify['gene_ids']["arr"]
-                orig_patient_ids = dataset_to_modify['patient_ids']["arr"]
+                if url != None and url != "" and 'url' in dataset_to_modify and url != dataset_to_modify['url']:
+                    new_dataset["url"] = url
+                    atleast_one_modified = True
 
-                add_gene_names = list(
-                    set(updated_gene_names) - set(orig_gene_names)
-                )
-                add_patient_ids = list(
-                    set(updated_patient_ids) - set(orig_patient_ids)
-                )
+                '''if (
+                    date_created != 'null'
+                    and date_created != None
+                    and date_created != ""
+                    and atleast_one_modified
+                ):
+                    date_created = re.sub(
+                        r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
+                    )
+                    date_created = datetime.datetime.strptime(
+                        date_created, '%a %b %d %Y %H:%M:%S'
+                    ).date()
+                    date_modified = date_created
 
-                modify_gene_names = list(
-                    set(updated_gene_names) - set(add_gene_names)
-                )
-                modify_patient_ids = list(
-                    set(updated_patient_ids) - set(add_patient_ids)
-                )
-
-                delete_gene_names = list(
-                    set(orig_gene_names) - set(updated_gene_names)
-                )
-                delete_patient_ids = list(
-                    set(orig_patient_ids) - set(updated_patient_ids)
-                )
-
-                # delete to lighten future operations
-                genes_deleted = Database.gene_collection.delete_many(
-                    {'name': {'$in': delete_gene_names}}
-                )
-
-                patients_deleted = Database.patient_collection.delete_many(
-                    {'patient_id': {'$in': delete_patient_ids}}
-                )
-                # print(patients_deleted.deleted_count)
-
-                # modify when there are less in dataset
-                for i in range(0, len(modify_gene_names)):
-                    cur_gene = modify_gene_names[i]
-                    new_gene = {
-                        "patient_ids": json.loads(
-                            json.dumps({"arr": updated_patient_ids})
-                        ),
-                        "gene_values": json.loads(
-                            json.dumps(
-                                {
-                                    "arr": df[modify_gene_names]
-                                    .T.iloc[i]
-                                    .tolist()
-                                }
-                            )
-                        ),
-                    }
-                    Database.gene_collection.update_one(
-                        {'name': cur_gene}, {"$set": new_gene}
+                    serial_temp = DatasetSerializer(
+                        {
+                            'name': dataset_name,
+                            'description': "",
+                            'gene_ids': json.dumps({'arr': []}),
+                            'patient_ids': json.dumps({'arr': []}),
+                            'gene_id_count': 0,
+                            'patient_id_count': 0,
+                            'date_created': date_created,
+                            'url': url,
+                            'rowType': 'patient',
+                            'person_uploaded_dataset': "a"
+                        }
                     )
 
-                for i in range(0, len(modify_patient_ids)):
-                    cur_patient = modify_patient_ids[i]
-                    new_patient = {
-                        'age': int(df["Age At Onset"].iloc[i]),
-                        'diabete': str(df['Diabetes'].iloc[i]).lower(),
-                        'final_diagnosis': str(
-                            df['Final Diagnosis'].iloc[i]
-                        ).lower(),
-                        'gender': str(df['Gender'].iloc[i]).lower(),
-                        'hypercholesterolemia': str(
-                            df['Hypercholesterolemia'].iloc[i]
-                        ).lower(),
-                        'hypertension': str(df['Hypertension'].iloc[i]).lower(),
-                        'race': str(df['Race'].iloc[i]).lower(),
-                        'gene_ids': json.dumps({"arr": updated_gene_names}),
-                    }
-                    Database.patient_collection.update_one(
-                        {'patient_id': cur_patient}, {"$set": new_patient}
+                    new_dataset["date_created"] = serial_temp.data['date_created']'''
+
+                # Extract data from request and create ParsedDataset object
+                '''if (
+                    request['ctx']['FILES'] != None
+                    and len(list(request['ctx']['FILES'].values())) > 0
+                ):
+                    in_txt_file = list(request['ctx']['FILES'].values())[0]
+                    name_file = list(request['ctx']['FILES'].values())[0].name
+
+                    df = pd.read_csv(in_txt_file)
+                    df = df.drop_duplicates(subset=["Sample name"])
+                    df = df.loc[:, ~df.columns.duplicated()]
+
+                    updated_gene_names = [
+                        updated_gene_names
+                        for updated_gene_names in df.columns
+                        if "ENSG" in updated_gene_names
+                    ]
+                    updated_patient_ids = [pid for pid in df["Sample name"]]
+
+                    orig_gene_names = dataset_to_modify['gene_ids']["arr"]
+                    orig_patient_ids = dataset_to_modify['patient_ids']["arr"]
+
+                    add_gene_names = list(
+                        set(updated_gene_names) - set(orig_gene_names)
+                    )
+                    add_patient_ids = list(
+                        set(updated_patient_ids) - set(orig_patient_ids)
                     )
 
-                # add to the dataset
-                # want cols about patient, so can't just use add_gene_names list
-                stuff_to_add_txt_file = "./temp.csv"
-                stuff_to_add_name = "temp"
-
-                if len(add_gene_names) > 0:
-                    subset_df_add = df.loc[
-                        :, ~df.columns.isin(modify_gene_names)
-                    ].copy()
-                    subset_df_add.to_csv(stuff_to_add_txt_file)
-
-                    dataset = ParsedDataset(
-                        in_txt=stuff_to_add_txt_file,
-                        #name=stuff_to_add_name,
-                        name=dataset_name,
-                        description="",
-                        url="",
-                        geneCode="",
-                        patientCode="",
-                        rowType="",
-                        date_created=date_created
+                    modify_gene_names = list(
+                        set(updated_gene_names) - set(add_gene_names)
+                    )
+                    modify_patient_ids = list(
+                        set(updated_patient_ids) - set(add_patient_ids)
                     )
 
-                    # insert gene records only
-                    Database.Genes.post_gene_many(dataset.get_genes())
-
-                if len(add_patient_ids) > 0:
-                    subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
-                    subset_df_add.to_csv(stuff_to_add_txt_file)
-
-                    dataset = ParsedDataset(
-                        in_txt=stuff_to_add_txt_file,
-                        #name=stuff_to_add_name,
-                        name=dataset_name,
-                        description="",
-                        url="",
-                        geneCode="",
-                        patientCode="",
-                        rowType="",
-                        date_created=date_created
+                    delete_gene_names = list(
+                        set(orig_gene_names) - set(updated_gene_names)
+                    )
+                    delete_patient_ids = list(
+                        set(orig_patient_ids) - set(updated_patient_ids)
                     )
 
-                    Database.Patients.post_patient_many(dataset.get_patients())
+                    # delete to lighten future operations
+                    genes_deleted = Database.gene_collection.delete_many(
+                        {'name': {'$in': delete_gene_names}}
+                    )
 
-                if len(add_patient_ids) > 0 or len(add_gene_names) > 0:
-                    os.remove(stuff_to_add_txt_file)
+                    patients_deleted = Database.patient_collection.delete_many(
+                        {'patient_id': {'$in': delete_patient_ids}}
+                    )
+                    # print(patients_deleted.deleted_count)
 
-                new_dataset["gene_ids"] = json.loads(
-                    json.dumps({"arr": updated_gene_names})
+                    # modify when there are less in dataset
+                    for i in range(0, len(modify_gene_names)):
+                        cur_gene = modify_gene_names[i]
+                        new_gene = {
+                            "patient_ids": json.loads(
+                                json.dumps({"arr": updated_patient_ids})
+                            ),
+                            "gene_values": json.loads(
+                                json.dumps(
+                                    {
+                                        "arr": df[modify_gene_names]
+                                        .T.iloc[i]
+                                        .tolist()
+                                    }
+                                )
+                            ),
+                        }
+                        Database.gene_collection.update_one(
+                            {'name': cur_gene}, {"$set": new_gene}
+                        )
+
+                    for i in range(0, len(modify_patient_ids)):
+                        cur_patient = modify_patient_ids[i]
+                        new_patient = {
+                            'age': int(df["Age At Onset"].iloc[i]),
+                            'diabete': str(df['Diabetes'].iloc[i]).lower(),
+                            'final_diagnosis': str(
+                                df['Final Diagnosis'].iloc[i]
+                            ).lower(),
+                            'gender': str(df['Gender'].iloc[i]).lower(),
+                            'hypercholesterolemia': str(
+                                df['Hypercholesterolemia'].iloc[i]
+                            ).lower(),
+                            'hypertension': str(df['Hypertension'].iloc[i]).lower(),
+                            'race': str(df['Race'].iloc[i]).lower(),
+                            'gene_ids': json.dumps({"arr": updated_gene_names}),
+                        }
+                        Database.patient_collection.update_one(
+                            {'patient_id': cur_patient}, {"$set": new_patient}
+                        )
+
+                    # add to the dataset
+                    # want cols about patient, so can't just use add_gene_names list
+                    stuff_to_add_txt_file = "./temp.csv"
+                    stuff_to_add_name = "temp"
+
+                    if len(add_gene_names) > 0:
+                        subset_df_add = df.loc[
+                            :, ~df.columns.isin(modify_gene_names)
+                        ].copy()
+                        subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                        dataset = ParsedDataset(
+                            in_txt=stuff_to_add_txt_file,
+                            #name=stuff_to_add_name,
+                            name=dataset_name,
+                            description="",
+                            url="",
+                            geneCode="",
+                            patientCode="",
+                            rowType="",
+                            date_created=date_created
+                        )
+
+                        # insert gene records only
+                        Database.Genes.post_gene_many(dataset.get_genes())
+
+                    if len(add_patient_ids) > 0:
+                        subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
+                        subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                        dataset = ParsedDataset(
+                            in_txt=stuff_to_add_txt_file,
+                            #name=stuff_to_add_name,
+                            name=dataset_name,
+                            description="",
+                            url="",
+                            geneCode="",
+                            patientCode="",
+                            rowType="",
+                            date_created=date_created
+                        )
+
+                        Database.Patients.post_patient_many(dataset.get_patients())
+
+                    if len(add_patient_ids) > 0 or len(add_gene_names) > 0:
+                        os.remove(stuff_to_add_txt_file)
+
+                    new_dataset["gene_ids"] = json.loads(
+                        json.dumps({"arr": updated_gene_names})
+                    )
+                    new_dataset["patient_ids"] = json.loads(
+                        json.dumps({"arr": updated_patient_ids})
+                    )
+                    new_dataset["gene_id_count"] = len(updated_gene_names)
+                    new_dataset["patient_id_count"] = len(updated_patient_ids)'''
+
+                    # updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
+
+                Database.dataset_collection.update_one(
+                    {'name': dataset_name}, {"$set": new_dataset}
                 )
-                new_dataset["patient_ids"] = json.loads(
-                    json.dumps({"arr": updated_patient_ids})
-                )
-                new_dataset["gene_id_count"] = len(updated_gene_names)
-                new_dataset["patient_id_count"] = len(updated_patient_ids)'''
 
-                # updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
-
-            Database.dataset_collection.update_one(
-                {'name': dataset_name}, {"$set": new_dataset}
-            )
-
-            return loads(dumps(status.HTTP_201_CREATED))
+                return loads(dumps(status.HTTP_201_CREATED))
+            except:
+                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
 
     class Utils:
         def authorize_Email(request):
