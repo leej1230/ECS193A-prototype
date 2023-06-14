@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function NotAuthorized({ missingPerm }) {
+    const { logout } = useAuth0();
     const textsRef = useRef([]);
 
     return (
@@ -25,6 +27,13 @@ function NotAuthorized({ missingPerm }) {
                 </h2>
                 <p className="text-center text-muted">
                     Click <a href="/">here</a> to go back to the home page.
+                </p>
+
+                <p className="text-center text-muted">
+                    Click <a href="/" onClick={() => {
+                        localStorage.removeItem("user");
+                        logout();
+                    }}>here</a> to logout.
                 </p>
             </div>
         </div>
