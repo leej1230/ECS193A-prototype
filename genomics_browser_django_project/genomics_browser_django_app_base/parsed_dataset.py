@@ -85,7 +85,7 @@ class ParsedDataset :
         # format: patient rows in subset gene values df
         if len(gene_values_df) > input_index:
             # ok to access
-            return json.loads(json.dumps({"arr": gene_values_df.iloc[input_index].tolist()}))
+            return json.loads(json.dumps({"arr": gene_values_df.iloc[:,input_index].tolist()}))
         return None
 
     def get_dataset_info(self):
@@ -106,7 +106,8 @@ class ParsedDataset :
                 'patient_id_count': int(patient_ids_count),
                 'date_created': self.date_created,
                 'url': self.url,
-                'rowType': self.rowType
+                'rowType': self.rowType,
+                'person_uploaded_dataset': self.person_uploaded_dataset
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -129,7 +130,8 @@ class ParsedDataset :
                 'patient_id_count': int(patient_ids_count),
                 'date_created': self.date_created,
                 'url': self.url,
-                'rowType': self.rowType
+                'rowType': self.rowType,
+                'person_uploaded_dataset': self.person_uploaded_dataset
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -158,6 +160,7 @@ class ParsedDataset :
             patient_columns = [patient_name for patient_name in self.df.columns.values if str(patient_name)[0:len( self.patientCode )] == self.patientCode]
             columns_to_exclude = [self.get_column_starting_with(self.geneCode)] + patient_columns
             gene_values = self.df[patient_columns].T 
+
 
             result = []
             for i in range(len(gene_names)):

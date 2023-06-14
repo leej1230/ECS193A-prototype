@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; 
-import LoadingSpinner from '../../components/spinner/spinner';
+import LoadingSpinner from '../../components/spinner/spinner.js';
 
 jest.mock('../../components/spinner/gene.png', () => 'mocked-image-path');
 
