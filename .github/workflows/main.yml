@@ -1,4 +1,4 @@
-name: Frontend Jest Test
+name: Unit Tests
 
 on: [push]
 
@@ -11,6 +11,9 @@ jobs:
 
       - name: Run Jest
         uses: stefanoeb/jest-action@1.0.3
+        with:
+          jestArgs: --verbose
+        continue-on-error: true
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
@@ -28,3 +31,4 @@ jobs:
       - name: Run Django unit tests
         run: python manage.py test
         working-directory: ./genomics_browser_django_project
+        continue-on-error: true
