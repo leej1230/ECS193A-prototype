@@ -4,6 +4,11 @@
     justify-content: space-between;
 }
 
+#outer_cont{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
 .submit-button {
     margin: 1rem;
 }

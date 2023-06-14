@@ -12,7 +12,7 @@ import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 
 import './DatasetChangeUndo.css'
 
-import { clone } from "ramda";
+import { clone, update } from "ramda";
 
 function DatasetChangeUndo(props) {
 
@@ -25,7 +25,7 @@ function DatasetChangeUndo(props) {
 
     const update_edit_collapse = () => {
       let new_collapse_array = []
-      for (let i = 0; i < edit_records_list.length; i++) {
+      for (let i = 0; edit_records_list && i < edit_records_list.length; i++) {
         new_collapse_array.push(false);
       }
       set_collapse_array(clone(new_collapse_array));
@@ -33,31 +33,38 @@ function DatasetChangeUndo(props) {
 
     update_edit_collapse();
 
+    console.log("changed var ");
+    console.log(edit_records_list);
+
   }, [edit_records_list])
 
   useEffect(() => {
-    const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits_dataset_user/all`;
 
-    axios.post(edit_recs_url, {
-      // Data to be sent to the server
-      dataset_id: parseInt(props.input_dataset_id),
-      user_id: user.sub.split("|")[1]
-    }, { 'content-type': 'application/json' }).then((result) => {
-      //console.log("post has been sent");
-      //console.log(response);
+    const update_the_edits = async () => {
+      const edit_recs_url = `${process.env.REACT_APP_BACKEND_URL}/api/edits_dataset_user/all`;
 
-      set_edit_records_list(result.data)
+      await axios.post(edit_recs_url, {
+        // Data to be sent to the server
+        dataset_name: props.input_dataset_name,
+        user_id: user.sub.split("|")[1]
+      }, { 'content-type': 'application/json' }).then((result) => {
+        //console.log("post has been sent");
+        //console.log(response);
 
-    });
+        set_edit_records_list(result.data)
 
-    console.log("change occured history disturbed");
+      });
 
-    if(props.input_set_reload_edit_history){
+      console.log("change occured history disturbed");
+
       props.input_set_reload_edit_history(false);
-    }
+
+    };
+
+    update_the_edits();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.input_data, props.input_reload_history])
+  }, [props.input_dataset_name, props.input_reload_history])
 
   const handleCollapseClick = (input_index) => {
     let cur_collapse_arr = collapse_array;
@@ -72,7 +79,7 @@ function DatasetChangeUndo(props) {
         <div >
           <p>Edit History</p>
 
-          {edit_records_list.length > 0 ?
+          {edit_records_list && edit_records_list.length > 0 ?
             <ul id="history_results_list">
               {edit_records_list.map((single_edit_record, index) => {
 
@@ -84,9 +91,10 @@ function DatasetChangeUndo(props) {
                       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/update_many_patients`, {
                         // Data to be sent to the server
                         modify_list: clone(single_edit_record["old_values"]),
-                        dataset_id: parseInt(props.input_dataset_id),
+                        dataset_name: props.input_dataset_name,
                         user_id: user.sub.split("|")[1],
-                        row_type_for_dataset: props.row_type
+                        row_type_for_dataset: props.row_type,
+                        dataset_patient_code: props.input_patient_code
                       }, { 'content-type': 'application/json' }).then((response) => {
                         //console.log("post has been sent");
                         //console.log(response);
@@ -99,7 +107,7 @@ function DatasetChangeUndo(props) {
                       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record`, {
                         // Data to be sent to the server
                         edit_record_id: parseInt(single_edit_record.id),
-                        dataset_id: parseInt(props.input_dataset_id),
+                        dataset_name: props.input_dataset_name,
                         user_id: user.sub.split("|")[1]
                       }, { 'content-type': 'application/json' }).then((response) => {
                         alert("Edit Record Deleted");
@@ -128,7 +136,7 @@ function DatasetChangeUndo(props) {
                         <TableBootstrap striped bordered hover>
                           <thead>
                             <tr>
-                              <th>{props.row_type === "gene_rows" ? "Gene" : "Patient"}</th>
+                              <th>{props.row_type === "gene" ? "Gene" : "Patient"}</th>
                               <th>Column Key</th>
                               <th>Old Value</th>
                               <th>Editted New Value</th>

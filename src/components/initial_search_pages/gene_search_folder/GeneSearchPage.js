@@ -43,6 +43,7 @@ function GeneSearchPage() {
                     fullHeight
                     label="Search by gene names or dataset name"
                   />
+                  
 
                   <button type="submit" onClick={ (e) => { setClickedSearch(true) }} class="btn btn-primary" id="search_gene_button" aria-label="search">
                     <i class="fas fa-search"></i>

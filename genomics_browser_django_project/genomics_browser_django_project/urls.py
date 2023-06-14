@@ -20,12 +20,12 @@ from genomics_browser_django_app_base import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(
-        'api/patient/<slug:patient_id>',
+        'api/patient/<str:patient_name>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "get_patient_one"},
     ),
     path(
-        'api/gene/<str:gene_name>/<slug:gene_id>',
+        'api/gene/<str:gene_name>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_gene_one"},
     ),
@@ -40,12 +40,7 @@ urlpatterns = [
         {"inner": "Datasets", "callback": "get_search_dataset"},
     ),
     path(
-        'api/dataset_name_from_dataset_id/<slug:dataset_id>',
-        views.BackendServer.as_view(),
-        {"inner": "Datasets", "callback": "get_dataset_name_for_id"},
-    ),
-    path(
-        'api/dataset/<slug:dataset_id>',
+        'api/dataset_by_name/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_dataset_one"},
     ),
@@ -85,7 +80,7 @@ urlpatterns = [
         {"inner": "Counters", "callback": "get_counter_all"},
     ),
     path(
-        'api/get_row_type/<slug:dataset_id>',
+        'api/get_row_type/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "get_row_type"},
     ),
@@ -170,7 +165,7 @@ urlpatterns = [
         {"inner": "Datasets", "callback": "delete_dataset_one"},
     ),
     path(
-        'api/patients/<str:gene_id>/<slug:dataset_id>',
+        'api/patients/<str:gene_id>/<str:dataset_name>',
         views.BackendServer.as_view(),
         {
             "inner": "Patients",
@@ -178,12 +173,12 @@ urlpatterns = [
         },
     ),
     path(
-        'api/patients_in_dataset/<slug:dataset_id>',
+        'api/patients_in_dataset/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Patients", "callback": "get_patients_from_dataset"},
     ),
     path(
-        'api/genes_in_dataset/<slug:dataset_id>',
+        'api/genes_in_dataset/<str:dataset_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_genes_from_dataset"},
     ),
@@ -219,3 +214,9 @@ urlpatterns = [
     ),
     re_path(r".*", views.BackendServer.index, name='index'),
 ]
+
+'''path(
+        'api/dataset_name_from_dataset_id/<slug:dataset_id>',
+        views.BackendServer.as_view(),
+        {"inner": "Datasets", "callback": "get_dataset_name_for_id"},
+    ),'''

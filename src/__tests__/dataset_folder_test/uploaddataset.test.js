@@ -20,13 +20,11 @@ describe('UploadDataset', () => {
     formData.append('file', new File(['content'], 'test.csv'));
     const descriptionInput = screen.getByLabelText('Description');
     const urlInput = screen.getByLabelText('URL');
-    const geneCode = screen.getByLabelText('Gene Code');
     const patientCode = screen.getByLabelText('Patient Code');
     const submitButton = screen.getByText('Submit');
 
     fireEvent.change(descriptionInput, { target: { value: 'Test description' } });
     fireEvent.change(urlInput, { target: { value: 'goole.com' } });
-    fireEvent.change(geneCode, { target: { value: 'ENSG' } });
     fireEvent.change(patientCode, { target: { value: 'UCDSS' } });
 
     axios.post.mockResolvedValueOnce({ data: 'Success' });

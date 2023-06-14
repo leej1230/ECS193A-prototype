@@ -15,7 +15,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
-const SAMPLE_ID = window.location.pathname.split("/").at(-1)
+const SAMPLE_DATASET_NAME = window.location.pathname.split("/").at(-1)
 
 const SAMPLE_NAME = window.location.pathname.split("/").at(-2)
 
@@ -33,7 +33,10 @@ function NameHeaderHolder(props){
           .then((res) => {
             console.log(res.data);
             setUserInfo(res.data);
-            setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_ID}`));
+            if( res.data && 'bookmarked_genes' in res.data && res.data.bookmarked_genes ){
+                setBookmarked(res.data.bookmarked_genes.includes(`${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`));
+            }
+            
           })
           .catch((e) => {
             console.log("Failed to fetch user Info.", e)
@@ -45,13 +48,15 @@ function NameHeaderHolder(props){
     }, []);
 
     return <div id="name_box">
+
+            {props.input_gene_name_holder_loaded ? (
                 <h5 class="h5 text-gray-800">
-                {props.input_object_data ? (
-                    <div>
+                
+                <div>
                     <div>
                         <p className='d-sm-inline-block title_tag'>Name:</p>
                         &nbsp;
-                        <p className='d-sm-inline-block gene_name'>{props.input_object_data.name}</p>
+                        <p className='d-sm-inline-block gene_name'>{props.input_object_data ? props.input_object_data.name : ""}</p>
                         &nbsp;
                         <button
                         type="button"
@@ -61,12 +66,12 @@ function NameHeaderHolder(props){
                             await setBookmarked(false);
                             const formData = new FormData();
                             formData.append("user_id", user.sub.split("|")[1]);
-                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`);
                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/remove-bookmark`, formData)
                             } else {
                             const formData = new FormData();
                             formData.append("user_id", user.sub.split("|")[1]);
-                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_ID}`);
+                            formData.append("gene_url", `${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`);
                             axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/add-bookmark`, formData)
                             await setBookmarked(true);
                             }
@@ -78,17 +83,19 @@ function NameHeaderHolder(props){
 
                     </div>
                     <div>
-                        <p class="d-sm-inline-block subtitle_tag" >ID:</p>
+                        <p class="d-sm-inline-block subtitle_tag" >Dataset Name: </p>
                         &nbsp;
-                        <p class="d-sm-inline-block subtitle_content" >{props.input_object_data.id}</p>
+                        <p class="d-sm-inline-block subtitle_content" >{SAMPLE_DATASET_NAME}</p>
                     </div>
                     </div>
+                
+                </h5>
+
                 ) : (
                     <div>
                     <CircularProgress />
                     </div>
                 )}
-                </h5>
             </div>
 }
 

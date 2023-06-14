@@ -25,8 +25,12 @@ from genomics_browser_django_app_base.serializers import (
     GeneSerializer,
     UserSerializer,
 )
+
 from rest_framework import status
+#from rest_framework.decorators import api_view, renderer_classes
+
 from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 # from django.http.response import JsonResponse
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -105,7 +109,7 @@ class Database:
                 dict: The user information.
             """
             Database.user_collection.delete_one(
-                {'auth0_uid': int(request['user_id'])}
+                {'auth0_uid': request['user_id']}
             )
             Database.Counters.decrement_user_counter()
 
@@ -187,21 +191,30 @@ class Database:
             """Get all edits for display"""
 
             data_request = json.loads(request['ctx'].body)
+            
+            update_dataset_name = ""
+            user_updated_id = 0
 
-            update_dataset_id = str(int(data_request['dataset_id']))
-            user_updated_id = data_request['user_id']
+            if 'dataset_name' in data_request:
+                update_dataset_name = str(data_request['dataset_name'])
+            
+            if 'user_id' in data_request:
+                user_updated_id = data_request['user_id']
 
             edits_for_dataset_by_user_result = []
 
             user_updated = Database.user_collection.find_one(
                 {'auth0_uid': user_updated_id}
             )
+
             if 'edits' in user_updated:
                 edits_structure = user_updated['edits']
-                if update_dataset_id in edits_structure:
+
+                
+                if update_dataset_name in edits_structure:
                     # dataset already has some edits
                     edits_for_dataset_by_user_result = edits_structure[
-                        update_dataset_id
+                        update_dataset_name
                     ]
 
             json_data = loads(dumps(edits_for_dataset_by_user_result))
@@ -213,17 +226,18 @@ class Database:
                 data_request = json.loads(request['ctx'].body)
 
                 edit_rec_id = int(data_request['edit_record_id'])
-                update_dataset_id = str(int(data_request['dataset_id']))
+                update_dataset_name = data_request['dataset_name']
                 user_updated_id = data_request['user_id']
 
                 user_updated = Database.user_collection.find_one(
                     {'auth0_uid': user_updated_id}
                 )
+
                 if 'edits' in user_updated:
                     edits_structure = user_updated['edits']
-                    if update_dataset_id in edits_structure:
+                    if update_dataset_name in edits_structure:
                         # dataset already has some edits
-                        edits_list = edits_structure[update_dataset_id]
+                        edits_list = edits_structure[update_dataset_name]
                         edit_rec_index = -1
                         for i in range(0, len(edits_list)):
                             if int(edits_list[i]['id']) == edit_rec_id:
@@ -234,7 +248,7 @@ class Database:
                         else:
                             print("Delete record not complete")
 
-                        edits_structure[update_dataset_id] = edits_list
+                        edits_structure[update_dataset_name] = edits_list
 
                         user_updated['edits'] = edits_structure
 
@@ -724,7 +738,7 @@ class Database:
                 {
                     '$and': [
                         {'name': str(request['gene_id'])},
-                        {'dataset_id': int(request['dataset_id'])},
+                        {'dataset_name': str(request['dataset_name'])},
                     ]
                 }
             )
@@ -739,7 +753,7 @@ class Database:
                     {
                         '$and': [
                             {'patient_id': {'$in': str_list_possible_patients}},
-                            {'dataset_id': int(request['dataset_id'])},
+                            {'dataset_name': request['dataset_name']},
                         ]
                     },
                     {'_id': 0},
@@ -767,7 +781,7 @@ class Database:
                 list: A list of patient data objects matching the query.
             """
             patients_found = Database.patient_collection.find(
-                {'dataset_id': int(request['dataset_id'])}, {'_id': 0}
+                {'dataset_name': request['dataset_name']}, {'_id': 0}
             )
 
             patients_found_list = [{}]
@@ -853,13 +867,12 @@ class Database:
             data_request = json.loads(request['ctx'].body)
 
             update_dict = data_request['modify_list']
-            update_dataset_id = str(int(data_request['dataset_id']))
+            update_dataset_name = str(data_request['dataset_name'])
             user_updating_id = data_request['user_id']
 
             objects_list = list(update_dict.keys())
 
-            # print("update information line 638: ")
-            # print( update_dict )
+            
 
             if (
                 'save_undo_list' in data_request
@@ -886,10 +899,10 @@ class Database:
                 if 'edits' in user_that_is_updating:
                     # update existing edits
                     edits_structure = user_that_is_updating['edits']
-                    if update_dataset_id in edits_structure:
+                    if update_dataset_name in edits_structure:
                         # dataset already has some edits
                         edits_list_for_dataset = edits_structure[
-                            update_dataset_id
+                            update_dataset_name
                         ]
 
                         # if pass the maximum allowed for the undo history, then need to remove the oldest one
@@ -922,12 +935,13 @@ class Database:
                                 'edit_date': datetime.datetime.now(),
                             }
                         )
+
                         edits_structure[
-                            update_dataset_id
+                            update_dataset_name
                         ] = edits_list_for_dataset
                     else:
                         # first time this user is editing this dataset
-                        edits_structure[update_dataset_id] = [
+                        edits_structure[update_dataset_name] = [
                             {
                                 'id': new_edit_id,
                                 'edit_info': copy.deepcopy(update_dict),
@@ -941,7 +955,7 @@ class Database:
                 else:
                     # user editing first time
                     user_that_is_updating['edits'] = {
-                        update_dataset_id: [
+                        update_dataset_name: [
                             {
                                 'id': new_edit_id,
                                 'edit_info': copy.deepcopy(update_dict),
@@ -961,10 +975,11 @@ class Database:
                         }
                     },
                 )
+            
 
-            objects_dataset_id = int(data_request['dataset_id'])
+            objects_dataset_name = data_request['dataset_name']
 
-            if data_request['row_type_for_dataset'] == "gene_rows":
+            if data_request['row_type_for_dataset'] == "gene":
                 # genes are the rows, patient info not exist but just possibly gene values
                 for i in range(0, len(objects_list)):
                     cur_gene_obj = update_dict[objects_list[i]]
@@ -973,30 +988,39 @@ class Database:
                     update_gene_obj = copy.deepcopy(cur_gene_obj)
 
                     gene = Database.gene_collection.find_one(
-                        {
-                            'name': str(objects_list[i]),
-                            'dataset_id': int(objects_dataset_id),
-                        }
-                    )
+                                {
+                                    '$and': [
+                                        {'name': str(objects_list[i])},
+                                        {'dataset_name': str(objects_dataset_name)},
+                                    ]
+                                }
+                            )
+
+                    print(gene)
 
                     patient_objects_list = None
                     gene_values_list = None
-                    if 'patient_ids' in gene:
+                    if 'patient_ids' in gene and gene['patient_ids'] and 'arr' in gene['patient_ids'] and gene['patient_ids']['arr'] and len(gene['patient_ids']['arr']) > 0:
                         patient_objects_list = gene['patient_ids']['arr']
-                    if 'gene_values' in gene:
+                    if 'gene_values' in gene and gene['gene_values'] and 'arr' in gene['gene_values'] and gene['patient_ids']['arr'] and len(gene['gene_values']['arr']) > 0:
                         gene_values_list = gene['gene_values']['arr']
-
+                    
                     for j in range(0, len(keys_attributes_list)):
-                        if keys_attributes_list[j][0:5] == "UCDSS":
+                        if data_request['dataset_patient_code'] != "" and len(keys_attributes_list[j]) >= len(data_request['dataset_patient_code']) and keys_attributes_list[j][0:(len(data_request['dataset_patient_code']))] == data_request['dataset_patient_code']:
                             update_gene_obj.pop(keys_attributes_list[j], None)
 
                             gene_patient_index = patient_objects_list.index(
                                 keys_attributes_list[j]
                             )
 
-                            gene_values_list[gene_patient_index] = float(
-                                cur_gene_obj[keys_attributes_list[j]]
-                            )
+                            if gene_patient_index >= 0 :
+                                try:
+                                    gene_values_list[gene_patient_index] = float(
+                                        cur_gene_obj[keys_attributes_list[j]]
+                                    )
+                                except:
+                                    gene_values_list[gene_patient_index] = cur_gene_obj[keys_attributes_list[j]]
+                                
 
                     # gene modify: set to all new attributes, remove patient keys since saving array of gene values
                     if gene_values_list != None:
@@ -1008,7 +1032,7 @@ class Database:
                         {
                             '$and': [
                                 {'name': str(objects_list[i])},
-                                {'dataset_id': int(objects_dataset_id)},
+                                {'dataset_name': str(objects_dataset_name)},
                             ]
                         },
                         {"$set": update_gene_obj},
@@ -1021,8 +1045,9 @@ class Database:
 
                     keys_attributes_list = list(cur_patient_obj.keys())
                     update_patient_obj = copy.deepcopy(cur_patient_obj)
+
                     for j in range(0, len(keys_attributes_list)):
-                        if keys_attributes_list[j][0:4] == "ENSG":
+                        if len(keys_attributes_list[j]) >= 4 and keys_attributes_list[j][0:4] == "ENSG":
                             # gene modify so remove key from patient info to modify since gene modified separately
                             update_patient_obj.pop(
                                 keys_attributes_list[j], None
@@ -1030,8 +1055,10 @@ class Database:
 
                             gene = Database.gene_collection.find_one(
                                 {
-                                    'name': str(keys_attributes_list[j]),
-                                    'dataset_id': int(objects_dataset_id),
+                                    '$and': [
+                                        {'name': str(keys_attributes_list[j])},
+                                        {'dataset_name': str(objects_dataset_name)},
+                                    ]
                                 }
                             )
                             gene_objects_list = gene['patient_ids']['arr']
@@ -1039,15 +1066,23 @@ class Database:
                                 objects_list[i]
                             )
                             gene_values_list = gene['gene_values']['arr']
-                            gene_values_list[gene_patient_index] = float(
-                                cur_patient_obj[keys_attributes_list[j]]
-                            )
+
+                            if gene_patient_index >= 0:
+
+                                try:
+                                    # value may or may not be able to convert to float
+                                    gene_values_list[gene_patient_index] = float(
+                                        cur_patient_obj[keys_attributes_list[j]]
+                                    )
+                                except:
+                                    gene_values_list[gene_patient_index] = cur_patient_obj[keys_attributes_list[j]]
+                            
 
                             Database.gene_collection.update_one(
                                 {
                                     '$and': [
                                         {'name': str(keys_attributes_list[j])},
-                                        {'dataset_id': int(objects_dataset_id)},
+                                        {'dataset_name': str(objects_dataset_name)},
                                     ]
                                 },
                                 {
@@ -1062,7 +1097,7 @@ class Database:
                         {
                             '$and': [
                                 {'patient_id': str(objects_list[i])},
-                                {'dataset_id': int(objects_dataset_id)},
+                                {'dataset_name': str(objects_dataset_name)},
                             ]
                         },
                         {"$set": update_patient_obj},
@@ -1071,6 +1106,7 @@ class Database:
             return loads(dumps({'status': 'success'}))
 
     class Genes:
+   
         def get_gene_one(request):
             """Retrieves the data for a single gene from the gene collection in the database.
 
@@ -1082,7 +1118,7 @@ class Database:
             """
             gene = Database.gene_collection.find_one(
                 {
-                    'id': int(request['gene_id']),
+                    'dataset_name': str(request['dataset_name']),
                     'name': str(request['gene_name']),
                 },
                 {"_id": 0},
@@ -1119,7 +1155,7 @@ class Database:
                 dict: A dictionary containing the gene names and IDs.
             """
             genes = Database.gene_collection.find(
-                {}, {'_id': 0, 'name': 1, 'id': 1}
+                {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
             )
             json_data = loads(dumps(genes))
             return json_data
@@ -1143,12 +1179,12 @@ class Database:
                 return loads(dumps([]))
 
             for i in range(len(genes_list)):
-                cur_gene_name_id = genes_list[i].split('/')
-                cur_name = cur_gene_name_id[0]
-                cur_id = int(cur_gene_name_id[1])
+                cur_gene_name_datasetname = genes_list[i].split('/')
+                cur_name = cur_gene_name_datasetname[0]
+                cur_datasetname = cur_gene_name_datasetname[1]
 
                 one_gene = Database.gene_collection.find_one(
-                    {'name': cur_name, 'id': cur_id},
+                    {'name': cur_name, 'dataset_name': cur_datasetname},
                     {'_id': 0, 'patient_ids': 0, 'gene_values': 0},
                 )
 
@@ -1182,7 +1218,7 @@ class Database:
             if search_word.strip() == '' or search_word == " ":
                 doc_count = Database.gene_collection.count_documents({})
                 genes_full = Database.gene_collection.find(
-                    {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
+                    {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
                 )
                 '''
                     .skip(numberofList * page)
@@ -1193,7 +1229,7 @@ class Database:
                 # Perform fuzzy matching using the search_word
                 fuzzy_results = []
                 all_genes = Database.gene_collection.find(
-                    {}, {'_id': 0, 'name': 1, 'id': 1, 'dataset_id': 1}
+                    {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
                 )
                 for gene in all_genes:
                     ratio = fuzz.ratio(search_word, gene['name'])
@@ -1258,16 +1294,20 @@ class Database:
                 list: A list of gene data objects matching the query.
             """
             genes_found = Database.gene_collection.find(
-                {'dataset_id': int(request['dataset_id'])}, {'_id': 0}
+                {'dataset_name': request['dataset_name']}, {'_id': 0}
             )
 
             genes_found_list = [{}]
             for doc in genes_found:
                 genes_found_list.append(doc)
 
-            genes_found_list = genes_found_list[1:]
+            if len(genes_found_list) > 0:
+                genes_found_list = genes_found_list[1:]
 
-            json_data = loads(dumps(genes_found_list))
+            json_data = json.loads( json.dumps(genes_found_list) )
+
+            #json_data = loads(dumps(genes_found_list))
+
             return json_data
 
         def get_seq_names(request):
@@ -1299,7 +1339,7 @@ class Database:
         @staticmethod
         def get_row_type(request):
             dataset = Database.dataset_collection.find_one(
-                {'id': int(request['dataset_id'])}
+                {'name': request['dataset_name'] }
             )
 
             if dataset == None or 'rowType' not in dataset:
@@ -1307,9 +1347,10 @@ class Database:
 
             return loads(dumps(dataset['rowType']))
 
+
         @staticmethod
         def get_dataset_one(request):
-            """Get a single dataset with a given dataset ID.
+            """Get a single dataset with a given dataset name.
 
             Args:
                 request (dict): A dictionary containing the 'dataset_id' key.
@@ -1317,11 +1358,19 @@ class Database:
             Returns:
                 dict: A serialized dataset object matching the query.
             """
+
             dataset = Database.dataset_collection.find_one(
-                {'id': int(request['dataset_id'])}
+                {'name': request['dataset_name'] }, {'_id': 0}
             )
-            serial = DatasetSerializer(dataset, many=False)
-            return serial.data
+
+            
+            if dataset:
+                serial = DatasetSerializer(dataset, many=False)
+
+                json_data = loads(dumps(serial.data))
+                return json_data
+   
+            return {}
 
         def get_dataset_count(request):
             """Retrieves the count of all datasets in the dataset collection in the database.
@@ -1365,7 +1414,6 @@ class Database:
                     {
                         '_id': 0,
                         'name': 1,
-                        'id': 1,
                         'description': 1,
                         'date_created': 1,
                         'rowType': 1,
@@ -1382,7 +1430,6 @@ class Database:
                     {
                         '_id': 0,
                         'name': 1,
-                        'id': 1,
                         'description': 1,
                         'date_created': 1,
                         'rowType': 1,
@@ -1455,7 +1502,7 @@ class Database:
             """
 
             dataset = Database.dataset_collection.find_one(
-                {'id': int(request['dataset_id'])}
+                {'name': request['dataset_name']}
             )
 
             name_info = dataset['name']
@@ -1480,12 +1527,10 @@ class Database:
                 return loads(dumps([]))
 
             for i in range(len(datasets_list)):
-                cur_dataset_name_id = datasets_list[i].split('/')
-                cur_name = cur_dataset_name_id[0]
-                cur_id = int(cur_dataset_name_id[1])
+                cur_dataset_name_datasetname = datasets_list[i]
 
                 one_dataset = Database.dataset_collection.find_one(
-                    {'name': cur_name, 'id': cur_id},
+                    { 'name' : cur_dataset_name_datasetname },
                     {'_id': 0, 'patient_ids': 0, 'gene_ids': 0},
                 )
 
@@ -1535,41 +1580,57 @@ class Database:
             date_created = datetime.datetime.strptime(
                 date_created, '%a %b %d %Y %H:%M:%S'
             ).date()
-            dataset = ParsedDataset(
-                in_txt=list(request['ctx']['FILES'].values())[0],
-                name=list(request['ctx']['FILES'].values())[0].name,
-                description=request['ctx']['POST'].get('description'),
-                url=request['ctx']['POST'].get('urltoFile'),
-                geneCode=request['ctx']['POST'].get('geneCode'),
-                patientCode=request['ctx']['POST'].get('patientCode'),
-                rowType=request['ctx']['POST'].get('rowType'),
-                date_created=date_created,
-                dataset_id=Database.Counters.get_new_dataset_counter(),
-                person_uploaded_dataset=person_uploaded,
+
+            # check if dataset name already exist
+            dataset_check_duplicate = Database.Datasets.get_dataset_one(
+                {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ).lower() }
             )
 
-            # Serialize dataset, insert records into database, and increment counters
-            serial = DatasetSerializer(dataset.get_dataset_info())
 
-            # print(" the upload results: \n")
+            # no result from find_one() is {}, so check this
+            if dataset_check_duplicate == None or (dataset_check_duplicate != None and  len(dataset_check_duplicate.keys()) > 0 ):
+                return loads(dumps(status.HTTP_409_CONFLICT))
 
-            if len(dataset.get_patients()) > 0:
-                Database.Patients.post_patient_many(dataset.get_patients())
-
-            cur_gene_cntr = Database.Counters.get_last_gene_counter()
-            list_new_genes = dataset.get_genes(cur_gene_cntr)
-            if len(list_new_genes) > 0:
-                Database.Genes.post_gene_many(list_new_genes)
-                Database.Counters.update_gene_counter(
-                    {'new_counter_value': (cur_gene_cntr + len(list_new_genes))}
+            try:
+                dataset = ParsedDataset(
+                    in_txt=list(request['ctx']['FILES'].values())[0],
+                    name=list(request['ctx']['FILES'].values())[0].name,
+                    description=request['ctx']['POST'].get('description'),
+                    url=request['ctx']['POST'].get('urltoFile'),
+                    geneCode=request['ctx']['POST'].get('geneCode'),
+                    patientCode=request['ctx']['POST'].get('patientCode'),
+                    rowType=request['ctx']['POST'].get('rowType'),
+                    date_created=date_created,
+                    person_uploaded_dataset=person_uploaded,
+       
                 )
 
-            Database.Counters.increment_gene_counter()
+                print(dataset.get_dataset_info())
 
-            Database.dataset_collection.insert_one(serial.data)
+                # Serialize dataset, insert records into database, and increment counters
 
-            Database.Counters.increment_dataset_counter()
-            return loads(dumps(status.HTTP_201_CREATED))
+                serial = DatasetSerializer(dataset.get_dataset_info())
+
+                if len(dataset.get_patients()) > 0:
+                    Database.Patients.post_patient_many(dataset.get_patients())
+
+                #cur_gene_cntr = Database.Counters.get_last_gene_counter()
+                #list_new_genes = dataset.get_genes(cur_gene_cntr)
+                list_new_genes = dataset.get_genes()
+                if len(list_new_genes) > 0:
+                    Database.Genes.post_gene_many(list_new_genes)
+                    '''Database.Counters.update_gene_counter(
+                        {'new_counter_value': (cur_gene_cntr + len(list_new_genes))}
+                    )'''
+
+                #Database.Counters.increment_gene_counter()
+
+                Database.dataset_collection.insert_one(serial.data)
+
+                #Database.Counters.increment_dataset_counter()
+                return loads(dumps(status.HTTP_201_CREATED))
+            except:
+                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
 
         def delete_dataset_one(request):
             try:
@@ -1584,11 +1645,11 @@ class Database:
                 request_data = json.loads(request['ctx'].body)
 
                 genes_in_dataset = Database.Genes.get_genes_from_dataset(
-                    {'dataset_id': int(request_data['dataset_id'])}
+                    {'dataset_name': str(request_data['dataset_name'])}
                 )
 
                 cur_dataset = Database.Datasets.get_dataset_one(
-                    {'dataset_id': int(request_data['dataset_id'])}
+                    {'dataset_name': str(request_data['dataset_name'])}
                 )
 
                 cur_users = Database.user_collection.find({})
@@ -1609,7 +1670,7 @@ class Database:
 
                     for gene_cur in genes_in_dataset:
                         inner_code = (
-                            str(gene_cur['name']) + '/' + str(gene_cur['id'])
+                            str(gene_cur['name']) + '/' + str(gene_cur['dataset_name'])
                         )
                         if (
                             'bookmarked_genes' in cur_user
@@ -1622,7 +1683,7 @@ class Database:
                             need_to_update_bookmarks_gene = True
 
                     inner_code = (
-                        str(cur_dataset['name']) + '/' + str(cur_dataset['id'])
+                        str(cur_dataset['name'])
                     )
                     if (
                         'bookmarked_datasets' in cur_user
@@ -1636,8 +1697,8 @@ class Database:
 
                     # clear edit records for this dataset
                     if 'edits' in cur_user:
-                        if str(cur_dataset['id']) in cur_user['edits']:
-                            cur_user['edits'].pop(str(cur_dataset['id']), None)
+                        if str(cur_dataset['name']) in cur_user['edits']:
+                            cur_user['edits'].pop(str(cur_dataset['name']), None)
                             need_to_update_edits = True
 
                     user_updated_obj = {}
@@ -1672,13 +1733,13 @@ class Database:
                         )
 
                 datasets_deleted = Database.dataset_collection.delete_one(
-                    {'id': int(request_data['dataset_id'])}
+                    {'name': request_data['dataset_name'] }
                 )
                 genes_deleted = Database.gene_collection.delete_many(
-                    {'dataset_id': int(request_data['dataset_id'])}
+                    {'dataset_name': request_data['dataset_name']}
                 )
                 patients_deleted = Database.patient_collection.delete_many(
-                    {'dataset_id': int(request_data['dataset_id'])}
+                    {'dataset_name': request_data['dataset_name']}
                 )
 
                 last_dataset_counter = (
@@ -1721,225 +1782,237 @@ class Database:
         def update_dataset_one(request):
             # dataset id mandatory, date created will exist, so POST will always be there
 
-            request['ctx'] = {
-                'FILES': request['ctx'].FILES.copy(),
-                'POST': request['ctx'].POST.copy(),
-            }
+            try:
+                request['ctx'] = {
+                    'FILES': request['ctx'].FILES.copy(),
+                    'POST': request['ctx'].POST.copy(),
+                }
 
-            date_created = request['ctx']['POST'].get('dateCreated')
-            description = request['ctx']['POST'].get('description')
-            geneCode = (request['ctx']['POST'].get('geneCode'),)
-            patientCode = (request['ctx']['POST'].get('patientCode'),)
-            rowType = (request['ctx']['POST'].get('rowType'),)
-            url = request['ctx']['POST'].get('urltoFile')
-            dataset_id = int(request['ctx']['POST'].get('datasetID'))
+                #date_created = request['ctx']['POST'].get('dateCreated')
+                description = request['ctx']['POST'].get('description')
+                '''geneCode = (request['ctx']['POST'].get('geneCode'),)
+                patientCode = (request['ctx']['POST'].get('patientCode'),)
+                rowType = (request['ctx']['POST'].get('rowType'),)'''
+                url = request['ctx']['POST'].get('urltoFile')
+                dataset_name = request['ctx']['POST'].get('datasetName')
 
-            dataset_to_modify = Database.Datasets.get_dataset_one(
-                {'dataset_id': dataset_id}
-            )
-            # print("existing record:   ", dataset_to_modify)
-            atleast_one_modified = False
 
-            new_dataset = {}
-
-            if (
-                description != None
-                and description != ""
-                and description != dataset_to_modify['description']
-            ):
-                new_dataset["description"] = description
-                atleast_one_modified = True
-
-            if url != None and url != "" and url != dataset_to_modify['url']:
-                new_dataset["url"] = url
-                atleast_one_modified = True
-
-            if (
-                date_created != 'null'
-                and date_created != None
-                and atleast_one_modified
-            ):
-                date_created = re.sub(
-                    r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
-                )
-                date_created = datetime.datetime.strptime(
-                    date_created, '%a %b %d %Y %H:%M:%S'
-                ).date()
-                date_modified = date_created
-
-                serial_temp = DatasetSerializer(
-                    {
-                        'id': dataset_id,
-                        'name': "",
-                        'description': "",
-                        'gene_ids': json.dumps({'arr': []}),
-                        'patient_ids': json.dumps({'arr': []}),
-                        'gene_id_count': 0,
-                        'patient_id_count': 0,
-                        'date_created': date_created,
-                        'url': url,
-                    }
+                dataset_to_modify = Database.Datasets.get_dataset_one(
+                    {'dataset_name': str(dataset_name) }
                 )
 
-                new_dataset["date_created"] = serial_temp.data['date_created']
+                if dataset_to_modify != None and len(dataset_to_modify.keys()) == 0:
+                    print("really bad!!!")
+                    return loads(dumps(status.HTTP_409_CONFLICT))
 
-            # Extract data from request and create ParsedDataset object
-            if (
-                request['ctx']['FILES'] != None
-                and len(list(request['ctx']['FILES'].values())) > 0
-            ):
-                in_txt_file = list(request['ctx']['FILES'].values())[0]
-                name_file = list(request['ctx']['FILES'].values())[0].name
+                print("existing record:   ", dataset_to_modify)
+                atleast_one_modified = False
 
-                df = pd.read_csv(in_txt_file)
-                df = df.drop_duplicates(subset=["Sample name"])
-                df = df.loc[:, ~df.columns.duplicated()]
+                new_dataset = {}
 
-                updated_gene_names = [
-                    updated_gene_names
-                    for updated_gene_names in df.columns
-                    if "ENSG" in updated_gene_names
-                ]
-                updated_patient_ids = [pid for pid in df["Sample name"]]
+                if (
+                    description != None
+                    and description != ""
+                    and 'description' in dataset_to_modify
+                    and description != dataset_to_modify['description']
+                ):
+                    new_dataset["description"] = description
+                    atleast_one_modified = True
 
-                orig_gene_names = dataset_to_modify['gene_ids']["arr"]
-                orig_patient_ids = dataset_to_modify['patient_ids']["arr"]
+                if url != None and url != "" and 'url' in dataset_to_modify and url != dataset_to_modify['url']:
+                    new_dataset["url"] = url
+                    atleast_one_modified = True
 
-                add_gene_names = list(
-                    set(updated_gene_names) - set(orig_gene_names)
-                )
-                add_patient_ids = list(
-                    set(updated_patient_ids) - set(orig_patient_ids)
-                )
+                '''if (
+                    date_created != 'null'
+                    and date_created != None
+                    and date_created != ""
+                    and atleast_one_modified
+                ):
+                    date_created = re.sub(
+                        r' GMT[+-]\d{4}\s*\([^)]*\)', '', date_created
+                    )
+                    date_created = datetime.datetime.strptime(
+                        date_created, '%a %b %d %Y %H:%M:%S'
+                    ).date()
+                    date_modified = date_created
 
-                modify_gene_names = list(
-                    set(updated_gene_names) - set(add_gene_names)
-                )
-                modify_patient_ids = list(
-                    set(updated_patient_ids) - set(add_patient_ids)
-                )
-
-                delete_gene_names = list(
-                    set(orig_gene_names) - set(updated_gene_names)
-                )
-                delete_patient_ids = list(
-                    set(orig_patient_ids) - set(updated_patient_ids)
-                )
-
-                # delete to lighten future operations
-                genes_deleted = Database.gene_collection.delete_many(
-                    {'name': {'$in': delete_gene_names}}
-                )
-
-                patients_deleted = Database.patient_collection.delete_many(
-                    {'patient_id': {'$in': delete_patient_ids}}
-                )
-                # print(patients_deleted.deleted_count)
-
-                # modify when there are less in dataset
-                for i in range(0, len(modify_gene_names)):
-                    cur_gene = modify_gene_names[i]
-                    new_gene = {
-                        "patient_ids": json.loads(
-                            json.dumps({"arr": updated_patient_ids})
-                        ),
-                        "gene_values": json.loads(
-                            json.dumps(
-                                {
-                                    "arr": df[modify_gene_names]
-                                    .T.iloc[i]
-                                    .tolist()
-                                }
-                            )
-                        ),
-                    }
-                    Database.gene_collection.update_one(
-                        {'name': cur_gene}, {"$set": new_gene}
+                    serial_temp = DatasetSerializer(
+                        {
+                            'name': dataset_name,
+                            'description': "",
+                            'gene_ids': json.dumps({'arr': []}),
+                            'patient_ids': json.dumps({'arr': []}),
+                            'gene_id_count': 0,
+                            'patient_id_count': 0,
+                            'date_created': date_created,
+                            'url': url,
+                            'rowType': 'patient',
+                            'person_uploaded_dataset': "a"
+                        }
                     )
 
-                for i in range(0, len(modify_patient_ids)):
-                    cur_patient = modify_patient_ids[i]
-                    new_patient = {
-                        'age': int(df["Age At Onset"].iloc[i]),
-                        'diabete': str(df['Diabetes'].iloc[i]).lower(),
-                        'final_diagnosis': str(
-                            df['Final Diagnosis'].iloc[i]
-                        ).lower(),
-                        'gender': str(df['Gender'].iloc[i]).lower(),
-                        'hypercholesterolemia': str(
-                            df['Hypercholesterolemia'].iloc[i]
-                        ).lower(),
-                        'hypertension': str(df['Hypertension'].iloc[i]).lower(),
-                        'race': str(df['Race'].iloc[i]).lower(),
-                        'gene_ids': json.dumps({"arr": updated_gene_names}),
-                    }
-                    Database.patient_collection.update_one(
-                        {'patient_id': cur_patient}, {"$set": new_patient}
+                    new_dataset["date_created"] = serial_temp.data['date_created']'''
+
+                # Extract data from request and create ParsedDataset object
+                '''if (
+                    request['ctx']['FILES'] != None
+                    and len(list(request['ctx']['FILES'].values())) > 0
+                ):
+                    in_txt_file = list(request['ctx']['FILES'].values())[0]
+                    name_file = list(request['ctx']['FILES'].values())[0].name
+
+                    df = pd.read_csv(in_txt_file)
+                    df = df.drop_duplicates(subset=["Sample name"])
+                    df = df.loc[:, ~df.columns.duplicated()]
+
+                    updated_gene_names = [
+                        updated_gene_names
+                        for updated_gene_names in df.columns
+                        if "ENSG" in updated_gene_names
+                    ]
+                    updated_patient_ids = [pid for pid in df["Sample name"]]
+
+                    orig_gene_names = dataset_to_modify['gene_ids']["arr"]
+                    orig_patient_ids = dataset_to_modify['patient_ids']["arr"]
+
+                    add_gene_names = list(
+                        set(updated_gene_names) - set(orig_gene_names)
+                    )
+                    add_patient_ids = list(
+                        set(updated_patient_ids) - set(orig_patient_ids)
                     )
 
-                # add to the dataset
-                # want cols about patient, so can't just use add_gene_names list
-                stuff_to_add_txt_file = "./temp.csv"
-                stuff_to_add_name = "temp"
-
-                if len(add_gene_names) > 0:
-                    subset_df_add = df.loc[
-                        :, ~df.columns.isin(modify_gene_names)
-                    ].copy()
-                    subset_df_add.to_csv(stuff_to_add_txt_file)
-
-                    dataset = ParsedDataset(
-                        in_txt=stuff_to_add_txt_file,
-                        name=stuff_to_add_name,
-                        description="",
-                        url="",
-                        geneCode="",
-                        patientCode="",
-                        rowType="",
-                        date_created=date_created,
-                        dataset_id=dataset_id,
+                    modify_gene_names = list(
+                        set(updated_gene_names) - set(add_gene_names)
+                    )
+                    modify_patient_ids = list(
+                        set(updated_patient_ids) - set(add_patient_ids)
                     )
 
-                    # insert gene records only
-                    Database.Genes.post_gene_many(dataset.get_genes())
-
-                if len(add_patient_ids) > 0:
-                    subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
-                    subset_df_add.to_csv(stuff_to_add_txt_file)
-
-                    dataset = ParsedDataset(
-                        in_txt=stuff_to_add_txt_file,
-                        name=stuff_to_add_name,
-                        description="",
-                        url="",
-                        geneCode="",
-                        patientCode="",
-                        rowType="",
-                        date_created=date_created,
-                        dataset_id=dataset_id,
+                    delete_gene_names = list(
+                        set(orig_gene_names) - set(updated_gene_names)
+                    )
+                    delete_patient_ids = list(
+                        set(orig_patient_ids) - set(updated_patient_ids)
                     )
 
-                    Database.Patients.post_patient_many(dataset.get_patients())
+                    # delete to lighten future operations
+                    genes_deleted = Database.gene_collection.delete_many(
+                        {'name': {'$in': delete_gene_names}}
+                    )
 
-                if len(add_patient_ids) > 0 or len(add_gene_names) > 0:
-                    os.remove(stuff_to_add_txt_file)
+                    patients_deleted = Database.patient_collection.delete_many(
+                        {'patient_id': {'$in': delete_patient_ids}}
+                    )
+                    # print(patients_deleted.deleted_count)
 
-                new_dataset["gene_ids"] = json.loads(
-                    json.dumps({"arr": updated_gene_names})
+                    # modify when there are less in dataset
+                    for i in range(0, len(modify_gene_names)):
+                        cur_gene = modify_gene_names[i]
+                        new_gene = {
+                            "patient_ids": json.loads(
+                                json.dumps({"arr": updated_patient_ids})
+                            ),
+                            "gene_values": json.loads(
+                                json.dumps(
+                                    {
+                                        "arr": df[modify_gene_names]
+                                        .T.iloc[i]
+                                        .tolist()
+                                    }
+                                )
+                            ),
+                        }
+                        Database.gene_collection.update_one(
+                            {'name': cur_gene}, {"$set": new_gene}
+                        )
+
+                    for i in range(0, len(modify_patient_ids)):
+                        cur_patient = modify_patient_ids[i]
+                        new_patient = {
+                            'age': int(df["Age At Onset"].iloc[i]),
+                            'diabete': str(df['Diabetes'].iloc[i]).lower(),
+                            'final_diagnosis': str(
+                                df['Final Diagnosis'].iloc[i]
+                            ).lower(),
+                            'gender': str(df['Gender'].iloc[i]).lower(),
+                            'hypercholesterolemia': str(
+                                df['Hypercholesterolemia'].iloc[i]
+                            ).lower(),
+                            'hypertension': str(df['Hypertension'].iloc[i]).lower(),
+                            'race': str(df['Race'].iloc[i]).lower(),
+                            'gene_ids': json.dumps({"arr": updated_gene_names}),
+                        }
+                        Database.patient_collection.update_one(
+                            {'patient_id': cur_patient}, {"$set": new_patient}
+                        )
+
+                    # add to the dataset
+                    # want cols about patient, so can't just use add_gene_names list
+                    stuff_to_add_txt_file = "./temp.csv"
+                    stuff_to_add_name = "temp"
+
+                    if len(add_gene_names) > 0:
+                        subset_df_add = df.loc[
+                            :, ~df.columns.isin(modify_gene_names)
+                        ].copy()
+                        subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                        dataset = ParsedDataset(
+                            in_txt=stuff_to_add_txt_file,
+                            #name=stuff_to_add_name,
+                            name=dataset_name,
+                            description="",
+                            url="",
+                            geneCode="",
+                            patientCode="",
+                            rowType="",
+                            date_created=date_created
+                        )
+
+                        # insert gene records only
+                        Database.Genes.post_gene_many(dataset.get_genes())
+
+                    if len(add_patient_ids) > 0:
+                        subset_df_add = df[df['Sample name'].isin(add_patient_ids)]
+                        subset_df_add.to_csv(stuff_to_add_txt_file)
+
+                        dataset = ParsedDataset(
+                            in_txt=stuff_to_add_txt_file,
+                            #name=stuff_to_add_name,
+                            name=dataset_name,
+                            description="",
+                            url="",
+                            geneCode="",
+                            patientCode="",
+                            rowType="",
+                            date_created=date_created
+                        )
+
+                        Database.Patients.post_patient_many(dataset.get_patients())
+
+                    if len(add_patient_ids) > 0 or len(add_gene_names) > 0:
+                        os.remove(stuff_to_add_txt_file)
+
+                    new_dataset["gene_ids"] = json.loads(
+                        json.dumps({"arr": updated_gene_names})
+                    )
+                    new_dataset["patient_ids"] = json.loads(
+                        json.dumps({"arr": updated_patient_ids})
+                    )
+                    new_dataset["gene_id_count"] = len(updated_gene_names)
+                    new_dataset["patient_id_count"] = len(updated_patient_ids)'''
+
+                    # updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
+
+                Database.dataset_collection.update_one(
+                    {'name': dataset_name}, {"$set": new_dataset}
                 )
-                new_dataset["patient_ids"] = json.loads(
-                    json.dumps({"arr": updated_patient_ids})
-                )
-                new_dataset["gene_id_count"] = len(updated_gene_names)
-                new_dataset["patient_id_count"] = len(updated_patient_ids)
 
-                # updated_new_gene_names_indices = [i for i, item in enumerate(diff_gene_names) if item in set(updated_gene_names)]
-
-            Database.dataset_collection.update_one(
-                {'id': dataset_id}, {"$set": new_dataset}
-            )
-
-            return loads(dumps(status.HTTP_201_CREATED))
+                return loads(dumps(status.HTTP_201_CREATED))
+            except:
+                return loads(dumps(status.HTTP_406_NOT_ACCEPTABLE))
 
     class Utils:
         def authorize_Email(request):

@@ -6,13 +6,25 @@ import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
+import { useNavigate } from 'react-router-dom';
+
 import './dashboardSidebar.css'
 
 function DashboardSidebar(props) {
+    
+    const navigate = useNavigate();
+
     return (
         <SideNav id="side_navigation_menu"
             onSelect={(selected) => {
-                // Add your code here
+                if(selected === "home"){
+                    navigate('/console');
+                } else if (selected === "search_gene"){
+                    navigate('/search_genes_page');
+                } else if( selected === "search_dataset"){
+                    navigate('/search_datasets_page');
+                }
+                
             }}>
             <SideNav.Toggle />
             <SideNav.Nav defaultSelected={props.input_cur_active}>

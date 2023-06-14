@@ -10,7 +10,7 @@ import { clone } from "ramda";
 
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
-import LoadingSpinner from "../../spinner/spinner";
+import { CircularProgress } from "@mui/material";
 
 const user_get_url = `${process.env.REACT_APP_BACKEND_URL}/api/login`;
 
@@ -114,14 +114,15 @@ export default function Slider() {
                 setDatasetsList(response.data);
             }
 
-            set_gotInfo(true);
-
         });
 
     }, [bookmarkedDatasets]);
 
     useEffect(() => {
         function createDatasetListGroups() {
+            if(!datasets_list){
+                return []
+            }
             var num_datasets = datasets_list.length;
             var num_groups = Math.floor(num_datasets / 6);
             var last_group_num_datasets = num_datasets % 6;
@@ -154,16 +155,18 @@ export default function Slider() {
 
 
         setGroupings(createDatasetListGroups());
+
+        set_gotInfo(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [datasets_list.length]);
+    }, [datasets_list ? datasets_list.length : datasets_list]);
 
     return (
         <>
             {!gotInfo ? (
-                <LoadingSpinner />
+                <CircularProgress />
             ) : (
                 <>
-                    {datasets_list.length > 0 ? (
+                    {datasets_list && datasets_list.length > 0 ? (
                         <SliderItemsContainer dataset_groups_list={groupings} />
                     ) : (
                         <></>

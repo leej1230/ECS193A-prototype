@@ -23,6 +23,8 @@ function DatasetSearchResultsHolder(props) {
     const [numPerPage, setNumPerPage] = useState({value: 5, label: "5"});
     const [selectChanged, setSelectChanged] = useState(false);
 
+    const [search_result_loaded, set_search_result_loaded] = useState(false);
+
     const options_select = [{value: 5, label: "5"},{value: 10, label: "10"},{value: 15, label: "15"}]
 
     const handleSelect = async (selected) => {
@@ -57,6 +59,9 @@ function DatasetSearchResultsHolder(props) {
         setLastPage( response.data.total_pages )
 
         setHasSearched(true);
+
+        set_search_result_loaded(true);
+
       } catch (error) {
         console.error(error);
       }
@@ -108,7 +113,7 @@ function DatasetSearchResultsHolder(props) {
     return (
         <>
                 <div id="searchResultsHolder">
-                    <DatasetSampleList resultList={searchResult} />
+                    <DatasetSampleList resultList={searchResult} input_search_loaded={ (search_result_loaded && hasSearched) || (!hasSearched) } />
                 </div>
                     
                     {!hasSearched && (
@@ -126,7 +131,7 @@ function DatasetSearchResultsHolder(props) {
                         </div> : <div></div>}
                     </div>
                     )}
-                    {searchResult.length > 0 && (
+                    {searchResult && searchResult.length > 0 && (
                     <div>
                         {listPage > 1 ? <div className="float-left page_change_btn">
                         <button class="btn btn-primary" onClick={handleDecrementPage}>Prev Page</button>

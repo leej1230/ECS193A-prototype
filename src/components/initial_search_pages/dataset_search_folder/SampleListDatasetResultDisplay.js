@@ -12,7 +12,7 @@ import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 import LimitedText from '../../filters/LimitedText'
 
 const URL = `${process.env.REACT_APP_BACKEND_URL}/api/patient/all`;
-const DATASET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/dataset/all`;
+const DATASET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/dataset_by_name/all`;
 // const GENE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/gene/25174`
 
 function SampleListDatasetResultDisplay(props) {
@@ -20,11 +20,13 @@ function SampleListDatasetResultDisplay(props) {
   return (
     <div>
         <div id="dataset_display_result_single">
-            <p id="search_dataset_result_name_display">{props.dataset && props.dataset.name ? props.dataset.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={props.dataset && props.dataset.id ? "/dataset/" + props.dataset.id : "#"}>Link to Dataset Page</a> </p>
-            <p id="search_dataset_result_info_display">Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'}, &nbsp; &nbsp; &nbsp; Date Last Modified: {props.dataset && props.dataset.date_created ? props.dataset.date_created : '-'} </p>
-            <LimitedText numLines='1' text={`Description: ${props.dataset && props.dataset.description ? props.dataset.description : '-'}`} />
+            <p id="search_dataset_result_name_display">{ props.dataset && 'name' in props.dataset && props.dataset.name ? props.dataset.name : ""} &nbsp; &nbsp; &nbsp; <a id="search_dataset_result_link_display" href={props.dataset && props.dataset.name ? "/dataset/" + props.dataset.name : ""}>Link to Dataset Page</a> </p>
+            <p id="search_dataset_result_info_display">Date Uploaded: {props.dataset && 'date_created' in props.dataset && props.dataset.date_created ? props.dataset.date_created : '-'} </p>
+            <LimitedText numLines='1' text={`Description: ${props.dataset && 'description' in props.dataset && props.dataset.description ? props.dataset.description : '-'}`} />
             <hr id="line_div_category_search_content" />
         </div>
+
+        {/* Dataset ID: {props.dataset && props.dataset.id ? props.dataset.id : '-'}, &nbsp; &nbsp; &nbsp; */}
       
 
       <script src="../../bootstrap_gene_page/vendor/jquery/jquery.min.js"></script>

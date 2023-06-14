@@ -25,7 +25,7 @@ class SuperUserModel(BaseUserModel):
 
 
 class PatientModel(models.Model):
-    id = models.PositiveBigIntegerField(blank=False, primary_key=True)
+    #id = models.PositiveBigIntegerField(blank=False, primary_key=True)
     patient_id = models.CharField(max_length=50, blank=False, default="")
     age = models.IntegerField(blank=False, default="")
     diabete = models.BooleanField(blank=False)
@@ -37,7 +37,11 @@ class PatientModel(models.Model):
     race = models.CharField(max_length=50, blank=False, default="")
     gene_ids = models.JSONField(blank=False)
     # gene_values = models.CharField(max_length=50, blank=False, default='')
-    dataset_id = models.CharField(max_length=50, blank=False, default="")
+    
+    #dataset_id = models.CharField(max_length=50, blank=False, default="")
+    dataset_name = models.CharField(max_length=50, blank=False, default="")
+    
+    
     # gene_ids = models.CharField(validators=int_list_validator)
     # gene_values = models.CharField(validators=int_list_validator)
     # dataset_id = models.CharField(validators=int_list_validator)
@@ -58,16 +62,17 @@ class PatientModel(models.Model):
 
 class GeneModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
-    id = models.PositiveBigIntegerField(blank=False, primary_key=True)
+    #id = models.PositiveBigIntegerField(blank=False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
-    dataset_id = models.CharField(max_length=50, blank=False, default="")
+    #dataset_id = models.CharField(max_length=50, blank=False, default="")
+    dataset_name = models.CharField(max_length=50, blank=False, default="")
     patient_ids = models.JSONField(blank=False, null=True)
     gene_values = models.JSONField(blank=False , null=True)
 
 
 class DatasetModel(models.Model):
     # want all fields in all documents in datasets, can be "" but not omitted
-    id = models.PositiveBigIntegerField(blank=False, primary_key=True)
+    #id = models.PositiveBigIntegerField(blank=False, primary_key=True)
     name = models.CharField(max_length=50, blank=False, default="")
     description = models.TextField(blank=True, default="", null=True)
     gene_ids = models.JSONField(blank=True, null=True)
@@ -78,6 +83,8 @@ class DatasetModel(models.Model):
     url = models.URLField(blank=True, null=True)
     rowType = models.TextField(blank=False, null=False)
     person_uploaded_dataset = models.TextField(blank=False, null=False)
+    patientCode = models.TextField(blank=False, null=False)
+    geneCode = models.TextField(blank=False, null=False)
 
 
 class CounterModel(models.Model):

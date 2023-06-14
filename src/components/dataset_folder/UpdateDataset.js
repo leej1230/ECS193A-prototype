@@ -8,37 +8,38 @@ import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "../bootstrap_gene_page/css/sb-admin-2.min.css"
 
 function UpdateDataset(){
-    const [selectedFile, setSelectedFile] = useState(null);
+    //const [selectedFile, setSelectedFile] = useState(null);
     const [urltoFile, setUrltoFile] = useState("");
     const [description, setDescription] = useState("");
-    const [datasetID, setDatasetID] = useState(0);
+    //const [datasetID, setDatasetID] = useState(0);
+    const [datasetName, setDatasetName] = useState(0);
     const [dateCreated, setDateCreated] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isFilePicked, setIsFilePicked] = useState(false);
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/update_dataset`;
 
-    const changeHandler = (e) => {
+    {/*const changeHandler = (e) => {
         setSelectedFile(e.target.files[0]);
         setDateCreated(e.target.files[0].lastModifiedDate);
         setIsFilePicked(true);
-    }
+    }*/}
 
     const handleSubmission = () => {
         const formData = new FormData();
 
-        console.log(selectedFile);
+        //console.log(selectedFile);
         console.log(urltoFile);
         console.log(dateCreated);
         console.log(isFilePicked);
-        console.log(datasetID)
+        console.log(datasetName)
         
 
-        formData.append( 'file' , selectedFile );
-        formData.append('datasetID', datasetID );
-        formData.append('description', description);
-        formData.append('urltoFile', urltoFile);
-        formData.append('dateCreated', dateCreated);
+        //formData.append( 'file' , selectedFile );
+        formData.append('datasetName', datasetName );
+        formData.append('description', description );
+        formData.append('urltoFile', urltoFile );
+        //formData.append('dateCreated', dateCreated );
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -57,7 +58,12 @@ function UpdateDataset(){
         })
         .catch((error) => {
           console.error('Update failed', error);
-          alert("Due to some error, data has not been updated");
+          if(error.response.status === 409){
+              alert("Please provide correct dataset name. Make sure lowercase.");
+          } else {
+              // 406 error
+              alert("Error!");
+          }
         })
     }
     
@@ -80,10 +86,14 @@ function UpdateDataset(){
                     <input class="form-control" type="file" id="formFile" onChange={(e)=>changeHandler(e)} />
                   </div>*/}
                   </div>
-                  <div class="form-group">
+                  {/*<div class="form-group">
                     <label for="exampleInputEmail1">Dataset ID (original, can't be updated)</label>
                     <input type="number" class="form-control"  onChange = {(e)=>setDatasetID(e.target.value)} />
-                  </div>
+                </div>*/}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Dataset Name (original, can't be updated)</label>
+                    <input type="text" class="form-control"  onChange = {(e)=>setDatasetName(e.target.value)} />
+                </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Description Update</label>
                     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange = {(e)=>setDescription(e.target.value)} />
@@ -95,7 +105,7 @@ function UpdateDataset(){
                   <button type="button" class="btn btn-primary" onClick={handleSubmission}>Submit</button>
                 </form> 
 
-                <div class="row justify-content-center">
+                {/*<div class="row justify-content-center">
                   
                       <div className='progress-bar' style={{ width: 200, height: 200 }}>
                         <CircularProgressbar 
@@ -116,7 +126,7 @@ function UpdateDataset(){
                           })}
                         />
                       </div>
-                </div>
+                  </div>*/}
 
               </div>
 

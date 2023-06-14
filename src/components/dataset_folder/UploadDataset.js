@@ -9,9 +9,10 @@ import "./UploadDataset.css";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { Cancel, CheckCircle } from "@material-ui/icons";
+import { CircularProgress } from '@mui/material';
+
 import "../bootstrap_gene_page/css/sb-admin-2.min.css";
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
-import LoadingSpinner from "../spinner/spinner";
 
 function UploadDataset() {
     const [selectedFile, setSelectedFile] = useState();
@@ -21,9 +22,12 @@ function UploadDataset() {
     const [progress, setProgress] = useState(0);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [state, setState] = useState(false);
-    const [geneCode, setgeneCode] = useState("");
+    const [geneCode, setgeneCode] = useState("ENSG");
     const [patientCode, setpatientCode] = useState("");
     const [rowType, setrowType] = useState("");
+    const [file_err_msg, set_file_err_msg] = useState(false);
+    const [patient_code_err_msg, set_patient_code_err_msg] = useState(false);
+    const [rowtype_err_msg, set_rowtype_err_msg] = useState(false);
     // SelectedFile will be a variable for the file and isFilePicked will be used to verify if file has been picked or not
     const api_url = `${process.env.REACT_APP_BACKEND_URL}/api/upload_dataset`;
 
@@ -47,7 +51,31 @@ function UploadDataset() {
         console.log(patientCode);
         console.log(rowType);
 
-        if (isFilePicked === false) {
+        let incomplete = false
+
+        if (isFilePicked === false){
+            incomplete = true;
+            set_file_err_msg(true);
+        } else {
+            set_file_err_msg(false);
+        }
+        
+        // patient code only required if patients are rows, otherwise patients can be cols and missed
+        if ( patientCode === "" && rowType == "patient" ){
+            incomplete = true;
+            set_patient_code_err_msg(true);
+        } else {
+            set_patient_code_err_msg(false);
+        } 
+        
+        if( rowType === "" ) {
+            incomplete = true;
+            set_rowtype_err_msg(true);
+        } else {
+            set_rowtype_err_msg(false);
+        }
+
+        if( incomplete === true ){
             return;
         }
 
@@ -78,14 +106,21 @@ function UploadDataset() {
             .post(api_url, formData, config)
             .then((result) => {
                 setState(true);
+                
             })
             .catch((error) => {
                 setState(false);
+                if(error.response.status === 409){
+                    alert("Please provide a unique dataset name. The name provided already exists.");
+                } else {
+                    // 406 error
+                    alert("Please provide a properly formatted dataset and correct specifications. Issue in entered values or csv.");
+                }
             });
     };
 
     return (
-        <div className="form-container">
+        <div id="outer_cont" className="form-container">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between ">
                     <h5 class="m-0 font-weight-bold text-primary">
@@ -97,18 +132,19 @@ function UploadDataset() {
                         <div class="form-group">
                             <div class="mb-3">
                                 <label for="formFile" class="form-label">
-                                    Dataset CSV File Upload
+                                    Dataset CSV File Upload {file_err_msg === true ? <p style={{color:'red', display: "inline-block"}}>&nbsp; &nbsp; *Required</p> : <></>}
                                 </label>
                                 <input
                                     class="form-control"
                                     type="file"
                                     id="formFile"
+                                    required
                                     onChange={(e) => changeHandler(e)}
                                 />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Description</label>
+                            <label for="exampleInputEmail1">Description </label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -127,20 +163,20 @@ function UploadDataset() {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="dataOption">Dataset Row Type</label>
-                            <select className="form-control" id="dataOption" onChange={(e) => setrowType(e.target.value)}>
+                            <label htmlFor="dataOption">Dataset Row Type {rowtype_err_msg === true ? <p style={{color:'red', display: "inline-block"}}>&nbsp; &nbsp; *Required</p> : <></>}</label>
+                            <select className="form-control" required id="dataOption" onChange={(e) => setrowType(e.target.value)}>
                                 <option value="">Choose row type</option>
                                 <option value="gene">Gene</option>
                                 <option value="patient">Patient</option>
                             </select>
                         </div>
-                        <div className="form-group">
+                        {/*<div className="form-group">
                             <label htmlFor="geneCode">Gene Code</label>
                             <input type="text" className="form-control" id="geneCode" onChange={(e) => setgeneCode(e.target.value)} />
-                        </div>
+                        </div>*/}
                         <div className="form-group">
-                            <label htmlFor="patientCode">Patient Code</label>
-                            <input type="text" className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
+                            <label htmlFor="patientCode">Patient Code {patient_code_err_msg === true ? <p style={{color:'red', display: "inline-block"}}>&nbsp; &nbsp; *Required</p> : <></>}</label>
+                            <input type="text" required className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
                         </div>
                         <button
                             type="button"
@@ -152,7 +188,7 @@ function UploadDataset() {
                     </form>
 
                     <div class="row justify-content-center">
-                        {progress > 0 && progress < 100 && <LoadingSpinner />}
+                        {progress > 0 && progress < 100 && <CircularProgress />}
                         {progress === 100 && state === true && (
                             <CheckCircle
                                 color="green"

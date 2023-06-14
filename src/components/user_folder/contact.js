@@ -147,7 +147,7 @@ function Contact() {
                     <h5 class="card-title">Project Proposer</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Paulina Carmona</h6>
                     <p class="card-text">Department of Neurology/MIND Institute UC Davis</p>
-                    <a href="#" class="card-link">External Link if needed</a>
+                    <a href="" class="card-link">External Link if needed</a>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ function Contact() {
                     <h5 class="card-title">Developers</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Jaewoo Lee<br></br> Mehita Achuthan<br></br> Salila Renduchintala<br></br> Lucas Chen </h6>
                     <p class="card-text">Students at UC Davis.</p>
-                    <a href="#" class="card-link">External Link if needed</a>
+                    <a href="" class="card-link">External Link if needed</a>
                   </div>
                 </div>
               </div>
