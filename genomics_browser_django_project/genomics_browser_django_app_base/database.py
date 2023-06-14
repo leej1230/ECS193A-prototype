@@ -91,9 +91,8 @@ class Database:
             user.update({'date_created': datetime.datetime.now()})
             user.update({'bookmarked_genes': []})
             user.update({'bookmarked_datasets': []})
-            # Temporary
-            user.update({'is_admin': True})
-            user.update({'is_staff': True})
+            user.update({'is_admin': False})
+            user.update({'is_staff': False})
             serial = UserSerializer(user, many=False)
             Database.user_collection.insert_one(serial.data)
             # Database.Counters.increment_user_counter()
