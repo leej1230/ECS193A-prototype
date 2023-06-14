@@ -18,7 +18,7 @@ function Navbar() {
                 class="navbar navbar-expand navbar-light bg-light topbar static-top shadow"
                 id="navigation_bar_top"
             >
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="collapse navbar-collapse" id="navbarNav" className="basic_info_btns">
                     <ul id="navbar_element_link_top" class="navbar-nav">
                         <li class="nav-item active">
                             <a
@@ -69,7 +69,7 @@ function Navbar() {
                     </ul>
                 </div>
 
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" id="login_separate_component">
 
                     <li
                         class="nav-item dropdown no-arrow mx-1"
@@ -91,7 +91,7 @@ function Navbar() {
                             }}
                         >
                             <div id="drop_down_login_user">
-                                <span class="mr-2 d-none d-lg-inline text-black-600 small">
+                                <span class="mr-2 d-lg-inline text-black-600 small">
                                     {userMetadata.given_name}{" "}
                                     {userMetadata.family_name}
                                 </span>

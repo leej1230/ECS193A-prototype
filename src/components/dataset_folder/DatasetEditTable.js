@@ -30,6 +30,7 @@ function DatasetEditTable(props) {
   const { user } = useAuth0();
   const dataset_matrix_node = useRef(null);
 
+
   useEffect(() => {
     const setup_table_filtered_initial = () => {
       set_table_matrix_filtered(clone(props.input_together_patient_gene_information));
@@ -415,12 +416,17 @@ function DatasetEditTable(props) {
                       //console.log(response);
 
                       alert("Data Updated");
+                      props.input_set_reload_history(true);
 
                     });
 
                     // each save is independent
-                    await set_prev_objects_list_to_undo({});
-                    await set_modified_objects_list_to_update_back({});
+                    set_prev_objects_list_to_undo({});
+                    set_modified_objects_list_to_update_back({});
+
+                    
+
+
 
                   }}>Save Changes</button>
                 </div>
