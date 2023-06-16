@@ -111,9 +111,9 @@ function DatasetChangeUndo(props) {
                         user_id: user.sub.split("|")[1]
                       }, { 'content-type': 'application/json' }).then((response) => {
                         alert("Edit Record Deleted");
+                      }).finally(() => {
+                        props.input_set_reload_edit_history(true);
                       });
-
-                      props.input_set_reload_edit_history(true);
 
                       //axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/delete_edit_record/${single_edit_record.id}`)
 

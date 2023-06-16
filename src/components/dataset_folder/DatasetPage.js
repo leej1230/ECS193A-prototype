@@ -70,7 +70,6 @@ function DatasetPage() {
 
       await axios.get(url).then((result) => {
         setDataset(result.data);
-        set_name_holder_loaded(true);
       });
     }
 
@@ -79,19 +78,37 @@ function DatasetPage() {
   }, []);
 
   useEffect(() => {
+    set_name_holder_loaded(true);
+  }, [dataset]);
 
-    const get_pats_info = async () => {
-      if( dataset &&  'name' in dataset && dataset.name !== null ){
-        // get all patients of a dataset
-        const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients_in_dataset/${dataset.name}`;
-  
-        // patient_information
-        await axios.get(patients_url).then((result) => {
-          set_patient_information(result.data);
-          set_gotPatientInfo(true);
-        });
-      }
+  const get_genetic_info = async () => {
+    if( dataset && 'name' in dataset && dataset.name !== null ){
+      const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${dataset.name}`;
+
+      await axios.get(gene_full_url).then((result) => {
+        console.log("get gene and patient data: ");
+        console.log(  result.data  );
+
+        set_gene_with_value_information( result.data );
+        set_gotGeneInfo(true);
+      })
     }
+  }
+
+  const get_pats_info = async () => {
+    if( (dataset &&  'name' in dataset && dataset.name !== null) ){
+      // get all patients of a dataset
+      const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients_in_dataset/${dataset.name}`;
+
+      // patient_information
+      await axios.get(patients_url).then((result) => {
+        set_patient_information(result.data);
+        set_gotPatientInfo(true);
+      });
+    }
+  }
+
+  useEffect(() => {
 
     get_pats_info();
 
@@ -99,23 +116,17 @@ function DatasetPage() {
 
   useEffect(() => {
 
-    const get_genetic_info = async () => {
-      if( dataset && 'name' in dataset && dataset.name !== null ){
-        const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${dataset.name}`;
-  
-        await axios.get(gene_full_url).then((result) => {
-          console.log("get gene and patient data: ");
-          console.log(  result.data  );
-  
-          set_gene_with_value_information( result.data );
-          set_gotGeneInfo(true);
-        })
-      }
-    }
-
     get_genetic_info();
     
   }, [dataset])
+
+  useEffect(() => {
+    if(reload_edits === true){
+      get_pats_info();
+      get_genetic_info();
+      set_reload_edits(false);
+    }
+  }, [reload_edits])
 
   useEffect(() => {
 
@@ -148,18 +159,6 @@ function DatasetPage() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset]);
-
-  useEffect(() => {
-    if(set_reload_edits == true){
-      setDatasetTableInputFormat(createDatasetFormatted());
-      setGeneIds(saveGeneIdArray());
-      setPatientIds(savePatientIdArray());
-
-      set_basic_info_loaded(true);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [set_reload_edits] );
 
   useEffect(() => {
     let simple_objs = []

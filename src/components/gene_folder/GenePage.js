@@ -482,7 +482,7 @@ function GenePage() {
 
     let filter_columns = Object.keys(cur_filters);
 
-    let patients_filtered = patient_information_expanded;
+    let patients_filtered = generatePatientTable(clone(patient_information_expanded));
     let isFiltered = false;
 
     for (let i = 0; i < filter_columns.length; i++) {
@@ -556,7 +556,7 @@ function GenePage() {
   const patientDataFilter = (cur_filters) => {
     let filter_columns = Object.keys(cur_filters);
 
-    let patients_filtered = patient_information_expanded;
+    let patients_filtered = generatePatientTable(clone(patient_information_expanded));
     let isFiltered = false;
 
     for (let i = 0; i < filter_columns.length; i++) {
@@ -607,9 +607,12 @@ function GenePage() {
     }
 
     if (isFiltered === true) {
+      console.log("patient table filter set ", patients_filtered)
       set_patient_data_table_filtered(patients_filtered)
     } else {
-      set_patient_data_table_filtered(patient_information_expanded)
+      let temp_filtered_list = generatePatientTable(clone(patient_information_expanded))
+      console.log("patient table filter set ", temp_filtered_list )
+      set_patient_data_table_filtered(temp_filtered_list)
     }
   }
 
@@ -702,7 +705,7 @@ function GenePage() {
                        {patient_table_loaded || patient_data_table_filtered ? 
                           (
                             <>
-                              {(dataset_rowType === "patient"  && (patient_data_table_filtered && patient_data_table_filtered.length > 0)) || (patient_data_table_filtered && patient_data_table_filtered.length > 0) ?
+                              {(dataset_rowType === "patient"  && (patient_data_table_filtered)) || (patient_information_expanded && patient_information_expanded.length > 0) ?
                                 (
                                   <div class="card shadow mb-4" id="display_filter_patients_gene">
                                     <div class="card-header py-3">

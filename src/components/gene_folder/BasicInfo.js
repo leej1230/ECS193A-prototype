@@ -38,6 +38,9 @@ function BasicInfo(props) {
                   (
                     <>
                       {Object.keys(props.input_gene).map((single_attr, attr_index) => {
+                        //console.log("within the gene basic info: ");
+                        //console.log(single_attr);
+                        //console.log(props.input_gene[single_attr]);
                         if (single_attr !== "description" && single_attr !== "dataset_name" && single_attr !== "name" && single_attr !== "id" && single_attr !== "patient_ids" && single_attr !== "gene_values") {
                           return <>
                             <br />
