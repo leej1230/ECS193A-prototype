@@ -988,6 +988,8 @@ class Database:
                     keys_attributes_list = list(cur_gene_obj.keys())
                     update_gene_obj = copy.deepcopy(cur_gene_obj)
 
+
+
                     gene = Database.gene_collection.find_one(
                                 {
                                     '$and': [
@@ -997,7 +999,7 @@ class Database:
                                 }
                             )
 
-                    print(gene)
+
 
                     patient_objects_list = None
                     gene_values_list = None
@@ -1028,6 +1030,7 @@ class Database:
                         update_gene_obj['gene_values'] = {
                             'arr': gene_values_list
                         }
+                    
 
                     Database.gene_collection.update_one(
                         {
@@ -1606,7 +1609,6 @@ class Database:
        
                 )
 
-                print(dataset.get_dataset_info())
 
                 # Serialize dataset, insert records into database, and increment counters
 

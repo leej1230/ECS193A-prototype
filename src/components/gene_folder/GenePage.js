@@ -160,7 +160,8 @@ function GenePage() {
 
   const generatePatientTable = (patients_info) => {
     if ( !patients_info || patients_info.length === 0 || !('patient_ids' in gene_data) || !gene_data || gene_data.patient_ids === null || !('gene_values' in gene_data) || gene_data.gene_values === null) {
-      return;
+      set_patient_columns([])
+      return [];
     }
 
     //var column_possibilities = ['patient_id', 'age', 'diabete', 'final_diagnosis', 'gender', 'hypercholesterolemia', 'hypertension', 'race']
@@ -391,11 +392,18 @@ function GenePage() {
     async function fetchGeneData() {
       await axios.get(URL).then((res) => {
 
-        setGene_data(clone(res.data));
+        if(res.data){
 
-        set_graph_table_filter_data(clone(res.data));
-        console.log("graph table filter set: ", res.data);
-        
+          setGene_data(clone(res.data));
+
+          set_graph_table_filter_data(clone(res.data));
+          console.log("graph table filter set: ", res.data);
+        } else {
+          setGene_data({});
+
+          set_graph_table_filter_data({});
+        }
+
         set_loaded_gene_info(true);
         set_gene_name_holder_loader(true);
 
@@ -447,6 +455,9 @@ function GenePage() {
             console.log("process patient table: ", some_result)
             set_patient_data_table_filtered(some_result)
 
+          } else {
+            set_patient_data_table_filtered([])
+            set_patient_information_expanded([])
           }
 
           
@@ -718,7 +729,7 @@ function GenePage() {
 
                                     <div class="row" id="table_options_outer">
                                       <div id="patient_table_area">
-                                        <BootstrapTable keyField='patient_name' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
+                                        <BootstrapTable keyField='patient_id' ref={n => patients_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={patient_data_table_filtered} columns={patient_columns} filter={filterFactory()} pagination={paginationFactory()} filterPosition="top" onTableChange={(type, newState) => { patientDataFilter(patients_table_node.current.filterContext.currFilters) }} />
                                       </div>
                                     </div>
                                   </div>
