@@ -142,7 +142,8 @@ function GenePage() {
   useEffect(() => {
     let some_result = generatePatientTable(patient_information_expanded);
     console.log("patients table setting: ", some_result)
-    set_patient_data_table_filtered(some_result)
+    set_patient_data_table_filtered(some_result);
+    set_graph_table_filter_data(some_result);
   }, [column_filter_types_arr, filter_types_states_arr, patient_information_expanded])
 
   const handleSelect = async (input_select_obj, input_col_name) => {
@@ -167,8 +168,6 @@ function GenePage() {
 
     // 'id' not need options
     var patient_columns_list = []
-
-    console.log("starting patient table: ", patients_info)
 
 
     if (dataset_rowType === "patient") {
@@ -393,7 +392,6 @@ function GenePage() {
       await axios.get(URL).then((res) => {
 
         setGene_data(clone(res.data));
-        set_graph_table_filter_data(res.data);
         
         set_loaded_gene_info(true);
         set_gene_name_holder_loader(true);
@@ -445,6 +443,8 @@ function GenePage() {
             let some_result = generatePatientTable(clone(res.data))
             console.log("process patient table: ", some_result)
             set_patient_data_table_filtered(some_result)
+
+            set_graph_table_filter_data(some_result);
 
           }
 
@@ -536,7 +536,7 @@ function GenePage() {
     }
 
     if (isFiltered === true) {
-      let new_patient_ids = []
+      /*let new_patient_ids = []
       let new_gene_vals = []
 
       for (let j = 0; patients_filtered && j < patients_filtered.length; j++) {
@@ -544,12 +544,14 @@ function GenePage() {
         new_gene_vals.push(patients_filtered[j]['gene_val'])
       }
 
-      let new_obj = { patient_ids: { arr: new_patient_ids }, gene_values: { arr: new_gene_vals } }
+      let new_obj = { patient_ids: { arr: new_patient_ids }, gene_values: { arr: new_gene_vals } }*/
 
 
-      set_graph_table_filter_data(new_obj)
+      set_graph_table_filter_data( patients_filtered )
+      console.log("filter graph: ", patients_filtered)
     } else {
-      set_graph_table_filter_data(gene_data)
+      set_graph_table_filter_data( generatePatientTable(clone(patient_information_expanded)) )
+      console.log("filter graph: ", patients_filtered)
     }
   };
 
@@ -655,11 +657,11 @@ function GenePage() {
                           </div>
                           <div class="card-body">
 
-                            {loaded_gene_info ?
+                            {patient_table_loaded || graph_table_filter_data ?
                               <>
-                                {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
+                                {(dataset_rowType === "patient"  && (graph_table_filter_data)) || (patient_information_expanded && patient_information_expanded.length > 0) ?
                                   (<div>
-                                    <SampleGraph categories={graph_table_filter_data.patient_ids["arr"]} data={graph_table_filter_data.gene_values["arr"]} type={graphType} />
+                                    <SampleGraph categories={graph_table_filter_data.patient_id} data={graph_table_filter_data.gene_value} type={graphType} />
                                     <div className='GraphType'>
                                       <FormControl margin='dense' fullWidth>
                                         <InputLabel id="GraphTypeLabel">Graph Type</InputLabel>
@@ -676,17 +678,15 @@ function GenePage() {
                                         </Select>
                                       </FormControl>
                                     </div>
+                                    
+                                    <div id='graph_filter'>
+                                      <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
+                                    </div>
+
                                   </div>
                                   ) : (
                                     <div> No Graph of Gene Values Since No Patient Data </div>
                                   )}
-                             
-                          
-                                  {graph_table_filter_data && ('patient_ids' in gene_data) && graph_table_filter_data.patient_ids && ('gene_values' in gene_data) && graph_table_filter_data.gene_values ?
-                                    <div id='graph_filter'>
-                                      <BootstrapTable keyField='id' ref={n => graph_table_node.current = n} remote={{ filter: true, pagination: false, sort: false, cellEdit: false }} data={[]} columns={patient_columns} filter={filterFactory()} filterPosition="top" onTableChange={(type, newState) => { graphDataFilter(graph_table_node.current.filterContext.currFilters) }} />
-                                    </div>
-                                    : <div></div>}
                               </>
 
                               : (
