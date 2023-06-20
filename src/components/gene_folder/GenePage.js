@@ -404,14 +404,11 @@ function GenePage() {
           set_graph_table_filter_data({});
         }
 
-        set_loaded_gene_info(true);
-        set_gene_name_holder_loader(true);
-
         console.log( "graph filter information: ", res.data );
       });
       await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
         setGeneExternalData(gene_ext.data);
-        set_basic_info_loaded( true );
+        
       });
 
 
@@ -485,6 +482,19 @@ function GenePage() {
     }
 
     set_basic_gene_info(temp_obj)
+  }, [gene_data])
+
+  useEffect(() => {
+    if(gene_external_data){
+      set_basic_info_loaded( true );
+    }
+  }, [gene_external_data])
+
+  useEffect(() => {
+    if( gene_data ){
+      set_gene_name_holder_loader(true);
+      set_loaded_gene_info(true);
+    }
   }, [gene_data])
 
   const graphDataFilter = (cur_filters) => {
@@ -672,9 +682,9 @@ function GenePage() {
                           </div>
                           <div class="card-body">
 
-                            {patient_table_loaded && graph_table_filter_data && patient_columns ?
+                            {patient_table_loaded ?
                               <>
-                                {(dataset_rowType === "patient"  && graph_table_filter_data) || (patient_information_expanded && patient_information_expanded.length > 0 ) ?
+                                { graph_table_filter_data && patient_columns && patient_columns.length > 0 && ( (dataset_rowType === "patient") || (patient_information_expanded && patient_information_expanded.length > 0 )) ?
                                   (<div>
                                     <SampleGraph categories={graph_table_filter_data["patient_ids"]["arr"]} data={graph_table_filter_data["gene_values"]["arr"]} type={graphType} />
                                     <div className='GraphType'>
@@ -717,10 +727,10 @@ function GenePage() {
                       </div>
                     </Tab>
                     <Tab eventKey="patients_list" title="Patient List">
-                       {patient_table_loaded && patient_data_table_filtered && patient_columns ? 
+                       {patient_table_loaded  ? 
                           (
                             <>
-                              {(dataset_rowType === "patient"  && (patient_data_table_filtered)) || (patient_information_expanded && patient_information_expanded.length > 0) ?
+                              {patient_data_table_filtered && patient_columns && patient_columns.length > 0 && ((dataset_rowType === "patient" ) || (patient_information_expanded && patient_information_expanded.length > 0)) ?
                                 (
                                   <div class="card shadow mb-4" id="display_filter_patients_gene">
                                     <div class="card-header py-3">
