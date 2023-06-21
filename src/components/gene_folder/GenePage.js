@@ -389,7 +389,7 @@ function GenePage() {
 
   // componentDidMount() {
   useEffect(() => {
-    async function fetchGeneData() {
+    async function fetchGeneData(input_first_part_name_gene) {
       await axios.get(URL).then((res) => {
 
         if(res.data){
@@ -406,17 +406,28 @@ function GenePage() {
 
         console.log( "graph filter information: ", res.data );
       });
-      await axios.get(`https://rest.ensembl.org/lookup/id/ENSG00000157764?expand=1;content-type=application/json`).then((gene_ext) => {
+      await axios.get(`https://rest.ensembl.org/lookup/id/${input_first_part_name_gene}?expand=1;content-type=application/json`).then((gene_ext) => {
         setGeneExternalData(gene_ext.data);
+
+        console.log("get the external data: ")
+        console.log(gene_ext.data)
         
+      }).catch(() => {
+        setGeneExternalData({});
       });
 
 
     }
 
 
-
-    fetchGeneData();
+    let first_part_name_gene = SAMPLE_NAME;
+    let dot_index_sample_name = first_part_name_gene.indexOf(".")
+    if( dot_index_sample_name >= 0 ){
+      first_part_name_gene = first_part_name_gene.substring(0, dot_index_sample_name);
+    }
+    console.log("sample name substring: ")
+    console.log(first_part_name_gene);
+    fetchGeneData(first_part_name_gene);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
