@@ -1262,6 +1262,69 @@ class Database:
             }
 
             return response_data
+        
+        def get_search_gene_by_other_name(request):
+            """Retrieves the name and ID of a particular number of genes in the gene collection in the database based on the keyword user input.
+
+            Args:
+                request: Contains the keyword user searched.
+
+            Returns:
+                dict: A dictionary containing the gene names, IDs, current page, and total pages.
+            """
+
+            search_word = request['search_word']
+            page = int(request['page_id']) - 1
+
+            numberofList = int(request['num_per_page'])
+
+            doc_count = 0
+
+            genes = []
+
+            if search_word.strip() == '' or search_word == " ":
+                doc_count = Database.gene_collection.count_documents({})
+                genes_full = Database.gene_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
+                )
+                '''
+                    .skip(numberofList * page)
+                    .limit(numberofList)
+                '''
+                genes = [gene for gene in genes_full]
+            else:
+                # Perform fuzzy matching using the search_word
+                fuzzy_results = []
+                all_genes = Database.gene_collection.find(
+                    {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
+                )
+                for gene in all_genes:
+                    ratio = fuzz.ratio(search_word, gene['name'])
+                    if ratio >= 10:
+                        fuzzy_results.append(
+                            (gene, ratio)
+                        )  # Store gene and ratio as a tuple
+
+                fuzzy_results.sort(
+                    key=operator.itemgetter(1), reverse=True
+                )  # Sort by ratio in descending order
+                doc_count = len(fuzzy_results)
+                genes = [
+                    gene[0] for gene in fuzzy_results
+                ]  # Extract the genes from the sorted list
+
+            genes = genes[(page * numberofList) : ((page + 1) * numberofList)]
+
+            json_data = loads(dumps(genes))
+            totalPages = math.ceil(doc_count / numberofList)
+
+            response_data = {
+                'genes': json_data,
+                'current_page': page + 1,
+                'total_pages': totalPages,
+            }
+
+            return response_data
 
         def post_gene_one(request):
             """Adds a single gene to the gene collection in the database.
