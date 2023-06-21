@@ -1299,11 +1299,12 @@ class Database:
                     {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
                 )
                 for gene in all_genes:
-                    ratio = fuzz.ratio(search_word, gene['name'])
-                    if ratio >= 10:
-                        fuzzy_results.append(
-                            (gene, ratio)
-                        )  # Store gene and ratio as a tuple
+                    if 'other__name___' in gene:
+                        ratio = fuzz.ratio(search_word, gene['other__name___'])
+                        if ratio >= 10:
+                            fuzzy_results.append(
+                                (gene, ratio)
+                            )  # Store gene and ratio as a tuple
 
                 fuzzy_results.sort(
                     key=operator.itemgetter(1), reverse=True

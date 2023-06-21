@@ -32,6 +32,11 @@ function GeneSearchPage() {
     set_search_type( input_select_obj )
   };
 
+  useEffect(() => {
+    console.log("search type: ")
+    console.log(searchType)
+  }, [searchType])
+
   return (
     <body id="page-top">
       <div id="wrapper">
@@ -59,7 +64,7 @@ function GeneSearchPage() {
                       className="select_dropdown_search_type"
                       value={searchType }
                       label="SearchType"
-                      onChange={(e) => { setSearchType(e.target.value) }}
+                      onChange={(e) => { setSearchType(e.target.value); }}
                     >
                       <MenuItem value={'Gene Name'}>Gene Name</MenuItem>
                       <MenuItem value={'Other Name'}>Other Name</MenuItem>
@@ -85,7 +90,7 @@ function GeneSearchPage() {
                 <div id="gene_search_results_display_container">
                   <div class="card shadow" id="gene_search_results_display">
 
-                    <GeneSearchResultsHolder input_search_keyword={searchInput} performSearch={clickedSearch} setPerformSearch={setClickedSearch} />
+                    <GeneSearchResultsHolder input_search_keyword={searchInput} performSearch={clickedSearch} setPerformSearch={setClickedSearch} input_search_type={searchType} />
 
                   </div>
                 </div>

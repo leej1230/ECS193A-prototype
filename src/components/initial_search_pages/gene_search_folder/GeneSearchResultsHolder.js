@@ -46,9 +46,18 @@ function GeneSearchResultsHolder(props) {
 
         console.log("look at page size and cur page: ", cur_page, " size: ", numPerPage);
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL
+        let url_for_search = `${process.env.REACT_APP_BACKEND_URL
+        }/api/gene_search/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
+        if(props.input_search_type === "Gene Name"){
+          url_for_search = `${process.env.REACT_APP_BACKEND_URL
           }/api/gene_search/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
+        } else {
+          url_for_search = `${process.env.REACT_APP_BACKEND_URL
+          }/api/gene_search_other_name/${search_input_for_url}/${cur_page.toString()}/${numPerPage.value.toString()}`
+        }
+
+        const response = await axios.get(
+          url_for_search
         );
         setSearchResult(response.data.genes);
 
