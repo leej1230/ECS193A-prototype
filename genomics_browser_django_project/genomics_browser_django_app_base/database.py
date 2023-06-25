@@ -35,7 +35,9 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 # from django.http.response import JsonResponse
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-
+"""
+A class with functions for operating on the MongoDB Database.
+"""
 class Database:
     client = get_connection()
     patient_collection = client['patients']
@@ -47,6 +49,9 @@ class Database:
     role_history_collection = client['role_histories']
     authorized_email_collection = client['authorized_emails']
 
+    """
+    A class with functions for operating and accessing data in the user collection.
+    """
     class Users:
         def get_user_one(request):
             """
@@ -115,6 +120,13 @@ class Database:
             Database.Counters.decrement_user_counter()
 
         def post_bookmarked_genes(request):
+            """
+            Adds a gene to the bookmark list for the user logged in.
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: gene_url  (the gene name to store)
+            """
             request_data = request['ctx'].POST.copy()
             user = Database.user_collection.find_one(
                 {'auth0_uid': request_data['user_id']}
@@ -139,6 +151,13 @@ class Database:
             Database.user_collection.update_one(query, update)
 
         def delete_bookmarked_genes(request):
+            """
+            Removes a gene from the bookmark list for the user logged in.
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: gene_url  (the gene name)
+            """
             request_data = request['ctx'].POST.copy()
             user = Database.user_collection.find_one(
                 {'auth0_uid': request_data['user_id']}
@@ -158,6 +177,13 @@ class Database:
             return updated_user['bookmarked_genes']
 
         def post_bookmarked_datasets(request):
+            """
+            Adds a dataset to the bookmark list for the user logged in.
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: dataset_url  (the dataset name to store)
+            """
             request_data = request['ctx'].POST.copy()
             user = Database.user_collection.find_one(
                 {'auth0_uid': request_data['user_id']}
@@ -174,6 +200,13 @@ class Database:
             Database.user_collection.update_one(query, update)
 
         def delete_bookmarked_datasets(request):
+            """
+            Removes a dataset from the bookmark list for the user logged in.
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: dataset_url  (the dataset name)
+            """
             request_data = request['ctx'].POST.copy()
             user = Database.user_collection.find_one(
                 {'auth0_uid': request_data['user_id']}
@@ -189,7 +222,13 @@ class Database:
             Database.user_collection.update_one(query, update)
 
         def get_edits_for_dataset(request):
-            """Get all edits for display"""
+            """
+            Get all edits for display
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: dataset_uname  (the dataset name for which to get the edits)
+            """
 
             data_request = json.loads(request['ctx'].body)
             
@@ -222,7 +261,14 @@ class Database:
             return json_data
 
         def delete_one_edit(request):
-            """Delete an edit record since undone likely"""
+            """
+            Delete an edit record since undone likely
+
+            Args:
+                string: user_id   (the unique key associated with the user in authentication)
+                string: dataset_uname  (the dataset name for which to get the edits)
+                int:    edit_record_id  (the id number related to the edit record)
+            """
             try:
                 data_request = json.loads(request['ctx'].body)
 
@@ -283,6 +329,14 @@ class Database:
             return updated_user['bookmarked_datasets']
 
         def update_role(request):
+            """
+            Update role for the user
+
+            Args:
+                string:    user_id   (the unique key associated with the user in authentication)
+                string:    role_label  (the key for the user role in the user document)
+                string:    value  (the value for the role_label)
+            """
             request_data = request['ctx'].POST.copy()
             user = Database.user_collection.find_one(
                 {'auth0_uid': request_data['user_uid']}
@@ -679,7 +733,9 @@ class Database:
         @staticmethod
         def get_log_all(request):
             """
-            Get all hisotry for changing logs
+            Get all history for changing logs
+            Returns:
+                array: The list of changes to role history
             """
             all_logs = Database.role_history_collection.find(
                 {}, {'_id': 0}
@@ -692,6 +748,12 @@ class Database:
         def post_log(request):
             """
             Add log to history
+
+            Args:
+                string:  request_user (the user that wants to do the change)
+                string: role_title (the key in the user document that related to role)
+                string: changed (the new value for the role)
+                string: changed_user (the user for whom the role needs to be changed)
             """
             try:
                 new_log = {
@@ -729,7 +791,7 @@ class Database:
             """Get all patients with a given gene ID from a specified dataset.
 
             Args:
-                request (dict): A dictionary containing the 'gene_id' and 'dataset_id' keys.
+                request (dict): A dictionary containing the 'gene_id' and 'dataset_name' keys.
 
             Returns:
                 list: A list of patient data objects matching the query.
@@ -776,7 +838,7 @@ class Database:
             """Get all patients from a specified dataset.
 
             Args:
-                request (dict): A dictionary containing the 'dataset_id' key.
+                request (dict): A dictionary containing the 'dataset_name' key.
 
             Returns:
                 list: A list of patient data objects matching the query.
@@ -855,9 +917,13 @@ class Database:
         @staticmethod
         def update_patients_many_list(request):
             """Update multiple patient records in the database.
+               Update any gene records in the database if modified for a patient.
+               If there is any edit to save, save edit record and the appropriate change to the database.
+               Do any undoes.
+
 
             Args:
-                request (list): A list of dictionaries containing patient data.
+                request (list): A list of dictionaries containing patient data, edits, undoes.
 
             Returns:
                 dict: HTTP 201 Created status message.
@@ -1115,7 +1181,7 @@ class Database:
             """Retrieves the data for a single gene from the gene collection in the database.
 
             Args:
-                request (dict): A dictionary containing the 'gene_id' and 'gene_name' fields.
+                request (dict): A dictionary containing the 'dataset_name' and 'gene_name' fields.
 
             Returns:
                 dict: A dictionary containing the gene data.
@@ -1168,7 +1234,7 @@ class Database:
             """Retrieves genes with the specified name and ID in the gene collection in the database.
 
             Args:
-                request: contains the name and id of the genes to be returned
+                request: contains the name and dataset_name of the genes to be returned
 
             Returns:
                 dict: A dictionary containing the full gene information
@@ -1207,7 +1273,7 @@ class Database:
                 request: Contains the keyword user searched.
 
             Returns:
-                dict: A dictionary containing the gene names, IDs, current page, and total pages.
+                dict: A dictionary containing the gene names, dataset_names, current page, and total pages.
             """
 
             search_word = request['search_word']
@@ -1299,12 +1365,13 @@ class Database:
                     {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
                 )
                 for gene in all_genes:
-                    if 'other__name___' in gene:
-                        ratio = fuzz.ratio(search_word, gene['other__name___'])
-                        if ratio >= 10:
-                            fuzzy_results.append(
-                                (gene, ratio)
-                            )  # Store gene and ratio as a tuple
+                    if 'other__name__col__' in gene:
+                        if str(gene['other__name__col__']) in gene:
+                            ratio = fuzz.ratio(search_word, gene[str(gene['other__name__col__'])])
+                            if ratio >= 10:
+                                fuzzy_results.append(
+                                    (gene, ratio)
+                                )  # Store gene and ratio as a tuple
 
                 fuzzy_results.sort(
                     key=operator.itemgetter(1), reverse=True
@@ -1356,7 +1423,7 @@ class Database:
             """Get all genes from a specified dataset.
 
             Args:
-                request (dict): A dictionary containing the 'dataset_id' key.
+                request (dict): A dictionary containing the 'dataset_name' key.
 
             Returns:
                 list: A list of gene data objects matching the query.
@@ -1379,6 +1446,14 @@ class Database:
             return json_data
 
         def get_seq_names(request):
+            """Get the mrna code sequence for a specific gene.
+
+            Args:
+                request (dict): A dictionary containing the 'gene_name' key.
+
+            Returns:
+                list: A dictionary with the string with the mrna code sequence
+            """
             gene_ensembl_id = "ENSG00000157764"
             with urllib.request.urlopen(
                 'https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues='
@@ -1406,6 +1481,14 @@ class Database:
     class Datasets:
         @staticmethod
         def get_row_type(request):
+            """Get the type of object that each row represents.
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_name' key.
+
+            Returns:
+                list: The specific row type.
+            """
             dataset = Database.dataset_collection.find_one(
                 {'name': request['dataset_name'] }
             )
@@ -1421,7 +1504,7 @@ class Database:
             """Get a single dataset with a given dataset name.
 
             Args:
-                request (dict): A dictionary containing the 'dataset_id' key.
+                request (dict): A dictionary containing the 'dataset_name' key.
 
             Returns:
                 dict: A serialized dataset object matching the query.
@@ -1433,9 +1516,10 @@ class Database:
 
             
             if dataset:
-                serial = DatasetSerializer(dataset, many=False)
+                #serial = DatasetSerializer(dataset, many=False)
 
-                json_data = loads(dumps(serial.data))
+                #json_data = loads(dumps(serial.data))
+                json_data = loads(dumps(dataset))
                 return json_data
    
             return {}
@@ -1563,7 +1647,7 @@ class Database:
             """Get the dataset name given dataset ID.
 
             Args:
-                request (dict): A dictionary containing the 'dataset_id' key.
+                request (dict): A dictionary containing the 'dataset_name' key.
 
             Returns:
                 dict: Just the dataset name
@@ -1649,6 +1733,8 @@ class Database:
                 date_created, '%a %b %d %Y %H:%M:%S'
             ).date()
 
+            other_name_col = request['ctx']['POST'].get('colOtherName')
+
             # check if dataset name already exist
             dataset_check_duplicate = Database.Datasets.get_dataset_one(
                 {'dataset_name': str( list(request['ctx']['FILES'].values())[0].name ).lower() }
@@ -1670,15 +1756,17 @@ class Database:
                     rowType=request['ctx']['POST'].get('rowType'),
                     date_created=date_created,
                     person_uploaded_dataset=person_uploaded,
+                    other_name_column=other_name_col
        
                 )
 
 
                 # Serialize dataset, insert records into database, and increment counters
 
-                serial = DatasetSerializer(dataset.get_dataset_info())
+                #serial = DatasetSerializer(dataset.get_dataset_info())
 
                 if len(dataset.get_patients()) > 0:
+                    ''''''
                     Database.Patients.post_patient_many(dataset.get_patients())
 
                 #cur_gene_cntr = Database.Counters.get_last_gene_counter()
@@ -1692,7 +1780,10 @@ class Database:
 
                 #Database.Counters.increment_gene_counter()
 
-                Database.dataset_collection.insert_one(serial.data)
+                print(dataset.get_dataset_info())
+
+                #Database.dataset_collection.insert_one(serial.data)
+                Database.dataset_collection.insert_one(loads(dumps(dataset.get_dataset_info())))
 
                 #Database.Counters.increment_dataset_counter()
                 return loads(dumps(status.HTTP_201_CREATED))
@@ -1847,6 +1938,12 @@ class Database:
 
         @staticmethod
         def update_dataset_one(request):
+            """Update the metadata for a dataset particular
+
+            Args:
+                request (dict): A dictionary containing the 'dataset_name', 'description', and 'urltoFile' keys.
+            """
+
             # dataset id mandatory, date created will exist, so POST will always be there
 
             try:
@@ -2083,6 +2180,12 @@ class Database:
 
     class Utils:
         def authorize_Email(request):
+            """Authorize the email. Add to authorized collection to avoid repeats.
+               This allows the user with the email to access information after signing up.
+
+            Args:
+                request (dict): A dictionary containing the 'email' key.
+            """
             email = json.loads(request['ctx'].body).get('email')
             email_query = {"email": email}
             isEmailRegistered = Database.authorized_email_collection.find_one(
@@ -2103,6 +2206,14 @@ class Database:
             return response_data
 
         def check_Email(request):
+            """Check if the email exists in the authorized database
+
+            Args:
+                request (dict): A dictionary containing the 'email' key.
+
+            Returns:
+                boolean:  whether the email exists already or not
+            """
             email = json.loads(request['ctx'].body).get('email')
             email_query = {"email": email}
             query_res = Database.authorized_email_collection.find_one(
@@ -2114,6 +2225,11 @@ class Database:
             return {"isExists": res}
 
         def remove_Email(request):
+            """Remove the email from the authorized collection and the user collection.
+
+            Args:
+                request (dict): A dictionary containing the 'email' key.
+            """
             email = request['ctx'].POST['email']
             delete_query = {"email": email}
             try:
