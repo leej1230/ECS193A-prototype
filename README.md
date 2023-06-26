@@ -82,3 +82,6 @@ Windows & Mac: deactivate
 ### Run Test
 1. Change directory to genomics_browser_django_project/
 2. run: python manage.py test
+
+### Documentation
+Click [here](https://docs.google.com/document/d/1hcC7I3j7zIeZzKS3vapvWQNSpuW-f43TKsUm23EZ6ec/edit?usp=sharing) to go to documentation page. 
