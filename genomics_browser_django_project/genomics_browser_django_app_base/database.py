@@ -1362,8 +1362,9 @@ class Database:
                 # Perform fuzzy matching using the search_word
                 fuzzy_results = []
                 all_genes = Database.gene_collection.find(
-                    {}, {'_id': 0, 'name': 1, 'dataset_name': 1}
+                    {}, {'_id': 0}
                 )
+
                 for gene in all_genes:
                     if 'other__name__col__' in gene:
                         if str(gene['other__name__col__']) in gene:
