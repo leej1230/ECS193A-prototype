@@ -159,8 +159,8 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "update_dataset_one"},
     ),
-    re_path(
-        r'^api/seq/names',
+    path(
+        'api/seq/names/<str:gene_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_seq_names"},
     ),

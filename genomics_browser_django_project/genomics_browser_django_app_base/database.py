@@ -1445,6 +1445,7 @@ class Database:
 
             return json_data
 
+        
         def get_seq_names(request):
             """Get the mrna code sequence for a specific gene.
 
@@ -1454,7 +1455,11 @@ class Database:
             Returns:
                 list: A dictionary with the string with the mrna code sequence
             """
-            gene_ensembl_id = "ENSG00000157764"
+            
+            #gene_ensembl_id = "ENSG00000157764"
+
+            gene_ensembl_id = str(request['gene_name'])
+
             with urllib.request.urlopen(
                 'https://biodbnet.abcc.ncifcrf.gov/webServices/rest.php/biodbnetRestApi.json?method=db2db&input=ensemblgeneid&inputValues='
                 + gene_ensembl_id

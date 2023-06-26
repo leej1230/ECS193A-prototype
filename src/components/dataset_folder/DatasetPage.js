@@ -163,7 +163,7 @@ function DatasetPage() {
   useEffect(() => {
     let simple_objs = []
     if ( !gene_with_value_information || gene_with_value_information.length === 0) {
-      simple_objs = [{ 'id': 0, 'gene_id': "NONE" }];
+      simple_objs = null;
     } else {
       for (let i = 0; i < gene_with_value_information.length; i++) {
         simple_objs.push({ 'id': i + 1, 'dataset_name': gene_with_value_information[i].dataset_name, 'gene_id': gene_with_value_information[i].name })
@@ -338,7 +338,7 @@ function DatasetPage() {
                     <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} input_basic_info_loaded={ basic_info_loaded && datasetTableInputFormat } />
                   </Tab>
                   <Tab eventKey="genes_list" title="Genes List">
-                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} input_gene_list_loaded={gene_list_table_loaded} />
+                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded ? gene_information_expanded : {}} input_gene_list_loaded={gene_list_table_loaded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
                     <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} input_edit_dataset_loaded={edit_table_loaded && together_patient_gene_information} />

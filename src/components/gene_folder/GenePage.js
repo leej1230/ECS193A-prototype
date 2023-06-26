@@ -394,10 +394,26 @@ function GenePage() {
 
         if(res.data){
 
-          setGene_data(clone(res.data));
+          let cur_res_data = clone(res.data);
 
-          set_graph_table_filter_data(clone(res.data));
-          console.log("graph table filter set: ", res.data);
+          let keys_list = Object.keys( cur_res_data );
+          for (let i = 0; i <  keys_list.length; i++){
+            let cur_attr_key = keys_list[i]
+            if(cur_attr_key !== "gene_values" && cur_attr_key !== "gene_ids" && cur_attr_key !== "patient_ids"){
+              if( (cur_res_data[cur_attr_key]).constructor == Object ){
+                cur_res_data[cur_attr_key] = JSON.stringify(cur_res_data[cur_attr_key])
+              } else if(Array.isArray(cur_res_data[cur_attr_key])){
+                cur_res_data[cur_attr_key] = cur_res_data[cur_attr_key].toString()
+              }
+            }
+          }
+
+          setGene_data(cur_res_data);
+
+          set_basic_gene_info(cur_res_data);
+
+          set_graph_table_filter_data(clone(cur_res_data));
+          console.log("graph table filter set: ", cur_res_data);
         } else {
           setGene_data({});
 
@@ -407,10 +423,24 @@ function GenePage() {
         console.log( "graph filter information: ", res.data );
       });
       await axios.get(`https://rest.ensembl.org/lookup/id/${input_first_part_name_gene}?expand=1;content-type=application/json`).then((gene_ext) => {
-        setGeneExternalData(gene_ext.data);
+        
+        let temp_res_data = clone(gene_ext.data)
+        let keys_list = Object.keys( temp_res_data );
+        for (let i = 0; i <  keys_list.length; i++){
+          let cur_attr_key = keys_list[i]
+          if(cur_attr_key !== "gene_values" && cur_attr_key !== "gene_ids" && cur_attr_key !== "patient_ids"){
+            if( (temp_res_data[cur_attr_key]).constructor == Object ){
+              temp_res_data[cur_attr_key] = JSON.stringify(temp_res_data[cur_attr_key])
+            } else if(Array.isArray(temp_res_data[cur_attr_key])){
+              temp_res_data[cur_attr_key] = temp_res_data[cur_attr_key].toString()
+            }
+          }
+        }
+      
+        setGeneExternalData(temp_res_data);
 
         console.log("get the external data: ")
-        console.log(gene_ext.data)
+        console.log(temp_res_data)
         
       }).catch(() => {
         setGeneExternalData({});
@@ -451,15 +481,34 @@ function GenePage() {
   useEffect(() => {
     async function fetchPatientsData() {
 
-      if (gene_data && 'dataset_name' in gene_data && gene_data.dataset_name != null) {
+      if (gene_data && 'dataset_name' in gene_data && gene_data.dataset_name != null && dataset_rowType.length > 0) {
 
         const patientsDataAPIURL = `${process.env.REACT_APP_BACKEND_URL}/api/patients/${SAMPLE_NAME}/${SAMPLE_DATASET_NAME}`
         await axios.get(patientsDataAPIURL).then((res) => {
 
           if (res.data &&  res.data.length > 0) {
-            console.log("fetch patient stuff: ", res.data);
-            set_patient_information_expanded(res.data);
-            let some_result = generatePatientTable(clone(res.data))
+
+            let temp_res_data = clone(res.data)
+            for( let j = 0; j < temp_res_data.length; j++ ){
+              let cur_pat_obj = temp_res_data[j]
+              let keys_list = Object.keys( cur_pat_obj );
+              for (let i = 0; i <  keys_list.length; i++){
+                let cur_attr_key = keys_list[i]
+                if(cur_attr_key !== "gene_values" && cur_attr_key !== "gene_ids" && cur_attr_key !== "patient_ids"){
+                  if( (cur_pat_obj[cur_attr_key]).constructor == Object ){
+                    cur_pat_obj[cur_attr_key] = JSON.stringify(cur_pat_obj[cur_attr_key])
+                  } else if(Array.isArray(cur_pat_obj[cur_attr_key])){
+                    cur_pat_obj[cur_attr_key] = cur_pat_obj[cur_attr_key].toString()
+                  }
+                }
+              }
+
+              temp_res_data[j] = cur_pat_obj;
+            }
+
+            console.log("fetch patient stuff: ", temp_res_data);
+            set_patient_information_expanded(temp_res_data);
+            let some_result = generatePatientTable(clone(temp_res_data))
             console.log("process patient table: ", some_result)
             set_patient_data_table_filtered(some_result)
 
@@ -473,8 +522,8 @@ function GenePage() {
 
       }
 
-      console.log("got here!!!")
-          set_patient_table_loaded(true);
+      console.log("got here!!!");
+      set_patient_table_loaded(true);
     }
 
     fetchPatientsData()
@@ -482,7 +531,7 @@ function GenePage() {
   }, [dataset_rowType, loaded_gene_info])
 
 
-  useEffect(() => {
+  {/*useEffect(() => {
     let temp_obj = clone(gene_data ?  gene_data : {})
     let list_attr = Object.keys(temp_obj)
     for (let i = 0; i < list_attr.length; i++) {
@@ -493,7 +542,7 @@ function GenePage() {
     }
 
     set_basic_gene_info(temp_obj)
-  }, [gene_data])
+  }, [gene_data])*/}
 
   useEffect(() => {
     if(gene_external_data){
@@ -780,7 +829,7 @@ function GenePage() {
                           )}
                       </Tab>
                     <Tab eventKey="animation" title="Animation">
-                      <GeneSequenceAnimation  />
+                      <GeneSequenceAnimation gene_name={gene_data && 'name' in gene_data ? gene_data.name : "" } />
                     </Tab>
                   </Tabs>
                 </div>
@@ -795,7 +844,7 @@ function GenePage() {
                   <span>Copyright &copy; Your Website 2021</span>
                 </div>
               </div>
-            </footer>*/}
+              </footer>*/}
 
           </div>
     

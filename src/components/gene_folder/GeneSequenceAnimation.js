@@ -11,6 +11,8 @@ import TableRow from "@material-ui/core/TableRow";
 
 import { CircularProgress } from '@mui/material';
 
+import { clone } from "ramda";
+
 import "../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css"
 import "../bootstrap_gene_page/css/sb-admin-2.min.css"
 
@@ -49,13 +51,21 @@ function breakUpCode(code_str) {
 
 function GeneSequenceAnimation(props){
 
-    const [gene_code_info, set_gene_code_info] = useState({ code: ["mrna"] });
+    // { code: ["mrna"] }
+    const [gene_code_info, set_gene_code_info] = useState(null);
     const [sequence_loaded, set_sequence_loaded] = useState(false);
 
     useEffect(() => {
         async function fetchSeqName() {
+
+          let temp_gene_name = clone(String(props.gene_name))
+
+          let dot_index = props.gene_name.indexOf(".")
+          if(dot_index >= 0){
+            temp_gene_name = temp_gene_name.substring(0, dot_index)
+          }
     
-          const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names`);
+          const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seq/names/${temp_gene_name}`);
           console.log(resp);
           console.log("seq names");
           var data_code = resp.data;
@@ -69,11 +79,16 @@ function GeneSequenceAnimation(props){
           }
           set_gene_code_info(data_code);
           console.log(data_code);
-
-          set_sequence_loaded(true);
+          
         }
-        fetchSeqName()
-      }, []);
+
+        fetchSeqName().catch(() => {
+          console.log("some problem and could not get sequence")
+        })
+
+        set_sequence_loaded(true);
+        
+      }, [props.gene_name]);
 
     return(
         <div class="col-xl" id="gene_animation">
@@ -85,33 +100,37 @@ function GeneSequenceAnimation(props){
               </div>
 
               <div class="card-body" >
-                <TableContainer style={{ width: '100%', height: '500px', overflow: 'scroll' }}>
+                {   gene_code_info ?
+                    <TableContainer style={{ width: '100%', height: '500px', overflow: 'scroll' }}>
 
-                <Table style={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                    </TableHead>
-                    <TableBody>
-                    {
-                        gene_code_info.code.map(function (item, row_i) {
-                        return <TableRow key={row_i}>
-                            <TableCell>
-                            
-                            <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
-                                return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
-                                {code_str}
-                                </div>
-                            })}</div>
+                      <Table style={{ minWidth: 650 }} aria-label="simple table">
+                          <TableHead>
+                          </TableHead>
+                          <TableBody>
+                          {
+                              gene_code_info.code.map(function (item, row_i) {
+                              return <TableRow key={row_i}>
+                                  <TableCell>
+                                  
+                                  <div className="codeRow" >{breakUpCode(item).map(function (code_str, i) {
+                                      return <div className="codeCard" style={{ backgroundColor: getColor(i) }}>
+                                      {code_str}
+                                      </div>
+                                  })}</div>
 
-                            </TableCell>
-                            
-                        </TableRow>
+                                  </TableCell>
+                                  
+                              </TableRow>
 
-                        })
-                    }
-                    </TableBody>
-                </Table>
+                              })
+                          }
+                          </TableBody>
+                      </Table>
 
-                </TableContainer>
+                      </TableContainer>
+                      :
+                      <>No code available</>
+                  }
               </div>
             </div>
 
