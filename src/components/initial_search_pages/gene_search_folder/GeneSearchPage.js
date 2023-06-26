@@ -55,6 +55,10 @@ function GeneSearchPage() {
                   <h3 class="h3 text-gray-800">Gene Search</h3>
                 </div>
 
+                <p>
+                Only if the column of the "other name" is specified, then the gene search by "Other Name" will work and show those genes in the results.
+                </p>
+
                 <div className='SearchType search_type_select'>
                   <FormControl margin='dense' fullWidth id="search_type_form">
                     <InputLabel id="SearchTypeLabel">Search By</InputLabel>

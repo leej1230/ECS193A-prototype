@@ -130,6 +130,10 @@ function UploadDataset() {
                     </h5>
                 </div>
                 <div class="card-body">
+                    <p>Instructions: The file is required. The description and url are optional. The row type is mandatory in order to know how to process the csv file. 
+                        The gene code will always be 'ENSG' so there is no input for it. The patient code is optional if the row type is genes, since there may or may not be patients. But if
+                        the row type is patients, then there must be patients, so patient code is required then. The "Other Name" column is optional. Some datasets may have another
+                        name specified for genes. Only if the column of the "other name" is specified, then the gene search by "Other Name" will work and show those genes in the results.</p>
                     <form>
                         <div class="form-group">
                             <div class="mb-3">
