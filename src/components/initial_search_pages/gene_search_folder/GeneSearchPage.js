@@ -4,6 +4,8 @@ import "./GeneSearchPage.css";
 
 import SliderGene from "./SliderGene";
 
+import { clone } from "ramda";
+
 import DashboardSidebar from "../../dashboard_side/dashboardSidebar";
 import GeneSearchResultsHolder from "./GeneSearchResultsHolder";
 
@@ -19,10 +21,13 @@ import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 
 const options_select = [{value: "Gene Name", label: "Gene Name"},{value: "Other Name", label: "Other Name"}]
 
+var searchInput = " ";
+
 function GeneSearchPage() {
   
   //   Space so that user can run "blank" search
-  const [searchInput, setSearchInput] = useState(" ");
+  
+  const [inputUpdated, setInputUpdated] = useState(" ");
   const [clickedSearch, setClickedSearch] = useState(false);
 
   const [search_type, set_search_type] = useState({value: "Gene Name", label: "Gene Name"})
@@ -35,7 +40,7 @@ function GeneSearchPage() {
   useEffect(() => {
     console.log("search type: ")
     console.log(searchType)
-  }, [searchType])
+  }, [searchType]);
 
   return (
     <body id="page-top">
@@ -79,7 +84,7 @@ function GeneSearchPage() {
                 <div className="search" id="gene_search_input">
                   <TextField
                     id="input_text_box_gene"
-                    onChange={(e) => setSearchInput(e.target.value)}
+                    onChange={(e) => {searchInput = e.target.value}}
                     variant="outlined"
                     fullWidth
                     fullHeight

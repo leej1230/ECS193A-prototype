@@ -91,7 +91,7 @@ function GeneSearchResultsHolder(props) {
           setIsMounted(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [listPage, props.input_search_keyword]);
+      }, [listPage]);
 
   useEffect(() => {
     if(selectChanged == true){
