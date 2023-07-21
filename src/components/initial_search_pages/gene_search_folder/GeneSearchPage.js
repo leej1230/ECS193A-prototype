@@ -4,17 +4,43 @@ import "./GeneSearchPage.css";
 
 import SliderGene from "./SliderGene";
 
+import { clone } from "ramda";
+
 import DashboardSidebar from "../../dashboard_side/dashboardSidebar";
 import GeneSearchResultsHolder from "./GeneSearchResultsHolder";
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
+import {default as SelectDropDown} from "react-select";
 
 import "../../bootstrap_gene_page/vendor/fontawesome-free/css/all.min.css";
 import "../../bootstrap_gene_page/css/sb-admin-2.min.css";
 
+const options_select = [{value: "Gene Name", label: "Gene Name"},{value: "Other Name", label: "Other Name"}]
+
+var searchInput = " ";
+
 function GeneSearchPage() {
   
   //   Space so that user can run "blank" search
-  const [searchInput, setSearchInput] = useState(" ");
+  
+  const [inputUpdated, setInputUpdated] = useState(" ");
   const [clickedSearch, setClickedSearch] = useState(false);
+
+  const [search_type, set_search_type] = useState({value: "Gene Name", label: "Gene Name"})
+  const [ searchType , setSearchType ] = useState("Gene Name");
+
+  const handleSelect = async (input_select_obj) => {
+    set_search_type( input_select_obj )
+  };
+
+  useEffect(() => {
+    console.log("search type: ")
+    console.log(searchType)
+  }, [searchType]);
 
   return (
     <body id="page-top">
@@ -34,16 +60,36 @@ function GeneSearchPage() {
                   <h3 class="h3 text-gray-800">Gene Search</h3>
                 </div>
 
+                <p>
+                Only if the column of the "other name" is specified, then the gene search by "Other Name" will work and show those genes in the results.
+                </p>
+
+                <div className='SearchType search_type_select'>
+                  <FormControl margin='dense' fullWidth id="search_type_form">
+                    <InputLabel id="SearchTypeLabel">Search By</InputLabel>
+                    <Select
+                      labelId="SearchTypeLabel"
+                      id="SearchTypeSelect"
+                      className="select_dropdown_search_type"
+                      value={searchType }
+                      label="SearchType"
+                      onChange={(e) => { setSearchType(e.target.value); }}
+                    >
+                      <MenuItem value={'Gene Name'}>Gene Name</MenuItem>
+                      <MenuItem value={'Other Name'}>Other Name</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+
                 <div className="search" id="gene_search_input">
                   <TextField
                     id="input_text_box_gene"
-                    onChange={(e) => setSearchInput(e.target.value)}
+                    onChange={(e) => {searchInput = e.target.value}}
                     variant="outlined"
                     fullWidth
                     fullHeight
                     label="Search by gene names or dataset name"
-                  />
-                  
+                  />    
 
                   <button type="submit" onClick={ (e) => { setClickedSearch(true) }} class="btn btn-primary" id="search_gene_button" aria-label="search">
                     <i class="fas fa-search"></i>
@@ -53,7 +99,7 @@ function GeneSearchPage() {
                 <div id="gene_search_results_display_container">
                   <div class="card shadow" id="gene_search_results_display">
 
-                    <GeneSearchResultsHolder input_search_keyword={searchInput} performSearch={clickedSearch} setPerformSearch={setClickedSearch} />
+                    <GeneSearchResultsHolder input_search_keyword={searchInput} performSearch={clickedSearch} setPerformSearch={setClickedSearch} input_search_type={searchType} />
 
                   </div>
                 </div>

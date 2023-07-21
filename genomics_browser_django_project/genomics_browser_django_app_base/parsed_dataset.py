@@ -7,7 +7,7 @@ import numpy as np
 import math
 import csv
 
-class ParsedDataset : 
+class ParsedDataset: 
     def __init__(self, *args, **kwargs) : 
         self.__dict__.update(kwargs)
         # self.output_csv = out_csv_path
@@ -29,6 +29,7 @@ class ParsedDataset :
                 # must have at least one column where all rows start with gene code
                 col_opts = list(self.df.columns)
                 for col_option_name in col_opts:
+
                     temp_list = self.df[col_option_name].tolist()
                     mapping_check = list(map(lambda x: True if ( (len(str(x)) >= len(self.geneCode) and str(x)[0:len(self.geneCode)] == self.geneCode ) ) else False , temp_list))
                     all_follow = all(truth_val == True for truth_val in mapping_check)
@@ -108,8 +109,8 @@ class ParsedDataset :
     def get_header(self):
         return list(self.df.columns.values)
     
-    def get_column_values(self, columns):
-        return self.df[columns].values.tolist()
+    def get_column_values(self, column):
+        return self.df[column].values.tolist()
     
     def get_column_starting_with(self, start_string):
         if start_string == None or start_string == "":
@@ -136,11 +137,6 @@ class ParsedDataset :
         if column_name is None:
             return []
         return self.get_column_values(column_name)
-
-    def get_patient_data(self, patient_id) :
-        if self.patientCode == "":
-            return []
-        return self.df.loc[self.df[self.get_column_starting_with(self.patientCode)] == patient_id]
     
     '''def get_patient_gene_data(self, patient_id) : 
         if self.patientCode == "":
@@ -175,12 +171,13 @@ class ParsedDataset :
                 'patient_ids': json.dumps({'arr': patient_ids}),
                 'gene_id_count': int(gene_ids_count),
                 'patient_id_count': int(patient_ids_count),
-                'date_created': self.date_created,
+                'date_created': str(self.date_created),
                 'url': self.url,
                 'rowType': self.rowType,
                 'person_uploaded_dataset': self.person_uploaded_dataset,
                 'geneCode': self.geneCode,
                 'patientCode': self.patientCode,
+                'other__name__col__': self.other_name_column
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -200,12 +197,13 @@ class ParsedDataset :
                 'patient_ids': json.dumps({'arr': patient_ids}),
                 'gene_id_count': int(gene_ids_count),
                 'patient_id_count': int(patient_ids_count),
-                'date_created': self.date_created,
+                'date_created': str(self.date_created),
                 'url': self.url,
                 'rowType': self.rowType,
                 'person_uploaded_dataset': self.person_uploaded_dataset,
                 'geneCode': self.geneCode,
-                'patientCode': self.patientCode
+                'patientCode': self.patientCode,
+                'other__name__col__': self.other_name_column
             }
             if type(temp_dataset['patient_ids']) == str:
                 temp_dataset['patient_ids'] = json.loads(temp_dataset['patient_ids'])
@@ -228,7 +226,8 @@ class ParsedDataset :
                 "dataset_name": str(self.name).lower(),
                 "name": str(gene_names[i]).upper(),
                 "patient_ids": json.loads(json.dumps({"arr": patient_ids})),
-                "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()}))
+                "gene_values": json.loads(json.dumps({"arr": gene_values.iloc[i].tolist()})),
+                'other__name__col__': self.other_name_column
             } for i in range(len(gene_names))]
         else:
             gene_names = self.get_all_genes_data()
@@ -247,7 +246,8 @@ class ParsedDataset :
                         "dataset_name": str(self.name).lower(),
                         "name": str(gene_names[i]).upper(),
                         "patient_ids": json.loads(json.dumps({"arr": patient_columns})),
-                        "gene_values": self.get_gene_values_for_patient(i,gene_values) 
+                        "gene_values": self.get_gene_values_for_patient(i,gene_values),
+                        'other__name__col__': self.other_name_column
                         # traverse through all columes excepet the patient and gene columns
                     }
                 

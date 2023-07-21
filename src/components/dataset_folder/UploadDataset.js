@@ -24,6 +24,7 @@ function UploadDataset() {
     const [state, setState] = useState(false);
     const [geneCode, setgeneCode] = useState("ENSG");
     const [patientCode, setpatientCode] = useState("");
+    const [colOtherName, setColOtherName] = useState("");
     const [rowType, setrowType] = useState("");
     const [file_err_msg, set_file_err_msg] = useState(false);
     const [patient_code_err_msg, set_patient_code_err_msg] = useState(false);
@@ -86,6 +87,7 @@ function UploadDataset() {
         formData.append('geneCode', geneCode);
         formData.append('patientCode', patientCode);
         formData.append('rowType', rowType);
+        formData.append('colOtherName',colOtherName);
         formData.append('nameFull' , `${userMetadata.given_name}${" "}${userMetadata.family_name}`);
 
         const config = {
@@ -128,6 +130,10 @@ function UploadDataset() {
                     </h5>
                 </div>
                 <div class="card-body">
+                    <p>Instructions: The file is required. The file name needs to be unique. The file name will be converted to lowercase, so it needs to be unique in that lowercase sense. The description and url are optional. The row type is mandatory in order to know how to process the csv file. 
+                        The gene code will always be 'ENSG' so there is no input for it. The patient code is optional if the row type is genes, since there may or may not be patients. But if
+                        the row type is patients, then there must be patients, so patient code is required then. The "Other Name" column is optional. Some datasets may have another
+                        name specified for genes. Only if the column of the "other name" is specified, then the gene search by "Other Name" will work and show those genes in the results.</p>
                     <form>
                         <div class="form-group">
                             <div class="mb-3">
@@ -177,6 +183,10 @@ function UploadDataset() {
                         <div className="form-group">
                             <label htmlFor="patientCode">Patient Code {patient_code_err_msg === true ? <p style={{color:'red', display: "inline-block"}}>&nbsp; &nbsp; *Required</p> : <></>}</label>
                             <input type="text" required className="form-control" id="patientCode" onChange={(e) => setpatientCode(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="col_other_name">"Other Name" Column</label>
+                            <input type="text" required className="form-control" id="col_other_name" onChange={(e) => setColOtherName(e.target.value)} />
                         </div>
                         <button
                             type="button"

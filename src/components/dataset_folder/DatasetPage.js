@@ -70,7 +70,6 @@ function DatasetPage() {
 
       await axios.get(url).then((result) => {
         setDataset(result.data);
-        set_name_holder_loaded(true);
       });
     }
 
@@ -79,19 +78,37 @@ function DatasetPage() {
   }, []);
 
   useEffect(() => {
+    set_name_holder_loaded(true);
+  }, [dataset]);
 
-    const get_pats_info = async () => {
-      if( dataset &&  'name' in dataset && dataset.name !== null ){
-        // get all patients of a dataset
-        const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients_in_dataset/${dataset.name}`;
-  
-        // patient_information
-        await axios.get(patients_url).then((result) => {
-          set_patient_information(result.data);
-          set_gotPatientInfo(true);
-        });
-      }
+  const get_genetic_info = async () => {
+    if( dataset && 'name' in dataset && dataset.name !== null ){
+      const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${dataset.name}`;
+
+      await axios.get(gene_full_url).then((result) => {
+        console.log("get gene and patient data: ");
+        console.log(  result.data  );
+
+        set_gene_with_value_information( result.data );
+        set_gotGeneInfo(true);
+      })
     }
+  }
+
+  const get_pats_info = async () => {
+    if( (dataset &&  'name' in dataset && dataset.name !== null) ){
+      // get all patients of a dataset
+      const patients_url = `${process.env.REACT_APP_BACKEND_URL}/api/patients_in_dataset/${dataset.name}`;
+
+      // patient_information
+      await axios.get(patients_url).then((result) => {
+        set_patient_information(result.data);
+        set_gotPatientInfo(true);
+      });
+    }
+  }
+
+  useEffect(() => {
 
     get_pats_info();
 
@@ -99,23 +116,17 @@ function DatasetPage() {
 
   useEffect(() => {
 
-    const get_genetic_info = async () => {
-      if( dataset && 'name' in dataset && dataset.name !== null ){
-        const gene_full_url = `${process.env.REACT_APP_BACKEND_URL}/api/genes_in_dataset/${dataset.name}`;
-  
-        await axios.get(gene_full_url).then((result) => {
-          console.log("get gene and patient data: ");
-          console.log(  result.data  );
-  
-          set_gene_with_value_information( result.data );
-          set_gotGeneInfo(true);
-        })
-      }
-    }
-
     get_genetic_info();
     
   }, [dataset])
+
+  useEffect(() => {
+    if(reload_edits === true){
+      get_pats_info();
+      get_genetic_info();
+      set_reload_edits(false);
+    }
+  }, [reload_edits])
 
   useEffect(() => {
 
@@ -150,21 +161,9 @@ function DatasetPage() {
   }, [dataset]);
 
   useEffect(() => {
-    if(set_reload_edits == true){
-      setDatasetTableInputFormat(createDatasetFormatted());
-      setGeneIds(saveGeneIdArray());
-      setPatientIds(savePatientIdArray());
-
-      set_basic_info_loaded(true);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [set_reload_edits] );
-
-  useEffect(() => {
     let simple_objs = []
     if ( !gene_with_value_information || gene_with_value_information.length === 0) {
-      simple_objs = [{ 'id': 0, 'gene_id': "NONE" }];
+      simple_objs = null;
     } else {
       for (let i = 0; i < gene_with_value_information.length; i++) {
         simple_objs.push({ 'id': i + 1, 'dataset_name': gene_with_value_information[i].dataset_name, 'gene_id': gene_with_value_information[i].name })
@@ -339,7 +338,7 @@ function DatasetPage() {
                     <DatasetBasicInfo input_datasetTableInputFormat={datasetTableInputFormat} input_dataset={dataset} input_basic_info_loaded={ basic_info_loaded && datasetTableInputFormat } />
                   </Tab>
                   <Tab eventKey="genes_list" title="Genes List">
-                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded} input_gene_list_loaded={gene_list_table_loaded} />
+                    <DatasetGenesListTable input_expanded_gene_info={gene_information_expanded ? gene_information_expanded : {}} input_gene_list_loaded={gene_list_table_loaded} />
                   </Tab>
                   <Tab eventKey="edit_dataset" title="Edit Dataset">
                     <DatasetEditTable input_dataset_name={dataset && 'name' in dataset && dataset.name !== null ? dataset.name : ""} row_type={dataset && 'rowType' in dataset ? dataset.rowType : ""} input_patient_code={dataset && 'patientCode' in dataset ? dataset.patientCode : "" } input_together_patient_gene_information={together_patient_gene_information} input_set_together_patient_gene_information={set_together_patient_gene_information} input_displayHistoryTable={displayHistoryTable} input_set_displayHistoryTable={setDisplayHistoryTable} input_set_reload_history={set_reload_edits} input_edit_dataset_loaded={edit_table_loaded && together_patient_gene_information} />

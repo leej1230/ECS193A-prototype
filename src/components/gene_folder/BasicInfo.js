@@ -38,13 +38,17 @@ function BasicInfo(props) {
                   (
                     <>
                       {Object.keys(props.input_gene).map((single_attr, attr_index) => {
-                        if (single_attr !== "description" && single_attr !== "dataset_name" && single_attr !== "name" && single_attr !== "id" && single_attr !== "patient_ids" && single_attr !== "gene_values") {
+                        //console.log("within the gene basic info: ");
+                        //console.log(single_attr);
+                        //console.log(props.input_gene[single_attr]);
+                        
+                        if (single_attr !== "description" && single_attr !== "dataset_name" && single_attr !== "name" && single_attr !== "id" && single_attr !== "patient_ids" && single_attr !== "gene_values" ) {
                           return <>
                             <br />
                             <div >
                                 <h5 class="dataset_subheader">{single_attr} </h5>
                                 <hr class="line_div_category_header_content" />
-                                <p class="dataset_subcontent">{props.input_gene[single_attr] ? props.input_gene[single_attr] : ""}</p>
+                                <p class="dataset_subcontent">{props.input_gene[single_attr] ? ( (props.input_gene[single_attr]).constructor == Object  ? JSON.stringify(props.input_gene[single_attr]) :  ( Array.isArray(props.input_gene[single_attr]) ? (props.input_gene[single_attr]).toString() : props.input_gene[single_attr] ) ) : ""}</p>
                             </div>
                             {/*<p>{single_attr}: &nbsp; {props.input_gene[single_attr]}</p>*/}
                           </>

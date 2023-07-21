@@ -49,6 +49,11 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_search_gene"},
     ),
+    path(
+        'api/gene_search_other_name/<str:search_word>/<str:page_id>/<str:num_per_page>',
+        views.BackendServer.as_view(),
+        {"inner": "Genes", "callback": "get_search_gene_by_other_name"},
+    ),
     re_path(
         r'^api/patient/all',
         views.BackendServer.as_view(),
@@ -154,8 +159,8 @@ urlpatterns = [
         views.BackendServer.as_view(),
         {"inner": "Datasets", "callback": "update_dataset_one"},
     ),
-    re_path(
-        r'^api/seq/names',
+    path(
+        'api/seq/names/<str:gene_name>',
         views.BackendServer.as_view(),
         {"inner": "Genes", "callback": "get_seq_names"},
     ),

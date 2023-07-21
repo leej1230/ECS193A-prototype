@@ -422,6 +422,19 @@ function DatasetEditTable(props) {
     } else {
       let existing_object_update_info = clone(copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]]);
       let data_field_key = stateChangeInfo["cellEdit"]["dataField"];
+      let existing_object_save_old_info = clone(copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
+
+      // do not need to store old value if already have it
+      if( !(data_field_key in existing_object_update_info) ){
+        if (type_str === "int") {
+          existing_object_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else if (type_str === "float") {
+          existing_object_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
+        } else {
+          existing_object_save_old_info[data_field_key] = String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
+        }
+        copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_save_old_info;
+      }
 
       if (type_str === "int") {
         existing_object_update_info[data_field_key] = parseInt(String(stateChangeInfo["cellEdit"]["newValue"]));
@@ -433,16 +446,7 @@ function DatasetEditTable(props) {
 
       copy_modified_objects_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_update_info;
 
-      // do not need to store old value if already have it
-      /*let existing_object_save_old_info = clone(copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]]);
-      if (type_str === "int") {
-        existing_object_save_old_info[data_field_key] = parseInt(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
-      } else if (type_str === "float") {
-        existing_object_save_old_info[data_field_key] = parseFloat(String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]));
-      } else {
-        existing_object_save_old_info[data_field_key] = String(table_matrix_filtered[object_edited_index][stateChangeInfo["cellEdit"]["dataField"]]).toLowerCase();
-      }
-      copy_prev_objects_undo_list[stateChangeInfo["cellEdit"]["rowId"]] = existing_object_save_old_info;*/
+      
     }
 
     if (type_str === "int") {
