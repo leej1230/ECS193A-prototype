@@ -145,8 +145,14 @@ STATIC_URL = '/staticfiles/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
-# CORS_ORIGIN_WHITELIST = (
+# Restrict the access to backend
+CORS_ALLOWED_ORIGINS = [
+    "https://ecs-193-a-prototype.vercel.app",
+]
 
-# )
+CORS_ALLOWED_PATHS = [
+    # Allow all paths from link in CORS_ALLOWED_ORIGINS
+    r"^/.*$",
+]
